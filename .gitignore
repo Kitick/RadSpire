@@ -1,3 +1,7 @@
-# Godot 4+ specific ignores
+# Godot
 .godot/
 /android/
+
+# .NET
+bin/
+obj/
