@@ -13,27 +13,38 @@ public partial class Player : CharacterBody3D {
     }
     
     public override void _PhysicsProcess(double delta) {
+        Vector3 velocity = Velocity;
+        Vector3 direction = Vector3.Zero;
+        float finalSpeed = _defaultSpeed;
 
         if(Input.IsActionPressed("sprint")) {
-            
+            finalSpeed *= _defaultSprintMultiplier;
         }
         if(Input.IsActionPressed("crouch")) {
-            
+            finalSpeed *= _defaultCrouchMultiplier;
         }
         if(Input.IsActionPressed("move_right")) {
-
+            direction.X += 1.0f;
         }
         if(Input.IsActionPressed("move_left")) {
-
-        }
+            direction.X -= 1.0f;
+        }   
         if(Input.IsActionPressed("move_foward")) {
-
+            direction.Z -= 1.0f;
         }
         if(Input.IsActionPressed("move_back")) {
+            direction.Z += 1.0f;
+        }
+        direction = direction.Normalized();
+        velocity += direction * finalSpeed;
 
-        }
         if(Input.IsActionPressed("jump")) {
-            
+            velocity.Y = _defaultJumpVelocity;
         }
+        if(!IsOnFloor()) {
+            velocity.Y -= _defaultFallAcceleration * (float)delta;
+        }
+        Velocity = velocity;
+        MoveAndSlide();
     }
 }
