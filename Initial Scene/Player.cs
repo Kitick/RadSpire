@@ -2,32 +2,33 @@ using Godot;
 using System;
 
 public partial class Player : CharacterBody3D {
-	[Export] private float _defaultSpeed = 2.0f;
-	[Export] private float _defaultSprintMultiplier = 2.0f;
-	[Export] private float _defaultCrouchMultiplier = 0.5f;
-	[Export] private float _defaultRotationSpeed = 4.0f;
-	[Export] private float _defaultJumpVelocity = 4.5f;
-	[Export] private float _defaultFallAcceleration = 9.8f;
+	[Export] private float DefaultSpeed = 2.0f;
+	[Export] private float DefaultSprintMultiplier = 2.0f;
+	[Export] private float DefaultCrouchMultiplier = 0.5f;
+	[Export] private float DefaultRotationSpeed = 4.0f;
+	[Export] private float DefaultJumpVelocity = 4.5f;
+	[Export] private float DefaultFallAcceleration = 9.8f;
+
 	public override void _Ready() {
 
 	}
 
 	public override void _PhysicsProcess(double delta) {
 		// Check for ESC to return to main menu
-		if (Input.IsActionJustPressed("ui_cancel")) {
+		if(Input.IsActionJustPressed("ui_cancel")) {
 			GetTree().ChangeSceneToFile("res://Main Menu/Main_Menu.tscn");
 			return;
 		}
 
 		Vector3 velocity = Velocity;
 		Vector3 direction = Vector3.Zero;
-		float finalSpeed = _defaultSpeed;
+		float finalSpeed = DefaultSpeed;
 
 		if(Input.IsActionPressed("sprint")) {
-			finalSpeed *= _defaultSprintMultiplier;
+			finalSpeed *= DefaultSprintMultiplier;
 		}
 		if(Input.IsActionPressed("crouch")) {
-			finalSpeed *= _defaultCrouchMultiplier;
+			finalSpeed *= DefaultCrouchMultiplier;
 		}
 		if(Input.IsActionPressed("move_right")) {
 			direction.X += 1.0f;
@@ -46,10 +47,10 @@ public partial class Player : CharacterBody3D {
 		velocity.Z = direction.Z * finalSpeed;
 
 		if(Input.IsActionPressed("jump") && IsOnFloor()) {
-			velocity.Y = _defaultJumpVelocity;
+			velocity.Y = DefaultJumpVelocity;
 		}
 		if(!IsOnFloor()) {
-			velocity.Y -= _defaultFallAcceleration * (float)delta;
+			velocity.Y -= DefaultFallAcceleration * (float)delta;
 		}
 
 		Velocity = velocity;
