@@ -1,0 +1,68 @@
+[gd_scene load_steps=2 format=3 uid="uid://udkefarjp6kf"]
+
+[ext_resource type="Script" uid="uid://ctdqi1hddclge" path="res://Main Menu/Main_Menu.cs" id="1_7b88o"]
+
+[node name="Main_Menu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_7b88o")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.012617188, 0.012617188, 0.012617188, 1)
+
+[node name="Main_Button_Panel" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_left = 64.0
+offset_top = 384.0
+offset_right = 160.0
+offset_bottom = 485.0
+scale = Vector2(1.5, 1.5)
+
+[node name="Start_Button" type="Button" parent="Main_Button_Panel"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Start Game"
+
+[node name="Settings_Button" type="Button" parent="Main_Button_Panel"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Settings"
+
+[node name="Quit_Button" type="Button" parent="Main_Button_Panel"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Quit"
+
+[node name="Start_Button_Panel" type="VBoxContainer" parent="."]
+visible = false
+layout_mode = 0
+offset_left = 216.0
+offset_top = 392.0
+offset_right = 345.0
+offset_bottom = 493.0
+scale = Vector2(0.8, 0.8)
+
+[node name="Online_Button" type="Button" parent="Start_Button_Panel"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "> Online"
+
+[node name="Local_Button" type="Button" parent="Start_Button_Panel"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "> Local"
+
+[node name="Private_Match_Button" type="Button" parent="Start_Button_Panel"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "> Private Match"
