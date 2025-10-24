@@ -1,6 +1,3 @@
-//Last Edited Information
-//Name: Pablo Macias
-//Date: October 24th, 2025
 //Purpose: Simple Main Menu Screen Layout and Buttons with Hover Popup Panel
 
 using Godot;
