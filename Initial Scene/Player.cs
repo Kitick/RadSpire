@@ -13,6 +13,25 @@ public partial class Player : CharacterBody3D {
 
 	}
 
+	private static Vector3 GetHorizontalInput() {
+		Vector3 direction = Vector3.Zero;
+
+		if(Input.IsActionPressed("move_forward")) {
+			direction.X += 1.0f;
+		}
+		if(Input.IsActionPressed("move_back")) {
+			direction.X -= 1.0f;
+		}
+		if(Input.IsActionPressed("move_right")) {
+			direction.Z += 1.0f;
+		}
+		if(Input.IsActionPressed("move_left")) {
+			direction.Z -= 1.0f;
+		}
+
+		return direction.Normalized();
+	}
+
 	public override void _PhysicsProcess(double delta) {
 		// Check for ESC to return to main menu
 		if(Input.IsActionJustPressed("ui_cancel")) {
@@ -20,40 +39,32 @@ public partial class Player : CharacterBody3D {
 			return;
 		}
 
-		Vector3 velocity = Velocity;
-		Vector3 direction = Vector3.Zero;
-		float finalSpeed = DefaultSpeed;
+		float dt = (float)delta;
+		float multiplier = 1.0f;
 
 		if(Input.IsActionPressed("sprint")) {
-			finalSpeed *= DefaultSprintMultiplier;
+			multiplier *= DefaultSprintMultiplier;
 		}
 		if(Input.IsActionPressed("crouch")) {
-			finalSpeed *= DefaultCrouchMultiplier;
+			multiplier *= DefaultCrouchMultiplier;
 		}
-		if(Input.IsActionPressed("move_right")) {
-			direction.X += 1.0f;
-		}
-		if(Input.IsActionPressed("move_left")) {
-			direction.X -= 1.0f;
-		}
-		if(Input.IsActionPressed("move_forward")) {
-			direction.Z -= 1.0f;
-		}
-		if(Input.IsActionPressed("move_back")) {
-			direction.Z += 1.0f;
-		}
-		direction = direction.Normalized();
-		velocity.X = direction.X * finalSpeed;
-		velocity.Z = direction.Z * finalSpeed;
+
+		Vector3 horizontalInput = GetHorizontalInput();
+		Vector3 newVelocity = horizontalInput * DefaultSpeed * multiplier;
+
+		float fallVelocity = Velocity.Y;
 
 		if(Input.IsActionPressed("jump") && IsOnFloor()) {
-			velocity.Y = DefaultJumpVelocity;
-		}
-		if(!IsOnFloor()) {
-			velocity.Y -= DefaultFallAcceleration * (float)delta;
+			fallVelocity += DefaultJumpVelocity;
 		}
 
-		Velocity = velocity;
+		if(!IsOnFloor()) {
+			fallVelocity -= DefaultFallAcceleration * dt;
+		}
+
+		newVelocity.Y = fallVelocity;
+		Velocity = newVelocity;
+
 		MoveAndSlide();
 	}
 }
