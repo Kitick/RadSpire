@@ -11,8 +11,14 @@ public partial class Player : CharacterBody3D {
 	public override void _Ready() {
 
 	}
-	
+
 	public override void _PhysicsProcess(double delta) {
+		// Check for ESC to return to main menu
+		if (Input.IsActionJustPressed("ui_cancel")) {
+			GetTree().ChangeSceneToFile("res://Main Menu/Main_Menu.tscn");
+			return;
+		}
+
 		Vector3 velocity = Velocity;
 		Vector3 direction = Vector3.Zero;
 		float finalSpeed = _defaultSpeed;
@@ -28,7 +34,7 @@ public partial class Player : CharacterBody3D {
 		}
 		if(Input.IsActionPressed("move_left")) {
 			direction.X -= 1.0f;
-		}   
+		}
 		if(Input.IsActionPressed("move_forward")) {
 			direction.Z -= 1.0f;
 		}
