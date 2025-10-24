@@ -43,6 +43,33 @@ layout_mode = 2
 size_flags_horizontal = 0
 text = "Quit"
 
-[connection signal="pressed" from="VBoxContainer/Start_Button" to="." method="_on_Start_Button_pressed"]
-[connection signal="pressed" from="VBoxContainer/Settings_Button" to="." method="_on_Settings_Button_pressed"]
-[connection signal="pressed" from="VBoxContainer/Quit_Button" to="." method="_on_Quit_Button_pressed"]
+[node name="Start_Button_Panel" type="Control" parent="."]
+visible = false
+anchors_preset = 0
+offset_left = 64.0
+offset_top = 541.5
+offset_right = 160.0
+offset_bottom = 541.5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Start_Button_Panel"]
+layout_mode = 0
+offset_left = 152.0
+offset_top = -149.5
+offset_right = 281.0
+offset_bottom = -48.5
+scale = Vector2(0.8, 0.8)
+
+[node name="Online_Button" type="Button" parent="Start_Button_Panel/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "> Online"
+
+[node name="Local_Button" type="Button" parent="Start_Button_Panel/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "> Local"
+
+[node name="Private_Match_Button" type="Button" parent="Start_Button_Panel/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "> Private Match"
