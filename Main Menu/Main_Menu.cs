@@ -1,11 +1,13 @@
-// Simple Main Menu Screen Layout and Buttons with Hover Popup Panel
+//Last Edited Information
+//Name: Pablo Macias
+//Date: October 24th, 2025
+//Purpose: Simple Main Menu Screen Layout and Buttons with Hover Popup Panel
 
 using Godot;
 using System;
 
 public partial class Main_Menu : Control {
 	//Button and Panel References
-
 	private Button StartButton = null!;
 	private Button SettingsButton = null!;
 	private Button QuitButton = null!;
@@ -34,24 +36,23 @@ public partial class Main_Menu : Control {
 	}
 
 	private void SetCallbacks() {
-		// Main Buttons
+		//Main Buttons
 		StartButton.Pressed += OnStartButtonPressed;
 		SettingsButton.Pressed += OnSettingsButtonPressed;
 		QuitButton.Pressed += OnQuitButtonPressed;
 
-		// Hover Behavior
+		//Hover Behavior
 		StartButton.MouseEntered += OnStartButtonHover;
 		StartButton.MouseExited += OnStartButtonUnhover;
 		StartButtonPanel.MouseExited += OnPanelMouseExited;
 
-		// Click Handlers for Pop-up
+		//Click Handlers for Pop-up
 		OnlineButton.Pressed += () => OnModeSelected(MenuMode.Online);
 		LocalButton.Pressed += () => OnModeSelected(MenuMode.Local);
 		PrivateMatchButton.Pressed += () => OnModeSelected(MenuMode.PrivateMatch);
 	}
 
-	// Main Button Handlers
-
+	//Main Button Handlers
 	private void OnStartButtonPressed() {
 		GD.Print("Start button was pressed!");
 	}
@@ -64,14 +65,12 @@ public partial class Main_Menu : Control {
 		GetTree().Quit();
 	}
 
-	// Hover Pop-Up Logic
-
+	//Hover Pop-Up Logic
 	private void OnStartButtonHover() {
 		StartButtonPanel.Visible = true;
 	}
 
-	// Unhover Pop-Up Logic
-
+	//Unhover Pop-Up Logic
 	private void HidePopup(double delay = 0.2) {
 		GetTree().CreateTimer(delay).Timeout += () => {
 			Vector2 mousePos = GetViewport().GetMousePosition();

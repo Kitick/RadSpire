@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://udkefarjp6kf"]
 
-[ext_resource type="Script" uid="uid://ctdqi1hddclge" path="res://Main_Menu.cs" id="1_m625n"]
+[ext_resource type="Script" uid="uid://ctdqi1hddclge" path="res://Main Menu/Main_Menu.cs" id="1_7b88o"]
 
 [node name="Main_Menu" type="Control"]
 layout_mode = 3
@@ -9,7 +9,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_m625n")
+script = ExtResource("1_7b88o")
 
 [node name="ColorRect" type="ColorRect" parent="."]
 layout_mode = 1
@@ -44,6 +44,7 @@ size_flags_horizontal = 0
 text = "Quit"
 
 [node name="Start_Button_Panel" type="VBoxContainer" parent="."]
+visible = false
 layout_mode = 0
 offset_left = 216.0
 offset_top = 392.0
