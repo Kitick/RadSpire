@@ -105,6 +105,7 @@ public partial class Main_Menu : Control {
 
 	private void StartLocalGame() {
 		GD.Print("Starting Local Game...");
+		GetTree().ChangeSceneToFile("res://Initial Scene/initial_player_scene.tscn");
 	}
 
 	private void StartPrivateMatch() {
