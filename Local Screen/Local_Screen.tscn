@@ -1,0 +1,44 @@
+[gd_scene load_steps=2 format=3 uid="uid://n030woq1pt8u"]
+
+[ext_resource type="Script" uid="uid://b758hbtfiihje" path="res://Local Screen/Local_Screen.cs" id="1_2r6g8"]
+
+[node name="Local Screen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_2r6g8")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
+[node name="Local_Screen_Panel" type="VBoxContainer" parent="ColorRect"]
+layout_mode = 0
+offset_left = 64.0
+offset_top = 63.000004
+offset_right = 192.0
+offset_bottom = 164.0
+scale = Vector2(2.512864, 2.5434754)
+
+[node name="Continue_Button" type="Button" parent="ColorRect/Local_Screen_Panel"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Continue Game"
+
+[node name="Load_Saved_Button" type="Button" parent="ColorRect/Local_Screen_Panel"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Load Saved Game"
+
+[node name="Start_New_Button" type="Button" parent="ColorRect/Local_Screen_Panel"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Start New Game"

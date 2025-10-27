@@ -20,12 +20,12 @@ public partial class Main_Menu : Control {
 	}
 
 	private void GetComponents() {
-		// Main Buttons
+		//Main Buttons
 		StartButton = GetNode<Button>("Main_Button_Panel/Start_Button");
 		SettingsButton = GetNode<Button>("Main_Button_Panel/Settings_Button");
 		QuitButton = GetNode<Button>("Main_Button_Panel/Quit_Button");
 
-		// Popup Panel and its Buttons
+		//Popup Panel and its Buttons
 		StartButtonPanel = GetNode<Control>("Start_Button_Panel");
 		OnlineButton = GetNode<Button>("Start_Button_Panel/Online_Button");
 		LocalButton = GetNode<Button>("Start_Button_Panel/Local_Button");
@@ -99,15 +99,16 @@ public partial class Main_Menu : Control {
 		}
 	}
 
+	//Pop-up panel Buttons Handler
 	private void StartOnlineGame() {
 		GD.Print("Starting Online Game...");
 	}
 
 	private void StartLocalGame() {
 		GD.Print("Starting Local Game...");
-		GetTree().ChangeSceneToFile("res://Initial Scene/initial_player_scene.tscn");
+		GetTree().ChangeSceneToFile("res://Local Screen/Local_Screen.tscn");
 	}
-
+	
 	private void StartPrivateMatch() {
 		GD.Print("Starting Private Match...");
 	}
