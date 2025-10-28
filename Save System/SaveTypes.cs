@@ -1,8 +1,10 @@
 using Godot;
 
 namespace SaveSystem {
-	record PlayerData {
-		public required Vector3 Position { get; init; }
-		public required Vector3 Rotation { get; init; }
+	interface ISaveData;
+
+	record PlayerData : ISaveData {
+		public required Vector3 Position;
+		public required Vector3 Rotation;
 	}
 }
