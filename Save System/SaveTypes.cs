@@ -30,16 +30,24 @@ namespace SaveSystem {
 		public static void ExampleLoad() {
 			var saves = SaveService.GetSaves();
 
+			GD.Print("\nAvailable Saves:");
 			foreach(var save in saves) {
-				GD.Print("Found save file: ", save);
+				GD.Print(save);
 			}
 
 			var loadedPlayerData = SaveService.Load<PlayerData>("player");
 			var loadedSettings = SaveService.Load<GameSettings>("settings");
 
-			GD.Print("Loaded");
+			GD.Print("\nLoaded:");
 			GD.Print(loadedPlayerData);
 			GD.Print(loadedSettings);
+		}
+
+		public static void ExampleDelete() {
+			SaveService.Delete("player");
+			SaveService.Delete("settings");
+
+			GD.Print("\nDeleted 'player' and 'settings' saves.");
 		}
 	}
 

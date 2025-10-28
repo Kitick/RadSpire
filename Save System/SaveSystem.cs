@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
@@ -11,29 +12,46 @@ namespace SaveSystem {
 
 		private static DirectoryInfo GetSaveDir() {
 			var path = Path.Combine(Godot.OS.GetUserDataDir(), SaveDirName);
-			return Directory.CreateDirectory(path);
+
+			if(!Directory.Exists(path)) { Directory.CreateDirectory(path); }
+
+			return new DirectoryInfo(path);
 		}
 
-		private static string GetFilePath(string fileName) {
-			return Path.Combine(GetSaveDir().FullName, fileName + FileExt);
+		private static FileInfo GetFile(string fileName) {
+			var path = Path.Combine(GetSaveDir().FullName, fileName + FileExt);
+			return new FileInfo(path);
 		}
 
-		public static void Save<T>(string fileName, T data) where T : class, ISaveData {
-			var path = GetFilePath(fileName);
+		private static void Write<T>(this FileInfo file, T data) where T : class, ISaveData {
 			var json = JsonSerializer.Serialize(data, JsonOptions);
-
-			File.WriteAllText(path, json);
+			File.WriteAllText(file.FullName, json);
 		}
 
-		public static T? Load<T>(string fileName) where T : class, ISaveData {
-			var path = GetFilePath(fileName);
+		private static T? Read<T>(this FileInfo file) where T : class, ISaveData {
+			if(!file.Exists) { return null; }
 
-			if(!File.Exists(path)) { return null; }
-
-			var json = File.ReadAllText(path);
+			var json = File.ReadAllText(file.FullName);
 			var data = JsonSerializer.Deserialize<T>(json, JsonOptions);
 
 			return data;
+		}
+
+		public static void Save<T>(string fileName, T data) where T : class, ISaveData {
+			GetFile(fileName).Write(data);
+		}
+
+		public static T? Load<T>(string fileName) where T : class, ISaveData {
+			return GetFile(fileName).Read<T>();
+		}
+
+		public static bool Check(string fileName) {
+			return GetFile(fileName).Exists;
+		}
+
+		public static void Delete(string fileName) {
+			var file = GetFile(fileName);
+			if(file.Exists) { file.Delete(); }
 		}
 
 		public static string[] GetSaves() {
