@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://dn7rhyl637tvi"]
+
+[node name="Camera Rig" type="Node3D"]
+
+[node name="Camera Pivot" type="Node3D" parent="."]
+
+[node name="Camera3D" type="Camera3D" parent="Camera Pivot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.9004949)
