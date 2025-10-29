@@ -1,6 +1,7 @@
-[gd_scene load_steps=7 format=3 uid="uid://cj70horwpl6yp"]
+[gd_scene load_steps=8 format=3 uid="uid://cj70horwpl6yp"]
 
 [ext_resource type="PackedScene" uid="uid://cm1fq335hf2qk" path="res://Initial Scene/player.tscn" id="1_bc4gm"]
+[ext_resource type="PackedScene" uid="uid://dn7rhyl637tvi" path="res://Initial Scene/topDownCamera.tscn" id="2_05qg7"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_l2hg3"]
 size = Vector3(60, 2, 60)
@@ -43,4 +44,7 @@ skeleton = NodePath("")
 shape = SubResource("BoxShape3D_xta5t")
 
 [node name="Player" parent="." instance=ExtResource("1_bc4gm")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1973982, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+
+[node name="Camera Rig" parent="." instance=ExtResource("2_05qg7")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
