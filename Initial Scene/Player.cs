@@ -10,6 +10,10 @@ public partial class Player : CharacterBody3D {
 	[Export] private float DefaultFallAcceleration = 9.8f;
 
 	public override void _Ready() {
+		
+		var hudScene = GD.Load<PackedScene>("res://HUD/UI.tscn");
+		var hud = hudScene.Instantiate<CanvasLayer>(); // root of UI.tscn is CanvasLayer
+		AddChild(hud); // adds HUD under Player
 
 	}
 
