@@ -17,16 +17,16 @@ public partial class Player : CharacterBody3D {
 		Vector3 direction = Vector3.Zero;
 
 		if(Input.IsActionPressed("move_forward")) {
-			direction.X += 1.0f;
+			direction.Z -= 1.0f;
 		}
 		if(Input.IsActionPressed("move_back")) {
-			direction.X -= 1.0f;
-		}
-		if(Input.IsActionPressed("move_right")) {
 			direction.Z += 1.0f;
 		}
+		if(Input.IsActionPressed("move_right")) {
+			direction.X += 1.0f;
+		}
 		if(Input.IsActionPressed("move_left")) {
-			direction.Z -= 1.0f;
+			direction.X -= 1.0f;
 		}
 
 		return direction.Normalized();
