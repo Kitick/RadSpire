@@ -29,15 +29,30 @@ public partial class TopDownCameraRig : Node3D {
         Vector3 targetPosition = target.GlobalPosition;
         Vector3 curPosition = GlobalPosition;
         Vector3 positionDiff = targetPosition - curPosition;
+        float xOutPercent = 0.0f;
+        float zOutPercent = 0.0f;
         bool inCenterZone = true;
-        if(Math.Abs(positionDiff.X) > centerZone.X / 2) {
+        if(Mathf.Abs(positionDiff.X) > centerZone.X / 2) {
             inCenterZone = false;
+            if(positionDiff.X > 0) {
+                xOutPercent = Mathf.Abs(positionDiff.X - centerZone.X / 2) / (centerZone.X / 2);
+            }
+            else {
+                xOutPercent = Mathf.Abs(positionDiff.X * -1 - centerZone.X / 2) / (centerZone.X / 2);
+            }        
         }
-        if(Math.Abs(positionDiff.Z) > centerZone.Y / 2) {
+        if(Mathf.Abs(positionDiff.Z) > centerZone.Y / 2) {
             inCenterZone = false;
+            if(positionDiff.Z > 0) {
+                zOutPercent = Mathf.Abs(positionDiff.Z - centerZone.Y / 2) / (centerZone.Y / 2);
+            }
+            else {
+                zOutPercent = Mathf.Abs(positionDiff.Z * -1 - centerZone.Y / 2) / (centerZone.Y / 2);
+            }
         }
         if(!inCenterZone) {
-            float weight = 1f - Mathf.Exp(-followSpeed * delta);
+            float strength = Mathf.Clamp(Math.Max(xOutPercent, zOutPercent),  0.0f, 1.0f);
+            float weight = 1f - Mathf.Exp(-followSpeed * delta * strength);
             GlobalPosition = GlobalPosition.Lerp(target.GlobalPosition, weight);
         }
     }
