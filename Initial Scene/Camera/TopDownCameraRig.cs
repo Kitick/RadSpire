@@ -5,11 +5,11 @@ public partial class TopDownCameraRig : Node3D {
     [Export] public Node3D target;
     [Export] private Vector2 centerZone = new Vector2(5, 4);
     [Export] private float followSpeed = 5.0f;
-    [Export] private float dragSpeed = 3.0f;
-    [Export] private float dragTimePause = 3.0f;
+    [Export] private float dragSpeed = 2.0f;
+    [Export] private float dragTimePause = 5.0f;
     private bool dragging = false;
     private float deltaTime;
-    private Timer dragTimer;
+    private Timer dragTimer = new Timer();
 
     private Vector3 targetPosition;
 
@@ -22,17 +22,19 @@ public partial class TopDownCameraRig : Node3D {
             targetPosition = target.GlobalPosition;
             GlobalPosition = targetPosition;
         }
-        dragTimer.Stop();
+        dragTimer.OneShot = true;
+        AddChild(dragTimer);
+        dragTimer.Timeout += OnDragTimerTimeout;
     }
 
     public override void _PhysicsProcess(double delta) {
         deltaTime = (float)delta;
         if(!dragging && dragTimer.IsStopped()) {
-            followTarget(deltaTime);
+            followTarget();
         }
     }
 
-    private void followTarget(float delta) {
+    private void followTarget() {
         Vector3 targetPosition = target.GlobalPosition;
         Vector3 curPosition = GlobalPosition;
         Vector3 positionDiff = targetPosition - curPosition;
@@ -59,18 +61,18 @@ public partial class TopDownCameraRig : Node3D {
         }
         if(!inCenterZone) {
             float strength = Mathf.Clamp(Math.Max(xOutPercent, zOutPercent), 0.0f, 1.0f);
-            float weight = 1f - Mathf.Exp(-followSpeed * delta * strength);
-            GlobalPosition = GlobalPosition.Lerp(target.GlobalPosition, weight);
+            float weight = 1f - Mathf.Exp(-followSpeed * deltaTime * strength);
+            GlobalPosition = GlobalPosition.Lerp(targetPosition, weight);
         }
     }
 
-	public override void _Input(InputEvent @event) {
+    public override void _Input(InputEvent @event) {
         if(@event is InputEventMouseButton mouseButtonEvent) {
             if(mouseButtonEvent.ButtonIndex == MouseButton.Right) {
                 if(!dragging && mouseButtonEvent.Pressed) {
                     dragging = true;
                 }
-                else if(dragging && !mouseButtonEvent.Pressed){
+                else if(dragging && !mouseButtonEvent.Pressed) {
                     dragging = false;
                     dragTimer.Start(dragTimePause);
                 }
@@ -85,6 +87,18 @@ public partial class TopDownCameraRig : Node3D {
             float weight = 1f - Mathf.Exp(-dragSpeed * deltaTime);
             GlobalPosition = GlobalPosition.Lerp(finalPosition, weight);
         }
-	}
+        if(@event.IsActionPressed("camera_reset")) {
+            dragTimer.Start(0.0000001);
+            dragTimer.Stop();
+        }
+    }
 
+    private void resetCameraPosition() {
+        float weight = 1f - Mathf.Exp(-followSpeed * deltaTime);
+        GlobalPosition = GlobalPosition.Lerp(target.GlobalPosition, weight);
+    }
+
+    private void OnDragTimerTimeout() {
+        resetCameraPosition();
+    }
 }
