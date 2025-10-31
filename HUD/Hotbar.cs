@@ -17,17 +17,25 @@ public partial class Hotbar : Node2D {
 		if(@event.IsActionPressed("hotbar_5")) SelectSlot(4);
 	}
 
-	private void SelectSlot(int index) {
-		if(selectedIndex >= 0 && selectedIndex < hotbarSlots.GetChildCount()) {
-			var prev = hotbarSlots.GetChild<Control>(selectedIndex);
-			prev.Modulate = new Color(1, 1, 1);
+	private void SelectSlot(int index)
+	{
+		// Reset previous slot
+		if (selectedIndex >= 0 && selectedIndex < hotbarSlots.GetChildCount())
+		{
+			var prev = hotbarSlots.GetChild<Panel>(selectedIndex);
+			prev.SelfModulate = Colors.White;
+			prev.Scale = Vector2.One;
 		}
 
-		if(index >= 0 && index < hotbarSlots.GetChildCount()) {
-			var slot = hotbarSlots.GetChild<Control>(index);
-			slot.Modulate = new Color(1, 1, 0);
-			GD.Print($"$Hotbar slot {index + 1} selected");
+		// Highlight new slot
+		if (index >= 0 && index < hotbarSlots.GetChildCount())
+		{
+			var slot = hotbarSlots.GetChild<Panel>(index);
+			slot.SelfModulate = new Color(1f, 1f, 0.3f);   // bright yellow tint
+			slot.Scale = new Vector2(1.05f, 1.05f);          // slightly larger
 			selectedIndex = index;
+
+			GD.Print($"Hotbar slot {index + 1} selected");
 		}
 	}
 }

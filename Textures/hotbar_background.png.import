@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bka8hfkmuqsgi"
-path="res://.godot/imported/211871_pause_icon.png-9837d209b3a73a9eba7fb8ff11e1d0d8.ctex"
+uid="uid://dfubgqxo2e74x"
+path="res://.godot/imported/hotbar_background.png-8171021a588d2131c2aafb69fb37b4aa.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://211871_pause_icon.png"
-dest_files=["res://.godot/imported/211871_pause_icon.png-9837d209b3a73a9eba7fb8ff11e1d0d8.ctex"]
+source_file="res://Textures/hotbar_background.png"
+dest_files=["res://.godot/imported/hotbar_background.png-8171021a588d2131c2aafb69fb37b4aa.ctex"]
 
 [params]
 
