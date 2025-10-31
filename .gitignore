@@ -1,6 +1,7 @@
 # Godot
 .godot/
 /android/
+/Release/
 
 # .NET
 bin/
