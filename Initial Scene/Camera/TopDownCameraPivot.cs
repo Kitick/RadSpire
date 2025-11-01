@@ -11,7 +11,7 @@ public partial class TopDownCameraPivot : Node3D {
     private Camera3D camera;
     private float deltaTime;
 
-    public override void _EnterTree(){
+    public override void _EnterTree() {
         camera = GetNode<Camera3D>("Camera3D");
         camera.Current = true;
     }
@@ -26,7 +26,57 @@ public partial class TopDownCameraPivot : Node3D {
 
     public override void _PhysicsProcess(double delta) {
         deltaTime = (float)delta;
+        updateCameraPositionAndRotation();
+    }
 
+    public override void _Input(InputEvent @event) {
+        if(zoomTimer.IsStopped()) {
+            zoomTimer.Start(zoomCoolDown);
+            handleMouseScroll(@event);
+            handleTrackPad(@event);
+        }
+    }
+
+    private void handleMouseScroll(InputEvent @event) {
+        if(@event is InputEventMouseButton mouseScrollEvent && mouseScrollEvent.Pressed) {
+            switch(mouseScrollEvent.ButtonIndex) {
+                case MouseButton.WheelUp:
+                    changeTiltIndex(false);
+                    break;
+                case MouseButton.WheelDown:
+                    changeTiltIndex(true);
+                    break;
+            }
+        }
+    }
+    
+    private void handleTrackPad(InputEvent @event) {
+        if(@event is InputEventPanGesture panGestureEvent) {
+            if(panGestureEvent.Delta.Y < 0) {
+                changeTiltIndex(true);
+            }
+            else if(panGestureEvent.Delta.Y > 0) {
+                changeTiltIndex(false);
+            }
+        }
+    }
+
+    private void changeTiltIndex(bool zoomOut) {
+        if(zoomOut) {
+            GD.Print("Zooming Out");
+            if(curTiltIndex < 2) {
+                curTiltIndex++;
+            }
+        }
+        else {
+            GD.Print("Zooming In");
+            if(curTiltIndex > 0) {
+                curTiltIndex--;
+            }
+        }
+    }
+    
+    private void updateCameraPositionAndRotation(){
         Vector3 newPosition = calcYZPosVec();
         float weight = 1f - Mathf.Exp(-zoomSpeed * deltaTime);
         Position = Position.Lerp(newPosition, weight);
@@ -40,30 +90,6 @@ public partial class TopDownCameraPivot : Node3D {
         curRotation.Basis = new Basis(curRotationQ);
         Transform = curRotation;
     }
-
-	public override void _Input(InputEvent @event) {
-        if(@event is InputEventMouseButton mouseScrollEvent) {
-            if(mouseScrollEvent.Pressed) {
-                if(zoomTimer.IsStopped()) {
-                    zoomTimer.Start(zoomCoolDown);
-                    switch(mouseScrollEvent.ButtonIndex) {
-                        case MouseButton.WheelUp:
-                            GD.Print("Scroll Up");
-                            if(curTiltIndex < 2) {
-                                curTiltIndex++;
-                            }
-                            break;
-                        case MouseButton.WheelDown:
-                            GD.Print("Scroll Down");
-                            if(curTiltIndex > 0) {
-                                curTiltIndex--;
-                            }
-                            break;
-                    }
-                }
-            }
-        }
-	}
 
     private Vector3 calcYZPosVec() {
         Vector3 curPosition = new Vector3(0, 0, 0);
