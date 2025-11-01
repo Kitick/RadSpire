@@ -11,3 +11,4 @@ transform = Transform3D(1, 0, 0, 0, 0.49999997, 0.86602545, 0, -0.86602545, 0.49
 script = ExtResource("2_80wr6")
 
 [node name="Camera3D" type="Camera3D" parent="Camera Pivot"]
+current = true
