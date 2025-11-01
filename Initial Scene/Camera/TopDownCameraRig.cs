@@ -12,6 +12,8 @@ public partial class TopDownCameraRig : Node3D {
 	private Timer dragTimer = new Timer();
 
 	private Vector3 targetPosition;
+	private Node3D pivot;
+	private float moveThreshold = 0.1f;
 
 	public override void _Ready() {
 		if(target == null) {
@@ -31,6 +33,9 @@ public partial class TopDownCameraRig : Node3D {
 		deltaTime = (float)delta;
 		if(!dragging && dragTimer.IsStopped()) {
 			followTarget();
+		}
+		if(!dragging && targetMoved()) {
+			resetCameraPosition();
 		}
 	}
 
@@ -100,5 +105,15 @@ public partial class TopDownCameraRig : Node3D {
 
 	private void OnDragTimerTimeout() {
 		resetCameraPosition();
+	}
+
+	private bool targetMoved() {
+		if(target is CharacterBody3D body){
+			float targetVelocity = Mathf.Sqrt(body.Velocity.LengthSquared());
+			if(targetVelocity > moveThreshold) {
+				return true;
+			}
+		}
+		return false;
 	}
 }
