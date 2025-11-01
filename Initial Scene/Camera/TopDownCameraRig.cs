@@ -2,18 +2,21 @@ using Godot;
 using System;
 
 public partial class TopDownCameraRig : Node3D {
-	[Export] public Node3D target;
-	[Export] private Vector2 centerZone = new Vector2(5, 4);
+	[Export] public Node3D? target;
+	[Export] private Vector2 defaultCenterZone = new Vector2(6,3);
+	[Export] private Vector2 centerZone;
 	[Export] private float followSpeed = 5.0f;
 	[Export] private float dragSpeed = 2.0f;
 	[Export] private float dragTimePause = 5.0f;
 	private bool dragging = false;
 	private float deltaTime;
 	private Timer dragTimer = new Timer();
-
 	private Vector3 targetPosition;
-	private Node3D pivot;
 	private float moveThreshold = 0.1f;
+	private float outerZoneMultiplier = 2.0f;
+	private float maxZoneMultiplier = 2.5f;
+	private TopDownCameraPivot? pivot;
+	private Vector3 centerOffset = Vector3.Zero;
 
 	public override void _Ready() {
 		if(target == null) {
@@ -27,6 +30,8 @@ public partial class TopDownCameraRig : Node3D {
 		dragTimer.OneShot = true;
 		AddChild(dragTimer);
 		dragTimer.Timeout += OnDragTimerTimeout;
+		pivot = GetNode<TopDownCameraPivot>("Camera Pivot");
+		pivot.ZoomChanged += OnPivotZoomChanged;
 	}
 
 	public override void _PhysicsProcess(double delta) {
@@ -35,12 +40,15 @@ public partial class TopDownCameraRig : Node3D {
 			followTarget();
 		}
 		if(!dragging && targetMoved()) {
-			resetCameraPosition();
+			followTarget();
 		}
 	}
 
 	private void followTarget() {
-		Vector3 targetPosition = target.GlobalPosition;
+		if (target == null) {
+			return;
+		}
+		Vector3 targetPosition = target.GlobalPosition + centerOffset;
 		Vector3 curPosition = GlobalPosition;
 		Vector3 positionDiff = targetPosition - curPosition;
 		float xOutPercent = 0.0f;
@@ -99,8 +107,12 @@ public partial class TopDownCameraRig : Node3D {
 	}
 
 	private void resetCameraPosition() {
+		if (target == null) {
+			return;
+		}
+		Vector3 targetPosition = target.GlobalPosition;
 		float weight = 1f - Mathf.Exp(-followSpeed * deltaTime);
-		GlobalPosition = GlobalPosition.Lerp(target.GlobalPosition, weight);
+		GlobalPosition = GlobalPosition.Lerp(targetPosition, weight);
 	}
 
 	private void OnDragTimerTimeout() {
@@ -108,12 +120,23 @@ public partial class TopDownCameraRig : Node3D {
 	}
 
 	private bool targetMoved() {
-		if(target is CharacterBody3D body){
+		if(target is CharacterBody3D body) {
 			float targetVelocity = Mathf.Sqrt(body.Velocity.LengthSquared());
 			if(targetVelocity > moveThreshold) {
 				return true;
 			}
 		}
 		return false;
+	}
+
+	private void OnPivotZoomChanged(float zoomFactor, float tiltAngle, float distance)
+	{
+		if (pivot == null || target == null)
+			return;
+		centerZone = defaultCenterZone * zoomFactor;
+		float cameraHeight = distance * Mathf.Sin(Mathf.DegToRad(tiltAngle));
+		float projectedForward = cameraHeight / Mathf.Tan(Mathf.DegToRad(tiltAngle));
+		centerOffset.Z = projectedForward * 0.5f;
+		GD.Print($"CenterZone: {centerZone}, CenterOffset: {centerOffset}");
 	}
 }

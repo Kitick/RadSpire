@@ -8,8 +8,9 @@ public partial class TopDownCameraPivot : Node3D {
     [Export] private float zoomSpeed = 2.0f;
     [Export] private float zoomCoolDown = 1.0f;
     private Timer zoomTimer = new Timer();
-    private Camera3D camera;
+    private Camera3D? camera;
     private float deltaTime;
+    [Signal] public delegate void ZoomChangedEventHandler(float zoomRatio, float titleAngle, float distance);
 
     public override void _EnterTree() {
         camera = GetNode<Camera3D>("Camera3D");
@@ -22,6 +23,7 @@ public partial class TopDownCameraPivot : Node3D {
         RotationDegrees = getRotVec();
         zoomTimer.OneShot = true;
         AddChild(zoomTimer);
+        CallDeferred("emit_signal", SignalName.ZoomChanged, zoomPresets[curTiltIndex] / zoomPresets[1], rotationPresets[curTiltIndex], zoomPresets[curTiltIndex]);
     }
 
     public override void _PhysicsProcess(double delta) {
@@ -66,12 +68,14 @@ public partial class TopDownCameraPivot : Node3D {
             GD.Print("Zooming Out");
             if(curTiltIndex < 2) {
                 curTiltIndex++;
+                EmitSignal(SignalName.ZoomChanged, zoomPresets[curTiltIndex] / zoomPresets[1], rotationPresets[curTiltIndex], zoomPresets[curTiltIndex]);
             }
         }
         else {
             GD.Print("Zooming In");
             if(curTiltIndex > 0) {
                 curTiltIndex--;
+                EmitSignal(SignalName.ZoomChanged, zoomPresets[curTiltIndex] / zoomPresets[1], rotationPresets[curTiltIndex], zoomPresets[curTiltIndex]);
             }
         }
     }
