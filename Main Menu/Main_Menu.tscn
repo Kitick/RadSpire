@@ -23,10 +23,10 @@ color = Color(0.012617188, 0.012617188, 0.012617188, 1)
 [node name="Main_Button_Panel" type="VBoxContainer" parent="."]
 layout_mode = 0
 offset_left = 64.0
-offset_top = 634.0
+offset_top = 640.0
 offset_right = 160.0
-offset_bottom = 735.0
-scale = Vector2(1.5, 1.5)
+offset_bottom = 741.0
+scale = Vector2(1.3260046, 1.2630141)
 
 [node name="Start_Button" type="Button" parent="Main_Button_Panel"]
 layout_mode = 2
@@ -46,10 +46,10 @@ text = "Quit"
 [node name="Start_Button_Panel" type="VBoxContainer" parent="."]
 visible = false
 layout_mode = 0
-offset_left = 211.0
-offset_top = 646.0
-offset_right = 340.0
-offset_bottom = 747.0
+offset_left = 200.0
+offset_top = 648.0
+offset_right = 329.0
+offset_bottom = 749.0
 scale = Vector2(0.8, 0.8)
 
 [node name="Online_Button" type="Button" parent="Start_Button_Panel"]
@@ -66,3 +66,49 @@ text = "> Local"
 layout_mode = 2
 size_flags_horizontal = 0
 text = "> Private Match"
+
+[node name="Local_Overlay_Panel" type="VBoxContainer" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="Local_Overlay_Panel"]
+layout_mode = 2
+size_flags_vertical = 3
+color = Color(0, 0, 0, 1)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Local_Overlay_Panel/ColorRect"]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 64.0
+offset_top = -92.0
+offset_right = 210.0
+offset_bottom = 44.0
+grow_vertical = 2
+scale = Vector2(1.3163619, 1.4028887)
+
+[node name="Continue_Button" type="Button" parent="Local_Overlay_Panel/ColorRect/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Continue Game"
+
+[node name="Load_Saved_Button" type="Button" parent="Local_Overlay_Panel/ColorRect/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Load Saved Game"
+
+[node name="Start_New_Button" type="Button" parent="Local_Overlay_Panel/ColorRect/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Start New Game"
+
+[node name="Back_To_Main_Button" type="Button" parent="Local_Overlay_Panel/ColorRect/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Back"
