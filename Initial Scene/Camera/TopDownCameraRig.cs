@@ -6,17 +6,20 @@ public partial class TopDownCameraRig : Node3D {
 	[Export] private Vector2 defaultCenterZone = new Vector2(6,3);
 	[Export] private Vector2 centerZone;
 	[Export] private float followSpeed = 5.0f;
-	[Export] private float dragSpeed = 2.0f;
+	[Export] private float mouseSensitivity = 0.01f;
 	[Export] private float dragTimePause = 5.0f;
+	private float dragSpeed = 15.0f;
 	private bool dragging = false;
 	private float deltaTime;
 	private Timer dragTimer = new Timer();
 	private Vector3 targetPosition;
 	private float moveThreshold = 0.1f;
 	private float outerZoneMultiplier = 5.0f;
-	private float maxZoneMultiplier = 8.0f;
+	private float maxZoneMultiplier = 10.0f;
 	private TopDownCameraPivot? pivot;
 	private Vector3 centerOffset = Vector3.Zero;
+	private Vector3 dragTargetPosition;
+	private bool skipNextMotion;
 
 	public override void _Ready() {
 		if(target == null) {
@@ -32,18 +35,27 @@ public partial class TopDownCameraRig : Node3D {
 		dragTimer.Timeout += OnDragTimerTimeout;
 		pivot = GetNode<TopDownCameraPivot>("Camera Pivot");
 		pivot.ZoomChanged += OnPivotZoomChanged;
+		dragTargetPosition = GlobalPosition;
+		skipNextMotion = true;
 	}
 
 	public override void _PhysicsProcess(double delta) {
 		deltaTime = (float)delta;
 		if(!dragging && dragTimer.IsStopped()) {
 			followTarget();
+			skipNextMotion = true;
 		}
 		if(!dragging && targetMoved()) {
 			followTarget();
+			skipNextMotion = true;
 		}
 		if(!dragging && !insideNormalDragZone(GlobalPosition)) {
 			moveToNormalZone();
+			skipNextMotion = true;
+		}
+		if(dragging) {
+			float weight = 1f - Mathf.Exp(-dragSpeed * deltaTime);
+			GlobalPosition = GlobalPosition.Lerp(dragTargetPosition, weight);
 		}
 	}
 
@@ -95,21 +107,19 @@ public partial class TopDownCameraRig : Node3D {
 			}
 		}
 		if(dragging && @event is InputEventMouseMotion mouseMotionEvent) {
-			Vector2 positionChange = mouseMotionEvent.Relative;
-			float wantedX = GlobalPosition.X - positionChange.X;
-			float wantedY = GlobalPosition.Y;
-			float wantedZ = GlobalPosition.Z - positionChange.Y;
-			Vector3 wantedPosition = new Vector3(wantedX, wantedY, wantedZ);
-			if(!insideMaxDragZone(wantedPosition)) {
+			if (skipNextMotion) {
+				skipNextMotion = false;
 				return;
 			}
-			float resistance = calculateDragResistance(wantedPosition);
-			float weight = 1f - Mathf.Exp(-dragSpeed * deltaTime);
-			float finalX = GlobalPosition.X - positionChange.X * (1.0f - resistance);
-			float finalY = GlobalPosition.Y;
-			float finalZ = GlobalPosition.Z - positionChange.Y * (1.0f - resistance);
-			Vector3 finalPosition = new Vector3(finalX, finalY, finalZ);
-			GlobalPosition = GlobalPosition.Lerp(finalPosition, weight);
+			Vector2 positionChange = mouseMotionEvent.Relative;
+			float changeX = -positionChange.X * mouseSensitivity;
+			float changeY = 0.0f;
+			float changeZ = -positionChange.Y * mouseSensitivity;
+			Vector3 totalChange = new Vector3(changeX, changeY, changeZ);
+			Vector2 resistance = calculateDragResistance(dragTargetPosition);
+			totalChange.X = totalChange.X * (1.0f - resistance.X);
+			totalChange.Z = totalChange.Z * (1.0f - resistance.Y);
+			dragTargetPosition += totalChange;
 		}
 		if(@event.IsActionPressed("camera_reset")) {
 			dragTimer.Start(0.0000001);
@@ -181,9 +191,9 @@ public partial class TopDownCameraRig : Node3D {
 		return true;
 	}
 
-	private float calculateDragResistance(Vector3 position) {
+	private Vector2 calculateDragResistance(Vector3 position) {
 		if(target == null) {
-			return 0.0f;
+			return Vector2.Zero;
 		}
 		Vector2 outerZone = centerZone * outerZoneMultiplier;
 		Vector2 maxZone = centerZone * maxZoneMultiplier;
@@ -195,24 +205,24 @@ public partial class TopDownCameraRig : Node3D {
 			float xRange = (maxZone.X / 2) - (outerZone.X / 2);
 			float xOver = xDist - (outerZone.X / 2);
 			xResist = xOver / xRange;
-			xResist = Mathf.Clamp(xResist, 0.0f, 1.0f);
+			xResist = Mathf.Clamp(xResist, 0.0f, 0.9f);
 		}
 		float zDist = Mathf.Abs(positionDiff.Z);
 		if(zDist > outerZone.Y / 2) {
 			float zRange = (maxZone.Y / 2) - (outerZone.Y / 2);
 			float zOver = zDist - (outerZone.Y / 2);
 			zResist = zOver / zRange;
-			zResist = Mathf.Clamp(zResist, 0.0f, 1.0f);
+			zResist = Mathf.Clamp(zResist, 0.0f, 0.9f);
 		}
-		float resistance = Mathf.Max(xResist, zResist);
+		Vector2 resistance = new Vector2(xResist, zResist);
 		return resistance;
 	}
 
 	private void moveToNormalZone() {
-		if(target == null) {
+		if (target == null) {
 			return;
 		}
-		if(insideNormalDragZone(GlobalPosition)) {
+		if (insideNormalDragZone(GlobalPosition)) {
 			return;
 		}
 		Vector3 targetPosition = target.GlobalPosition;
