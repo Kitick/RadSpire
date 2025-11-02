@@ -1,0 +1,56 @@
+[gd_scene format=3 uid="uid://eqxx1dru7wg3"]
+
+[node name="Settings_Menu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Top_Panel" type="HBoxContainer" parent="ColorRect"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -647.0
+offset_right = -32.0
+offset_bottom = 40.0
+grow_horizontal = 2
+scale = Vector2(2, 2)
+
+[node name="General_Button" type="Button" parent="ColorRect/Top_Panel"]
+layout_mode = 2
+text = "General"
+
+[node name="Display_Button" type="Button" parent="ColorRect/Top_Panel"]
+layout_mode = 2
+text = "Display"
+
+[node name="Sound_Button" type="Button" parent="ColorRect/Top_Panel"]
+layout_mode = 2
+text = "Sound"
+
+[node name="Controller_Button" type="Button" parent="ColorRect/Top_Panel"]
+layout_mode = 2
+text = "Controller"
+
+[node name="MK_Button" type="Button" parent="ColorRect/Top_Panel"]
+layout_mode = 2
+text = "Mouse & Keyboard"
+
+[node name="Accessibility_Button" type="Button" parent="ColorRect/Top_Panel"]
+layout_mode = 2
+text = "Accessibility"
+
+[node name="Extras_Button" type="Button" parent="ColorRect/Top_Panel"]
+layout_mode = 2
+text = "Extras"
