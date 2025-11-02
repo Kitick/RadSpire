@@ -1,6 +1,6 @@
-[gd_scene load_steps=5 format=3 uid="uid://cm1fq335hf2qk"]
+[gd_scene load_steps=5 format=3 uid="uid://cu2hv8okrdotr"]
 
-[ext_resource type="Script" uid="uid://b28ooub4d3w51" path="res://Initial Scene/Player.cs" id="1_dmntq"]
+[ext_resource type="Script" uid="uid://b28ooub4d3w51" path="res://Initial Scene/Player/Player.cs" id="1_dmntq"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dmntq"]
 albedo_color = Color(0.17493266, 0.50633603, 0.70539004, 1)
@@ -18,6 +18,3 @@ mesh = SubResource("CapsuleMesh_c4rf6")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("CapsuleShape3D_x84vo")
-
-[node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1.1924881e-08, 0.57357645, -0.81915206, 0, 0.81915206, 0.57357645, 1, -6.839831e-09, 9.76829e-09, -8, 6, 0)
