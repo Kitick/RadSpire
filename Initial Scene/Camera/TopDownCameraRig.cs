@@ -19,6 +19,9 @@ public partial class TopDownCameraRig : Node3D {
 	private TopDownCameraPivot? pivot;
 	private Vector3 centerOffset = Vector3.Zero;
 	private Vector3 dragTargetPosition;
+	private Vector3 dragVelocity = Vector3.Zero;
+	private float dragVelocityDamp = 8.0f;
+	private float dampMaxVelocity = 50.0f;
 	private bool skipNextMotion;
 
 	public override void _Ready() {
@@ -54,8 +57,16 @@ public partial class TopDownCameraRig : Node3D {
 			skipNextMotion = true;
 		}
 		if(dragging) {
-			float weight = 1f - Mathf.Exp(-dragSpeed * deltaTime);
-			GlobalPosition = GlobalPosition.Lerp(dragTargetPosition, weight);
+			Vector3 toTarget = dragTargetPosition - GlobalPosition;
+			dragVelocity = dragVelocity.Lerp(toTarget * dragSpeed, 1.0f - Mathf.Exp(-dragVelocityDamp * deltaTime));
+			dragVelocity = dragVelocity.LimitLength(dampMaxVelocity);
+			GlobalPosition += dragVelocity * deltaTime;
+		}
+		else {
+			dragVelocity = dragVelocity.Lerp(Vector3.Zero, 1.0f - Mathf.Exp(-dragVelocityDamp * deltaTime));
+			if (dragVelocity.LengthSquared() > 0.01f) {
+				GlobalPosition += dragVelocity * deltaTime;
+			}
 		}
 	}
 
@@ -99,6 +110,9 @@ public partial class TopDownCameraRig : Node3D {
 			if(mouseButtonEvent.ButtonIndex == MouseButton.Right) {
 				if(!dragging && mouseButtonEvent.Pressed) {
 					dragging = true;
+					dragVelocity = Vector3.Zero;
+					dragTargetPosition = GlobalPosition;
+					skipNextMotion = true;
 				}
 				else if(dragging && !mouseButtonEvent.Pressed) {
 					dragging = false;
