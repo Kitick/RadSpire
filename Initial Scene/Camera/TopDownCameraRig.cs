@@ -1,7 +1,8 @@
-using Godot;
 using System;
+using Godot;
+using SaveSystem;
 
-public partial class TopDownCameraRig : Node3D {
+public partial class TopDownCameraRig : Node3D, ISaveable<CameraRigData> {
 	[Export] public Node3D? target;
 	[Export] private Vector2 defaultCenterZone = new Vector2(6,3);
 	[Export] private Vector2 centerZone;
@@ -247,5 +248,18 @@ public partial class TopDownCameraRig : Node3D {
 		closestNormalPosition.Z = Mathf.Clamp(curPosition.Z, targetPosition.Z - outerZone.Y / 2, targetPosition.Z + outerZone.Y / 2);
 		float weight = 1f - Mathf.Exp(-followSpeed * deltaTime);
 		GlobalPosition = GlobalPosition.Lerp(closestNormalPosition, weight);
+	}
+
+	// ISaveable implementation
+	public CameraRigData Serialize() {
+		return new CameraRigData {
+			Position = GlobalPosition,
+			CenterOffset = centerOffset
+		};
+	}
+
+	public void Deserialize(in CameraRigData data) {
+		GlobalPosition = data.Position;
+		centerOffset = data.CenterOffset;
 	}
 }
