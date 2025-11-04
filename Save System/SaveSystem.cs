@@ -23,13 +23,13 @@ namespace SaveSystem {
 			return new FileInfo(path);
 		}
 
-		private static void Write<T>(this FileInfo file, T data) where T : class, ISaveData {
+		private static void Write<T>(this FileInfo file, in T data) where T : struct, ISaveData {
 			var json = JsonSerializer.Serialize(data, JsonOptions);
 			File.WriteAllText(file.FullName, json);
 		}
 
-		private static T? Read<T>(this FileInfo file) where T : class, ISaveData {
-			if(!file.Exists) { return null; }
+		private static T Read<T>(this FileInfo file) where T : struct, ISaveData {
+			if(!file.Exists) { throw new FileNotFoundException("Save file not found", file.Name); }
 
 			var json = File.ReadAllText(file.FullName);
 			var data = JsonSerializer.Deserialize<T>(json, JsonOptions);
@@ -37,15 +37,15 @@ namespace SaveSystem {
 			return data;
 		}
 
-		public static void Save<T>(string fileName, T data) where T : class, ISaveData {
+		public static void Save<T>(string fileName, in T data) where T : struct, ISaveData {
 			GetFile(fileName).Write(data);
 		}
 
-		public static T? Load<T>(string fileName) where T : class, ISaveData {
+		public static T Load<T>(string fileName) where T : struct, ISaveData {
 			return GetFile(fileName).Read<T>();
 		}
 
-		public static bool Check(string fileName) {
+		public static bool Exists(string fileName) {
 			return GetFile(fileName).Exists;
 		}
 
