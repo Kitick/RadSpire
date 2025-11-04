@@ -54,7 +54,7 @@ namespace SaveSystem {
 			if(file.Exists) { file.Delete(); }
 		}
 
-		public static string[] GetSaves() {
+		public static string[] ListSaves() {
 			var files = GetSaveDir().GetFiles("*" + FileExt);
 
 			return files.Select(file => Path.GetFileNameWithoutExtension(file.Name)).ToArray();

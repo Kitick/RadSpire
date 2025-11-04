@@ -27,6 +27,12 @@ namespace SaveSystem {
 		public Vector3 CenterOffset { get; init; }
 	}
 
+	public readonly record struct GameState : ISaveData {
+		public PlayerData Player { get; init; }
+		public CameraPivotData CameraPivot { get; init; }
+		public CameraRigData CameraRig { get; init; }
+	}
+
 	public enum FullscreenMode { Windowed, Borderless, Fullscreen }
 
 	public readonly record struct GameSettings : ISaveData {
