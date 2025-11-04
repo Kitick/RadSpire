@@ -4,7 +4,7 @@ using SaveSystem;
 
 public partial class TopDownCameraRig : Node3D, ISaveable<CameraRigData> {
 	[Export] public Node3D? target;
-	[Export] private Vector2 defaultCenterZone = new Vector2(6,3);
+	[Export] private Vector2 defaultCenterZone = new Vector2(6, 3);
 	[Export] private Vector2 centerZone;
 	[Export] private float followSpeed = 5.0f;
 	[Export] private float mouseSensitivity = 0.01f;
@@ -65,14 +65,14 @@ public partial class TopDownCameraRig : Node3D, ISaveable<CameraRigData> {
 		}
 		else {
 			dragVelocity = dragVelocity.Lerp(Vector3.Zero, 1.0f - Mathf.Exp(-dragVelocityDamp * deltaTime));
-			if (dragVelocity.LengthSquared() > 0.01f) {
+			if(dragVelocity.LengthSquared() > 0.01f) {
 				GlobalPosition += dragVelocity * deltaTime;
 			}
 		}
 	}
 
 	private void followTarget() {
-		if (target == null) {
+		if(target == null) {
 			return;
 		}
 		Vector3 targetPosition = target.GlobalPosition + centerOffset;
@@ -122,7 +122,7 @@ public partial class TopDownCameraRig : Node3D, ISaveable<CameraRigData> {
 			}
 		}
 		if(dragging && @event is InputEventMouseMotion mouseMotionEvent) {
-			if (skipNextMotion) {
+			if(skipNextMotion) {
 				skipNextMotion = false;
 				return;
 			}
@@ -143,7 +143,7 @@ public partial class TopDownCameraRig : Node3D, ISaveable<CameraRigData> {
 	}
 
 	private void resetCameraPosition() {
-		if (target == null) {
+		if(target == null) {
 			return;
 		}
 		Vector3 targetPosition = target.GlobalPosition;
@@ -166,7 +166,7 @@ public partial class TopDownCameraRig : Node3D, ISaveable<CameraRigData> {
 	}
 
 	private void OnPivotZoomChanged(float zoomFactor, float tiltAngle, float distance) {
-		if (pivot == null || target == null){
+		if(pivot == null || target == null) {
 			return;
 		}
 		centerZone = defaultCenterZone * zoomFactor;
@@ -234,10 +234,10 @@ public partial class TopDownCameraRig : Node3D, ISaveable<CameraRigData> {
 	}
 
 	private void moveToNormalZone() {
-		if (target == null) {
+		if(target == null) {
 			return;
 		}
-		if (insideNormalDragZone(GlobalPosition)) {
+		if(insideNormalDragZone(GlobalPosition)) {
 			return;
 		}
 		Vector3 targetPosition = target.GlobalPosition;

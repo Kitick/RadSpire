@@ -5,7 +5,7 @@ using SaveSystem;
 public partial class TopDownCameraPivot : Node3D, ISaveable<CameraPivotData> {
 	[Export] private Vector3 zoomPresets = new Vector3(5, 7, 9);
 	[Export] private Vector3 rotationPresets = new Vector3(-30, -45, -60);
-    [Export] private int curTiltIndex;
+	[Export] private int curTiltIndex;
 	[Export] private float zoomSpeed = 2.0f;
 	[Export] private float zoomCoolDown = 1.0f;
 	private Timer zoomTimer = new Timer();
@@ -69,19 +69,19 @@ public partial class TopDownCameraPivot : Node3D, ISaveable<CameraPivotData> {
 			GD.Print("Zooming Out");
 			if(curTiltIndex < 2) {
 				curTiltIndex++;
-                EmitSignal(SignalName.ZoomChanged, zoomPresets[curTiltIndex] / zoomPresets[1], rotationPresets[curTiltIndex], zoomPresets[curTiltIndex]);
+				EmitSignal(SignalName.ZoomChanged, zoomPresets[curTiltIndex] / zoomPresets[1], rotationPresets[curTiltIndex], zoomPresets[curTiltIndex]);
 			}
 		}
 		else {
 			GD.Print("Zooming In");
 			if(curTiltIndex > 0) {
 				curTiltIndex--;
-                EmitSignal(SignalName.ZoomChanged, zoomPresets[curTiltIndex] / zoomPresets[1], rotationPresets[curTiltIndex], zoomPresets[curTiltIndex]);
+				EmitSignal(SignalName.ZoomChanged, zoomPresets[curTiltIndex] / zoomPresets[1], rotationPresets[curTiltIndex], zoomPresets[curTiltIndex]);
 			}
 		}
 	}
 
-    private void updateCameraPositionAndRotation(){
+	private void updateCameraPositionAndRotation() {
 		Vector3 newPosition = calcYZPosVec();
 		float weight = 1f - Mathf.Exp(-zoomSpeed * deltaTime);
 		Position = Position.Lerp(newPosition, weight);
