@@ -19,6 +19,8 @@ public partial class TopDownCameraPivot : Node3D, ISaveable<CameraPivotData> {
 	}
 
 	public override void _Ready() {
+		GameManager.CameraPivot = this;
+
 		curTiltIndex = 1;
 		Position = calcYZPosVec();
 		RotationDegrees = getRotVec();

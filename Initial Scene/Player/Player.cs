@@ -3,8 +3,6 @@ using Godot;
 using SaveSystem;
 
 public partial class Player : CharacterBody3D, ISaveable<PlayerData> {
-	const string SaveFileName = "autosave";
-
 	[Export] private float DefaultSpeed = 2.0f;
 	[Export] private float DefaultSprintMultiplier = 2.0f;
 	[Export] private float DefaultCrouchMultiplier = 0.5f;
@@ -13,9 +11,7 @@ public partial class Player : CharacterBody3D, ISaveable<PlayerData> {
 	[Export] private float DefaultFallAcceleration = 9.8f;
 
 	public override void _Ready() {
-		if(SaveService.Exists(SaveFileName)) {
-			Deserialize(SaveService.Load<PlayerData>(SaveFileName));
-		}
+		GameManager.Player = this;
 	}
 
 	private static Vector3 GetHorizontalInput() {
@@ -41,7 +37,7 @@ public partial class Player : CharacterBody3D, ISaveable<PlayerData> {
 		// Check for ESC to return to main menu
 
 		if(Input.IsActionJustPressed("ui_cancel")) {
-			SaveService.Save(SaveFileName, Serialize());
+			GameManager.Save("autosave");
 			GetTree().ChangeSceneToFile("res://Main Menu/Main_Menu.tscn");
 			return;
 		}

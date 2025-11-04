@@ -26,6 +26,8 @@ public partial class TopDownCameraRig : Node3D, ISaveable<CameraRigData> {
 	private bool skipNextMotion;
 
 	public override void _Ready() {
+		GameManager.CameraRig = this;
+
 		if(target == null) {
 			GD.Print("TD Camera Rig needs a target");
 		}
