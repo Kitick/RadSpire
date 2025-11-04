@@ -1,7 +1,10 @@
-using Godot;
 using System;
+using Godot;
+using SaveSystem;
 
-public partial class Player : CharacterBody3D {
+public partial class Player : CharacterBody3D, ISaveable<PlayerData> {
+	const string SaveFileName = "autosave";
+
 	[Export] private float DefaultSpeed = 2.0f;
 	[Export] private float DefaultSprintMultiplier = 2.0f;
 	[Export] private float DefaultCrouchMultiplier = 0.5f;
@@ -10,7 +13,9 @@ public partial class Player : CharacterBody3D {
 	[Export] private float DefaultFallAcceleration = 9.8f;
 
 	public override void _Ready() {
-
+		if(SaveService.Exists(SaveFileName)) {
+			Deserialize(SaveService.Load<PlayerData>(SaveFileName));
+		}
 	}
 
 	private static Vector3 GetHorizontalInput() {
@@ -34,7 +39,9 @@ public partial class Player : CharacterBody3D {
 
 	public override void _PhysicsProcess(double delta) {
 		// Check for ESC to return to main menu
+
 		if(Input.IsActionJustPressed("ui_cancel")) {
+			SaveService.Save(SaveFileName, Serialize());
 			GetTree().ChangeSceneToFile("res://Main Menu/Main_Menu.tscn");
 			return;
 		}
@@ -66,5 +73,21 @@ public partial class Player : CharacterBody3D {
 		Velocity = newVelocity;
 
 		MoveAndSlide();
+	}
+
+	// ISaveable implementation
+	public PlayerData Serialize() {
+		return new PlayerData {
+			Position = GlobalPosition,
+			Rotation = GlobalRotation,
+			Velocity = Velocity,
+			Health = 100f,
+		};
+	}
+
+	public void Deserialize(in PlayerData data) {
+		GlobalPosition = data.Position;
+		GlobalRotation = data.Rotation;
+		Velocity = data.Velocity;
 	}
 }
