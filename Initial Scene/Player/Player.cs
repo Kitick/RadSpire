@@ -16,8 +16,7 @@ public partial class Player : CharacterBody3D {
 	private bool isMoving = false;
 	private bool isInAir = false;
 
-	public override void _Ready()
-	{
+	public override void _Ready(){
 
 	}
 
@@ -81,24 +80,19 @@ public partial class Player : CharacterBody3D {
 		MoveAndSlide();
 	}
 
-	private static Vector3 GetHorizontalInput()
-	{
+	private static Vector3 GetHorizontalInput() {
 		Vector3 direction = Vector3.Zero;
 
-		if (Input.IsActionPressed("move_forward"))
-		{
+		if (Input.IsActionPressed("move_forward")) {
 			direction.Z -= 1.0f;
 		}
-		if (Input.IsActionPressed("move_back"))
-		{
+		if (Input.IsActionPressed("move_back")) {
 			direction.Z += 1.0f;
 		}
-		if (Input.IsActionPressed("move_right"))
-		{
+		if (Input.IsActionPressed("move_right")) {
 			direction.X += 1.0f;
 		}
-		if (Input.IsActionPressed("move_left"))
-		{
+		if (Input.IsActionPressed("move_left")) {
 			direction.X -= 1.0f;
 		}
 
@@ -108,35 +102,28 @@ public partial class Player : CharacterBody3D {
 	private float playerSpeed() {
 		float multiplier = 1.0f;
 
-		if (Input.IsActionPressed("sprint"))
-		{
+		if (Input.IsActionPressed("sprint")) {
 			multiplier *= DefaultSprintMultiplier;
-			if (!isSprinting)
-			{
+			if (!isSprinting) {
 				isSprinting = true;
 				EmitSignal(SignalName.PlayerMovement, "sprint_start");
 				isMoving = true;
 			}
 		}
-		else if (Input.IsActionPressed("crouch"))
-		{
+		else if (Input.IsActionPressed("crouch")) {
 			multiplier *= DefaultCrouchMultiplier;
-			if (!isCrouching)
-			{
+			if (!isCrouching) {
 				isCrouching = true;
 				EmitSignal(SignalName.PlayerMovement, "crouch_start");
 				isMoving = true;
 			}
 		}
-		else
-		{
-			if (isSprinting)
-			{
+		else {
+			if (isSprinting) {
 				isSprinting = false;
 				EmitSignal(SignalName.PlayerMovement, "sprint_stop");
 			}
-			if (isCrouching)
-			{
+			if (isCrouching) {
 				isCrouching = false;
 				EmitSignal(SignalName.PlayerMovement, "crouch_stop");
 			}
@@ -144,10 +131,8 @@ public partial class Player : CharacterBody3D {
 		return multiplier;
 	}
 
-	private void matchRotationToDirection(Vector3 direction, float magnitude, float dt)
-	{
-		if (direction.Length() > 0.0f)
-		{
+	private void matchRotationToDirection(Vector3 direction, float magnitude, float dt) {
+		if (direction.Length() > 0.0f) {
 			Vector3 newRotationVec = Vector3.Zero;
 			newRotationVec.Y = Mathf.RadToDeg(Mathf.Atan2(direction.X, direction.Z));
 			Transform3D newRotation = Transform;

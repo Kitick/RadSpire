@@ -80,7 +80,7 @@ public partial class TopDownCameraPivot : Node3D {
         }
     }
     
-    private void updateCameraPositionAndRotation(){
+    private void updateCameraPositionAndRotation() {
         Vector3 newPosition = calcYZPosVec();
         float weight = 1f - Mathf.Exp(-zoomSpeed * deltaTime);
         Position = Position.Lerp(newPosition, weight);
