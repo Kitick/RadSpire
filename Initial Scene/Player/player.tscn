@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://cu2hv8okrdotr"]
+[gd_scene load_steps=5 format=3 uid="uid://cu2hv8okrdotr"]
 
 [ext_resource type="Script" uid="uid://b28ooub4d3w51" path="res://Initial Scene/Player/Player.cs" id="1_dmntq"]
 [ext_resource type="PackedScene" uid="uid://2qtgw8bpsvko" path="res://Assets/kaykit_character_pack_adventures/Characters/gltf/Knight.glb" id="2_ky31d"]
+[ext_resource type="Script" uid="uid://dvgtwgqv7chou" path="res://Initial Scene/Player/PlayerAnimator.cs" id="3_h8o71"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_x84vo"]
 height = 2.46875
@@ -13,4 +14,6 @@ script = ExtResource("1_dmntq")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.192698, 0)
 shape = SubResource("CapsuleShape3D_x84vo")
 
-[node name="Knight" parent="." instance=ExtResource("2_ky31d")]
+[node name="Knight" parent="." node_paths=PackedStringArray("player") instance=ExtResource("2_ky31d")]
+script = ExtResource("3_h8o71")
+player = NodePath("..")

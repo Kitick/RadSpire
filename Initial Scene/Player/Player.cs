@@ -69,7 +69,6 @@ public partial class Player : CharacterBody3D {
 
 		if (!IsOnFloor()) {
 			fallVelocity -= DefaultFallAcceleration * dt;
-			EmitSignal(SignalName.PlayerMovement, "in_air");
 		}
 		else if(isInAir){
 			EmitSignal(SignalName.PlayerMovement, "land");
@@ -116,6 +115,7 @@ public partial class Player : CharacterBody3D {
 			{
 				isSprinting = true;
 				EmitSignal(SignalName.PlayerMovement, "sprint_start");
+				isMoving = true;
 			}
 		}
 		else if (Input.IsActionPressed("crouch"))
@@ -125,6 +125,7 @@ public partial class Player : CharacterBody3D {
 			{
 				isCrouching = true;
 				EmitSignal(SignalName.PlayerMovement, "crouch_start");
+				isMoving = true;
 			}
 		}
 		else
@@ -143,8 +144,10 @@ public partial class Player : CharacterBody3D {
 		return multiplier;
 	}
 
-	private void matchRotationToDirection(Vector3 direction, float magnitude, float dt) {
-		if (direction.Length() > 0.0f) {
+	private void matchRotationToDirection(Vector3 direction, float magnitude, float dt)
+	{
+		if (direction.Length() > 0.0f)
+		{
 			Vector3 newRotationVec = Vector3.Zero;
 			newRotationVec.Y = Mathf.RadToDeg(Mathf.Atan2(direction.X, direction.Z));
 			Transform3D newRotation = Transform;
