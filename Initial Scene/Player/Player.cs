@@ -9,9 +9,15 @@ public partial class Player : CharacterBody3D {
 	[Export] private float DefaultJumpVelocity = 4.5f;
 	[Export] private float DefaultFallAcceleration = 9.8f;
 	[Export] private float DefaultFriction = 10.0f;
+	[Signal] public delegate void PlayerMovementEventHandler(string action);
 	private Vector3 HorizontalInput = Vector3.Zero;
+	private bool isCrouching = false;
+	private bool isSprinting = false;
+	private bool isMoving = false;
+	private bool isInAir = false;
 
-	public override void _Ready() {
+	public override void _Ready()
+	{
 
 	}
 
@@ -23,14 +29,8 @@ public partial class Player : CharacterBody3D {
 		}
 
 		float dt = (float)delta;
-		float multiplier = 1.0f;
 
-		if (Input.IsActionPressed("sprint")) {
-			multiplier *= DefaultSprintMultiplier;
-		}
-		if (Input.IsActionPressed("crouch")) {
-			multiplier *= DefaultCrouchMultiplier;
-		}
+		float multiplier = playerSpeed();
 
 		HorizontalInput = GetHorizontalInput();
 		Vector3 newVelocity;
@@ -45,15 +45,35 @@ public partial class Player : CharacterBody3D {
 			newVelocity.X = Mathf.Lerp(newVelocity.X, 0.0f, weight);
 			newVelocity.Z = Mathf.Lerp(newVelocity.Z, 0.0f, weight);
 		}
+		
+		if (newVelocity.Length() > 0.1f) {
+			if (!isMoving) {
+				isMoving = true;
+				EmitSignal(SignalName.PlayerMovement, "move_start");
+			}
+		}
+		else {
+			if (isMoving) {
+				isMoving = false;
+				EmitSignal(SignalName.PlayerMovement, "move_stop");
+			}
+		}
 
 		float fallVelocity = Velocity.Y;
 
 		if (Input.IsActionPressed("jump") && IsOnFloor()) {
 			fallVelocity += DefaultJumpVelocity;
+			EmitSignal(SignalName.PlayerMovement, "jump");
+			isInAir = true;
 		}
 
 		if (!IsOnFloor()) {
 			fallVelocity -= DefaultFallAcceleration * dt;
+			EmitSignal(SignalName.PlayerMovement, "in_air");
+		}
+		else if(isInAir){
+			EmitSignal(SignalName.PlayerMovement, "land");
+			isInAir = false;
 		}
 
 		newVelocity.Y = fallVelocity;
@@ -62,23 +82,65 @@ public partial class Player : CharacterBody3D {
 		MoveAndSlide();
 	}
 
-	private static Vector3 GetHorizontalInput() {
+	private static Vector3 GetHorizontalInput()
+	{
 		Vector3 direction = Vector3.Zero;
 
-		if (Input.IsActionPressed("move_forward")) {
+		if (Input.IsActionPressed("move_forward"))
+		{
 			direction.Z -= 1.0f;
 		}
-		if (Input.IsActionPressed("move_back")) {
+		if (Input.IsActionPressed("move_back"))
+		{
 			direction.Z += 1.0f;
 		}
-		if (Input.IsActionPressed("move_right")) {
+		if (Input.IsActionPressed("move_right"))
+		{
 			direction.X += 1.0f;
 		}
-		if (Input.IsActionPressed("move_left")) {
+		if (Input.IsActionPressed("move_left"))
+		{
 			direction.X -= 1.0f;
 		}
 
 		return direction.Normalized();
+	}
+	
+	private float playerSpeed() {
+		float multiplier = 1.0f;
+
+		if (Input.IsActionPressed("sprint"))
+		{
+			multiplier *= DefaultSprintMultiplier;
+			if (!isSprinting)
+			{
+				isSprinting = true;
+				EmitSignal(SignalName.PlayerMovement, "sprint_start");
+			}
+		}
+		else if (Input.IsActionPressed("crouch"))
+		{
+			multiplier *= DefaultCrouchMultiplier;
+			if (!isCrouching)
+			{
+				isCrouching = true;
+				EmitSignal(SignalName.PlayerMovement, "crouch_start");
+			}
+		}
+		else
+		{
+			if (isSprinting)
+			{
+				isSprinting = false;
+				EmitSignal(SignalName.PlayerMovement, "sprint_stop");
+			}
+			if (isCrouching)
+			{
+				isCrouching = false;
+				EmitSignal(SignalName.PlayerMovement, "crouch_stop");
+			}
+		}
+		return multiplier;
 	}
 
 	private void matchRotationToDirection(Vector3 direction, float magnitude, float dt) {
