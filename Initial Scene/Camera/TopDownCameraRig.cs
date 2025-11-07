@@ -1,9 +1,10 @@
-using Godot;
 using System;
+using Godot;
+using SaveSystem;
 
-public partial class TopDownCameraRig : Node3D {
+public partial class TopDownCameraRig : Node3D, ISaveable<CameraRigData> {
 	[Export] public Node3D? target;
-	[Export] private Vector2 defaultCenterZone = new Vector2(6,3);
+	[Export] private Vector2 defaultCenterZone = new Vector2(6, 3);
 	[Export] private Vector2 centerZone;
 	[Export] private float followSpeed = 5.0f;
 	[Export] private float mouseSensitivity = 0.01f;
@@ -25,6 +26,8 @@ public partial class TopDownCameraRig : Node3D {
 	private bool skipNextMotion;
 
 	public override void _Ready() {
+		GameManager.CameraRig = this;
+
 		if(target == null) {
 			GD.Print("TD Camera Rig needs a target");
 		}
@@ -64,14 +67,14 @@ public partial class TopDownCameraRig : Node3D {
 		}
 		else {
 			dragVelocity = dragVelocity.Lerp(Vector3.Zero, 1.0f - Mathf.Exp(-dragVelocityDamp * deltaTime));
-			if (dragVelocity.LengthSquared() > 0.01f) {
+			if(dragVelocity.LengthSquared() > 0.01f) {
 				GlobalPosition += dragVelocity * deltaTime;
 			}
 		}
 	}
 
 	private void followTarget() {
-		if (target == null) {
+		if(target == null) {
 			return;
 		}
 		Vector3 targetPosition = target.GlobalPosition + centerOffset;
@@ -121,7 +124,7 @@ public partial class TopDownCameraRig : Node3D {
 			}
 		}
 		if(dragging && @event is InputEventMouseMotion mouseMotionEvent) {
-			if (skipNextMotion) {
+			if(skipNextMotion) {
 				skipNextMotion = false;
 				return;
 			}
@@ -142,7 +145,7 @@ public partial class TopDownCameraRig : Node3D {
 	}
 
 	private void resetCameraPosition() {
-		if (target == null) {
+		if(target == null) {
 			return;
 		}
 		Vector3 targetPosition = target.GlobalPosition;
@@ -165,7 +168,7 @@ public partial class TopDownCameraRig : Node3D {
 	}
 
 	private void OnPivotZoomChanged(float zoomFactor, float tiltAngle, float distance) {
-		if (pivot == null || target == null){
+		if(pivot == null || target == null) {
 			return;
 		}
 		centerZone = defaultCenterZone * zoomFactor;
@@ -233,10 +236,10 @@ public partial class TopDownCameraRig : Node3D {
 	}
 
 	private void moveToNormalZone() {
-		if (target == null) {
+		if(target == null) {
 			return;
 		}
-		if (insideNormalDragZone(GlobalPosition)) {
+		if(insideNormalDragZone(GlobalPosition)) {
 			return;
 		}
 		Vector3 targetPosition = target.GlobalPosition;
@@ -247,5 +250,18 @@ public partial class TopDownCameraRig : Node3D {
 		closestNormalPosition.Z = Mathf.Clamp(curPosition.Z, targetPosition.Z - outerZone.Y / 2, targetPosition.Z + outerZone.Y / 2);
 		float weight = 1f - Mathf.Exp(-followSpeed * deltaTime);
 		GlobalPosition = GlobalPosition.Lerp(closestNormalPosition, weight);
+	}
+
+	// ISaveable implementation
+	public CameraRigData Serialize() {
+		return new CameraRigData {
+			Position = GlobalPosition,
+			CenterOffset = centerOffset
+		};
+	}
+
+	public void Deserialize(in CameraRigData data) {
+		GlobalPosition = data.Position;
+		centerOffset = data.CenterOffset;
 	}
 }

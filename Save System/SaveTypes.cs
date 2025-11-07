@@ -1,71 +1,46 @@
 using Godot;
 
 namespace SaveSystem {
-	interface ISaveData;
+	public interface ISaveData;
 
-	static class Example {
-		public static void ExampleSave() {
-			var playerData = new PlayerData {
-				Position = new Vector3(1, 2, 3),
-				Rotation = new Vector3(0, 90, 0),
-				Health = 85f
-			};
-
-			var settings = new GameSettings {
-				ResolutionWidth = 2560,
-				ResolutionHeight = 1440,
-				Fullscreen = FullscreenMode.Fullscreen,
-				MusicVolume = 0.7f,
-				SFXVolume = 0.6f
-			};
-
-			SaveService.Save("player", playerData);
-			SaveService.Save("settings", settings);
-
-			GD.Print("Saved:");
-			GD.Print(playerData);
-			GD.Print(settings);
-		}
-
-		public static void ExampleLoad() {
-			var saves = SaveService.GetSaves();
-
-			GD.Print("\nAvailable Saves:");
-			foreach(var save in saves) {
-				GD.Print(save);
-			}
-
-			var loadedPlayerData = SaveService.Load<PlayerData>("player");
-			var loadedSettings = SaveService.Load<GameSettings>("settings");
-
-			GD.Print("\nLoaded:");
-			GD.Print(loadedPlayerData);
-			GD.Print(loadedSettings);
-		}
-
-		public static void ExampleDelete() {
-			SaveService.Delete("player");
-			SaveService.Delete("settings");
-
-			GD.Print("\nDeleted 'player' and 'settings' saves.");
-		}
+	public interface ISaveable<T> where T : ISaveData {
+		T Serialize();
+		void Deserialize(in T data);
 	}
 
-	record PlayerData : ISaveData {
+	public readonly record struct PlayerData : ISaveData {
 		public Vector3 Position { get; init; }
 		public Vector3 Rotation { get; init; }
+		public Vector3 Velocity { get; init; }
 
-		public float Health { get; init; } = 100f;
+		public float Health { get; init; }
 	}
 
-	enum FullscreenMode { Windowed, Fullscreen, Borderless }
+	public readonly record struct CameraPivotData : ISaveData {
+		public int TiltIndex { get; init; }
+		public Vector3 Position { get; init; }
+		public Vector3 Rotation { get; init; }
+	}
 
-	record GameSettings : ISaveData {
-		public int ResolutionWidth { get; init; } = 1920;
-		public int ResolutionHeight { get; init; } = 1080;
-		public FullscreenMode Fullscreen { get; init; } = FullscreenMode.Borderless;
+	public readonly record struct CameraRigData : ISaveData {
+		public Vector3 Position { get; init; }
+		public Vector3 CenterOffset { get; init; }
+	}
 
-		public float MusicVolume { get; init; } = 0.5f;
-		public float SFXVolume { get; init; } = 0.5f;
+	public readonly record struct GameState : ISaveData {
+		public PlayerData Player { get; init; }
+		public CameraPivotData CameraPivot { get; init; }
+		public CameraRigData CameraRig { get; init; }
+	}
+
+	public enum FullscreenMode { Windowed, Borderless, Fullscreen }
+
+	public readonly record struct GameSettings : ISaveData {
+		public int ResolutionWidth { get; init; }
+		public int ResolutionHeight { get; init; }
+		public FullscreenMode Fullscreen { get; init; }
+
+		public float MusicVolume { get; init; }
+		public float SFXVolume { get; init; }
 	}
 }

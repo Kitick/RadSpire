@@ -1,7 +1,8 @@
-using Godot;
 using System;
+using Godot;
+using SaveSystem;
 
-public partial class Player : CharacterBody3D {
+public partial class Player : CharacterBody3D, ISaveable<PlayerData> {
 	[Export] private float DefaultSpeed = 2.0f;
 	[Export] private float DefaultSprintMultiplier = 2.0f;
 	[Export] private float DefaultCrouchMultiplier = 0.5f;
@@ -16,13 +17,14 @@ public partial class Player : CharacterBody3D {
 	private bool isMoving = false;
 	private bool isInAir = false;
 
-	public override void _Ready(){
-
+	public override void _Ready() {
+		GameManager.Player = this;
 	}
 
 	public override void _PhysicsProcess(double delta) {
 		// Check for ESC to return to main menu
-		if (Input.IsActionJustPressed("ui_cancel")) {
+		if(Input.IsActionJustPressed("ui_cancel")) {
+			GameManager.Save("autosave");
 			GetTree().ChangeSceneToFile("res://Main Menu/Main_Menu.tscn");
 			return;
 		}
@@ -132,7 +134,7 @@ public partial class Player : CharacterBody3D {
 	}
 
 	private void matchRotationToDirection(Vector3 direction, float magnitude, float dt) {
-		if (direction.Length() > 0.0f) {
+		if(direction.Length() > 0.0f) {
 			Vector3 newRotationVec = Vector3.Zero;
 			newRotationVec.Y = Mathf.RadToDeg(Mathf.Atan2(direction.X, direction.Z));
 			Transform3D newRotation = Transform;
@@ -146,5 +148,21 @@ public partial class Player : CharacterBody3D {
 			curRotation.Basis = new Basis(curRotationQ);
 			Transform = curRotation;
 		}
+	}
+	
+	// ISaveable implementation
+	public PlayerData Serialize() {
+		return new PlayerData {
+			Position = GlobalPosition,
+			Rotation = GlobalRotation,
+			Velocity = Velocity,
+			Health = 100f,
+		};
+	}
+
+	public void Deserialize(in PlayerData data) {
+		GlobalPosition = data.Position;
+		GlobalRotation = data.Rotation;
+		Velocity = data.Velocity;
 	}
 }
