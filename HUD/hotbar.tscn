@@ -1,0 +1,43 @@
+[gd_scene load_steps=3 format=3 uid="uid://enwcupqs54ks"]
+
+[ext_resource type="Script" uid="uid://crgbkjwmhm4is" path="res://HUD/Hotbar.cs" id="1_r24te"]
+[ext_resource type="Texture2D" uid="uid://dfubgqxo2e74x" path="res://Textures/hotbar_background.png" id="2_ttlxx"]
+
+[node name="Hotbar" type="Node2D"]
+script = ExtResource("1_r24te")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+offset_left = -165.0
+offset_top = -46.0
+offset_right = 168.0
+offset_bottom = 22.0
+texture = ExtResource("2_ttlxx")
+
+[node name="HotbarSlots" type="GridContainer" parent="."]
+layout_direction = 2
+offset_left = -154.0
+offset_top = -38.0
+offset_right = 156.0
+offset_bottom = 12.0
+theme_override_constants/h_separation = 15
+columns = 5
+
+[node name="Slot1" type="Panel" parent="HotbarSlots"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+
+[node name="Slot2" type="Panel" parent="HotbarSlots"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+
+[node name="Slot3" type="Panel" parent="HotbarSlots"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+
+[node name="Slot4" type="Panel" parent="HotbarSlots"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+
+[node name="Slot5" type="Panel" parent="HotbarSlots"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2

@@ -12,6 +12,10 @@ public partial class Player : CharacterBody3D, ISaveable<PlayerData> {
 
 	public override void _Ready() {
 		GameManager.Player = this;
+
+		var hudScene = GD.Load<PackedScene>("res://HUD/UI.tscn");
+		var hud = hudScene.Instantiate<CanvasLayer>(); // root of UI.tscn is CanvasLayer
+		AddChild(hud); // adds HUD under Player
 	}
 
 	private static Vector3 GetHorizontalInput() {
@@ -35,7 +39,6 @@ public partial class Player : CharacterBody3D, ISaveable<PlayerData> {
 
 	public override void _PhysicsProcess(double delta) {
 		// Check for ESC to return to main menu
-
 		if(Input.IsActionJustPressed("ui_cancel")) {
 			GameManager.Save("autosave");
 			GetTree().ChangeSceneToFile("res://Main Menu/Main_Menu.tscn");
