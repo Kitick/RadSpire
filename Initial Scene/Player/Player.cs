@@ -19,6 +19,10 @@ public partial class Player : CharacterBody3D, ISaveable<PlayerData> {
 
 	public override void _Ready() {
 		GameManager.Player = this;
+
+		var hudScene = GD.Load<PackedScene>("res://HUD/UI.tscn");
+		var hud = hudScene.Instantiate<CanvasLayer>(); // root of UI.tscn is CanvasLayer
+		AddChild(hud); // adds HUD under Player
 	}
 
 	public override void _PhysicsProcess(double delta) {
