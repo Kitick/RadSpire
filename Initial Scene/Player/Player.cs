@@ -8,33 +8,16 @@ public partial class Player : CharacterBody3D {
 	[Export] private float DefaultRotationSpeed = 4.0f;
 	[Export] private float DefaultJumpVelocity = 4.5f;
 	[Export] private float DefaultFallAcceleration = 9.8f;
+	[Export] private float DefaultFriction = 10.0f;
+	private Vector3 HorizontalInput = Vector3.Zero;
 
 	public override void _Ready() {
 
 	}
 
-	private static Vector3 GetHorizontalInput() {
-		Vector3 direction = Vector3.Zero;
-
-		if(Input.IsActionPressed("move_forward")) {
-			direction.Z -= 1.0f;
-		}
-		if(Input.IsActionPressed("move_back")) {
-			direction.Z += 1.0f;
-		}
-		if(Input.IsActionPressed("move_right")) {
-			direction.X += 1.0f;
-		}
-		if(Input.IsActionPressed("move_left")) {
-			direction.X -= 1.0f;
-		}
-
-		return direction.Normalized();
-	}
-
 	public override void _PhysicsProcess(double delta) {
 		// Check for ESC to return to main menu
-		if(Input.IsActionJustPressed("ui_cancel")) {
+		if (Input.IsActionJustPressed("ui_cancel")) {
 			GetTree().ChangeSceneToFile("res://Main Menu/Main_Menu.tscn");
 			return;
 		}
@@ -42,23 +25,34 @@ public partial class Player : CharacterBody3D {
 		float dt = (float)delta;
 		float multiplier = 1.0f;
 
-		if(Input.IsActionPressed("sprint")) {
+		if (Input.IsActionPressed("sprint")) {
 			multiplier *= DefaultSprintMultiplier;
 		}
-		if(Input.IsActionPressed("crouch")) {
+		if (Input.IsActionPressed("crouch")) {
 			multiplier *= DefaultCrouchMultiplier;
 		}
 
-		Vector3 horizontalInput = GetHorizontalInput();
-		Vector3 newVelocity = horizontalInput * DefaultSpeed * multiplier;
+		HorizontalInput = GetHorizontalInput();
+		Vector3 newVelocity;
+		if (HorizontalInput != Vector3.Zero) {
+			newVelocity = HorizontalInput * DefaultSpeed * multiplier;
+
+			matchRotationToDirection(HorizontalInput, multiplier, dt);
+		}
+		else {
+			newVelocity = Velocity;
+			float weight = 1f - Mathf.Exp(-DefaultFriction * dt);
+			newVelocity.X = Mathf.Lerp(newVelocity.X, 0.0f, weight);
+			newVelocity.Z = Mathf.Lerp(newVelocity.Z, 0.0f, weight);
+		}
 
 		float fallVelocity = Velocity.Y;
 
-		if(Input.IsActionPressed("jump") && IsOnFloor()) {
+		if (Input.IsActionPressed("jump") && IsOnFloor()) {
 			fallVelocity += DefaultJumpVelocity;
 		}
 
-		if(!IsOnFloor()) {
+		if (!IsOnFloor()) {
 			fallVelocity -= DefaultFallAcceleration * dt;
 		}
 
@@ -66,5 +60,41 @@ public partial class Player : CharacterBody3D {
 		Velocity = newVelocity;
 
 		MoveAndSlide();
+	}
+
+	private static Vector3 GetHorizontalInput() {
+		Vector3 direction = Vector3.Zero;
+
+		if (Input.IsActionPressed("move_forward")) {
+			direction.Z -= 1.0f;
+		}
+		if (Input.IsActionPressed("move_back")) {
+			direction.Z += 1.0f;
+		}
+		if (Input.IsActionPressed("move_right")) {
+			direction.X += 1.0f;
+		}
+		if (Input.IsActionPressed("move_left")) {
+			direction.X -= 1.0f;
+		}
+
+		return direction.Normalized();
+	}
+
+	private void matchRotationToDirection(Vector3 direction, float magnitude, float dt) {
+		if (direction.Length() > 0.0f) {
+			Vector3 newRotationVec = Vector3.Zero;
+			newRotationVec.Y = Mathf.RadToDeg(Mathf.Atan2(direction.X, direction.Z));
+			Transform3D newRotation = Transform;
+			newRotation.Basis = new Basis(Vector3.Up, Mathf.DegToRad(newRotationVec.Y));
+			Quaternion newRotationQ = new Quaternion(newRotation.Basis);
+			Transform3D curRotation = Transform;
+			Quaternion curRotationQ = new Quaternion(curRotation.Basis);
+			float rotationSpeed = DefaultRotationSpeed * magnitude;
+			float weight = 1f - Mathf.Exp(-rotationSpeed * dt);
+			curRotationQ = curRotationQ.Slerp(newRotationQ, weight);
+			curRotation.Basis = new Basis(curRotationQ);
+			Transform = curRotation;
+		}
 	}
 }
