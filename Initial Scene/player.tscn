@@ -1,0 +1,29 @@
+[gd_scene load_steps=5 format=3 uid="uid://dlhaungr17q11"]
+
+[ext_resource type="Script" path="res://Initial Scene/Player.cs" id="1_dmntq"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dmntq"]
+albedo_color = Color(0.17493266, 0.50633603, 0.70539004, 1)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_c4rf6"]
+material = SubResource("StandardMaterial3D_dmntq")
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_x84vo"]
+
+[node name="Player" type="CharacterBody3D"]
+script = ExtResource("1_dmntq")
+DefaultSpeed = null
+DefaultSprintMultiplier = null
+DefaultCrouchMultiplier = null
+DefaultRotationSpeed = null
+DefaultJumpVelocity = null
+DefaultFallAcceleration = null
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("CapsuleMesh_c4rf6")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_x84vo")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1.1924881e-08, 0.57357645, -0.81915206, 0, 0.81915206, 0.57357645, 1, -6.839831e-09, 9.76829e-09, -8, 6, 0)

@@ -15,6 +15,10 @@ run/main_scene="uid://udkefarjp6kf"
 config/features=PackedStringArray("4.5", "C#", "Forward Plus")
 config/icon="res://Textures/icon.svg"
 
+[autoload]
+
+SceneHistory="*res://Scripts/SceneHistory.cs"
+
 [display]
 
 window/size/viewport_width=1920
