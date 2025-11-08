@@ -45,11 +45,11 @@ public partial class Ui : CanvasLayer {
 		bool showing = !Paused.Visible;
 		Paused.Visible = showing;
 		GetTree().Paused = showing;
-		
+
+		// Optional: mouse handling
 		Input.MouseMode = showing
 			? Input.MouseModeEnum.Visible
 			: Input.MouseModeEnum.Captured;
-		
 	}
 	
 	
