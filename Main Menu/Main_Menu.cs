@@ -76,6 +76,7 @@ public partial class Main_Menu : Control {
 
 	private void OnSettingsButtonPressed() {
 		GD.Print("Settings button was pressed!");
+		GetTree().ChangeSceneToFile("res://Settings Menu/Settings_Menu.tscn");
 	}
 
 	private void OnQuitButtonPressed() {

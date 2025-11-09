@@ -23,10 +23,10 @@ color = Color(0.012617188, 0.012617188, 0.012617188, 1)
 [node name="Main_Button_Panel" type="VBoxContainer" parent="."]
 layout_mode = 0
 offset_left = 64.0
-offset_top = 640.0
+offset_top = 448.0
 offset_right = 160.0
-offset_bottom = 741.0
-scale = Vector2(1.3260046, 1.2630141)
+offset_bottom = 549.0
+scale = Vector2(1.3, 1.238)
 
 [node name="Start_Button" type="Button" parent="Main_Button_Panel"]
 layout_mode = 2
@@ -47,9 +47,9 @@ text = "Quit"
 visible = false
 layout_mode = 0
 offset_left = 200.0
-offset_top = 648.0
+offset_top = 455.0
 offset_right = 329.0
-offset_bottom = 749.0
+offset_bottom = 556.0
 scale = Vector2(0.8, 0.8)
 
 [node name="Online_Button" type="Button" parent="Start_Button_Panel"]
@@ -91,7 +91,7 @@ offset_top = -92.0
 offset_right = 210.0
 offset_bottom = 44.0
 grow_vertical = 2
-scale = Vector2(1.3163619, 1.4028887)
+scale = Vector2(1.3, 1.386)
 
 [node name="Continue_Button" type="Button" parent="Local_Overlay_Panel/ColorRect/VBoxContainer"]
 layout_mode = 2
