@@ -6,3 +6,7 @@
 # .NET
 bin/
 obj/
+
+# JetBrains IDE
+.idea/ 
+ 
