@@ -15,6 +15,7 @@ public partial class Settings_Menu : Control {
     };
 
     public override void _Ready() {
+
         foreach(var entry in buttonToPanelMap) {
             Button button = GetNode<Button>($"Top_Panel/{entry.Key}");
             string panelName = entry.Value;
