@@ -42,6 +42,21 @@ public partial class TopDownCameraPivot : Node3D, ISaveable<CameraPivotData> {
 		}
 	}
 
+	private void updateCameraPositionAndRotation() {
+		Vector3 newPosition = calcYZPosVec();
+		float weight = 1f - Mathf.Exp(-zoomSpeed * deltaTime);
+		Position = Position.Lerp(newPosition, weight);
+		Vector3 newRotationVec = getRotVec();
+		Transform3D newRotation = Transform;
+		newRotation.Basis = new Basis(Vector3.Right, Mathf.DegToRad(newRotationVec.X));
+		Quaternion newRotationQ = new Quaternion(newRotation.Basis);
+		Transform3D curRotation = Transform;
+		Quaternion curRotationQ = new Quaternion(curRotation.Basis);
+		curRotationQ = curRotationQ.Slerp(newRotationQ, weight);
+		curRotation.Basis = new Basis(curRotationQ);
+		Transform = curRotation;
+	}
+
 	private void handleMouseScroll(InputEvent @event) {
 		if(@event is InputEventMouseButton mouseScrollEvent && mouseScrollEvent.Pressed) {
 			switch(mouseScrollEvent.ButtonIndex) {
@@ -81,21 +96,6 @@ public partial class TopDownCameraPivot : Node3D, ISaveable<CameraPivotData> {
 				EmitSignal(SignalName.ZoomChanged, zoomPresets[curTiltIndex] / zoomPresets[1], rotationPresets[curTiltIndex], zoomPresets[curTiltIndex]);
 			}
 		}
-	}
-
-	private void updateCameraPositionAndRotation() {
-		Vector3 newPosition = calcYZPosVec();
-		float weight = 1f - Mathf.Exp(-zoomSpeed * deltaTime);
-		Position = Position.Lerp(newPosition, weight);
-		Vector3 newRotationVec = getRotVec();
-		Transform3D newRotation = Transform;
-		newRotation.Basis = new Basis(Vector3.Right, Mathf.DegToRad(newRotationVec.X));
-		Quaternion newRotationQ = new Quaternion(newRotation.Basis);
-		Transform3D curRotation = Transform;
-		Quaternion curRotationQ = new Quaternion(curRotation.Basis);
-		curRotationQ = curRotationQ.Slerp(newRotationQ, weight);
-		curRotation.Basis = new Basis(curRotationQ);
-		Transform = curRotation;
 	}
 
 	private Vector3 calcYZPosVec() {
