@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://dvjdyejdpq4w1"]
+
+[ext_resource type="Script" uid="uid://cn1q56ujphdyx" path="res://Initial Scene/Camera/TopDownCameraRig.cs" id="1_f42p2"]
+[ext_resource type="Script" uid="uid://c4cwiwwa8yp0m" path="res://Initial Scene/Camera/TopDownCameraPivot.cs" id="2_80wr6"]
+
+[node name="Camera Rig" type="Node3D"]
+script = ExtResource("1_f42p2")
+
+[node name="Camera Pivot" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.49999997, 0.86602545, 0, -0.86602545, 0.49999997, 0, 8, 8)
+script = ExtResource("2_80wr6")
+
+[node name="Camera3D" type="Camera3D" parent="Camera Pivot"]
+current = true

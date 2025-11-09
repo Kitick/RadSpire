@@ -2,6 +2,7 @@
 
 using System;
 using Godot;
+using SaveSystem;
 
 public partial class Main_Menu : Control {
 	//Main Buttons Panel References
@@ -107,7 +108,7 @@ public partial class Main_Menu : Control {
 	}
 
 	private enum MenuMode { Online, Local, PrivateMatch }
-
+	
 	//Pop-up panel Buttons Handler
 	private void StartOnlineGame() {
 		GD.Print("Starting Online Game...");
@@ -126,14 +127,23 @@ public partial class Main_Menu : Control {
 	//Local Overlay Buttons Handler
 	private void OnContinueButtonPressed() {
 		GD.Print("Continue Game Button was pressed!");
+		GameManager.ShouldLoad = true;
+		LoadGameScene();
 	}
 
 	private void OnLoadSavedButtonPressed() {
-		GD.Print("Load Saved Games button was pressed!");
+		var saves = SaveService.ListSaves();
+
+		GD.Print("Available Saves:");
+		foreach(var save in saves) { GD.Print(save); }
 	}
 
 	private void OnStartNewButtonPressed() {
-		GD.Print("Start New Game button was pressed!");
+		GameManager.ShouldLoad = false;
+		LoadGameScene();
+	}
+
+	private void LoadGameScene() {
 		GetTree().ChangeSceneToFile("res://Initial Scene/initial_player_scene.tscn");
 	}
 
