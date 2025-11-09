@@ -40,4 +40,3 @@ public partial class Settings_Menu : Control {
         }
     }
 }
-
