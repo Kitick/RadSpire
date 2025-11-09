@@ -25,7 +25,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.01, 0.01, 0.01, 1)
+color = Color(0.15294118, 0.011764706, 0.6431373, 1)
 
 [node name="Top_Panel" type="HBoxContainer" parent="."]
 layout_mode = 1
