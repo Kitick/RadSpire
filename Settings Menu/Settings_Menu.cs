@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 
 public partial class Settings_Menu : Control {
+	public Control OwnerPauseMenu { get; set; }
+
     private Dictionary<string, string> buttonToPanelMap = new() {
         {"General_Button", "General_Panel"},
         {"Display_Button", "Display_Panel"},
@@ -15,6 +17,13 @@ public partial class Settings_Menu : Control {
     };
 
     public override void _Ready() {
+	    // Works both in main menu and paused game
+	    ProcessMode = Node.ProcessModeEnum.Always;
+
+	    foreach (var entry in buttonToPanelMap) {
+		    Button button = GetNode<Button>($"Top_Panel/{entry.Key}");
+		    button.Pressed += () => OnCategoryPressed(entry.Value);
+	    }
 
         foreach(var entry in buttonToPanelMap) {
             Button button = GetNode<Button>($"Top_Panel/{entry.Key}");
@@ -22,6 +31,16 @@ public partial class Settings_Menu : Control {
             button.Pressed += () => OnCategoryPressed(entry.Value);
         }
     }
+
+    public override void _Input(InputEvent @event)
+    {
+	    if (@event.IsActionPressed("ui_cancel")) // Esc
+	    {
+		    QueueFree();                      // close overlay
+		    GetViewport().SetInputAsHandled(); // stop Esc from reaching game
+	    }
+    }
+
 
     private void OnCategoryPressed(string panelNameToShow) {
         foreach(var panelName in buttonToPanelMap.Values) {

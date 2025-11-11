@@ -15,6 +15,10 @@ run/main_scene="uid://udkefarjp6kf"
 config/features=PackedStringArray("4.5", "C#", "Forward Plus")
 config/icon="res://Textures/icon.svg"
 
+[autoload]
+
+SceneHistory="*res://Scripts/SceneHistory.cs"
+
 [audio]
 
 buses/default_bus_layout="res://Audio/default_bus_layout.tres"

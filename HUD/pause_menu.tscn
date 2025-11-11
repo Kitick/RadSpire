@@ -19,9 +19,9 @@ anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 808.0
-offset_top = 394.0
+offset_top = 276.0
 offset_right = -807.0
-offset_bottom = -370.0
+offset_bottom = -488.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.41960785, 0.2784314, 0.23921569, 0.45882353)
@@ -29,19 +29,19 @@ color = Color(0.41960785, 0.2784314, 0.23921569, 0.45882353)
 [node name="PauseText" type="TextEdit" parent="ColorRect"]
 layout_mode = 0
 offset_left = 123.0
-offset_top = 12.0
+offset_top = 16.0
 offset_right = 185.0
-offset_bottom = 50.0
+offset_bottom = 54.0
 text = "PAUSE"
 editable = false
 
 [node name="Pause_Buttons" type="VBoxContainer" parent="."]
 layout_mode = 0
 offset_left = 899.0
-offset_top = 481.0
-offset_right = 981.0
-offset_bottom = 604.0
-scale = Vector2(1.5, 1.5)
+offset_top = 356.0
+offset_right = 1003.0
+offset_bottom = 525.0
+scale = Vector2(1.2, 1.2)
 theme_override_constants/separation = 15
 
 [node name="Resume" type="Button" parent="Pause_Buttons"]
@@ -52,6 +52,10 @@ text = "RESUME"
 layout_mode = 2
 text = "SETTINGS"
 
-[node name="Quit" type="Button" parent="Pause_Buttons"]
+[node name="Save" type="Button" parent="Pause_Buttons"]
 layout_mode = 2
-text = "QUIT"
+text = "SAVE"
+
+[node name="Main_Menu" type="Button" parent="Pause_Buttons"]
+layout_mode = 2
+text = "MAIN MENU"

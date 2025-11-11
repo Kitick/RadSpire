@@ -26,12 +26,6 @@ public partial class Player : CharacterBody3D, ISaveable<PlayerData> {
 	}
 
 	public override void _PhysicsProcess(double delta) {
-		// Check for ESC to return to main menu
-		if(Input.IsActionJustPressed("ui_cancel")) {
-			GameManager.Save("autosave");
-			GetTree().ChangeSceneToFile("res://Main Menu/Main_Menu.tscn");
-			return;
-		}
 
 		float dt = (float)delta;
 
