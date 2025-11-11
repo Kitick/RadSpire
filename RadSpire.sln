@@ -1,6 +1,6 @@
 ﻿Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RadSpire", "RadSpire.csproj", "{8AC4AD23-8793-45C0-A1B5-05C0F0D9FA5F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RadSpire", "RadSpire.csproj", "{CA771817-A78E-48A2-BBDD-BE78429151D8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -9,11 +9,11 @@ Global
 	ExportRelease|Any CPU = ExportRelease|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{8AC4AD23-8793-45C0-A1B5-05C0F0D9FA5F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8AC4AD23-8793-45C0-A1B5-05C0F0D9FA5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8AC4AD23-8793-45C0-A1B5-05C0F0D9FA5F}.ExportDebug|Any CPU.ActiveCfg = ExportDebug|Any CPU
-		{8AC4AD23-8793-45C0-A1B5-05C0F0D9FA5F}.ExportDebug|Any CPU.Build.0 = ExportDebug|Any CPU
-		{8AC4AD23-8793-45C0-A1B5-05C0F0D9FA5F}.ExportRelease|Any CPU.ActiveCfg = ExportRelease|Any CPU
-		{8AC4AD23-8793-45C0-A1B5-05C0F0D9FA5F}.ExportRelease|Any CPU.Build.0 = ExportRelease|Any CPU
+		{CA771817-A78E-48A2-BBDD-BE78429151D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA771817-A78E-48A2-BBDD-BE78429151D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA771817-A78E-48A2-BBDD-BE78429151D8}.ExportDebug|Any CPU.ActiveCfg = ExportDebug|Any CPU
+		{CA771817-A78E-48A2-BBDD-BE78429151D8}.ExportDebug|Any CPU.Build.0 = ExportDebug|Any CPU
+		{CA771817-A78E-48A2-BBDD-BE78429151D8}.ExportRelease|Any CPU.ActiveCfg = ExportRelease|Any CPU
+		{CA771817-A78E-48A2-BBDD-BE78429151D8}.ExportRelease|Any CPU.Build.0 = ExportRelease|Any CPU
 	EndGlobalSection
 EndGlobal
