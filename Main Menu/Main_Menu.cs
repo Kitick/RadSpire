@@ -78,11 +78,9 @@ public partial class Main_Menu : Control {
 		GD.Print("Start button was pressed!");
 	}
 
-	private void OnSettingsButtonPressed()
-	{
+	private void OnSettingsButtonPressed() {
 		// Only one settings overlay at a time
-		if (SettingsInstance == null || !SettingsInstance.IsInsideTree())
-		{
+		if(SettingsInstance == null || !SettingsInstance.IsInsideTree()) {
 			SettingsInstance = SettingsMenu.Instantiate<Control>();
 			AddChild(SettingsInstance);
 
@@ -92,10 +90,12 @@ public partial class Main_Menu : Control {
 
 		// Just ensure it's visible when button is pressed
 		SettingsInstance.Visible = true;
-	private void OnSettingsButtonPressed() {
-		GD.Print("Settings button was pressed!");
-		GetTree().ChangeSceneToFile("res://Settings Menu/Settings_Menu.tscn");
 	}
+
+	// private void OnSettingsButtonPressed() {
+	// 	GD.Print("Settings button was pressed!");
+	// 	GetTree().ChangeSceneToFile("res://Settings Menu/Settings_Menu.tscn");
+	// }
 
 	private void OnQuitButtonPressed() {
 		GD.Print("Quit button was pressed!");

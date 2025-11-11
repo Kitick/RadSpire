@@ -4,19 +4,20 @@ using SaveSystem;
 
 public partial class TopDownCameraRig : Node3D, ISaveable<CameraRigData> {
 	[Export] public Node3D? target;
-	[Export] private Vector2 defaultCenterZone = new Vector2(6, 3);
+	[Export] private Vector2 defaultCenterZone = new Vector2(1, 1);
 	[Export] private Vector2 centerZone;
 	[Export] private float followSpeed = 5.0f;
 	[Export] private float mouseSensitivity = 0.01f;
 	[Export] private float dragTimePause = 5.0f;
+	[Export] private float defaultCenterOffsetMagnitude = 1.0f;
 	private float dragSpeed = 15.0f;
 	private bool dragging = false;
 	private float deltaTime;
 	private Timer dragTimer = new Timer();
 	private Vector3 targetPosition;
 	private float moveThreshold = 0.1f;
-	private float outerZoneMultiplier = 5.0f;
-	private float maxZoneMultiplier = 10.0f;
+	private float outerZoneMultiplier = 20.0f;
+	private float maxZoneMultiplier = 30.0f;
 	private TopDownCameraPivot? pivot;
 	private Vector3 centerOffset = Vector3.Zero;
 	private Vector3 dragTargetPosition;
@@ -40,7 +41,7 @@ public partial class TopDownCameraRig : Node3D, ISaveable<CameraRigData> {
 		AddChild(dragTimer);
 		dragTimer.Timeout += OnDragTimerTimeout;
 		pivot = GetNode<TopDownCameraPivot>("Camera Pivot");
-		pivot.ZoomChanged += OnPivotZoomChanged;
+		// pivot.ZoomChanged += OnPivotZoomChanged;
 		dragTargetPosition = GlobalPosition;
 		skipNextMotion = true;
 	}
@@ -57,6 +58,10 @@ public partial class TopDownCameraRig : Node3D, ISaveable<CameraRigData> {
 		}
 		if(!dragging && !insideNormalDragZone(GlobalPosition)) {
 			moveToNormalZone();
+			skipNextMotion = true;
+		}
+		if(Input.IsActionPressed("camera_reset")) {
+			resetCameraPosition();
 			skipNextMotion = true;
 		}
 		if(dragging) {
@@ -167,16 +172,16 @@ public partial class TopDownCameraRig : Node3D, ISaveable<CameraRigData> {
 		return false;
 	}
 
-	private void OnPivotZoomChanged(float zoomFactor, float tiltAngle, float distance) {
-		if(pivot == null || target == null) {
-			return;
-		}
-		centerZone = defaultCenterZone * zoomFactor;
-		float cameraHeight = distance * Mathf.Sin(Mathf.DegToRad(tiltAngle));
-		float projectedForward = cameraHeight / Mathf.Tan(Mathf.DegToRad(tiltAngle));
-		centerOffset.Z = projectedForward * 0.5f;
-		GD.Print($"CenterZone: {centerZone}, CenterOffset: {centerOffset}");
-	}
+	// private void OnPivotZoomChanged(float zoomFactor, float tiltAngle, float distance) {
+	// 	if(pivot == null || target == null) {
+	// 		return;
+	// 	}
+	// 	centerZone = defaultCenterZone * zoomFactor;
+	// 	float cameraHeight = distance * Mathf.Sin(Mathf.DegToRad(tiltAngle));
+	// 	float projectedForward = cameraHeight / Mathf.Tan(Mathf.DegToRad(tiltAngle));
+	// 	centerOffset.Z = projectedForward * 0.5f;
+	// 	GD.Print($"CenterZone: {centerZone}, CenterOffset: {centerOffset}");
+	// }
 
 	private bool insideNormalDragZone(Vector3 position) {
 		if(target == null) {
@@ -250,6 +255,18 @@ public partial class TopDownCameraRig : Node3D, ISaveable<CameraRigData> {
 		closestNormalPosition.Z = Mathf.Clamp(curPosition.Z, targetPosition.Z - outerZone.Y / 2, targetPosition.Z + outerZone.Y / 2);
 		float weight = 1f - Mathf.Exp(-followSpeed * deltaTime);
 		GlobalPosition = GlobalPosition.Lerp(closestNormalPosition, weight);
+	}
+
+	private void calcCenterOffset(){
+		Vector3 offset = Vector3.Zero;
+		if(targetMoved()){
+			if(target is CharacterBody3D body) {
+				Vector3 targetVelocity = body.GetVelocity();
+				offset = targetVelocity * defaultCenterOffsetMagnitude;
+			}
+		}
+		float weight = 1f - Mathf.Exp(-followSpeed * deltaTime);
+		centerOffset = centerOffset.Lerp(offset, weight);
 	}
 
 	// ISaveable implementation
