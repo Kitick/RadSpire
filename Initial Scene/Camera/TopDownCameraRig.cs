@@ -17,7 +17,6 @@ public partial class TopDownCameraRig : Node3D, ISaveable<CameraRigData> {
 	private float outerZoneMultiplier = 10.0f;
 	private float maxZoneMultiplier = 20.0f;
 	private TopDownCameraPivot? pivot;
-	private Vector3 centerOffset = Vector3.Zero;
 	private Vector3 dragTargetPosition;
 	private Vector3 dragVelocity = Vector3.Zero;
 	private float dragVelocityDamp = 8.0f;
