@@ -9,11 +9,13 @@ namespace SaveSystem {
 	}
 
 	public readonly record struct PlayerData : ISaveData {
-		public Vector3 Position { get; init; }
-		public Vector3 Rotation { get; init; }
-		public Vector3 Velocity { get; init; }
-
-		public float Health { get; init; }
+		public float DefaultSprintMultiplier { get; init; }
+		public float DefaultCrouchMultiplier { get; init; }
+		public float DefaultFriction { get; init; }
+		public float PlayerMaxHealth { get; init; }
+		public Vector3 HorizontalInput { get; init; }
+		public bool IsCrouching { get; init; }
+		public bool IsSprinting { get; init; }
 	}
 
 	public readonly record struct CameraPivotData : ISaveData {
