@@ -60,5 +60,7 @@ namespace SaveSystem {
 		public bool UseGravity { get; init; }
 		public Vector3 MoveDirection { get; init; }
 		public Vector3 FaceDirection { get; init; }
+		public bool InAir { get; init; }
+		public bool Moving { get; init; }
 	}
 }

@@ -1,8 +1,6 @@
 using Godot;
 using System;
 using SaveSystem;
-using System.Data.Common;
-using System.Runtime.InteropServices.Marshalling;
 
 public abstract partial class Character : CharacterBody3D, ISaveable<CharacterData> {
     [Export] private string characterName = "Unnamed";
@@ -18,10 +16,18 @@ public abstract partial class Character : CharacterBody3D, ISaveable<CharacterDa
     private bool isAlive;
     private Vector3 moveDirection = Vector3.Zero;
     private Vector3 faceDirection = Vector3.Zero;
+    private bool inAir = false;
+    private bool moving = false;
 
-    [Signal] public delegate void HealthChangeEventHandler(float amount, float newValue);
+    [Signal] public delegate void TookDamageEventHandler(float amount, float newHealth);
+    [Signal] public delegate void HealedEventHandler(float amount, float newHealth);
     [Signal] public delegate void DiedEventHandler();
     [Signal] public delegate void ReviveEventHandler(float newHealth);
+    [Signal] public delegate void MoveStartEventHandler();
+    [Signal] public delegate void MoveStoppedEventHandler();
+    [Signal] public delegate void JumpedEventHandler();
+    [Signal] public delegate void LandedEventHandler();
+    [Signal] public delegate void FallingEventHandler();
 
     public override void _Ready() {
         currentHealth = maxHealth;
@@ -40,6 +46,7 @@ public abstract partial class Character : CharacterBody3D, ISaveable<CharacterDa
         if(useGravity) {
             if(!IsOnFloor()) {
                 Velocity = new Vector3(Velocity.X, Velocity.Y - fallAcceleration * delta, Velocity.Z);
+                EmitSignal(SignalName.Falling);
             }
             else if(Velocity.Y < 0) {
                 Velocity = new Vector3(Velocity.X, 0, Velocity.Z);
@@ -49,18 +56,28 @@ public abstract partial class Character : CharacterBody3D, ISaveable<CharacterDa
 
     protected virtual void MoveCharacter(float delta) {
         if(isAlive) {
+            if(moveDirection.LengthSquared() > 0.1f) {
+                if(!moving) {
+                    moving = true;
+                    EmitSignal(SignalName.MoveStart);
+                }
+            }
+            else if(moving) {
+                moving = false;
+                EmitSignal(SignalName.MoveStopped);
+            }
             Vector3 newVelocity = Vector3.Zero;
             newVelocity.X = moveDirection.X * speed;
             newVelocity.Y = Velocity.Y;
             newVelocity.Z = moveDirection.Z * speed;
             Velocity = newVelocity;
-            MoveAndSlide();    
+            MoveAndSlide();
         }
     }
-
+    
     protected virtual void MatchRotationToDirection(float delta) {
         if(isAlive) {
-            if(moveDirection.LengthSquared() > 0.0f) {
+            if(moveDirection.LengthSquared() > 0.1f) {
                 Vector3 newRotationVec = Vector3.Zero;
                 newRotationVec.Y = Mathf.RadToDeg(Mathf.Atan2(faceDirection.X, faceDirection.Z));
                 Transform3D newRotation = Transform;
@@ -80,6 +97,12 @@ public abstract partial class Character : CharacterBody3D, ISaveable<CharacterDa
         if(isAlive) {
             if(IsOnFloor()) {
                 Velocity = new Vector3(Velocity.X, jumpForce, Velocity.Z);
+                inAir = true;
+                EmitSignal(SignalName.Jumped);
+            }
+            if(inAir && IsOnFloor()) {
+                inAir = false;
+                EmitSignal(SignalName.Landed);
             }
         }
 
@@ -91,7 +114,7 @@ public abstract partial class Character : CharacterBody3D, ISaveable<CharacterDa
         }
         else {
             currentHealth = Mathf.Max(0, currentHealth - amount);
-            EmitSignal(SignalName.HealthChange, -amount, currentHealth);
+            EmitSignal(SignalName.TookDamage, amount, currentHealth);
             if(currentHealth == 0) {
                 Die();
             }   
@@ -105,7 +128,7 @@ public abstract partial class Character : CharacterBody3D, ISaveable<CharacterDa
         }
         else {
             currentHealth = Mathf.Min(maxHealth, currentHealth + amount);
-            EmitSignal(SignalName.HealthChange, amount, currentHealth);
+            EmitSignal(SignalName.Healed, amount, currentHealth);
         }
     }
 
@@ -117,10 +140,9 @@ public abstract partial class Character : CharacterBody3D, ISaveable<CharacterDa
             isAlive = true;
             currentHealth = newHealth;
             EmitSignal(SignalName.Revive, currentHealth);
-            EmitSignal(SignalName.HealthChange, newHealth, newHealth);
+            EmitSignal(SignalName.Healed, newHealth, newHealth);
             return true;
         }
-        
     }
 
     public virtual bool Die() {
@@ -130,6 +152,18 @@ public abstract partial class Character : CharacterBody3D, ISaveable<CharacterDa
             return true;
         }
         return false;
+    }
+
+    public virtual bool isMoving() {
+        if(isAlive) {
+            if(moveDirection.LengthSquared() > 0.1f) {
+                return true;
+            }
+            return false;   
+        }
+        else {
+            return false;
+        }
     }
 
     protected void setCharacterName(string name) {
@@ -229,6 +263,14 @@ public abstract partial class Character : CharacterBody3D, ISaveable<CharacterDa
         return faceDirection;
     }
 
+    protected void setInAir(bool i) {
+        inAir = i;
+    }
+    
+    public bool getInAir() {
+        return inAir;
+    }
+
     // ISaveable implementation
     public CharacterData Serialize() {
         return new CharacterData {
@@ -246,7 +288,9 @@ public abstract partial class Character : CharacterBody3D, ISaveable<CharacterDa
             Type = type,
             UseGravity = useGravity,
             MoveDirection = moveDirection,
-            FaceDirection = faceDirection
+            FaceDirection = faceDirection,
+            InAir = inAir,
+            Moving = moving
         };
     }
 
@@ -266,5 +310,7 @@ public abstract partial class Character : CharacterBody3D, ISaveable<CharacterDa
         useGravity = data.UseGravity;
         moveDirection = data.MoveDirection;
         faceDirection = data.FaceDirection;
+        inAir = data.InAir;
+        moving = data.Moving;
 	}
 }
