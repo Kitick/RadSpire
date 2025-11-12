@@ -1,6 +1,8 @@
-using Godot;
 using System;
+using Godot;
 
-public partial class Accessibility_Panel : VBoxContainer
-{
+namespace SettingsPanels {
+	public partial class Accessibility_Panel : VBoxContainer {
+
+	}
 }

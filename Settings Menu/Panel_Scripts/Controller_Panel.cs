@@ -1,6 +1,9 @@
-using Godot;
 using System;
+using Godot;
 
-public partial class Controller_Panel : VBoxContainer
-{
+namespace SettingsPanels {
+	public partial class Controller_Panel : VBoxContainer {
+
+
+	}
 }
