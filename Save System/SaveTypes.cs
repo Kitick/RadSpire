@@ -41,7 +41,9 @@ namespace SaveSystem {
 		public bool IsAlive { get; init; }
 		public Vector3 Position { get; init; }
 		public Vector3 Rotation { get; init; }
+		public Vector3 Velocity { get; init; }
 		public float Speed { get; init; }
+		public float SpeedModifier { get; init; }
 		public float RotationSpeed { get; init; }
 		public float FallAcceleration { get; init; }
 		public float JumpForce { get; init; }

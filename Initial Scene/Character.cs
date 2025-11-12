@@ -7,6 +7,7 @@ public abstract partial class Character : CharacterBody3D, ISaveable<CharacterDa
     [Export] private float maxHealth = 100f;
     [Export] private bool isInvincible = false;
     [Export] private float speed = 2.0f;
+    [Export] private float speedModifier = 1.0f;
     [Export] private float rotationSpeed = 5.0f;
     [Export] private float fallAcceleration = 9.8f;
     [Export] private float jumpForce = 6.0f;
@@ -67,9 +68,9 @@ public abstract partial class Character : CharacterBody3D, ISaveable<CharacterDa
                 EmitSignal(SignalName.MoveStopped);
             }
             Vector3 newVelocity = Vector3.Zero;
-            newVelocity.X = moveDirection.X * speed;
+            newVelocity.X = moveDirection.X * speed * speedModifier;
             newVelocity.Y = Velocity.Y;
-            newVelocity.Z = moveDirection.Z * speed;
+            newVelocity.Z = moveDirection.Z * speed * speedModifier;
             Velocity = newVelocity;
             MoveAndSlide();
         }
@@ -207,6 +208,14 @@ public abstract partial class Character : CharacterBody3D, ISaveable<CharacterDa
         return speed;
     }
 
+    protected void setSpeedModifier(float f) {
+        speedModifier = f;
+    }
+
+    public float getSpeedModifier() {
+        return speedModifier;
+    }
+
     protected void setRotationSpeed(float r) {
         rotationSpeed = r;
     }
@@ -281,7 +290,9 @@ public abstract partial class Character : CharacterBody3D, ISaveable<CharacterDa
             IsAlive = isAlive,
             Position = GlobalPosition,
             Rotation = GlobalRotation,
+            Velocity = Velocity,
             Speed = speed,
+            SpeedModifier = speedModifier,
             RotationSpeed = rotationSpeed,
             FallAcceleration = fallAcceleration,
             JumpForce = jumpForce,
@@ -302,7 +313,9 @@ public abstract partial class Character : CharacterBody3D, ISaveable<CharacterDa
         isAlive = data.IsAlive;
         GlobalPosition = data.Position;
         GlobalRotation = data.Rotation;
+        Velocity = data.Velocity;
         speed = data.Speed;
+        speedModifier = data.SpeedModifier;
         rotationSpeed = data.RotationSpeed;
         fallAcceleration = data.FallAcceleration;
         jumpForce = data.JumpForce;

@@ -2,7 +2,7 @@ using System;
 using Godot;
 using SaveSystem;
 
-public partial class Player : CharacterBody3D, ISaveable<PlayerData> {
+public partial class Player : Character, ISaveable<PlayerData> {
 	[Export] private float DefaultSpeed = 2.0f;
 	[Export] private float DefaultSprintMultiplier = 2.0f;
 	[Export] private float DefaultCrouchMultiplier = 0.5f;
@@ -23,6 +23,8 @@ public partial class Player : CharacterBody3D, ISaveable<PlayerData> {
 		var hudScene = GD.Load<PackedScene>("res://HUD/UI.tscn");
 		var hud = hudScene.Instantiate<CanvasLayer>(); // root of UI.tscn is CanvasLayer
 		AddChild(hud); // adds HUD under Player
+		setCharacterName("Player");
+		
 	}
 
 	public override void _PhysicsProcess(double delta) {
