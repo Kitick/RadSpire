@@ -1,12 +1,11 @@
 # Godot
 .godot/
-/android/
-/Release/
+android/
+Release/
 
 # .NET
 bin/
 obj/
 
 # JetBrains IDE
-.idea/ 
- 
+.idea/
