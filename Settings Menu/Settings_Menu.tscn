@@ -211,8 +211,6 @@ layout_mode = 0
 offset_left = 160.0
 offset_right = 320.0
 offset_bottom = 16.0
-min_value = -30.0
-max_value = 0.0
 
 [node name="Music_Volume" type="Label" parent="Sound_Panel"]
 layout_mode = 2
@@ -223,8 +221,6 @@ layout_mode = 0
 offset_left = 160.0
 offset_right = 320.0
 offset_bottom = 16.0
-min_value = -30.0
-max_value = 0.0
 
 [node name="SFX_Volume" type="Label" parent="Sound_Panel"]
 layout_mode = 2
@@ -235,8 +231,6 @@ layout_mode = 0
 offset_left = 160.0
 offset_right = 320.0
 offset_bottom = 16.0
-min_value = -30.0
-max_value = 0.0
 
 [node name="Mute_All" type="Label" parent="Sound_Panel"]
 layout_mode = 2

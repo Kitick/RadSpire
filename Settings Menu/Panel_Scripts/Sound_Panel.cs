@@ -5,6 +5,30 @@ using Godot;
 namespace SettingsPanels {
 	public enum AudioBus { Master, Music, SFX }
 
+	public static class Extensions {
+		public static string GetName(this AudioBus bus) =>
+			Sound_Panel.BusNames[bus];
+
+		private static int GetIndex(this AudioBus bus) =>
+			AudioServer.GetBusIndex(bus.GetName());
+
+		public static float GetVolume(this AudioBus bus) =>
+			AudioServer.GetBusVolumeLinear(bus.GetIndex()) * 100f;
+
+		public static void SetVolume(this AudioBus bus, float volume) {
+			GD.Print($"Set {bus.GetName()} volume to {volume}{(bus.IsMuted() ? " (muted)" : "")}");
+			AudioServer.SetBusVolumeLinear(bus.GetIndex(), volume / 100f);
+		}
+
+		public static bool IsMuted(this AudioBus bus) =>
+			AudioServer.IsBusMute(bus.GetIndex());
+
+		public static void SetMuted(this AudioBus bus, bool isMuted) {
+			GD.Print($"{(isMuted ? "Muted" : "Unmuted")} {bus.GetName()} bus");
+			AudioServer.SetBusMute(bus.GetIndex(), isMuted);
+		}
+	}
+
 	public partial class Sound_Panel : VBoxContainer {
 		// Paths
 		private const string MASTER_SLIDER = "Master_Volume/HSlider";
@@ -13,24 +37,15 @@ namespace SettingsPanels {
 		private const string MUTE_ALL_CHECKBOX = "Mute_All/CheckBox";
 		private const string OUTPUT_DEVICE = "Output_Device/OptionButton";
 
-		// Mute threshold
-		private const float MUTE_VOLUME = -30f;
-
 		// Mapping enum to bus names
-		private readonly Dictionary<AudioBus, string> BusNames = new() {
+		public static readonly Dictionary<AudioBus, string> BusNames = new() {
 			{ AudioBus.Master, "Master" },
 			{ AudioBus.Music, "Music" },
 			{ AudioBus.SFX, "SFX" }
 		};
 
-		// Store previous volumes for mute/unmute
-		private readonly Dictionary<AudioBus, float> PrevVolumes = new() {
-			{ AudioBus.Master, 0f },
-			{ AudioBus.Music, 0f },
-			{ AudioBus.SFX, 0f }
-		};
-
-		private readonly Dictionary<AudioBus, string> BusToSlider = new() {
+		// Mapping enum to slider paths
+		private static readonly Dictionary<AudioBus, string> BusToSlider = new() {
 			{ AudioBus.Master, MASTER_SLIDER },
 			{ AudioBus.Music, MUSIC_SLIDER },
 			{ AudioBus.SFX, SFX_SLIDER }
@@ -58,15 +73,21 @@ namespace SettingsPanels {
 			OutputDeviceOption.ItemSelected += OnOutputDeviceSelected;
 		}
 
+		private HSlider GetSlider(AudioBus bus) => GetNode<HSlider>(BusToSlider[bus]);
+
+		private float GetSliderValue(AudioBus bus) => (float)GetSlider(bus).Value;
+		private void SetSliderValue(AudioBus bus, float value) => GetSlider(bus).Value = value;
+
 		// Sets the initial slider values based on current volumes
 		private void LoadCurrentVolumes() {
-			foreach(var (bus, name) in BusNames) {
-				float volumeDb = AudioServer.GetBusVolumeDb(AudioServer.GetBusIndex(name));
+			foreach(var bus in BusNames.Keys) {
+				SetSliderValue(bus, bus.GetVolume());
+			}
+		}
 
-				string sliderPath = BusToSlider[bus];
-				PrevVolumes[bus] = volumeDb;
-
-				GetNode<HSlider>(sliderPath).Value = volumeDb;
+		private static void SetMuteAll(bool isMuted) {
+			foreach(var bus in BusNames.Keys) {
+				bus.SetMuted(isMuted);
 			}
 		}
 
@@ -88,7 +109,7 @@ namespace SettingsPanels {
 		// Selects the given output device in the option button
 		private bool SelectOutputDevice(string deviceName) {
 			int index = GetOutputDeviceIndex(deviceName);
-			if(index == -1){ return false; }
+			if(index == -1) { return false; }
 
 			OutputDeviceOption.Select(index);
 			return true;
@@ -104,35 +125,11 @@ namespace SettingsPanels {
 			return true;
 		}
 
-		private void SetBusVolume(AudioBus bus, float volumeDb) {
-			string name = BusNames[bus];
-			GD.Print($"Setting volume of bus '{name}' to {volumeDb} dB");
-
-			int busIndex = AudioServer.GetBusIndex(name);
-			AudioServer.SetBusVolumeDb(busIndex, volumeDb);
-		}
-
-		private void SetVolume(AudioBus bus, float volumeDb) {
-			SetBusVolume(bus, volumeDb);
-			PrevVolumes[bus] = volumeDb;
-		}
-
-		private void SetAllMute(bool isMuted) {
-			foreach(var bus in BusNames.Keys) {
-				if(isMuted) {
-					SetBusVolume(bus, MUTE_VOLUME);
-				}
-				else {
-					SetBusVolume(bus, PrevVolumes[bus]);
-				}
-			}
-		}
-
 		// Callbacks
-		private void OnMasterVolumeChanged(double value) => SetVolume(AudioBus.Master, (float)value);
-		private void OnMusicVolumeChanged(double value) => SetVolume(AudioBus.Music, (float)value);
-		private void OnSFXVolumeChanged(double value) => SetVolume(AudioBus.SFX, (float)value);
-		private void OnMuteAllToggled(bool isMuted) => SetAllMute(isMuted);
+		private void OnMasterVolumeChanged(double value) => AudioBus.Master.SetVolume((float)value);
+		private void OnMusicVolumeChanged(double value) => AudioBus.Music.SetVolume((float)value);
+		private void OnSFXVolumeChanged(double value) => AudioBus.SFX.SetVolume((float)value);
+		private void OnMuteAllToggled(bool isMuted) => SetMuteAll(isMuted);
 
 		private void OnOutputDeviceSelected(long index) {
 			string selectedDevice = OutputDeviceOption.GetItemText((int)index);
