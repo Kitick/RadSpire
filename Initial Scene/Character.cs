@@ -106,7 +106,9 @@ public partial class Character : CharacterBody3D, ISaveable<CharacterData> {
             CurrentHealth = currentHealth,
             MaxHealth = maxHealth,
             IsInvincible = isInvincible,
-            IsAlive = isAlive
+            IsAlive = isAlive,
+            Position = GlobalPosition,
+            Rotation = GlobalRotation
         };
 	}
 
@@ -116,6 +118,8 @@ public partial class Character : CharacterBody3D, ISaveable<CharacterData> {
         maxHealth = data.MaxHealth;
         isInvincible = data.IsInvincible;
         isAlive = data.IsAlive;
+        GlobalPosition = data.Position;
+        GlobalRotation = data.Rotation;
         
 	}
 }

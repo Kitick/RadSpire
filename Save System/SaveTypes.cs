@@ -50,5 +50,7 @@ namespace SaveSystem {
 		public float MaxHealth { get; init; }
 		public bool IsInvincible { get; init; }
 		public bool IsAlive { get; init; }
+		public Vector3 Position { get; init; }
+		public Vector3 Rotation { get; init; }
 	}
 }
