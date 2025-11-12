@@ -52,5 +52,31 @@ namespace SaveSystem {
 		public bool IsAlive { get; init; }
 		public Vector3 Position { get; init; }
 		public Vector3 Rotation { get; init; }
+		public float Speed { get; init; }
+		public float RotationSpeed { get; init; }
+		public float FallAcceleration { get; init; }
+		public float JumpForce { get; init; }
+		public string Type { get; init; }
+		public bool UseGravity { get; init; }
+		public Vector3 MoveDirection { get; init; }
+		public Vector3 FaceDirection { get; init; }
+		public bool InAir { get; init; }
+		public bool Moving { get; init; }
+	}
+
+	public readonly record struct MonsterData : ISaveData {
+
+	}
+
+	public readonly record struct ZombieData : ISaveData {
+
+	}
+
+	public readonly record struct NPCData : ISaveData {
+
+	}
+
+	public readonly record struct CollectableNPCData : ISaveData {
+
 	}
 }
