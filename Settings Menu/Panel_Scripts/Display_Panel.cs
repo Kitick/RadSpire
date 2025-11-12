@@ -37,11 +37,8 @@ namespace SettingsPanels {
 		];
 
 		public override void _Ready() {
-			var resolutionOption = GetNode<OptionButton>(RESOLUTION);
-			var fpsCapOption = GetNode<OptionButton>(FPS_CAP);
-
-			PopulateOptions(resolutionOption, RESOLUTION_OPTIONS);
-			PopulateOptions(fpsCapOption, FPS_OPTIONS);
+			GetNode<OptionButton>(RESOLUTION).Populate(RESOLUTION_OPTIONS);
+			GetNode<OptionButton>(FPS_CAP).Populate(FPS_OPTIONS);
 			SetCallbacks();
 		}
 
@@ -51,14 +48,6 @@ namespace SettingsPanels {
 			GetNode<CheckBox>(VSYNC).Toggled += SetVSync;
 			GetNode<HSlider>(BRIGHTNESS).ValueChanged += SetBrightness;
 			GetNode<OptionButton>(FPS_CAP).ItemSelected += OnFPSCapSelected;
-		}
-
-		// Polulates option button with given values
-		private static void PopulateOptions<T>(OptionButton button, T[] values) {
-			button.Clear();
-			foreach(var value in values) {
-				button.AddItem(value?.ToString());
-			}
 		}
 
 		// Static setters

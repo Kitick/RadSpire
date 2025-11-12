@@ -56,9 +56,11 @@ namespace SettingsPanels {
 		public override void _Ready() {
 			GetComponents();
 			LoadCurrentVolumes();
-			PopulateOutputDevices();
-			SelectOutputDevice(AudioServer.OutputDevice);
 			SetCallbacks();
+
+			// Configure output devices
+			OutputDeviceOption.Populate(AudioServer.GetOutputDeviceList());
+			OutputDeviceOption.Select(AudioServer.OutputDevice);
 
 			PlayDebugSound();
 		}
@@ -105,33 +107,12 @@ namespace SettingsPanels {
 			}
 		}
 
-		// Populates output device option button
-		private void PopulateOutputDevices() {
-			var devices = AudioServer.GetOutputDeviceList();
-
-			OutputDeviceOption.Clear();
-			foreach(var device in devices) {
-				OutputDeviceOption.AddItem(device);
-			}
-		}
-
-		private static int GetOutputDeviceIndex(string deviceName) {
-			var devices = AudioServer.GetOutputDeviceList();
-			return Array.IndexOf(devices, deviceName);
-		}
-
-		// Selects the given output device in the option button
-		private bool SelectOutputDevice(string deviceName) {
-			int index = GetOutputDeviceIndex(deviceName);
-			if(index == -1) { return false; }
-
-			OutputDeviceOption.Select(index);
-			return true;
-		}
-
 		// Setters
 		private static bool SetOutputDevice(string deviceName) {
-			if(GetOutputDeviceIndex(deviceName) == -1) { return false; }
+			var devices = AudioServer.GetOutputDeviceList();
+			int index = Array.IndexOf(devices, deviceName);
+
+			if(index == -1) { return false; }
 
 			GD.Print($"Switched to output device: {deviceName}");
 			AudioServer.OutputDevice = deviceName;
