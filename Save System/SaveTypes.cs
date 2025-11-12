@@ -63,4 +63,12 @@ namespace SaveSystem {
 		public bool InAir { get; init; }
 		public bool Moving { get; init; }
 	}
+
+	public readonly record struct MonsterData : ISaveData {
+
+	}
+
+	public readonly record struct NPCData : ISaveData {
+
+	}
 }
