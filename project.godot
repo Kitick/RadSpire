@@ -19,10 +19,6 @@ config/icon="res://Textures/icon.svg"
 
 buses/default_bus_layout="res://Audio/default_bus_layout.tres"
 
-[autoload]
-
-SceneHistory="*res://Scripts/SceneHistory.cs"
-
 [display]
 
 window/size/viewport_width=1920
