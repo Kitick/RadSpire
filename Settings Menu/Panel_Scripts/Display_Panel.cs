@@ -1,97 +1,98 @@
-using System;
-using System.Linq;
 using Godot;
+
+readonly record struct Resolution {
+	public int Width { get; init; }
+	public int Height { get; init; }
+
+	public override string ToString() => $"{Width}x{Height}";
+}
+
+readonly record struct FPSOption {
+	public int Value { get; init; }
+
+	public override string ToString() => Value == 0 ? "Unlimited" : $"{Value} FPS";
+}
 
 namespace SettingsPanels {
 	public partial class Display_Panel : VBoxContainer {
-		private OptionButton resolutionOption = null!;
-		private CheckBox fullscreenCheckBox = null!;
-		private CheckBox vsyncCheckBox = null!;
-		private HSlider brightnessSlider = null!;
-		private OptionButton fpsCapOption = null!;
+		// Paths
+		private const string RESOLUTION = "Resolution/OptionButton";
+		private const string FULLSCREEN = "Fullscreen/CheckBox";
+		private const string VSYNC = "VSync/CheckBox";
+		private const string BRIGHTNESS = "Brightness/HSlider";
+		private const string FPS_CAP = "FPS_Cap/OptionButton";
+
+		// Options
+		private static readonly Resolution[] RESOLUTION_OPTIONS = [
+			new Resolution { Width = 2560, Height = 1440 },
+			new Resolution { Width = 1920, Height = 1080 },
+			new Resolution { Width = 1280, Height = 720 },
+		];
+
+		private static readonly FPSOption[] FPS_OPTIONS = [
+			new FPSOption { Value = 30 },
+			new FPSOption { Value = 60 },
+			new FPSOption { Value = 120 },
+			new FPSOption { Value = 0 }, // Unlimited
+		];
 
 		public override void _Ready() {
-			GetComponents();
-			PopulateResolutionOptions();
-			PopulateFPSCapOptions();
-			SetCallBacks();
+			var resolutionOption = GetNode<OptionButton>(RESOLUTION);
+			var fpsCapOption = GetNode<OptionButton>(FPS_CAP);
+
+			PopulateOptions(resolutionOption, RESOLUTION_OPTIONS);
+			PopulateOptions(fpsCapOption, FPS_OPTIONS);
+			SetCallbacks();
 		}
 
-		private void GetComponents() {
-			resolutionOption = GetNode<OptionButton>("Resolution/OptionButton");
-			fullscreenCheckBox = GetNode<CheckBox>("Fullscreen/CheckBox");
-			vsyncCheckBox = GetNode<CheckBox>("VSync/CheckBox");
-			brightnessSlider = GetNode<HSlider>("Brightness/HSlider");
-			fpsCapOption = GetNode<OptionButton>("FPS_Cap/OptionButton");
+		private void SetCallbacks() {
+			GetNode<OptionButton>(RESOLUTION).ItemSelected += OnResolutionSelected;
+			GetNode<CheckBox>(FULLSCREEN).Toggled += SetFullscreen;
+			GetNode<CheckBox>(VSYNC).Toggled += SetVSync;
+			GetNode<HSlider>(BRIGHTNESS).ValueChanged += SetBrightness;
+			GetNode<OptionButton>(FPS_CAP).ItemSelected += OnFPSCapSelected;
 		}
 
-		private void SetCallBacks() {
-			resolutionOption.ItemSelected += OnResolutionSelected;
-			fullscreenCheckBox.Toggled += OnFullscreenToggled;
-			vsyncCheckBox.Toggled += OnVsyncToggled;
-			brightnessSlider.ValueChanged += OnBrightnessChanged;
-			fpsCapOption.ItemSelected += OnFPSCapSelected;
+		// Polulates option button with given values
+		private static void PopulateOptions<T>(OptionButton button, T[] values) {
+			button.Clear();
+			foreach(var value in values) {
+				button.AddItem(value?.ToString());
+			}
 		}
 
-		//Resolution
-		private void PopulateResolutionOptions() {
-			resolutionOption.Clear();
-			resolutionOption.AddItem("1920x1080");
-			resolutionOption.AddItem("1280x720");
+		// Static setters
+		private static void SetResolution(Resolution resolution) {
+			GD.Print($"Setting resolution to: {resolution}");
+			Vector2I size = new Vector2I(resolution.Width, resolution.Height);
+			DisplayServer.WindowSetSize(size);
 		}
 
-		private void OnResolutionSelected(long index) {
-			string selected = resolutionOption.GetItemText((int)index);
-			string[] parts = selected.Split('x');
-			int width = int.Parse(parts[0]);
-			int height = int.Parse(parts[1]);
-			DisplayServer.WindowSetSize(new Vector2I(width, height));
+		private static void SetFullscreen(bool isFullscreen) {
+			GD.Print($"Setting fullscreen to: {isFullscreen}");
+			var mode = isFullscreen ? DisplayServer.WindowMode.Fullscreen : DisplayServer.WindowMode.Windowed;
+			DisplayServer.WindowSetMode(mode);
 		}
 
-		//FullScreen
-		private void OnFullscreenToggled(bool pressed) {
-			DisplayServer.WindowSetMode(pressed ? DisplayServer.WindowMode.Fullscreen : DisplayServer.WindowMode.Windowed);
-			GD.Print($"Full Screen toggled: {pressed}");
-		}
-
-		//VSync
-		private void OnVsyncToggled(bool pressed) {
-			ProjectSettings.SetSetting("display/window/vsync/use_vysnc", pressed);
+		private static void SetVSync(bool isVSync) {
+			GD.Print($"Setting VSync to: {isVSync}");
+			ProjectSettings.SetSetting("display/window/vsync/use_vsync", isVSync);
 			ProjectSettings.Save();
 		}
 
-		//Brightness
-		private void OnBrightnessChanged(double value) {
-			GD.Print($"Brightness set to: {value}");
+		private static void SetBrightness(double value) {
+			GD.Print($"Setting brightness to: {value}");
+			ProjectSettings.SetSetting("display/window/brightness", (float)value);
+			ProjectSettings.Save();
 		}
 
-		//FPS Cap
-		private void PopulateFPSCapOptions() {
-			fpsCapOption.Clear();
-			fpsCapOption.AddItem("30 FPS");
-			fpsCapOption.AddItem("60 FPS");
-			fpsCapOption.AddItem("120FPS");
-			fpsCapOption.AddItem("Unlimited");
+		private static void SetFPS(FPSOption fps) {
+			GD.Print($"Setting FPS cap to: {fps}");
+			Engine.MaxFps = fps.Value;
 		}
 
-		private void OnFPSCapSelected(long index) {
-			string selected = fpsCapOption.GetItemText((int)index);
-
-			if(selected == "Unlimited") {
-				Engine.MaxFps = 0;
-				return;
-			}
-
-			//Extract digits
-			string digitsOnly = new string(selected.Where(char.IsDigit).ToArray());
-
-			if(int.TryParse(digitsOnly, out int fps)) {
-				Engine.MaxFps = fps;
-			}
-			else {
-				GD.PushError($"Failed to parse FPS value from: {selected}");
-			}
-
-		}
+		// Callbacks
+		private void OnResolutionSelected(long index) => SetResolution(RESOLUTION_OPTIONS[(int)index]);
+		private void OnFPSCapSelected(long index) => SetFPS(FPS_OPTIONS[(int)index]);
 	}
 }
