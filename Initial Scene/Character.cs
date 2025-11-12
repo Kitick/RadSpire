@@ -3,22 +3,22 @@ using System;
 using SaveSystem;
 
 public abstract partial class Character : CharacterBody3D, ISaveable<CharacterData> {
-    [Export] private string characterName = "Unnamed";
-    [Export] private float maxHealth = 100f;
-    [Export] private bool isInvincible = false;
-    [Export] private float speed = 2.0f;
-    [Export] private float speedModifier = 1.0f;
-    [Export] private float rotationSpeed = 5.0f;
-    [Export] private float fallAcceleration = 9.8f;
-    [Export] private float jumpForce = 6.0f;
-    [Export] private string type = "Neutral";
-    [Export] private bool useGravity = true;
-    private float currentHealth;
-    private bool isAlive;
-    private Vector3 moveDirection = Vector3.Zero;
-    private Vector3 faceDirection = Vector3.Zero;
-    private bool inAir = false;
-    private bool moving = false;
+    [Export] public string CharacterName { get; protected set; } = "Unnamed";
+    [Export] public float MaxHealth { get; protected set { CurrentHealth = MaxHealth;} } = 100f;
+    [Export] public bool IsInvincible { get; protected set; } = false;
+    [Export] public float Speed { get; protected set; } = 2.0f;
+    [Export] public float SpeedModifier { get; protected set; } = 1.0f;
+    [Export] public  float RotationSpeed { get; protected set; } = 5.0f;
+    [Export] public float FallAcceleration { get; protected set; } = 9.8f;
+    [Export] public float JumpForce { get; protected set; } = 6.0f;
+    [Export] public string Type { get; protected set; } = "Neutral";
+    [Export] public bool UseGravity { get; protected set; } = true;
+    public float CurrentHealth { get; private set; }
+    public bool IsAlive { get; private set; }
+    public Vector3 MoveDirection { get; protected set; } = Vector3.Zero;
+    public Vector3 FaceDirection { get; protected set; } = Vector3.Zero;
+    public bool InAir { get; private set; } = false;
+    public bool Moving { get{ return isMoving(); } private set; } = false;
 
     [Signal] public delegate void TookDamageEventHandler(float amount, float newHealth);
     [Signal] public delegate void HealedEventHandler(float amount, float newHealth);
@@ -31,8 +31,8 @@ public abstract partial class Character : CharacterBody3D, ISaveable<CharacterDa
     [Signal] public delegate void FallingEventHandler();
 
     public override void _Ready() {
-        currentHealth = maxHealth;
-        isAlive = true;
+        CurrentHealth = MaxHealth;
+        IsAlive = true;
         Velocity = Vector3.Zero;
     }
 
@@ -44,9 +44,9 @@ public abstract partial class Character : CharacterBody3D, ISaveable<CharacterDa
     }
 
     protected virtual void ApplyGravity(float delta) {
-        if(useGravity) {
+        if(UseGravity) {
             if(!IsOnFloor()) {
-                Velocity = new Vector3(Velocity.X, Velocity.Y - fallAcceleration * delta, Velocity.Z);
+                Velocity = new Vector3(Velocity.X, Velocity.Y - FallAcceleration * delta, Velocity.Z);
                 EmitSignal(SignalName.Falling);
             }
             else if(Velocity.Y < 0) {
@@ -56,37 +56,37 @@ public abstract partial class Character : CharacterBody3D, ISaveable<CharacterDa
     }
 
     protected virtual void MoveCharacter(float delta) {
-        if(isAlive) {
-            if(moveDirection.LengthSquared() > 0.1f) {
-                if(!moving) {
-                    moving = true;
+        if(IsAlive) {
+            if(MoveDirection.LengthSquared() > 0.1f) {
+                if(!Moving) {
+                    Moving = true;
                     EmitSignal(SignalName.MoveStart);
                 }
             }
-            else if(moving) {
-                moving = false;
+            else if(Moving) {
+                Moving = false;
                 EmitSignal(SignalName.MoveStopped);
             }
             Vector3 newVelocity = Vector3.Zero;
-            newVelocity.X = moveDirection.X * speed * speedModifier;
+            newVelocity.X = MoveDirection.X * Speed * SpeedModifier;
             newVelocity.Y = Velocity.Y;
-            newVelocity.Z = moveDirection.Z * speed * speedModifier;
+            newVelocity.Z = MoveDirection.Z * Speed * SpeedModifier;
             Velocity = newVelocity;
             MoveAndSlide();
         }
     }
     
     protected virtual void MatchRotationToDirection(float delta) {
-        if(isAlive) {
-            if(moveDirection.LengthSquared() > 0.1f) {
+        if(IsAlive) {
+            if(MoveDirection.LengthSquared() > 0.1f) {
                 Vector3 newRotationVec = Vector3.Zero;
-                newRotationVec.Y = Mathf.RadToDeg(Mathf.Atan2(faceDirection.X, faceDirection.Z));
+                newRotationVec.Y = Mathf.RadToDeg(Mathf.Atan2(FaceDirection.X, FaceDirection.Z));
                 Transform3D newRotation = Transform;
                 newRotation.Basis = new Basis(Vector3.Up, Mathf.DegToRad(newRotationVec.Y));
                 Quaternion newRotationQ = new Quaternion(newRotation.Basis);
                 Transform3D curRotation = Transform;
                 Quaternion curRotationQ = new Quaternion(curRotation.Basis);
-                float weight = 1f - Mathf.Exp(-rotationSpeed * delta);
+                float weight = 1f - Mathf.Exp(-RotationSpeed * delta);
                 curRotationQ = curRotationQ.Slerp(newRotationQ, weight);
                 curRotation.Basis = new Basis(curRotationQ);
                 Transform = curRotation;
@@ -95,14 +95,14 @@ public abstract partial class Character : CharacterBody3D, ISaveable<CharacterDa
     }
 
     protected virtual void Jump() {
-        if(isAlive) {
+        if(IsAlive) {
             if(IsOnFloor()) {
-                Velocity = new Vector3(Velocity.X, jumpForce, Velocity.Z);
-                inAir = true;
+                Velocity = new Vector3(Velocity.X, JumpForce, Velocity.Z);
+                InAir = true;
                 EmitSignal(SignalName.Jumped);
             }
-            if(inAir && IsOnFloor()) {
-                inAir = false;
+            if(InAir && IsOnFloor()) {
+                InAir = false;
                 EmitSignal(SignalName.Landed);
             }
         }
@@ -110,13 +110,13 @@ public abstract partial class Character : CharacterBody3D, ISaveable<CharacterDa
     }
 
     public virtual void TakeDamage(float amount) {
-        if(isInvincible || !isAlive) {
+        if(IsInvincible || !IsAlive) {
             return;
         }
         else {
-            currentHealth = Mathf.Max(0, currentHealth - amount);
-            EmitSignal(SignalName.TookDamage, amount, currentHealth);
-            if(currentHealth == 0) {
+            CurrentHealth = Mathf.Max(0, CurrentHealth - amount);
+            EmitSignal(SignalName.TookDamage, amount, CurrentHealth);
+            if(CurrentHealth == 0) {
                 Die();
             }   
         }
@@ -124,31 +124,31 @@ public abstract partial class Character : CharacterBody3D, ISaveable<CharacterDa
     }
 
     public virtual void RestoreDamage(float amount) {
-        if(!isAlive || isInvincible) {
+        if(!IsAlive || IsInvincible) {
             return;
         }
         else {
-            currentHealth = Mathf.Min(maxHealth, currentHealth + amount);
-            EmitSignal(SignalName.Healed, amount, currentHealth);
+            CurrentHealth = Mathf.Min(MaxHealth, CurrentHealth + amount);
+            EmitSignal(SignalName.Healed, amount, CurrentHealth);
         }
     }
 
     public virtual bool ReviveCharacter(float newHealth) {
-        if(isAlive || isInvincible) {
+        if(IsAlive || IsInvincible) {
             return false;
         }
         else {
-            isAlive = true;
-            currentHealth = newHealth;
-            EmitSignal(SignalName.Revive, currentHealth);
+            IsAlive = true;
+            CurrentHealth = newHealth;
+            EmitSignal(SignalName.Revive, CurrentHealth);
             EmitSignal(SignalName.Healed, newHealth, newHealth);
             return true;
         }
     }
 
     public virtual bool Die() {
-        if(isAlive && !isInvincible) {
-            isAlive = false;
+        if(IsAlive && !IsInvincible) {
+            IsAlive = false;
             EmitSignal(SignalName.Died);
             return true;
         }
@@ -156,174 +156,61 @@ public abstract partial class Character : CharacterBody3D, ISaveable<CharacterDa
     }
 
     public virtual bool isMoving() {
-        if(isAlive) {
-            if(moveDirection.LengthSquared() > 0.1f) {
+        if(IsAlive) {
+            if(MoveDirection.LengthSquared() > 0.1f) {
                 return true;
             }
-            return false;   
+            return false;
         }
         else {
             return false;
         }
     }
 
-    protected void setCharacterName(string name) {
-        characterName = name;
-    }
-
-    public string getCharacterName() {
-        return characterName;
-    }
-
-    protected void setMaxHealth(float max) {
-        maxHealth = max;
-        currentHealth = maxHealth;
-    }
-
-    public float getMaxHealth() {
-        return maxHealth;
-    }
-
-    protected void setIsInvincible(bool inv) {
-        isInvincible = inv;
-    }
-
-    public bool getIsInvincible() {
-        return isInvincible;
-    }
-
-    public float getCurrentHealth() {
-        return currentHealth;
-    }
-
-    public bool getIsAlive() {
-        return isAlive;
-    }
-
-    protected void setSpeed(float s) {
-        speed = s;
-    }
-
-    public float getSpeed() {
-        return speed;
-    }
-
-    protected void setSpeedModifier(float f) {
-        speedModifier = f;
-    }
-
-    public float getSpeedModifier() {
-        return speedModifier;
-    }
-
-    protected void setRotationSpeed(float r) {
-        rotationSpeed = r;
-    }
-
-    public float getRotationSpeed() {
-        return rotationSpeed;
-    }
-
-    protected void setFallAcceleration(float f) {
-        fallAcceleration = f;
-    }
-
-    public float getFallAcceleration() {
-        return fallAcceleration;
-    }
-
-    protected void setJumpForce(float j) {
-        jumpForce = j;
-    }
-
-    public float getJumpForce() {
-        return jumpForce;
-    }
-
-    protected void setType(string t) {
-        type = t;
-    }
-
-    public string getType() {
-        return type;
-    }
-
-    protected void setUseGravity(bool u) {
-        useGravity = u;
-    }
-
-    public bool getUseGravity() {
-        return useGravity;
-    }
-
-    protected void setMoveDirection(Vector3 d) {
-        moveDirection = d;
-    }
-
-    public Vector3 getMoveDirection() {
-        return moveDirection;
-    }
-
-    protected void setFaceDirection(Vector3 f) {
-        faceDirection = f;
-    }
-
-    public Vector3 getFaceDirection() {
-        return faceDirection;
-    }
-
-    protected void setInAir(bool i) {
-        inAir = i;
-    }
-    
-    public bool getInAir() {
-        return inAir;
-    }
-
     // ISaveable implementation
     public CharacterData Serialize() {
         return new CharacterData {
-            CharacterName = characterName,
-            CurrentHealth = currentHealth,
-            MaxHealth = maxHealth,
-            IsInvincible = isInvincible,
-            IsAlive = isAlive,
+            CharacterName = CharacterName,
+            CurrentHealth = CurrentHealth,
+            MaxHealth = MaxHealth,
+            IsInvincible = IsInvincible,
+            IsAlive = IsAlive,
             Position = GlobalPosition,
             Rotation = GlobalRotation,
             Velocity = Velocity,
-            Speed = speed,
-            SpeedModifier = speedModifier,
-            RotationSpeed = rotationSpeed,
-            FallAcceleration = fallAcceleration,
-            JumpForce = jumpForce,
-            Type = type,
-            UseGravity = useGravity,
-            MoveDirection = moveDirection,
-            FaceDirection = faceDirection,
-            InAir = inAir,
-            Moving = moving
+            Speed = Speed,
+            SpeedModifier = SpeedModifier,
+            RotationSpeed = RotationSpeed,
+            FallAcceleration = FallAcceleration,
+            JumpForce = JumpForce,
+            Type = Type,
+            UseGravity = UseGravity,
+            MoveDirection = MoveDirection,
+            FaceDirection = FaceDirection,
+            InAir = InAir,
+            Moving = Moving
         };
     }
 
 	public void Deserialize(in CharacterData data) {
-        characterName = data.CharacterName;
-        currentHealth = data.CurrentHealth;
-        maxHealth = data.MaxHealth;
-        isInvincible = data.IsInvincible;
-        isAlive = data.IsAlive;
+        CharacterName = data.CharacterName;
+        CurrentHealth = data.CurrentHealth;
+        MaxHealth = data.MaxHealth;
+        IsInvincible = data.IsInvincible;
+        IsAlive = data.IsAlive;
         GlobalPosition = data.Position;
         GlobalRotation = data.Rotation;
         Velocity = data.Velocity;
-        speed = data.Speed;
-        speedModifier = data.SpeedModifier;
-        rotationSpeed = data.RotationSpeed;
-        fallAcceleration = data.FallAcceleration;
-        jumpForce = data.JumpForce;
-        type = data.Type;
-        useGravity = data.UseGravity;
-        moveDirection = data.MoveDirection;
-        faceDirection = data.FaceDirection;
-        inAir = data.InAir;
-        moving = data.Moving;
+        Speed = data.Speed;
+        SpeedModifier = data.SpeedModifier;
+        RotationSpeed = data.RotationSpeed;
+        FallAcceleration = data.FallAcceleration;
+        JumpForce = data.JumpForce;
+        Type = data.Type;
+        UseGravity = data.UseGravity;
+        MoveDirection = data.MoveDirection;
+        FaceDirection = data.FaceDirection;
+        InAir = data.InAir;
+        Moving = data.Moving;
 	}
 }
