@@ -31,22 +31,29 @@ public partial class Main_Menu : Control {
 	private Control StartButtonPanel = null!;
 	private Control LocalOverlayPanel = null!;
 
-	// Settings Menu
-	private PackedScene? SettingsMenu;
-	private Control? SettingsInstance;
+	private Control SettingsInstance = null!;
 
 	public override void _Ready() {
 		GetComponents();
+		InitSettings();
 		SetCallbacks();
 	}
 
+	private void InitSettings() {
+		PackedScene SettingsMenu = GD.Load<PackedScene>(SETTINGS_SCENE);
+
+		SettingsInstance = SettingsMenu.Instantiate<Control>();
+		SettingsInstance.Visible = false;
+
+		AddChild(SettingsInstance);
+	}
+
 	private void GetComponents() {
+		// Components
 		StartButton = GetNode<Button>(START_BUTTON);
 
 		StartButtonPanel = GetNode<Control>(START_PANEL);
 		LocalOverlayPanel = GetNode<Control>(LOCAL_OVERLAY);
-
-		SettingsMenu = GD.Load<PackedScene>(SETTINGS_SCENE);
 	}
 
 	private void SetCallbacks() {
@@ -78,17 +85,7 @@ public partial class Main_Menu : Control {
 	}
 
 	private void OnSettingsButtonPressed() {
-		// Only one settings overlay at a time
-		if(SettingsInstance == null || !SettingsInstance.IsInsideTree()) {
-			SettingsInstance = SettingsMenu?.Instantiate<Control>();
-			AddChild(SettingsInstance);
-
-			// Let the settings menu decide its own ProcessMode (it sets Always in _Ready)
-			// So DO NOT change SettingsInstance.ProcessMode here.
-		}
-
-		// Just ensure it's visible when button is pressed
-		SettingsInstance?.Visible = true;
+		SettingsInstance.Visible = true;
 	}
 
 	private void OnQuitButtonPressed() {
