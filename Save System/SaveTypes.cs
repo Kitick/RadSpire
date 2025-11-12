@@ -68,7 +68,15 @@ namespace SaveSystem {
 
 	}
 
+	public readonly record struct ZombieData : ISaveData {
+
+	}
+
 	public readonly record struct NPCData : ISaveData {
+
+	}
+
+	public readonly record struct CollectableNPCData : ISaveData {
 
 	}
 }
