@@ -59,6 +59,20 @@ namespace SettingsPanels {
 			PopulateOutputDevices();
 			SelectOutputDevice(AudioServer.OutputDevice);
 			SetCallbacks();
+
+			PlayDebugSound();
+		}
+
+		private void PlayDebugSound() {
+			var audioStreamPlayer = new AudioStreamPlayer {
+				Stream = GD.Load<AudioStream>("res://Sounds/COD Black Ops 2 Main Menu Theme (In Game original).mp3"),
+				Bus = AudioBus.Music.GetName()
+			};
+
+			AddChild(audioStreamPlayer);
+			audioStreamPlayer.Play();
+
+			GD.Print("Playing debug sound...");
 		}
 
 		private void GetComponents() {
