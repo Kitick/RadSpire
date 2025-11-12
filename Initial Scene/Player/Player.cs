@@ -8,7 +8,6 @@ public partial class Player : Character, ISaveable<PlayerData> {
 	[Export] private float defaultCrouchMultiplier = 0.5f;
 	[Export] private float defaultFriction = 10.0f;
 	[Export] private float playerMaxHealth = 200f;
-	[Signal] public delegate void PlayerMovementEventHandler(string action);
 	[Signal] public delegate void SprintStartEventHandler();
 	[Signal] public delegate void SprintEndEventHandler();
 	[Signal] public delegate void CrouchStartEventHandler();
@@ -43,7 +42,6 @@ public partial class Player : Character, ISaveable<PlayerData> {
 			newVelocity.X = Mathf.Lerp(newVelocity.X, 0.0f, weight);
 			newVelocity.Z = Mathf.Lerp(newVelocity.Z, 0.0f, weight);
 		}
-
 	}
 
 	private static Vector3 GetHorizontalInput() {
