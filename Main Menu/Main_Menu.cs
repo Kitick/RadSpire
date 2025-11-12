@@ -1,76 +1,75 @@
 //Purpose: Simple Main Menu Screen Layout and Buttons with Hover Popup Panel
 
-using System;
 using Godot;
 using SaveSystem;
 
 public partial class Main_Menu : Control {
-	//Main Buttons Panel References
+	// Main button paths
+	private const string START_BUTTON = "Main_Button_Panel/Start_Button";
+	private const string SETTINGS_BUTTON = "Main_Button_Panel/Settings_Button";
+	private const string QUIT_BUTTON = "Main_Button_Panel/Quit_Button";
+
+	// Popup panel paths
+	private const string START_PANEL = "Start_Button_Panel";
+	private const string ONLINE_BUTTON = "Start_Button_Panel/Online_Button";
+	private const string LOCAL_BUTTON = "Start_Button_Panel/Local_Button";
+	private const string PRIVATE_BUTTON = "Start_Button_Panel/Private_Match_Button";
+
+	// Local overlay paths
+	private const string LOCAL_OVERLAY = "Local_Overlay_Panel";
+	private const string CONTINUE_BUTTON = "Local_Overlay_Panel/ColorRect/VBoxContainer/Continue_Button";
+	private const string LOAD_SAVED_BUTTON = "Local_Overlay_Panel/ColorRect/VBoxContainer/Load_Saved_Button";
+	private const string START_NEW_BUTTON = "Local_Overlay_Panel/ColorRect/VBoxContainer/Start_New_Button";
+	private const string BACK_TO_MAIN_BUTTON = "Local_Overlay_Panel/ColorRect/VBoxContainer/Back_To_Main_Button";
+
+	// Scene paths
+	private const string SETTINGS_SCENE = "res://Settings Menu/Settings_Menu.tscn";
+	private const string GAME_SCENE = "res://Initial Scene/initial_player_scene.tscn";
+
+	// Component references
 	private Button StartButton = null!;
-	private Button SettingsButton = null!;
-	private Button QuitButton = null!;
-
-	//Pop-up Panel References
 	private Control StartButtonPanel = null!;
-	private Button OnlineButton = null!;
-	private Button LocalButton = null!;
-	private Button PrivateMatchButton = null!;
+	private Control LocalOverlayPanel = null!;
 
-	//Local Overlay Panel Button References
-	private Button ContinueButton = null!;
-	private Button LoadSavedButton = null!;
-	private Button StartNewButton = null!;
-	private Button BackToMainButton = null!;
-
-	[Export] public PackedScene SettingsMenu = null!;
-	private Control SettingsInstance = null!;
+	// Settings Menu
+	private PackedScene? SettingsMenu;
+	private Control? SettingsInstance;
 
 	public override void _Ready() {
-		SettingsMenu = GD.Load<PackedScene>("res://Settings Menu/Settings_Menu.tscn");
 		GetComponents();
 		SetCallbacks();
 	}
 
 	private void GetComponents() {
-		//Main Buttons
-		StartButton = GetNode<Button>("Main_Button_Panel/Start_Button");
-		SettingsButton = GetNode<Button>("Main_Button_Panel/Settings_Button");
-		QuitButton = GetNode<Button>("Main_Button_Panel/Quit_Button");
+		StartButton = GetNode<Button>(START_BUTTON);
 
-		//Pop-up Panel Buttons
-		StartButtonPanel = GetNode<Control>("Start_Button_Panel");
-		OnlineButton = GetNode<Button>("Start_Button_Panel/Online_Button");
-		LocalButton = GetNode<Button>("Start_Button_Panel/Local_Button");
-		PrivateMatchButton = GetNode<Button>("Start_Button_Panel/Private_Match_Button");
+		StartButtonPanel = GetNode<Control>(START_PANEL);
+		LocalOverlayPanel = GetNode<Control>(LOCAL_OVERLAY);
 
-		//Local Screen Overlay Buttons
-		ContinueButton = GetNode<Button>("Local_Overlay_Panel/ColorRect/VBoxContainer/Continue_Button");
-		LoadSavedButton = GetNode<Button>("Local_Overlay_Panel/ColorRect/VBoxContainer/Load_Saved_Button");
-		StartNewButton = GetNode<Button>("Local_Overlay_Panel/ColorRect/VBoxContainer/Start_New_Button");
-		BackToMainButton = GetNode<Button>("Local_Overlay_Panel/ColorRect/VBoxContainer/Back_To_Main_Button");
+		SettingsMenu = GD.Load<PackedScene>(SETTINGS_SCENE);
 	}
 
 	private void SetCallbacks() {
-		//Main Buttons
+		// Main buttons
 		StartButton.Pressed += OnStartButtonPressed;
-		SettingsButton.Pressed += OnSettingsButtonPressed;
-		QuitButton.Pressed += OnQuitButtonPressed;
+		GetNode<Button>(SETTINGS_BUTTON).Pressed += OnSettingsButtonPressed;
+		GetNode<Button>(QUIT_BUTTON).Pressed += OnQuitButtonPressed;
 
-		//Hover Behavior
+		// Hover behavior
 		StartButton.MouseEntered += OnStartButtonHover;
 		StartButton.MouseExited += OnStartButtonUnhover;
 		StartButtonPanel.MouseExited += OnPanelMouseExited;
 
-		//Click Handlers for Pop-up
-		OnlineButton.Pressed += StartOnlineGame;
-		LocalButton.Pressed += StartLocalGame;
-		PrivateMatchButton.Pressed += StartPrivateMatch;
+		// Popup buttons
+		GetNode<Button>(ONLINE_BUTTON).Pressed += StartOnlineGame;
+		GetNode<Button>(LOCAL_BUTTON).Pressed += StartLocalGame;
+		GetNode<Button>(PRIVATE_BUTTON).Pressed += StartPrivateMatch;
 
-		//Local Overlay Buttons
-		ContinueButton.Pressed += OnContinueButtonPressed;
-		LoadSavedButton.Pressed += OnLoadSavedButtonPressed;
-		StartNewButton.Pressed += OnStartNewButtonPressed;
-		BackToMainButton.Pressed += OnBackToMainButtonPressed;
+		// Local overlay buttons
+		GetNode<Button>(CONTINUE_BUTTON).Pressed += OnContinueButtonPressed;
+		GetNode<Button>(LOAD_SAVED_BUTTON).Pressed += OnLoadSavedButtonPressed;
+		GetNode<Button>(START_NEW_BUTTON).Pressed += OnStartNewButtonPressed;
+		GetNode<Button>(BACK_TO_MAIN_BUTTON).Pressed += OnBackToMainButtonPressed;
 	}
 
 	//Main Button Handlers
@@ -81,7 +80,7 @@ public partial class Main_Menu : Control {
 	private void OnSettingsButtonPressed() {
 		// Only one settings overlay at a time
 		if(SettingsInstance == null || !SettingsInstance.IsInsideTree()) {
-			SettingsInstance = SettingsMenu.Instantiate<Control>();
+			SettingsInstance = SettingsMenu?.Instantiate<Control>();
 			AddChild(SettingsInstance);
 
 			// Let the settings menu decide its own ProcessMode (it sets Always in _Ready)
@@ -89,13 +88,8 @@ public partial class Main_Menu : Control {
 		}
 
 		// Just ensure it's visible when button is pressed
-		SettingsInstance.Visible = true;
+		SettingsInstance?.Visible = true;
 	}
-
-	// private void OnSettingsButtonPressed() {
-	// 	GD.Print("Settings button was pressed!");
-	// 	GetTree().ChangeSceneToFile("res://Settings Menu/Settings_Menu.tscn");
-	// }
 
 	private void OnQuitButtonPressed() {
 		GD.Print("Quit button was pressed!");
@@ -111,22 +105,18 @@ public partial class Main_Menu : Control {
 	private void HidePopup(double delay = 0.2) {
 		GetTree().CreateTimer(delay).Timeout += () => {
 			Vector2 mousePos = GetViewport().GetMousePosition();
+
 			bool insideStartButton = StartButton.GetGlobalRect().HasPoint(mousePos);
 			bool insidePanel = StartButtonPanel.GetGlobalRect().HasPoint(mousePos);
 
-			if(!insideStartButton && !insidePanel) { StartButtonPanel.Visible = false; }
+			if(!insideStartButton && !insidePanel) {
+				StartButtonPanel.Visible = false;
+			}
 		};
 	}
 
-	private void OnStartButtonUnhover() {
-		HidePopup();
-	}
-
-	private void OnPanelMouseExited() {
-		HidePopup();
-	}
-
-	private enum MenuMode { Online, Local, PrivateMatch }
+	private void OnStartButtonUnhover() => HidePopup();
+	private void OnPanelMouseExited() => HidePopup();
 
 	//Pop-up panel Buttons Handler
 	private void StartOnlineGame() {
@@ -135,8 +125,8 @@ public partial class Main_Menu : Control {
 
 	private void StartLocalGame() {
 		GD.Print("Starting Local Game...");
-		GetNode<Control>("Local_Overlay_Panel").Visible = true;
-		GetNode<Control>("Start_Button_Panel").Visible = false;
+		LocalOverlayPanel.Visible = true;
+		StartButtonPanel.Visible = false;
 	}
 
 	private void StartPrivateMatch() {
@@ -163,12 +153,12 @@ public partial class Main_Menu : Control {
 	}
 
 	private void LoadGameScene() {
-		GetTree().ChangeSceneToFile("res://Initial Scene/initial_player_scene.tscn");
+		GetTree().ChangeSceneToFile(GAME_SCENE);
 	}
 
 	private void OnBackToMainButtonPressed() {
 		GD.Print("Back button was pressed!");
-		GetNode<Control>("Local_Overlay_Panel").Visible = false;
-		GetNode<Control>("Start_Button_Panel").Visible = true;
+		LocalOverlayPanel.Visible = false;
+		StartButtonPanel.Visible = true;
 	}
 }
