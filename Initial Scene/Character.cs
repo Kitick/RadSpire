@@ -2,21 +2,87 @@ using Godot;
 using System;
 using SaveSystem;
 using System.Data.Common;
+using System.Runtime.InteropServices.Marshalling;
 
-public partial class Character : CharacterBody3D, ISaveable<CharacterData> {
+public abstract partial class Character : CharacterBody3D, ISaveable<CharacterData> {
     [Export] private string characterName = "Unnamed";
     [Export] private float maxHealth = 100f;
     [Export] private bool isInvincible = false;
+    [Export] private float speed = 2.0f;
+    [Export] private float rotationSpeed = 5.0f;
+    [Export] private float fallAcceleration = 9.8f;
+    [Export] private float jumpForce = 6.0f;
+    [Export] private string type = "Neutral";
+    [Export] private bool useGravity = true;
     private float currentHealth;
     private bool isAlive;
+    private Vector3 moveDirection = Vector3.Zero;
+    private Vector3 faceDirection = Vector3.Zero;
 
     [Signal] public delegate void HealthChangeEventHandler(float amount, float newValue);
     [Signal] public delegate void DiedEventHandler();
     [Signal] public delegate void ReviveEventHandler(float newHealth);
 
-	public override void _Ready() {
+    public override void _Ready() {
         currentHealth = maxHealth;
         isAlive = true;
+        Velocity = Vector3.Zero;
+    }
+
+    public override void _PhysicsProcess(double delta) {
+        float dt = (float)delta;
+        ApplyGravity(dt);
+        MatchRotationToDirection(dt);
+        MoveCharacter(dt);
+    }
+
+    protected virtual void ApplyGravity(float delta) {
+        if(useGravity) {
+            if(!IsOnFloor()) {
+                Velocity = new Vector3(Velocity.X, Velocity.Y - fallAcceleration * delta, Velocity.Z);
+            }
+            else if(Velocity.Y < 0) {
+                Velocity = new Vector3(Velocity.X, 0, Velocity.Z);
+            }    
+        }
+    }
+
+    protected virtual void MoveCharacter(float delta) {
+        if(isAlive) {
+            Vector3 newVelocity = Vector3.Zero;
+            newVelocity.X = moveDirection.X * speed;
+            newVelocity.Y = Velocity.Y;
+            newVelocity.Z = moveDirection.Z * speed;
+            Velocity = newVelocity;
+            MoveAndSlide();    
+        }
+    }
+
+    protected virtual void MatchRotationToDirection(float delta) {
+        if(isAlive) {
+            if(moveDirection.LengthSquared() > 0.0f) {
+                Vector3 newRotationVec = Vector3.Zero;
+                newRotationVec.Y = Mathf.RadToDeg(Mathf.Atan2(faceDirection.X, faceDirection.Z));
+                Transform3D newRotation = Transform;
+                newRotation.Basis = new Basis(Vector3.Up, Mathf.DegToRad(newRotationVec.Y));
+                Quaternion newRotationQ = new Quaternion(newRotation.Basis);
+                Transform3D curRotation = Transform;
+                Quaternion curRotationQ = new Quaternion(curRotation.Basis);
+                float weight = 1f - Mathf.Exp(-rotationSpeed * delta);
+                curRotationQ = curRotationQ.Slerp(newRotationQ, weight);
+                curRotation.Basis = new Basis(curRotationQ);
+                Transform = curRotation;
+            }
+        }
+    }
+
+    protected virtual void Jump() {
+        if(isAlive) {
+            if(IsOnFloor()) {
+                Velocity = new Vector3(Velocity.X, jumpForce, Velocity.Z);
+            }
+        }
+
     }
 
     public virtual void TakeDamage(float amount) {
@@ -99,18 +165,90 @@ public partial class Character : CharacterBody3D, ISaveable<CharacterData> {
         return isAlive;
     }
 
+    protected void setSpeed(float s) {
+        speed = s;
+    }
+
+    public float getSpeed() {
+        return speed;
+    }
+
+    protected void setRotationSpeed(float r) {
+        rotationSpeed = r;
+    }
+
+    public float getRotationSpeed() {
+        return rotationSpeed;
+    }
+
+    protected void setFallAcceleration(float f) {
+        fallAcceleration = f;
+    }
+
+    public float getFallAcceleration() {
+        return fallAcceleration;
+    }
+
+    protected void setJumpForce(float j) {
+        jumpForce = j;
+    }
+
+    public float getJumpForce() {
+        return jumpForce;
+    }
+
+    protected void setType(string t) {
+        type = t;
+    }
+
+    public string getType() {
+        return type;
+    }
+
+    protected void setUseGravity(bool u) {
+        useGravity = u;
+    }
+
+    public bool getUseGravity() {
+        return useGravity;
+    }
+
+    protected void setMoveDirection(Vector3 d) {
+        moveDirection = d;
+    }
+
+    public Vector3 getMoveDirection() {
+        return moveDirection;
+    }
+
+    protected void setFaceDirection(Vector3 f) {
+        faceDirection = f;
+    }
+
+    public Vector3 getFaceDirection() {
+        return faceDirection;
+    }
+
     // ISaveable implementation
-	public CharacterData Serialize() {
-		return new CharacterData {
+    public CharacterData Serialize() {
+        return new CharacterData {
             CharacterName = characterName,
             CurrentHealth = currentHealth,
             MaxHealth = maxHealth,
             IsInvincible = isInvincible,
             IsAlive = isAlive,
             Position = GlobalPosition,
-            Rotation = GlobalRotation
+            Rotation = GlobalRotation,
+            Speed = speed,
+            RotationSpeed = rotationSpeed,
+            FallAcceleration = fallAcceleration,
+            JumpForce = jumpForce,
+            Type = type,
+            UseGravity = useGravity,
+            MoveDirection = moveDirection,
+            FaceDirection = faceDirection
         };
-	}
+    }
 
 	public void Deserialize(in CharacterData data) {
         characterName = data.CharacterName;
@@ -120,6 +258,13 @@ public partial class Character : CharacterBody3D, ISaveable<CharacterData> {
         isAlive = data.IsAlive;
         GlobalPosition = data.Position;
         GlobalRotation = data.Rotation;
-        
+        speed = data.Speed;
+        rotationSpeed = data.RotationSpeed;
+        fallAcceleration = data.FallAcceleration;
+        jumpForce = data.JumpForce;
+        type = data.Type;
+        useGravity = data.UseGravity;
+        moveDirection = data.MoveDirection;
+        faceDirection = data.FaceDirection;
 	}
 }
