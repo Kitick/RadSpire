@@ -43,4 +43,12 @@ namespace SaveSystem {
 		public float MusicVolume { get; init; }
 		public float SFXVolume { get; init; }
 	}
+
+	public readonly record struct CharacterData : ISaveData {
+		public float CurrentHealth { get; init; }
+		public string CharacterName { get; init; }
+		public float MaxHealth { get; init; }
+		public bool IsInvincible { get; init; }
+		public bool IsAlive { get; init; }
+	}
 }
