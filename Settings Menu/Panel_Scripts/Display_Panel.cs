@@ -1,20 +1,21 @@
 using Godot;
-
-readonly record struct Resolution {
-	public int Width { get; init; }
-	public int Height { get; init; }
-
-	public override string ToString() => $"{Width}x{Height}";
-}
-
-readonly record struct FPSOption {
-	public int Value { get; init; }
-
-	public override string ToString() => Value == 0 ? "Unlimited" : $"{Value} FPS";
-}
+using SaveSystem;
 
 namespace SettingsPanels {
-	public partial class Display_Panel : VBoxContainer {
+	public readonly record struct Resolution {
+		public int Width { get; init; }
+		public int Height { get; init; }
+
+		public override string ToString() => $"{Width}x{Height}";
+	}
+
+	public readonly record struct FPS {
+		public int Value { get; init; }
+
+		public override string ToString() => Value == 0 ? "Unlimited" : $"{Value} FPS";
+	}
+
+	public partial class Display_Panel : VBoxContainer, ISaveable<DisplaySettings> {
 		// Paths
 		private const string RESOLUTION = "Resolution/OptionButton";
 		private const string FULLSCREEN = "Fullscreen/CheckBox";
@@ -29,11 +30,11 @@ namespace SettingsPanels {
 			new Resolution { Width = 1280, Height = 720 },
 		];
 
-		private static readonly FPSOption[] FPS_OPTIONS = [
-			new FPSOption { Value = 30 },
-			new FPSOption { Value = 60 },
-			new FPSOption { Value = 120 },
-			new FPSOption { Value = 0 }, // Unlimited
+		private static readonly FPS[] FPS_OPTIONS = [
+			new FPS { Value = 30 },
+			new FPS { Value = 60 },
+			new FPS { Value = 120 },
+			new FPS { Value = 0 }, // Unlimited
 		];
 
 		public override void _Ready() {
@@ -75,7 +76,7 @@ namespace SettingsPanels {
 			ProjectSettings.Save();
 		}
 
-		private static void SetFPS(FPSOption fps) {
+		private static void SetFPS(FPS fps) {
 			GD.Print($"Setting FPS cap to: {fps}");
 			Engine.MaxFps = fps.Value;
 		}
@@ -83,5 +84,37 @@ namespace SettingsPanels {
 		// Callbacks
 		private void OnResolutionSelected(long index) => SetResolution(RESOLUTION_OPTIONS[(int)index]);
 		private void OnFPSCapSelected(long index) => SetFPS(FPS_OPTIONS[(int)index]);
+
+		// ISaveable implementation
+		public DisplaySettings Serialize() {
+			Resolution selectedResolution = RESOLUTION_OPTIONS[GetNode<OptionButton>(RESOLUTION).Selected];
+			FPS selectedFPS = FPS_OPTIONS[GetNode<OptionButton>(FPS_CAP).Selected];
+
+			return new DisplaySettings {
+				Resolution = selectedResolution,
+				IsFullscreen = GetNode<CheckBox>(FULLSCREEN).ButtonPressed,
+				IsVSyncEnabled = GetNode<CheckBox>(VSYNC).ButtonPressed,
+				Brightness = (float)GetNode<HSlider>(BRIGHTNESS).Value,
+				FPSCap = selectedFPS.Value
+			};
+		}
+
+		public void Deserialize(in DisplaySettings data) {
+			SetResolution(data.Resolution);
+			GetNode<OptionButton>(RESOLUTION).Select(data.Resolution);
+
+			SetFullscreen(data.IsFullscreen);
+			GetNode<CheckBox>(FULLSCREEN).ButtonPressed = data.IsFullscreen;
+
+			SetVSync(data.IsVSyncEnabled);
+			GetNode<CheckBox>(VSYNC).ButtonPressed = data.IsVSyncEnabled;
+
+			SetBrightness(data.Brightness);
+			GetNode<HSlider>(BRIGHTNESS).Value = data.Brightness;
+
+			FPS fps = new FPS { Value = data.FPSCap };
+			SetFPS(fps);
+			GetNode<OptionButton>(FPS_CAP).Select(fps);
+		}
 	}
 }

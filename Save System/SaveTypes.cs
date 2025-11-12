@@ -33,17 +33,6 @@ namespace SaveSystem {
 		public CameraRigData CameraRig { get; init; }
 	}
 
-	public enum FullscreenMode { Windowed, Borderless, Fullscreen }
-
-	public readonly record struct GameSettings : ISaveData {
-		public int ResolutionWidth { get; init; }
-		public int ResolutionHeight { get; init; }
-		public FullscreenMode Fullscreen { get; init; }
-
-		public float MusicVolume { get; init; }
-		public float SFXVolume { get; init; }
-	}
-
 	public readonly record struct CharacterData : ISaveData {
 		public float CurrentHealth { get; init; }
 		public string CharacterName { get; init; }

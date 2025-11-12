@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Godot;
+using SaveSystem;
 
 namespace SettingsPanels {
 	public enum AudioBus { Master, Music, SFX }
@@ -29,7 +30,7 @@ namespace SettingsPanels {
 		}
 	}
 
-	public partial class Sound_Panel : VBoxContainer {
+	public partial class Sound_Panel : VBoxContainer, ISaveable<SoundSettings> {
 		// Paths
 		private const string MASTER_SLIDER = "Master_Volume/HSlider";
 		private const string MUSIC_SLIDER = "Music_Volume/HSlider";
@@ -129,6 +130,32 @@ namespace SettingsPanels {
 		private void OnOutputDeviceSelected(long index) {
 			string selectedDevice = OutputDeviceOption.GetItemText((int)index);
 			SetOutputDevice(selectedDevice);
+		}
+
+		public SoundSettings Serialize() {
+			return new SoundSettings {
+				MasterVolume = AudioBus.Master.GetVolume(),
+				MusicVolume = AudioBus.Music.GetVolume(),
+				SFXVolume = AudioBus.SFX.GetVolume(),
+				IsMuted = AudioBus.Master.IsMuted(),
+				OutputDevice = AudioServer.OutputDevice
+			};
+		}
+
+		public void Deserialize(in SoundSettings data) {
+			AudioBus.Master.SetVolume(data.MasterVolume);
+			AudioBus.Music.SetVolume(data.MusicVolume);
+			AudioBus.SFX.SetVolume(data.SFXVolume);
+			AudioBus.Master.SetMuted(data.IsMuted);
+			SetOutputDevice(data.OutputDevice);
+
+			// Update UI sliders to reflect loaded values
+			GetNode<HSlider>(MASTER_SLIDER).Value = data.MasterVolume;
+			GetNode<HSlider>(MUSIC_SLIDER).Value = data.MusicVolume;
+			GetNode<HSlider>(SFX_SLIDER).Value = data.SFXVolume;
+			GetNode<CheckBox>(MUTE_ALL_CHECKBOX).ButtonPressed = data.IsMuted;
+
+			OutputDeviceOption.Select(data.OutputDevice);
 		}
 	}
 }
