@@ -2,77 +2,76 @@ using System;
 using Godot;
 
 public partial class PlayerAnimator : Node3D {
-	[Export] private Player? player;
-	[Export] private AnimationPlayer? animationPlayer;
-	private string currentAction;
+	private const string IDLE = "Idle";
+	private const string WALKING = "Walking_B";
+	private const string RUNNING = "Running_B";
+	private const string CROUCHING = "Walking_C";
+	private const string JUMP_START = "Jump_Start";
+	private const string JUMP_IDLE = "Jump_Idle";
+	private const string JUMP_LAND = "Jump_Land";
+
+	private Player Player = null!;
+	private AnimationPlayer AnimationPlayer = null!;
+
+	private Player.MovementEvent currentAction = Player.MovementEvent.Stop;
 
 	public override void _Ready() {
-		player = GetParent<Player>();
-		animationPlayer = GetNode<AnimationPlayer>("AnimationPlayer");
-		if(player != null) {
-			player.PlayerMovement += OnPlayerMovement;
-			OnPlayerMovement("move_stop");
-		}
-		if(animationPlayer != null) {
-			Animation? a;
-			a = animationPlayer.GetAnimation("Idle");
-			if(a != null) {
-				a.LoopMode = Animation.LoopModeEnum.Linear;
-			}
-			a = animationPlayer.GetAnimation("Walking_B");
-			if(a != null) {
-				a.LoopMode = Animation.LoopModeEnum.Linear;
-			}
-			a = animationPlayer.GetAnimation("Running_B");
-			if(a != null) {
-				a.LoopMode = Animation.LoopModeEnum.Linear;
-			}
-			a = animationPlayer.GetAnimation("Walking_C");
-			if(a != null) {
-				a.LoopMode = Animation.LoopModeEnum.Linear;
-			}
-			a = animationPlayer.GetAnimation("Jump_Idle");
-			if(a != null) {
-				a.LoopMode = Animation.LoopModeEnum.Linear;
-			}
-			animationPlayer.Play("Idle");
-			currentAction = "move_stop";
-		}
+		GetComponents();
+		SetupAnimations();
 	}
 
-	void OnPlayerMovement(string action) {
-		if(animationPlayer == null || player == null) {
-			return;
-		}
-		if(currentAction == action) {
-			return;
-		}
+	private void GetComponents() {
+		Player = GetParent<Player>();
+		Player.PlayerMovement += OnPlayerMovement;
+		OnPlayerMovement(Player.MovementEvent.Stop);
+
+		AnimationPlayer = GetNode<AnimationPlayer>("AnimationPlayer");
+	}
+
+	private void SetupAnimations() {
+		SetLoopMode(IDLE);
+		SetLoopMode(WALKING);
+		SetLoopMode(RUNNING);
+		SetLoopMode(CROUCHING);
+		SetLoopMode(JUMP_IDLE);
+
+		AnimationPlayer.Play(IDLE);
+		currentAction = Player.MovementEvent.Stop;
+	}
+
+	private void SetLoopMode(string name) {
+		AnimationPlayer.GetAnimation(name).LoopMode = Animation.LoopModeEnum.Linear;
+	}
+
+	void OnPlayerMovement(Player.MovementEvent action) {
+		if(currentAction == action) { return; }
 		currentAction = action;
+
 		switch(currentAction) {
-			case "move_start":
-				animationPlayer.Play("Walking_B");
+			case Player.MovementEvent.Start:
+				AnimationPlayer.Play(WALKING);
 				break;
-			case "move_stop":
-				animationPlayer.Play("Idle");
+			case Player.MovementEvent.Stop:
+				AnimationPlayer.Play(IDLE);
 				break;
-			case "jump":
-				animationPlayer.Play("Jump_Start");
-				animationPlayer.Queue("Jump_Idle");
+			case Player.MovementEvent.Jump:
+				AnimationPlayer.Play(JUMP_START);
+				AnimationPlayer.Queue(JUMP_IDLE);
 				break;
-			case "land":
-				animationPlayer.Play("Jump_Land");
+			case Player.MovementEvent.Land:
+				AnimationPlayer.Play(JUMP_LAND);
 				break;
-			case "sprint_start":
-				animationPlayer.Play("Running_B");
+			case Player.MovementEvent.SprintStart:
+				AnimationPlayer.Play(RUNNING);
 				break;
-			case "sprint_stop":
-				animationPlayer.Play("Walking_B");
+			case Player.MovementEvent.SprintStop:
+				AnimationPlayer.Play(WALKING);
 				break;
-			case "crouch_start":
-				animationPlayer.Play("Walking_C");
+			case Player.MovementEvent.CrouchStart:
+				AnimationPlayer.Play(CROUCHING);
 				break;
-			case "crouch_stop":
-				animationPlayer.Play("Walking_B");
+			case Player.MovementEvent.CrouchStop:
+				AnimationPlayer.Play(WALKING);
 				break;
 		}
 	}

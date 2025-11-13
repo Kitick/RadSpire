@@ -2,106 +2,184 @@ using System;
 using Godot;
 using SaveSystem;
 
-public partial class Player : Character, ISaveable<PlayerData> {
-	[Export] private float DefaultSprintMultiplier = 2.0f;
-	[Export] private float DefaultCrouchMultiplier = 0.5f;
-	[Export] private float DefaultFriction = 10.0f;
-	[Export] private float PlayerMaxHealth = 200f;
-	[Signal] public delegate void SprintStartEventHandler();
-	[Signal] public delegate void SprintEndEventHandler();
-	[Signal] public delegate void CrouchStartEventHandler();
-	[Signal] public delegate void CrouchEndEventHandler();
-	private bool IsCrouching = false;
-	private bool IsSprinting = false;
+public partial class Player : CharacterBody3D, ISaveable<PlayerData> {
+	public enum MovementEvent {
+		Start, Stop, Jump, Land,
+		Forward, Back, Left, Right,
+		SprintStart, SprintStop,
+		CrouchStart, CrouchStop,
+	}
+
+	private const string HUD = "res://HUD/UI.tscn";
+
+	private const string JUMP = "jump";
+	private const string SPRINT = "sprint";
+	private const string CROUCH = "crouch";
+
+	private const string FORWARD = "move_forward";
+	private const string BACK = "move_back";
+	private const string LEFT = "move_left";
+	private const string RIGHT = "move_right";
+
+	private const float EPSILON = 0.01f;
+
+	[Export] private float BaseSpeed = 2.0f;
+	[Export] private float BaseRotationSpeed = 4.0f;
+
+	[Export] private float SprintMultiplier = 2.0f;
+	[Export] private float CrouchMultiplier = 0.5f;
+	[Export] private float Friction = 10.0f;
+
+	[Export] private Vector3 JumpVelocity = 4.5f * Vector3.Up;
+	private Vector3 Acceleration => IsInAir ? 9.8f * Vector3.Down : Vector3.Zero;
+
+	private Vector3 HorizontalInput = Vector3.Zero;
+
+	private bool IsCrouching {
+		get;
+		set {
+			if(field != value) {
+				field = value;
+				PlayerMovement?.Invoke(value ? MovementEvent.CrouchStart : MovementEvent.CrouchStop);
+			}
+		}
+	}
+	private bool IsSprinting {
+		get;
+		set {
+			if(field != value) {
+				field = value;
+				PlayerMovement?.Invoke(value ? MovementEvent.SprintStart : MovementEvent.SprintStop);
+			}
+		}
+	}
+	private bool IsMoving {
+		get;
+		set {
+			if(field != value) {
+				field = value;
+				PlayerMovement?.Invoke(value ? MovementEvent.Start : MovementEvent.Stop);
+			}
+		}
+	}
+	private bool IsInAir {
+		get;
+		set {
+			if(field != value) {
+				field = value;
+				PlayerMovement?.Invoke(value ? MovementEvent.Jump : MovementEvent.Land);
+			}
+		}
+	}
+
+	public event Action<MovementEvent>? PlayerMovement;
 
 	public override void _Ready() {
-		base._Ready();
 		GameManager.Player = this;
 
-		var hudScene = GD.Load<PackedScene>("res://HUD/UI.tscn");
+		var hudScene = GD.Load<PackedScene>(HUD);
 		var hud = hudScene.Instantiate<CanvasLayer>(); // root of UI.tscn is CanvasLayer
 		AddChild(hud); // adds HUD under Player
-		CharacterName = "Player";
-		MaxHealth = PlayerMaxHealth;
-		Type = "Player";
 	}
 
 	public override void _PhysicsProcess(double delta) {
-		MoveDirection = GetHorizontalInput();
-		FaceDirection = MoveDirection;
-		SpeedModifier = playerSpeed();
-		base._PhysicsProcess(delta);
+		float dt = (float)delta;
+
+		UpdateMovementState();
+		HorizontalInput = GetHorizontalInput();
+		HandleInputs();
+
+		float multiplier = GetPlayerSpeed();
+
+		if(HorizontalInput != Vector3.Zero) {
+			var move = HorizontalInput * BaseSpeed * multiplier;
+
+			Velocity = new Vector3(move.X, Velocity.Y, move.Z);
+		}
+		else {
+			float weight = 1f - Mathf.Exp(-Friction * dt);
+
+			var x = Mathf.Lerp(Velocity.X, 0.0f, weight);
+			var z = Mathf.Lerp(Velocity.Z, 0.0f, weight);
+
+			Velocity = new Vector3(x, Velocity.Y, z);
+		}
+
+		Velocity += Acceleration * dt;
+
+		MatchRotationToDirection(Velocity, multiplier, dt);
+		MoveAndSlide();
+	}
+
+	private void UpdateMovementState() {
+		IsMoving = HorizontalInput.Length() >= EPSILON;
+		IsInAir = !IsOnFloor();
 	}
 
 	private static Vector3 GetHorizontalInput() {
 		Vector3 direction = Vector3.Zero;
 
-		if(Input.IsActionPressed("move_forward")) {
-			direction.Z -= 1.0f;
-		}
-		if(Input.IsActionPressed("move_back")) {
-			direction.Z += 1.0f;
-		}
-		if(Input.IsActionPressed("move_right")) {
-			direction.X += 1.0f;
-		}
-		if(Input.IsActionPressed("move_left")) {
-			direction.X -= 1.0f;
-		}
+		if(Input.IsActionPressed(FORWARD)) { direction += Vector3.Forward; }
+		if(Input.IsActionPressed(BACK)) { direction += Vector3.Back; }
+		if(Input.IsActionPressed(RIGHT)) { direction += Vector3.Right; }
+		if(Input.IsActionPressed(LEFT)) { direction += Vector3.Left; }
 
 		return direction.Normalized();
 	}
 
-	private float playerSpeed() {
-		float multiplier = 1.0f;
-
-		if(Input.IsActionPressed("sprint")) {
-			multiplier *= DefaultSprintMultiplier;
-			if(!IsSprinting) {
-				IsSprinting = true;
-				EmitSignal(SignalName.SprintStart);
-			}
+	private void HandleInputs(){
+		if(Input.IsActionPressed(JUMP) && !IsInAir) {
+			Velocity += JumpVelocity;
 		}
-		else if(Input.IsActionPressed("crouch")) {
-			multiplier *= DefaultCrouchMultiplier;
-			if(!IsCrouching) {
-				IsCrouching = true;
-				EmitSignal(SignalName.CrouchStart);
-			}
+
+		if(!IsMoving){ return; }
+
+		if(Input.IsActionPressed(CROUCH)) {
+			IsCrouching = true;
+		}
+		else if(Input.IsActionPressed(SPRINT)) {
+			IsSprinting = true;
 		}
 		else {
-			if(IsSprinting) {
-				IsSprinting = false;
-				EmitSignal(SignalName.SprintEnd);
-			}
-			if(IsCrouching) {
-				IsCrouching = false;
-				EmitSignal(SignalName.CrouchEnd);
-			}
+			IsSprinting = false;
+			IsCrouching = false;
 		}
+	}
+
+	private float GetPlayerSpeed() {
+		float multiplier = 1.0f;
+
+		if(IsCrouching) { multiplier *= CrouchMultiplier; }
+		if(IsSprinting) { multiplier *= SprintMultiplier; }
+
 		return multiplier;
+	}
+
+	private void MatchRotationToDirection(Vector3 direction, float magnitude, float dt) {
+		if(direction.Length() < EPSILON) { return; }
+
+		Vector3 newRotationVec = Vector3.Zero;
+		newRotationVec.Y = Mathf.RadToDeg(Mathf.Atan2(direction.X, direction.Z));
+		Transform3D newRotation = Transform;
+		newRotation.Basis = new Basis(Vector3.Up, Mathf.DegToRad(newRotationVec.Y));
+		Quaternion newRotationQ = new Quaternion(newRotation.Basis);
+		Transform3D curRotation = Transform;
+		Quaternion curRotationQ = new Quaternion(curRotation.Basis);
+		float rotationSpeed = BaseRotationSpeed * magnitude;
+		float weight = 1f - Mathf.Exp(-rotationSpeed * dt);
+		curRotationQ = curRotationQ.Slerp(newRotationQ, weight);
+		curRotation.Basis = new Basis(curRotationQ);
+		Transform = curRotation;
 	}
 
 	// ISaveable implementation
 	public PlayerData Serialize() {
 		return new PlayerData {
-			Character = base.Serialize(),
-			DefaultSprintMultiplier = DefaultSprintMultiplier,
-			DefaultCrouchMultiplier = DefaultCrouchMultiplier,
-			DefaultFriction = DefaultFriction,
-			PlayerMaxHealth = PlayerMaxHealth,
-			IsCrouching = IsCrouching,
-			IsSprinting = IsSprinting
+
 		};
 	}
 
 	public void Deserialize(in PlayerData data) {
-		base.Deserialize(data.Character);
-		DefaultSprintMultiplier = data.DefaultSprintMultiplier;
-		DefaultCrouchMultiplier = data.DefaultCrouchMultiplier;
-		DefaultFriction = data.DefaultFriction;
-		PlayerMaxHealth = data.PlayerMaxHealth;
-		IsCrouching = data.IsCrouching;
-		IsSprinting = data.IsSprinting;
+
 	}
 }
