@@ -13,7 +13,6 @@ namespace SaveSystem {
 		public float DefaultCrouchMultiplier { get; init; }
 		public float DefaultFriction { get; init; }
 		public float PlayerMaxHealth { get; init; }
-		public Vector3 HorizontalInput { get; init; }
 		public bool IsCrouching { get; init; }
 		public bool IsSprinting { get; init; }
 	}

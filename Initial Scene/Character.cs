@@ -4,7 +4,7 @@ using SaveSystem;
 
 public abstract partial class Character : CharacterBody3D, ISaveable<CharacterData> {
     [Export] public string CharacterName { get; protected set; } = "Unnamed";
-    [Export] public float MaxHealth { get; protected set { CurrentHealth = MaxHealth;} } = 100f;
+    [Export] public float MaxHealth { get; protected set { CurrentHealth = MaxHealth; } } = 100f;
     [Export] public bool IsInvincible { get; protected set; } = false;
     [Export] public float Speed { get; protected set; } = 2.0f;
     [Export] public float SpeedModifier { get; protected set; } = 1.0f;
@@ -18,7 +18,7 @@ public abstract partial class Character : CharacterBody3D, ISaveable<CharacterDa
     public Vector3 MoveDirection { get; protected set; } = Vector3.Zero;
     public Vector3 FaceDirection { get; protected set; } = Vector3.Zero;
     public bool InAir { get; private set; } = false;
-    public bool Moving { get{ return isMoving(); } private set; } = false;
+    public bool Moving { get; private set; } = false;
 
     [Signal] public delegate void TookDamageEventHandler(float amount, float newHealth);
     [Signal] public delegate void HealedEventHandler(float amount, float newHealth);
@@ -155,7 +155,7 @@ public abstract partial class Character : CharacterBody3D, ISaveable<CharacterDa
         return false;
     }
 
-    public virtual bool isMoving() {
+    public virtual bool IsMoving() {
         if(IsAlive) {
             if(MoveDirection.LengthSquared() > 0.1f) {
                 return true;

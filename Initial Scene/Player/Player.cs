@@ -1,20 +1,18 @@
 using System;
-using System.Data.Common;
 using Godot;
 using SaveSystem;
 
 public partial class Player : Character, ISaveable<PlayerData> {
-	[Export] private float defaultSprintMultiplier = 2.0f;
-	[Export] private float defaultCrouchMultiplier = 0.5f;
-	[Export] private float defaultFriction = 10.0f;
-	[Export] private float playerMaxHealth = 200f;
+	[Export] private float DefaultSprintMultiplier = 2.0f;
+	[Export] private float DefaultCrouchMultiplier = 0.5f;
+	[Export] private float DefaultFriction = 10.0f;
+	[Export] private float PlayerMaxHealth = 200f;
 	[Signal] public delegate void SprintStartEventHandler();
 	[Signal] public delegate void SprintEndEventHandler();
 	[Signal] public delegate void CrouchStartEventHandler();
 	[Signal] public delegate void CrouchEndEventHandler();
-	private Vector3 horizontalInput = Vector3.Zero;
-	private bool isCrouching = false;
-	private bool isSprinting = false;
+	private bool IsCrouching = false;
+	private bool IsSprinting = false;
 
 	public override void _Ready() {
 		base._Ready();
@@ -23,25 +21,16 @@ public partial class Player : Character, ISaveable<PlayerData> {
 		var hudScene = GD.Load<PackedScene>("res://HUD/UI.tscn");
 		var hud = hudScene.Instantiate<CanvasLayer>(); // root of UI.tscn is CanvasLayer
 		AddChild(hud); // adds HUD under Player
-		setCharacterName("Player");
-		setMaxHealth(playerMaxHealth);
-		setType("Player");
+		CharacterName = "Player";
+		MaxHealth = PlayerMaxHealth;
+		Type = "Player";
 	}
 
 	public override void _PhysicsProcess(double delta) {
-		horizontalInput = GetHorizontalInput();
-		float multiplier = playerSpeed();
-		setSpeedModifier(multiplier);
-
+		MoveDirection = GetHorizontalInput();
+		FaceDirection = MoveDirection;
+		SpeedModifier = playerSpeed();
 		base._PhysicsProcess(delta);
-
-		Vector3 newVelocity;
-		if (horizontalInput == Vector3.Zero) {
-			newVelocity = Velocity;
-			float weight = 1f - Mathf.Exp(-defaultFriction * (float)delta);
-			newVelocity.X = Mathf.Lerp(newVelocity.X, 0.0f, weight);
-			newVelocity.Z = Mathf.Lerp(newVelocity.Z, 0.0f, weight);
-		}
 	}
 
 	private static Vector3 GetHorizontalInput() {
@@ -67,26 +56,26 @@ public partial class Player : Character, ISaveable<PlayerData> {
 		float multiplier = 1.0f;
 
 		if (Input.IsActionPressed("sprint")) {
-			multiplier *= defaultSprintMultiplier;
-			if (!isSprinting) {
-				isSprinting = true;
-				EmitSignal(SignalName.CrouchStart);
+			multiplier *= DefaultSprintMultiplier;
+			if (!IsSprinting) {
+				IsSprinting = true;
+				EmitSignal(SignalName.SprintStart);
 			}
 		}
 		else if (Input.IsActionPressed("crouch")) {
-			multiplier *= defaultCrouchMultiplier;
-			if (!isCrouching) {
-				isCrouching = true;
+			multiplier *= DefaultCrouchMultiplier;
+			if (!IsCrouching) {
+				IsCrouching = true;
 				EmitSignal(SignalName.CrouchStart);
 			}
 		}
 		else {
-			if (isSprinting) {
-				isSprinting = false;
+			if (IsSprinting) {
+				IsSprinting = false;
 				EmitSignal(SignalName.SprintEnd);
 			}
-			if (isCrouching) {
-				isCrouching = false;
+			if (IsCrouching) {
+				IsCrouching = false;
 				EmitSignal(SignalName.CrouchEnd);
 			}
 		}
@@ -96,23 +85,21 @@ public partial class Player : Character, ISaveable<PlayerData> {
 	// ISaveable implementation
 	public PlayerData Serialize() {
 		return new PlayerData {
-			DefaultSprintMultiplier = defaultSprintMultiplier,
-			DefaultCrouchMultiplier = defaultCrouchMultiplier,
-			DefaultFriction = defaultFriction,
-			PlayerMaxHealth = playerMaxHealth,
-			HorizontalInput = horizontalInput,
-			IsCrouching = isCrouching,
-			IsSprinting = isSprinting
+			DefaultSprintMultiplier = DefaultSprintMultiplier,
+			DefaultCrouchMultiplier = DefaultCrouchMultiplier,
+			DefaultFriction = DefaultFriction,
+			PlayerMaxHealth = PlayerMaxHealth,
+			IsCrouching = IsCrouching,
+			IsSprinting = IsSprinting
 		};
 	}
 
 	public void Deserialize(in PlayerData data) {
-		defaultSprintMultiplier = data.DefaultSprintMultiplier;
-		defaultCrouchMultiplier = data.DefaultCrouchMultiplier;
-		defaultFriction = data.DefaultFriction;
-		playerMaxHealth = data.PlayerMaxHealth;
-		horizontalInput = data.HorizontalInput;
-		isCrouching = data.IsCrouching;
-		isSprinting = data.IsSprinting;
+		DefaultSprintMultiplier = data.DefaultSprintMultiplier;
+		DefaultCrouchMultiplier = data.DefaultCrouchMultiplier;
+		DefaultFriction = data.DefaultFriction;
+		PlayerMaxHealth = data.PlayerMaxHealth;
+		IsCrouching = data.IsCrouching;
+		IsSprinting = data.IsSprinting;
 	}
 }
