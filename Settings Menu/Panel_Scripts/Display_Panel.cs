@@ -16,14 +16,15 @@ namespace SettingsPanels {
 	}
 
 	public partial class Display_Panel : VBoxContainer, ISaveable<DisplaySettings> {
-		// Paths
+		//Node Paths
 		private const string RESOLUTION = "Resolution/OptionButton";
 		private const string FULLSCREEN = "Fullscreen/CheckBox";
 		private const string VSYNC = "VSync/CheckBox";
 		private const string BRIGHTNESS = "Brightness/HSlider";
+		private const string WORLD_ENVIRONMENT = "res://World Environment/World_Environment.tscn";
 		private const string FPS_CAP = "FPS_Cap/OptionButton";
 
-		// Options
+		//Options
 		private static readonly Resolution[] RESOLUTION_OPTIONS = [
 			new Resolution { Width = 2560, Height = 1440 },
 			new Resolution { Width = 1920, Height = 1080 },
@@ -34,12 +35,14 @@ namespace SettingsPanels {
 			new FPS { Value = 30 },
 			new FPS { Value = 60 },
 			new FPS { Value = 120 },
-			new FPS { Value = 0 }, // Unlimited
+			new FPS { Value = 0 }, //Unlimited
 		];
 
+		//Main
 		public override void _Ready() {
 			GetNode<OptionButton>(RESOLUTION).Populate(RESOLUTION_OPTIONS);
 			GetNode<OptionButton>(FPS_CAP).Populate(FPS_OPTIONS);
+
 			SetCallbacks();
 		}
 
@@ -47,11 +50,11 @@ namespace SettingsPanels {
 			GetNode<OptionButton>(RESOLUTION).ItemSelected += OnResolutionSelected;
 			GetNode<CheckBox>(FULLSCREEN).Toggled += SetFullscreen;
 			GetNode<CheckBox>(VSYNC).Toggled += SetVSync;
-			GetNode<HSlider>(BRIGHTNESS).ValueChanged += SetBrightness;
+			//GetNode<HSlider>(BRIGHTNESS).ValueChanged += SetBrightness;
 			GetNode<OptionButton>(FPS_CAP).ItemSelected += OnFPSCapSelected;
 		}
 
-		// Static setters
+		// Static Setters
 		private static void SetResolution(Resolution resolution) {
 			GD.Print($"Setting resolution to: {resolution}");
 			Vector2I size = new Vector2I(resolution.Width, resolution.Height);
@@ -70,10 +73,16 @@ namespace SettingsPanels {
 			ProjectSettings.Save();
 		}
 
-		private static void SetBrightness(double value) {
-			GD.Print($"Setting brightness to: {value}");
-			ProjectSettings.SetSetting("display/window/brightness", (float)value);
-			ProjectSettings.Save();
+		private void SetBrightness(double value) {
+			var worldEnv = GetNode<WorldEnvironment>(WORLD_ENVIRONMENT);
+			float brightness = Mathf.Clamp((float)value, 0.0f, 0.5f);
+
+			if(worldEnv?.Environment != null) {
+				worldEnv.Environment.AdjustmentEnable = true;
+				worldEnv.Environment.AdjustmentExposure = Mathf.Lerp(0.5f, 2.0f, brightness);
+			}
+			
+			GD.Print($"Brightness set to {brightness}, exposure set to {worldEnv.Environment.AdjustmentExposure}");
 		}
 
 		private static void SetFPS(FPS fps) {
@@ -109,8 +118,8 @@ namespace SettingsPanels {
 			SetVSync(data.IsVSyncEnabled);
 			GetNode<CheckBox>(VSYNC).ButtonPressed = data.IsVSyncEnabled;
 
-			SetBrightness(data.Brightness);
-			GetNode<HSlider>(BRIGHTNESS).Value = data.Brightness;
+			//SetBrightness(data.Brightness);
+			//GetNode<HSlider>(BRIGHTNESS).Value = data.Brightness;
 
 			FPS fps = new FPS { Value = data.FPSCap };
 			SetFPS(fps);

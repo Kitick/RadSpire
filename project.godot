@@ -19,10 +19,16 @@ config/icon="res://Textures/icon.svg"
 
 buses/default_bus_layout="res://Audio/default_bus_layout.tres"
 
+[autoload]
+
+WorldEnviorment="*res://World Environment/World_Environment.tscn"
+
 [display]
 
 window/size/viewport_width=1920
 window/size/viewport_height=1080
+window/vsync/use_vsync=false
+window/brightness=0.0
 
 [dotnet]
 

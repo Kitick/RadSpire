@@ -67,6 +67,7 @@ layout_mode = 2
 text = "Extras"
 
 [node name="General_Panel" type="VBoxContainer" parent="."]
+visible = false
 layout_mode = 1
 anchors_preset = 14
 anchor_top = 0.5
@@ -121,7 +122,6 @@ size_flags_horizontal = 0
 text = "Reset Settings"
 
 [node name="Display_Panel" type="VBoxContainer" parent="."]
-visible = false
 layout_mode = 1
 anchors_preset = 14
 anchor_top = 0.5
@@ -170,11 +170,16 @@ offset_bottom = 24.0
 layout_mode = 2
 text = "Brightness"
 
-[node name="HSlider" type="HSlider" parent="Display_Panel/Brightness"]
-layout_mode = 0
-offset_left = 160.0
-offset_right = 320.0
-offset_bottom = 16.0
+[node name="CanvasLayer" type="CanvasLayer" parent="Display_Panel/Brightness"]
+
+[node name="HSlider" type="HSlider" parent="Display_Panel/Brightness/CanvasLayer"]
+offset_left = 384.0
+offset_top = 290.0
+offset_right = 544.0
+offset_bottom = 306.0
+max_value = 1.0
+step = 0.001
+value = 0.5
 
 [node name="FPS_Cap" type="Label" parent="Display_Panel"]
 layout_mode = 2
