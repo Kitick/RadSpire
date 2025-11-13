@@ -35,6 +35,8 @@ public partial class Player : CharacterBody3D, ISaveable<PlayerData> {
 
 	private Vector3 HorizontalInput = Vector3.Zero;
 
+	public event Action<MovementEvent>? PlayerMovement;
+
 	private bool IsCrouching {
 		get;
 		set {
@@ -72,8 +74,6 @@ public partial class Player : CharacterBody3D, ISaveable<PlayerData> {
 		}
 	}
 
-	public event Action<MovementEvent>? PlayerMovement;
-
 	public override void _Ready() {
 		GameManager.Player = this;
 
@@ -87,7 +87,6 @@ public partial class Player : CharacterBody3D, ISaveable<PlayerData> {
 
 		UpdateMovementState();
 		HorizontalInput = GetHorizontalInput();
-		HandleInputs();
 
 		float multiplier = GetPlayerSpeed();
 
@@ -105,6 +104,10 @@ public partial class Player : CharacterBody3D, ISaveable<PlayerData> {
 			Velocity = new Vector3(x, Velocity.Y, z);
 		}
 
+		if(Input.IsActionPressed(JUMP) && !IsInAir) {
+			Velocity += JumpVelocity;
+		}
+
 		Velocity += Acceleration * dt;
 
 		MatchRotationToDirection(Velocity, multiplier, dt);
@@ -114,6 +117,15 @@ public partial class Player : CharacterBody3D, ISaveable<PlayerData> {
 	private void UpdateMovementState() {
 		IsMoving = HorizontalInput.Length() >= EPSILON;
 		IsInAir = !IsOnFloor();
+
+		if(!IsMoving) { return; }
+
+		if(Input.IsActionPressed(CROUCH)) { IsCrouching = true; }
+		else if(Input.IsActionPressed(SPRINT)) { IsSprinting = true; }
+		else {
+			IsSprinting = false;
+			IsCrouching = false;
+		}
 	}
 
 	private static Vector3 GetHorizontalInput() {
@@ -125,25 +137,6 @@ public partial class Player : CharacterBody3D, ISaveable<PlayerData> {
 		if(Input.IsActionPressed(LEFT)) { direction += Vector3.Left; }
 
 		return direction.Normalized();
-	}
-
-	private void HandleInputs(){
-		if(Input.IsActionPressed(JUMP) && !IsInAir) {
-			Velocity += JumpVelocity;
-		}
-
-		if(!IsMoving){ return; }
-
-		if(Input.IsActionPressed(CROUCH)) {
-			IsCrouching = true;
-		}
-		else if(Input.IsActionPressed(SPRINT)) {
-			IsSprinting = true;
-		}
-		else {
-			IsSprinting = false;
-			IsCrouching = false;
-		}
 	}
 
 	private float GetPlayerSpeed() {
