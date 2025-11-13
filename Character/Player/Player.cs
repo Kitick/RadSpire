@@ -36,52 +36,52 @@ public partial class Player : Character, ISaveable<PlayerData> {
 	private static Vector3 GetHorizontalInput() {
 		Vector3 direction = Vector3.Zero;
 
-		if (Input.IsActionPressed("move_forward")) {
+		if(Input.IsActionPressed("move_forward")) {
 			direction.Z -= 1.0f;
 		}
-		if (Input.IsActionPressed("move_back")) {
+		if(Input.IsActionPressed("move_back")) {
 			direction.Z += 1.0f;
 		}
-		if (Input.IsActionPressed("move_right")) {
+		if(Input.IsActionPressed("move_right")) {
 			direction.X += 1.0f;
 		}
-		if (Input.IsActionPressed("move_left")) {
+		if(Input.IsActionPressed("move_left")) {
 			direction.X -= 1.0f;
 		}
 
 		return direction.Normalized();
 	}
-	
+
 	private float playerSpeed() {
 		float multiplier = 1.0f;
 
-		if (Input.IsActionPressed("sprint")) {
+		if(Input.IsActionPressed("sprint")) {
 			multiplier *= DefaultSprintMultiplier;
-			if (!IsSprinting) {
+			if(!IsSprinting) {
 				IsSprinting = true;
 				EmitSignal(SignalName.SprintStart);
 			}
 		}
-		else if (Input.IsActionPressed("crouch")) {
+		else if(Input.IsActionPressed("crouch")) {
 			multiplier *= DefaultCrouchMultiplier;
-			if (!IsCrouching) {
+			if(!IsCrouching) {
 				IsCrouching = true;
 				EmitSignal(SignalName.CrouchStart);
 			}
 		}
 		else {
-			if (IsSprinting) {
+			if(IsSprinting) {
 				IsSprinting = false;
 				EmitSignal(SignalName.SprintEnd);
 			}
-			if (IsCrouching) {
+			if(IsCrouching) {
 				IsCrouching = false;
 				EmitSignal(SignalName.CrouchEnd);
 			}
 		}
 		return multiplier;
 	}
-	
+
 	// ISaveable implementation
 	public PlayerData Serialize() {
 		return new PlayerData {
