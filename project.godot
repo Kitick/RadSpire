@@ -27,8 +27,8 @@ WorldEnviorment="*res://World Environment/World_Environment.tscn"
 
 window/size/viewport_width=1920
 window/size/viewport_height=1080
-window/vsync/use_vsync=false
-window/brightness=0.0
+window/vsync/use_vsync=true
+window/brightness=50.0
 
 [dotnet]
 
