@@ -9,6 +9,7 @@ namespace SaveSystem {
 	}
 
 	public readonly record struct PlayerData : ISaveData {
+		public CharacterData Character { get; init; }
 		public float DefaultSprintMultiplier { get; init; }
 		public float DefaultCrouchMultiplier { get; init; }
 		public float DefaultFriction { get; init; }

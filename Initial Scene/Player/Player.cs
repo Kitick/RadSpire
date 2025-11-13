@@ -85,6 +85,7 @@ public partial class Player : Character, ISaveable<PlayerData> {
 	// ISaveable implementation
 	public PlayerData Serialize() {
 		return new PlayerData {
+			Character = base.Serialize(),
 			DefaultSprintMultiplier = DefaultSprintMultiplier,
 			DefaultCrouchMultiplier = DefaultCrouchMultiplier,
 			DefaultFriction = DefaultFriction,
@@ -95,6 +96,7 @@ public partial class Player : Character, ISaveable<PlayerData> {
 	}
 
 	public void Deserialize(in PlayerData data) {
+		base.Deserialize(data.Character);
 		DefaultSprintMultiplier = data.DefaultSprintMultiplier;
 		DefaultCrouchMultiplier = data.DefaultCrouchMultiplier;
 		DefaultFriction = data.DefaultFriction;
