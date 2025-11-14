@@ -1,18 +1,10 @@
 using System;
 using Godot;
+using Components;
 using SaveSystem;
 
 public partial class Player : CharacterBody3D, ISaveable<PlayerData> {
 	private const string HUD = "res://HUD/UI.tscn";
-
-	private const string JUMP = "jump";
-	private const string SPRINT = "sprint";
-	private const string CROUCH = "crouch";
-
-	private const string FORWARD = "move_forward";
-	private const string BACK = "move_back";
-	private const string LEFT = "move_left";
-	private const string RIGHT = "move_right";
 
 	private const float EPSILON = 0.01f;
 
@@ -23,10 +15,10 @@ public partial class Player : CharacterBody3D, ISaveable<PlayerData> {
 	[Export] private float CrouchMultiplier = 0.5f;
 	[Export] private float Friction = 10.0f;
 
+	private readonly KeyInput KeyInput = new KeyInput();
+
 	[Export] private Vector3 JumpVelocity = 4.5f * Vector3.Up;
 	private Vector3 Acceleration => StateMachine.State == State.Falling ? 9.8f * Vector3.Down : Vector3.Zero;
-
-	private Vector3 HorizontalInput = Vector3.Zero;
 
 	// State Machine
 	public enum State { Idle, Walking, Sprinting, Crouching, Falling }
@@ -44,18 +36,19 @@ public partial class Player : CharacterBody3D, ISaveable<PlayerData> {
 
 		var hudScene = GD.Load<PackedScene>(HUD);
 		var hud = hudScene.Instantiate<CanvasLayer>(); // root of UI.tscn is CanvasLayer
+
 		AddChild(hud); // adds HUD under Player
 	}
 
 	public override void _PhysicsProcess(double delta) {
 		float dt = (float)delta;
 
-		HorizontalInput = GetHorizontalInput();
+		KeyInput.Update();
 
-		float multiplier = GetPlayerSpeed();
+		float multiplier = GetMultiplier();
 
-		if(HorizontalInput != Vector3.Zero) {
-			var move = HorizontalInput * BaseSpeed * multiplier;
+		if(KeyInput.IsMoving) {
+			var move = KeyInput.HorizontalInput * BaseSpeed * multiplier;
 
 			Velocity = new Vector3(move.X, Velocity.Y, move.Z);
 		}
@@ -68,7 +61,7 @@ public partial class Player : CharacterBody3D, ISaveable<PlayerData> {
 			Velocity = new Vector3(x, Velocity.Y, z);
 		}
 
-		if(Input.IsActionPressed(JUMP) && IsOnFloor()) {
+		if(KeyInput.JumpPressed && IsOnFloor()) {
 			Velocity += JumpVelocity;
 		}
 
@@ -85,17 +78,17 @@ public partial class Player : CharacterBody3D, ISaveable<PlayerData> {
 			return;
 		}
 
-		if(HorizontalInput.Length() < EPSILON) {
+		if(!KeyInput.IsMoving) {
 			StateMachine.TransitionTo(State.Idle);
 			return;
 		}
 
-		if(Input.IsActionPressed(SPRINT)) {
+		if(KeyInput.SprintHeld) {
 			StateMachine.TransitionTo(State.Sprinting);
 			return;
 		}
 
-		if(Input.IsActionPressed(CROUCH)) {
+		if(KeyInput.CrouchHeld) {
 			StateMachine.TransitionTo(State.Crouching);
 			return;
 		}
@@ -103,18 +96,7 @@ public partial class Player : CharacterBody3D, ISaveable<PlayerData> {
 		StateMachine.TransitionTo(State.Walking);
 	}
 
-	private static Vector3 GetHorizontalInput() {
-		Vector3 direction = Vector3.Zero;
-
-		if(Input.IsActionPressed(FORWARD)) { direction += Vector3.Forward; }
-		if(Input.IsActionPressed(BACK)) { direction += Vector3.Back; }
-		if(Input.IsActionPressed(RIGHT)) { direction += Vector3.Right; }
-		if(Input.IsActionPressed(LEFT)) { direction += Vector3.Left; }
-
-		return direction.Normalized();
-	}
-
-	private float GetPlayerSpeed() {
+	private float GetMultiplier() {
 		float multiplier = 1.0f;
 
 		if(StateMachine.State == State.Sprinting) { multiplier *= SprintMultiplier; }
@@ -140,7 +122,6 @@ public partial class Player : CharacterBody3D, ISaveable<PlayerData> {
 		Transform = curRotation;
 	}
 
-	// ISaveable implementation
 	public PlayerData Serialize() {
 		return new PlayerData {
 
