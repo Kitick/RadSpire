@@ -15,10 +15,9 @@ public partial class Player : CharacterBody3D, ISaveable<PlayerData> {
 	[Export] private float CrouchMultiplier = 0.5f;
 	[Export] private float Friction = 10.0f;
 
-	private readonly KeyInput KeyInput = new KeyInput();
-
-	[Export] private Vector3 JumpVelocity = 4.5f * Vector3.Up;
-	private Vector3 Acceleration => StateMachine.State == State.Falling ? 9.8f * Vector3.Down : Vector3.Zero;
+	// Components
+	private KeyInput KeyInput = null!;
+	private Movement MovementComponent = null!;
 
 	// State Machine
 	public enum State { Idle, Walking, Sprinting, Crouching, Falling }
@@ -34,10 +33,10 @@ public partial class Player : CharacterBody3D, ISaveable<PlayerData> {
 	public override void _Ready() {
 		GameManager.Player = this;
 
-		var hudScene = GD.Load<PackedScene>(HUD);
-		var hud = hudScene.Instantiate<CanvasLayer>(); // root of UI.tscn is CanvasLayer
+		KeyInput = new KeyInput();
+		MovementComponent = new Movement(this);
 
-		AddChild(hud); // adds HUD under Player
+		AddChild(GD.Load<PackedScene>(HUD).Instantiate());
 	}
 
 	public override void _PhysicsProcess(double delta) {
@@ -47,29 +46,15 @@ public partial class Player : CharacterBody3D, ISaveable<PlayerData> {
 
 		float multiplier = GetMultiplier();
 
-		if(KeyInput.IsMoving) {
-			var move = KeyInput.HorizontalInput * BaseSpeed * multiplier;
-
-			Velocity = new Vector3(move.X, Velocity.Y, move.Z);
-		}
-		else {
-			float weight = 1f - Mathf.Exp(-Friction * dt);
-
-			var x = Mathf.Lerp(Velocity.X, 0.0f, weight);
-			var z = Mathf.Lerp(Velocity.Z, 0.0f, weight);
-
-			Velocity = new Vector3(x, Velocity.Y, z);
-		}
+		MovementComponent.Move(KeyInput.HorizontalInput, multiplier);
 
 		if(KeyInput.JumpPressed && IsOnFloor()) {
-			Velocity += JumpVelocity;
+			MovementComponent.Jump();
 		}
 
-		Velocity += Acceleration * dt;
+		MovementComponent.Update(dt);
 
 		UpdateMovementState();
-		MatchRotationToDirection(Velocity, multiplier, dt);
-		MoveAndSlide();
 	}
 
 	private void UpdateMovementState() {
