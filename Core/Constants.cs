@@ -1,4 +1,4 @@
-namespace Constants {
+namespace Core {
 	public static class Numbers {
 		public const float EPSILON = 0.001f;
 		public const float GRAVITY = 9.8f;

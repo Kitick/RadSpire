@@ -1,8 +1,11 @@
 using System;
 using Godot;
 
-namespace SettingsPanels {
-	public static class UITools {
+namespace Core {
+	public static class Extensions {
+		public static float SmoothDecay(float speed, float dt) => 1f - Mathf.Exp(-speed * dt);
+
+		// Option Button
 		public static void Populate<T>(this OptionButton button, T[] values) where T : notnull {
 			button.Clear();
 			foreach(var value in values) {

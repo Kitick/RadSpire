@@ -1,5 +1,5 @@
 using System;
-using Constants;
+using Core;
 using Godot;
 using SaveSystem;
 
@@ -60,7 +60,7 @@ namespace Components {
 		}
 
 		private void ApplyFriction(float dt) {
-			float weight = 1f - Mathf.Exp(-Friction * dt);
+			float weight = Extensions.SmoothDecay(Friction, dt);
 			var x = Mathf.Lerp(Body.Velocity.X, 0.0f, weight);
 			var z = Mathf.Lerp(Body.Velocity.Z, 0.0f, weight);
 			Body.Velocity = new Vector3(x, Body.Velocity.Y, z);

@@ -1,6 +1,6 @@
 using System;
 using Components;
-using Constants;
+using Core;
 using Godot;
 using SaveSystem;
 
