@@ -1,4 +1,5 @@
 using System;
+using Constants;
 using Godot;
 using SaveSystem;
 
@@ -8,9 +9,6 @@ namespace Components {
 		public float RotationSpeed = 2.0f;
 		public float JumpSpeed = 4.5f;
 		public float Friction = 10.0f;
-
-		private const float GRAVITY = 9.8f;
-		private const float EPSILON = 0.01f;
 
 		private readonly CharacterBody3D Body;
 
@@ -34,13 +32,13 @@ namespace Components {
 		}
 
 		private void Fall(float dt) {
-			Body.Velocity += GRAVITY * Vector3.Down * dt;
+			Body.Velocity += Numbers.GRAVITY * Vector3.Down * dt;
 		}
 
 		private void UpdateRotation(float dt) {
 			Vector3 direction = Body.Velocity;
 
-			if(direction.Length() < EPSILON) { return; }
+			if(direction.Length() < Numbers.EPSILON) { return; }
 
 			// Calculate target rotation
 			float newRotationAngle = Mathf.RadToDeg(Mathf.Atan2(direction.X, direction.Z));

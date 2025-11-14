@@ -1,5 +1,6 @@
 //Purpose: Simple Main Menu Screen Layout and Buttons with Hover Popup Panel
 
+using Constants;
 using Godot;
 using SaveSystem;
 
@@ -22,10 +23,6 @@ public partial class Main_Menu : Control {
 	private const string START_NEW_BUTTON = "Local_Overlay_Panel/ColorRect/VBoxContainer/Start_New_Button";
 	private const string BACK_TO_MAIN_BUTTON = "Local_Overlay_Panel/ColorRect/VBoxContainer/Back_To_Main_Button";
 
-	// Scene paths
-	private const string SETTINGS_SCENE = "res://Settings Menu/Settings_Menu.tscn";
-	private const string GAME_SCENE = "res://Initial Scene/initial_player_scene.tscn";
-
 	// Component references
 	private Button StartButton = null!;
 	private Control StartButtonPanel = null!;
@@ -40,7 +37,7 @@ public partial class Main_Menu : Control {
 	}
 
 	private void InitSettings() {
-		PackedScene SettingsMenu = GD.Load<PackedScene>(SETTINGS_SCENE);
+		PackedScene SettingsMenu = GD.Load<PackedScene>(Scenes.SettingsMenu);
 
 		SettingsInstance = SettingsMenu.Instantiate<Control>();
 		SettingsInstance.Visible = false;
@@ -150,7 +147,7 @@ public partial class Main_Menu : Control {
 	}
 
 	private void LoadGameScene() {
-		GetTree().ChangeSceneToFile(GAME_SCENE);
+		GetTree().ChangeSceneToFile(Scenes.GameScene);
 	}
 
 	private void OnBackToMainButtonPressed() {

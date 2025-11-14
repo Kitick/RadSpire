@@ -1,10 +1,10 @@
 using System;
 using Components;
+using Constants;
 using Godot;
 using SaveSystem;
 
 public partial class Player : CharacterBody3D, ISaveable<PlayerData> {
-	private const string HUD = "res://HUD/UI.tscn";
 
 	[Export] private int InitalHealth = 100;
 	[Export] private float SprintMultiplier = 2.0f;
@@ -33,7 +33,7 @@ public partial class Player : CharacterBody3D, ISaveable<PlayerData> {
 		Movement = new Movement(this);
 		Health = new Health(InitalHealth);
 
-		AddChild(GD.Load<PackedScene>(HUD).Instantiate());
+		AddChild(GD.Load<PackedScene>(Scenes.HUD).Instantiate());
 	}
 
 	public override void _PhysicsProcess(double delta) {

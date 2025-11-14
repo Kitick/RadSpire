@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Constants;
 using Godot;
 using SaveSystem;
 
@@ -35,7 +36,7 @@ namespace SettingsPanels {
 
 		public override void _Input(InputEvent input) {
 			// Esc
-			if(input.IsActionPressed("ui_cancel")) {
+			if(input.IsActionPressed(Actions.UICancel)) {
 				// Save settings before closing
 				SaveData();
 
