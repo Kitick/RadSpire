@@ -1,8 +1,8 @@
-using Godot;
 using System;
+using Constants;
+using Godot;
 
 public partial class Pause_Menu : Control {
-
 	private Button ResumeButton = null!;
 	private Button SettingsButton = null!;
 	private Button SaveButton = null!;
@@ -10,28 +10,32 @@ public partial class Pause_Menu : Control {
 	[Export] public PackedScene SettingsMenu = null!;
 	private Control SettingsInstance = null!;
 
+	private const string RESUME_BUTTON = "Pause_Buttons/Resume";
+	private const string SETTINGS_BUTTON = "Pause_Buttons/Settings";
+	private const string SAVE_BUTTON = "Pause_Buttons/Save";
+	private const string MAIN_MENU_BUTTON = "Pause_Buttons/Main_Menu";
+
 	public override void _Ready() {
-		SettingsMenu = GD.Load<PackedScene>("res://Settings Menu/Settings_Menu.tscn");
+		SettingsMenu = GD.Load<PackedScene>(Scenes.SettingsMenu);
 		Visible = false;
-		ProcessMode = Node.ProcessModeEnum.WhenPaused;
+		ProcessMode = ProcessModeEnum.WhenPaused;
 		GetComponents();
 		SetCallBacks();
 	}
 
 	public override void _UnhandledInput(InputEvent @event) {
 		// Only close on Esc if the menu is currently shown
-		if(Visible && @event.IsActionPressed("ui_cancel")) {
+		if(Visible && @event.IsActionPressed(Actions.UICancel)) {
 			OnResumeButtonPressed();
 			GetViewport().SetInputAsHandled(); // stop further Esc handling this frame
 		}
 	}
 
 	private void GetComponents() {
-
-		ResumeButton = GetNode<Button>("Pause_Buttons/Resume");
-		SettingsButton = GetNode<Button>("Pause_Buttons/Settings");
-		SaveButton = GetNode<Button>("Pause_Buttons/Save");
-		MainMenuButton = GetNode<Button>("Pause_Buttons/Main_Menu");
+		ResumeButton = GetNode<Button>(RESUME_BUTTON);
+		SettingsButton = GetNode<Button>(SETTINGS_BUTTON);
+		SaveButton = GetNode<Button>(SAVE_BUTTON);
+		MainMenuButton = GetNode<Button>(MAIN_MENU_BUTTON);
 	}
 
 	private void SetCallBacks() {
@@ -53,14 +57,12 @@ public partial class Pause_Menu : Control {
 
 	private void OnMainMenuButtonPressed() {
 		GetTree().Paused = false;
-		GetTree().ChangeSceneToFile("res://Main Menu/Main_Menu.tscn");
+		GetTree().ChangeSceneToFile(Scenes.MainMenu);
 	}
 
-	private void OnSettingsButtonPressed()
-	{
+	private void OnSettingsButtonPressed() {
 		// Only one settings overlay at a time
-		if (SettingsInstance == null || !SettingsInstance.IsInsideTree())
-		{
+		if(SettingsInstance == null || !SettingsInstance.IsInsideTree()) {
 			SettingsInstance = SettingsMenu.Instantiate<Control>();
 			AddChild(SettingsInstance);
 
@@ -69,6 +71,7 @@ public partial class Pause_Menu : Control {
 		}
 
 		// Just ensure it's visible when button is pressed
+
 		SettingsInstance.Visible = true;
 	}
 }
