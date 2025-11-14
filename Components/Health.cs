@@ -30,12 +30,10 @@ namespace Components {
 			CurrentHealth = maxHealth;
 		}
 
-		public HealthData Serialize() {
-			return new HealthData {
-				MaxHealth = MaxHealth,
-				CurrentHealth = CurrentHealth
-			};
-		}
+		public HealthData Serialize() => new HealthData {
+			MaxHealth = MaxHealth,
+			CurrentHealth = CurrentHealth
+		};
 
 		public void Deserialize(in HealthData data) {
 			MaxHealth = data.MaxHealth;

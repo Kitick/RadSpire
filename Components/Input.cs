@@ -16,10 +16,10 @@ namespace Components {
 
 		public Vector3 HorizontalInput { get; private set; }
 
-		public bool JumpPressed { get; private set; }
-
 		public bool SprintHeld { get; private set; }
 		public bool CrouchHeld { get; private set; }
+
+		public bool JumpPressed { get; private set; }
 
 		public bool IsMoving => HorizontalInput.Length() >= EPSILON;
 
@@ -30,7 +30,7 @@ namespace Components {
 			CrouchHeld = Input.IsActionPressed(CROUCH);
 		}
 
-		private Vector3 GetHorizontalMovement() {
+		private static Vector3 GetHorizontalMovement() {
 			Vector3 direction = Vector3.Zero;
 
 			if(Input.IsActionPressed(FORWARD)) { direction += Vector3.Forward; }

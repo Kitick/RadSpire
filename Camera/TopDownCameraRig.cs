@@ -222,12 +222,9 @@ public partial class TopDownCameraRig : Node3D, ISaveable<CameraRigData> {
 		GlobalPosition = GlobalPosition.Lerp(closestNormalPosition, weight);
 	}
 
-	// ISaveable implementation
-	public CameraRigData Serialize() {
-		return new CameraRigData {
-			Position = GlobalPosition,
-		};
-	}
+	public CameraRigData Serialize() => new CameraRigData {
+		Position = GlobalPosition,
+	};
 
 	public void Deserialize(in CameraRigData data) {
 		GlobalPosition = data.Position;

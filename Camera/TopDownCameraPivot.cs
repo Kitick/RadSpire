@@ -111,14 +111,11 @@ public partial class TopDownCameraPivot : Node3D, ISaveable<CameraPivotData> {
 		return curRotation;
 	}
 
-	// ISaveable implementation
-	public CameraPivotData Serialize() {
-		return new CameraPivotData {
-			TiltIndex = curTiltIndex,
-			Position = Position,
-			Rotation = RotationDegrees
-		};
-	}
+	public CameraPivotData Serialize() => new CameraPivotData {
+		TiltIndex = curTiltIndex,
+		Position = Position,
+		Rotation = RotationDegrees,
+	};
 
 	public void Deserialize(in CameraPivotData data) {
 		curTiltIndex = data.TiltIndex;
