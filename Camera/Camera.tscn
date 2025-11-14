@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://dvjdyejdpq4w1"]
 
-[ext_resource type="Script" uid="uid://cn1q56ujphdyx" path="res://Camera/TopDownCameraRig.cs" id="1_f42p2"]
-[ext_resource type="Script" uid="uid://c4cwiwwa8yp0m" path="res://Camera/TopDownCameraPivot.cs" id="2_80wr6"]
+[ext_resource type="Script" uid="uid://bvh4sdjsgj067" path="res://Camera/CameraRig.cs" id="1_f42p2"]
+[ext_resource type="Script" uid="uid://d17fy76ys6psa" path="res://Camera/CameraPivot.cs" id="2_80wr6"]
 
 [node name="Camera Rig" type="Node3D"]
 script = ExtResource("1_f42p2")

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Core;
 using Godot;
 using SaveSystem;
 
@@ -35,7 +36,7 @@ namespace SettingsPanels {
 
 		public override void _Input(InputEvent input) {
 			// Esc
-			if(input.IsActionPressed("ui_cancel")) {
+			if(input.IsActionPressed(Actions.UICancel)) {
 				// Save settings before closing
 				SaveData();
 
@@ -82,5 +83,12 @@ namespace SettingsPanels {
 			GetNode<Display_Panel>(DISPLAY_PANEL).Deserialize(data.DisplaySettings);
 			GetNode<Sound_Panel>(SOUND_PANEL).Deserialize(data.SoundSettings);
 		}
+	}
+}
+
+namespace SaveSystem {
+	public readonly record struct SettingsData : ISaveData {
+		public DisplaySettings DisplaySettings { get; init; }
+		public SoundSettings SoundSettings { get; init; }
 	}
 }

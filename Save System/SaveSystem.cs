@@ -4,11 +4,21 @@ using System.Linq;
 using System.Text.Json;
 
 namespace SaveSystem {
-	static class SaveService {
-		private const string SaveDirName = "saves";
-		private const string FileExt = ".json";
+	public interface ISaveData;
 
-		private static readonly JsonSerializerOptions JsonOptions = DataConverters.CreateOptions();
+	public interface ISaveable<T> where T : ISaveData {
+		T Serialize();
+		void Deserialize(in T data);
+	}
+
+	public static class SaveService {
+		private const string SaveDirName = "saves";
+
+		private static readonly JsonSerializerOptions JsonOptions = new() {
+			WriteIndented = true,
+			IndentCharacter = '\t',
+			Converters = { new Vector3Converter() }
+		};
 
 		private static DirectoryInfo GetSaveDir() {
 			var path = Path.Combine(Godot.OS.GetUserDataDir(), SaveDirName);
@@ -19,7 +29,7 @@ namespace SaveSystem {
 		}
 
 		private static FileInfo GetFile(string fileName) {
-			var path = Path.Combine(GetSaveDir().FullName, fileName + FileExt);
+			var path = Path.Combine(GetSaveDir().FullName, fileName + ".json");
 			return new FileInfo(path);
 		}
 
@@ -55,7 +65,7 @@ namespace SaveSystem {
 		}
 
 		public static string[] ListSaves() {
-			var files = GetSaveDir().GetFiles("*" + FileExt);
+			var files = GetSaveDir().GetFiles("*.json");
 
 			return files.Select(file => Path.GetFileNameWithoutExtension(file.Name)).ToArray();
 		}
