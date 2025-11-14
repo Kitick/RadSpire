@@ -1,28 +1,24 @@
 using System;
-using Godot;
 using Components;
+using Godot;
 using SaveSystem;
 
 public partial class Player : CharacterBody3D, ISaveable<PlayerData> {
 	private const string HUD = "res://HUD/UI.tscn";
 
-	private const float EPSILON = 0.01f;
-
-	[Export] private float BaseSpeed = 2.0f;
-	[Export] private float BaseRotationSpeed = 4.0f;
-
+	[Export] private int InitalHealth = 100;
 	[Export] private float SprintMultiplier = 2.0f;
 	[Export] private float CrouchMultiplier = 0.5f;
-	[Export] private float Friction = 10.0f;
 
 	// Components
 	private KeyInput KeyInput = null!;
-	private Movement MovementComponent = null!;
+	private Health Health = null!;
+	private Movement Movement = null!;
 
 	// State Machine
 	public enum State { Idle, Walking, Sprinting, Crouching, Falling }
 
-	private FiniteStateMachine<State> StateMachine = new(State.Idle);
+	private readonly FiniteStateMachine<State> StateMachine = new(State.Idle);
 	public State CurrentState => StateMachine.State;
 
 	public event Action<State, State>? OnStateChange {
@@ -34,51 +30,41 @@ public partial class Player : CharacterBody3D, ISaveable<PlayerData> {
 		GameManager.Player = this;
 
 		KeyInput = new KeyInput();
-		MovementComponent = new Movement(this);
+		Movement = new Movement(this);
+		Health = new Health(InitalHealth);
 
 		AddChild(GD.Load<PackedScene>(HUD).Instantiate());
 	}
 
 	public override void _PhysicsProcess(double delta) {
+		if(Health.IsDead()) {
+			StateMachine.TransitionTo(State.Idle);
+			return;
+		}
+
 		float dt = (float)delta;
 
 		KeyInput.Update();
 
 		float multiplier = GetMultiplier();
 
-		MovementComponent.Move(KeyInput.HorizontalInput, multiplier);
+		Movement.Move(KeyInput.HorizontalInput, multiplier);
 
 		if(KeyInput.JumpPressed && IsOnFloor()) {
-			MovementComponent.Jump();
+			Movement.Jump();
 		}
 
-		MovementComponent.Update(dt);
+		Movement.Update(dt);
 
 		UpdateMovementState();
 	}
 
 	private void UpdateMovementState() {
-		if(!IsOnFloor()) {
-			StateMachine.TransitionTo(State.Falling);
-			return;
-		}
-
-		if(!KeyInput.IsMoving) {
-			StateMachine.TransitionTo(State.Idle);
-			return;
-		}
-
-		if(KeyInput.SprintHeld) {
-			StateMachine.TransitionTo(State.Sprinting);
-			return;
-		}
-
-		if(KeyInput.CrouchHeld) {
-			StateMachine.TransitionTo(State.Crouching);
-			return;
-		}
-
-		StateMachine.TransitionTo(State.Walking);
+		if(!IsOnFloor()) { StateMachine.TransitionTo(State.Falling); }
+		else if(!KeyInput.IsMoving) { StateMachine.TransitionTo(State.Idle); }
+		else if(KeyInput.SprintHeld) { StateMachine.TransitionTo(State.Sprinting); }
+		else if(KeyInput.CrouchHeld) { StateMachine.TransitionTo(State.Crouching); }
+		else { StateMachine.TransitionTo(State.Walking); }
 	}
 
 	private float GetMultiplier() {
@@ -90,36 +76,20 @@ public partial class Player : CharacterBody3D, ISaveable<PlayerData> {
 		return multiplier;
 	}
 
-	private void MatchRotationToDirection(Vector3 direction, float magnitude, float dt) {
-		if(direction.Length() < EPSILON) { return; }
-
-		Vector3 newRotationVec = Vector3.Zero;
-		newRotationVec.Y = Mathf.RadToDeg(Mathf.Atan2(direction.X, direction.Z));
-		Transform3D newRotation = Transform;
-		newRotation.Basis = new Basis(Vector3.Up, Mathf.DegToRad(newRotationVec.Y));
-		Quaternion newRotationQ = new Quaternion(newRotation.Basis);
-		Transform3D curRotation = Transform;
-		Quaternion curRotationQ = new Quaternion(curRotation.Basis);
-		float rotationSpeed = BaseRotationSpeed * magnitude;
-		float weight = 1f - Mathf.Exp(-rotationSpeed * dt);
-		curRotationQ = curRotationQ.Slerp(newRotationQ, weight);
-		curRotation.Basis = new Basis(curRotationQ);
-		Transform = curRotation;
-	}
-
-	public PlayerData Serialize() {
-		return new PlayerData {
-
-		};
-	}
+	public PlayerData Serialize() => new PlayerData {
+		Health = Health.Serialize(),
+		Movement = Movement.Serialize()
+	};
 
 	public void Deserialize(in PlayerData data) {
-
+		Health.Deserialize(data.Health);
+		Movement.Deserialize(data.Movement);
 	}
 }
 
 namespace SaveSystem {
 	public readonly record struct PlayerData : ISaveData {
-
+		public HealthData Health { get; init; }
+		public MovementData Movement { get; init; }
 	}
 }

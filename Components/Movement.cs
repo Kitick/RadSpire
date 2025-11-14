@@ -1,8 +1,9 @@
 using System;
 using Godot;
+using SaveSystem;
 
 namespace Components {
-	public class Movement {
+	public class Movement : ISaveable<MovementData> {
 		public float BaseSpeed = 2.0f;
 		public float RotationSpeed = 2.0f;
 		public float JumpSpeed = 4.5f;
@@ -24,7 +25,7 @@ namespace Components {
 		}
 
 		public void Move(Vector3 direction, float multiplier) {
-			var move = direction * BaseSpeed * multiplier;
+			Vector3 move = direction * BaseSpeed * multiplier;
 			Body.Velocity = new Vector3(move.X, Body.Velocity.Y, move.Z);
 		}
 
@@ -66,5 +67,25 @@ namespace Components {
 			var z = Mathf.Lerp(Body.Velocity.Z, 0.0f, weight);
 			Body.Velocity = new Vector3(x, Body.Velocity.Y, z);
 		}
+
+		public MovementData Serialize() => new MovementData {
+			Position = Body.GlobalPosition,
+			Velocity = Body.Velocity,
+			Rotation = Body.RotationDegrees,
+		};
+
+		public void Deserialize(in MovementData data) {
+			Body.GlobalPosition = data.Position;
+			Body.RotationDegrees = data.Rotation;
+			Body.Velocity = data.Velocity;
+		}
+	}
+}
+
+namespace SaveSystem {
+	public readonly struct MovementData : ISaveData {
+		public Vector3 Position { get; init; }
+		public Vector3 Velocity { get; init; }
+		public Vector3 Rotation { get; init; }
 	}
 }
