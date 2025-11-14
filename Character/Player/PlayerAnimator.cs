@@ -2,18 +2,36 @@ using System;
 using Godot;
 
 public partial class PlayerAnimator : Node3D {
+	public enum State { Idle, Walking, Sprinting, Crouching, Jumping, Falling, Landing }
+
 	private const string IDLE = "Idle";
 	private const string WALKING = "Walking_B";
-	private const string RUNNING = "Running_B";
+	private const string SPRINTING = "Running_B";
 	private const string CROUCHING = "Walking_C";
-	private const string JUMP_START = "Jump_Start";
-	private const string JUMP_IDLE = "Jump_Idle";
-	private const string JUMP_LAND = "Jump_Land";
+	private const string JUMPING = "Jump_Start";
+	private const string FALLING = "Jump_Idle";
+	private const string LANDING = "Jump_Land";
+
+	private const string ANIMATION_PLAYER = "AnimationPlayer";
 
 	private Player Player = null!;
 	private AnimationPlayer AnimationPlayer = null!;
 
-	private Player.MovementEvent currentAction = Player.MovementEvent.Stop;
+	public State CurrentAnimation {
+		get;
+		private set {
+			field = value;
+			switch(value) {
+				case State.Idle: AnimationPlayer.Play(IDLE); break;
+				case State.Walking: AnimationPlayer.Play(WALKING); break;
+				case State.Sprinting: AnimationPlayer.Play(SPRINTING); break;
+				case State.Crouching: AnimationPlayer.Play(CROUCHING); break;
+				case State.Jumping: AnimationPlayer.Play(JUMPING); break;
+				case State.Falling: AnimationPlayer.Play(FALLING); break;
+				case State.Landing: AnimationPlayer.Play(LANDING); break;
+			}
+		}
+	}
 
 	public override void _Ready() {
 		GetComponents();
@@ -22,57 +40,53 @@ public partial class PlayerAnimator : Node3D {
 
 	private void GetComponents() {
 		Player = GetParent<Player>();
-		Player.PlayerMovement += OnPlayerMovement;
-		OnPlayerMovement(Player.MovementEvent.Stop);
+		Player.OnStateChange += OnPlayerMovement;
 
-		AnimationPlayer = GetNode<AnimationPlayer>("AnimationPlayer");
+		AnimationPlayer = GetNode<AnimationPlayer>(ANIMATION_PLAYER);
 	}
 
 	private void SetupAnimations() {
 		SetLoopMode(IDLE);
 		SetLoopMode(WALKING);
-		SetLoopMode(RUNNING);
+		SetLoopMode(SPRINTING);
 		SetLoopMode(CROUCHING);
-		SetLoopMode(JUMP_IDLE);
+		SetLoopMode(FALLING);
 
-		AnimationPlayer.Play(IDLE);
-		currentAction = Player.MovementEvent.Stop;
+		AnimationPlayer.AnimationFinished += OnAnimationFinished;
+		SyncAnimation();
 	}
 
 	private void SetLoopMode(string name) {
 		AnimationPlayer.GetAnimation(name).LoopMode = Animation.LoopModeEnum.Linear;
 	}
 
-	void OnPlayerMovement(Player.MovementEvent action) {
-		if(currentAction == action) { return; }
-		currentAction = action;
-
-		switch(currentAction) {
-			case Player.MovementEvent.Start:
-				AnimationPlayer.Play(WALKING);
-				break;
-			case Player.MovementEvent.Stop:
-				AnimationPlayer.Play(IDLE);
-				break;
-			case Player.MovementEvent.Jump:
-				AnimationPlayer.Play(JUMP_START);
-				AnimationPlayer.Queue(JUMP_IDLE);
-				break;
-			case Player.MovementEvent.Land:
-				AnimationPlayer.Play(JUMP_LAND);
-				break;
-			case Player.MovementEvent.SprintStart:
-				AnimationPlayer.Play(RUNNING);
-				break;
-			case Player.MovementEvent.SprintStop:
-				AnimationPlayer.Play(WALKING);
-				break;
-			case Player.MovementEvent.CrouchStart:
-				AnimationPlayer.Play(CROUCHING);
-				break;
-			case Player.MovementEvent.CrouchStop:
-				AnimationPlayer.Play(WALKING);
-				break;
+	public void OnAnimationFinished(StringName name) {
+		if(name == JUMPING || name == LANDING) {
+			SyncAnimation();
 		}
+	}
+
+	public void SyncAnimation() {
+		GD.Print($"Syncing animation to: {Player.CurrentState}");
+
+		CurrentAnimation = Player.CurrentState switch {
+			Player.State.Idle => State.Idle,
+			Player.State.Walking => State.Walking,
+			Player.State.Sprinting => State.Sprinting,
+			Player.State.Crouching => State.Crouching,
+			Player.State.Falling => State.Falling,
+			_ => CurrentAnimation,
+		};
+	}
+
+	private void OnPlayerMovement(Player.State from, Player.State to) {
+		GD.Print($"Player State change: {from} -> {to}");
+
+		bool jumped = from != Player.State.Falling && to == Player.State.Falling;
+		bool landed = from == Player.State.Falling && to != Player.State.Falling;
+
+		if(jumped) { CurrentAnimation = State.Jumping; }
+		else if(landed) { CurrentAnimation = State.Landing; }
+		else { SyncAnimation(); }
 	}
 }

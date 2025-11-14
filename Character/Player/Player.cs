@@ -3,13 +3,6 @@ using Godot;
 using SaveSystem;
 
 public partial class Player : CharacterBody3D, ISaveable<PlayerData> {
-	public enum MovementEvent {
-		Start, Stop, Jump, Land,
-		Forward, Back, Left, Right,
-		SprintStart, SprintStop,
-		CrouchStart, CrouchStop,
-	}
-
 	private const string HUD = "res://HUD/UI.tscn";
 
 	private const string JUMP = "jump";
@@ -31,47 +24,19 @@ public partial class Player : CharacterBody3D, ISaveable<PlayerData> {
 	[Export] private float Friction = 10.0f;
 
 	[Export] private Vector3 JumpVelocity = 4.5f * Vector3.Up;
-	private Vector3 Acceleration => IsInAir ? 9.8f * Vector3.Down : Vector3.Zero;
+	private Vector3 Acceleration => StateMachine.State == State.Falling ? 9.8f * Vector3.Down : Vector3.Zero;
 
 	private Vector3 HorizontalInput = Vector3.Zero;
 
-	public event Action<MovementEvent>? PlayerMovement;
+	// State Machine
+	public enum State { Idle, Walking, Sprinting, Crouching, Falling }
 
-	private bool IsCrouching {
-		get;
-		set {
-			if(field != value) {
-				field = value;
-				PlayerMovement?.Invoke(value ? MovementEvent.CrouchStart : MovementEvent.CrouchStop);
-			}
-		}
-	}
-	private bool IsSprinting {
-		get;
-		set {
-			if(field != value) {
-				field = value;
-				PlayerMovement?.Invoke(value ? MovementEvent.SprintStart : MovementEvent.SprintStop);
-			}
-		}
-	}
-	private bool IsMoving {
-		get;
-		set {
-			if(field != value) {
-				field = value;
-				PlayerMovement?.Invoke(value ? MovementEvent.Start : MovementEvent.Stop);
-			}
-		}
-	}
-	private bool IsInAir {
-		get;
-		set {
-			if(field != value) {
-				field = value;
-				PlayerMovement?.Invoke(value ? MovementEvent.Jump : MovementEvent.Land);
-			}
-		}
+	private FiniteStateMachine<State> StateMachine = new(State.Idle);
+	public State CurrentState => StateMachine.State;
+
+	public event Action<State, State>? OnStateChange {
+		add => StateMachine.OnStateChanged += value;
+		remove => StateMachine.OnStateChanged -= value;
 	}
 
 	public override void _Ready() {
@@ -85,7 +50,6 @@ public partial class Player : CharacterBody3D, ISaveable<PlayerData> {
 	public override void _PhysicsProcess(double delta) {
 		float dt = (float)delta;
 
-		UpdateMovementState();
 		HorizontalInput = GetHorizontalInput();
 
 		float multiplier = GetPlayerSpeed();
@@ -104,28 +68,39 @@ public partial class Player : CharacterBody3D, ISaveable<PlayerData> {
 			Velocity = new Vector3(x, Velocity.Y, z);
 		}
 
-		if(Input.IsActionPressed(JUMP) && !IsInAir) {
+		if(Input.IsActionPressed(JUMP) && IsOnFloor()) {
 			Velocity += JumpVelocity;
 		}
 
 		Velocity += Acceleration * dt;
 
+		UpdateMovementState();
 		MatchRotationToDirection(Velocity, multiplier, dt);
 		MoveAndSlide();
 	}
 
 	private void UpdateMovementState() {
-		IsMoving = HorizontalInput.Length() >= EPSILON;
-		IsInAir = !IsOnFloor();
-
-		if(!IsMoving) { return; }
-
-		if(Input.IsActionPressed(CROUCH)) { IsCrouching = true; }
-		else if(Input.IsActionPressed(SPRINT)) { IsSprinting = true; }
-		else {
-			IsSprinting = false;
-			IsCrouching = false;
+		if(!IsOnFloor()) {
+			StateMachine.TransitionTo(State.Falling);
+			return;
 		}
+
+		if(HorizontalInput.Length() < EPSILON) {
+			StateMachine.TransitionTo(State.Idle);
+			return;
+		}
+
+		if(Input.IsActionPressed(SPRINT)) {
+			StateMachine.TransitionTo(State.Sprinting);
+			return;
+		}
+
+		if(Input.IsActionPressed(CROUCH)) {
+			StateMachine.TransitionTo(State.Crouching);
+			return;
+		}
+
+		StateMachine.TransitionTo(State.Walking);
 	}
 
 	private static Vector3 GetHorizontalInput() {
@@ -142,8 +117,8 @@ public partial class Player : CharacterBody3D, ISaveable<PlayerData> {
 	private float GetPlayerSpeed() {
 		float multiplier = 1.0f;
 
-		if(IsCrouching) { multiplier *= CrouchMultiplier; }
-		if(IsSprinting) { multiplier *= SprintMultiplier; }
+		if(StateMachine.State == State.Sprinting) { multiplier *= SprintMultiplier; }
+		if(StateMachine.State == State.Crouching) { multiplier *= CrouchMultiplier; }
 
 		return multiplier;
 	}
