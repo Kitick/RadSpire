@@ -46,10 +46,8 @@ namespace Components {
 		}
 
 		private void ApplyFriction(float dt) {
-			float weight = Extensions.SmoothDecay(Friction, dt);
-			var x = Mathf.Lerp(Body.Velocity.X, 0.0f, weight);
-			var z = Mathf.Lerp(Body.Velocity.Z, 0.0f, weight);
-			Body.Velocity = new Vector3(x, Body.Velocity.Y, z);
+			Vector3 horizontal = Body.Velocity.Horizontal().SmoothLerp(Vector3.Zero, Friction, dt);
+			Body.Velocity = horizontal + Body.Velocity.Vertical();
 		}
 
 		public MovementData Serialize() => new MovementData {

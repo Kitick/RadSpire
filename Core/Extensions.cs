@@ -3,9 +3,12 @@ using Godot;
 
 namespace Core {
 	public static class Extensions {
+		// Vector Components
+		public static Vector3 Horizontal(this Vector3 vector) => new Vector3(vector.X, 0, vector.Z);
+		public static Vector3 Vertical(this Vector3 vector) => new Vector3(0, vector.Y, 0);
+
 		// Rotation Smoothing
-		public static float SmoothDecay(float speed, float dt) =>
-			1f - Mathf.Exp(-speed * dt);
+		public static float SmoothDecay(float speed, float dt) => 1f - Mathf.Exp(-speed * dt);
 
 		public static Vector3 SmoothLerp(this Vector3 current, Vector3 target, float speed, float dt) =>
 			current.Lerp(target, SmoothDecay(speed, dt));
@@ -49,5 +52,18 @@ namespace Core {
 			}
 			return false;
 		}
+
+		// Node instantiation
+		public static T AddScene<T>(this Node node, PackedScene scene) where T : Node {
+			var instance = scene.Instantiate<T>();
+			node.AddChild(instance);
+			return instance;
+		}
+
+		public static T AddScene<T>(this Node node, string scene) where T : Node =>
+			node.AddScene<T>(GD.Load<PackedScene>(scene));
+
+		public static Node AddScene(this Node node, PackedScene scene) => node.AddScene<Node>(scene);
+		public static Node AddScene(this Node node, string scene) => node.AddScene<Node>(scene);
 	}
 }

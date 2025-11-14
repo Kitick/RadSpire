@@ -14,7 +14,7 @@ namespace Core {
 		public const string GameScene = "res://Initial Scene/initial_player_scene.tscn";
 		public const string Player = "res://Character/Player/Player.tscn";
 
-		public const string Camera = "res://Camera/TopDownCamera.tscn";
+		public const string Camera = "res://Camera/Camera.tscn";
 	}
 
 	public static class Actions {

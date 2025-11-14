@@ -1,8 +1,9 @@
 using System;
+using Core;
 using Godot;
 using SaveSystem;
 
-public partial class TopDownCameraPivot : Node3D, ISaveable<CameraPivotData> {
+public partial class CameraPivot : Node3D, ISaveable<CameraPivotData> {
 	[Export] private Vector3 zoomPresets = new Vector3(5, 7, 9);
 	[Export] private Vector3 rotationPresets = new Vector3(-30, -45, -60);
 	[Export] private int curTiltIndex;
@@ -10,7 +11,7 @@ public partial class TopDownCameraPivot : Node3D, ISaveable<CameraPivotData> {
 	[Export] private float zoomCoolDown = 1.0f;
 	private Timer zoomTimer = new Timer();
 	private Camera3D? camera;
-	private float deltaTime;
+	private float dt;
 	[Signal] public delegate void ZoomChangedEventHandler(float zoomRatio, float titleAngle, float distance);
 
 	public override void _EnterTree() {
@@ -19,8 +20,6 @@ public partial class TopDownCameraPivot : Node3D, ISaveable<CameraPivotData> {
 	}
 
 	public override void _Ready() {
-		GameManager.CameraPivot = this;
-
 		curTiltIndex = 1;
 		Position = calcYZPosVec();
 		RotationDegrees = getRotVec();
@@ -30,35 +29,28 @@ public partial class TopDownCameraPivot : Node3D, ISaveable<CameraPivotData> {
 	}
 
 	public override void _PhysicsProcess(double delta) {
-		deltaTime = (float)delta;
+		dt = (float)delta;
 		updateCameraPositionAndRotation();
 	}
 
-	public override void _Input(InputEvent @event) {
+	public override void _Input(InputEvent input) {
 		if(zoomTimer.IsStopped()) {
 			zoomTimer.Start(zoomCoolDown);
-			handleMouseScroll(@event);
-			handleTrackPad(@event);
+			handleMouseScroll(input);
+			handleTrackPad(input);
 		}
 	}
 
 	private void updateCameraPositionAndRotation() {
 		Vector3 newPosition = calcYZPosVec();
-		float weight = 1f - Mathf.Exp(-zoomSpeed * deltaTime);
-		Position = Position.Lerp(newPosition, weight);
+		Position = Position.SmoothLerp(newPosition, zoomSpeed, dt);
 		Vector3 newRotationVec = getRotVec();
-		Transform3D newRotation = Transform;
-		newRotation.Basis = new Basis(Vector3.Right, Mathf.DegToRad(newRotationVec.X));
-		Quaternion newRotationQ = new Quaternion(newRotation.Basis);
-		Transform3D curRotation = Transform;
-		Quaternion curRotationQ = new Quaternion(curRotation.Basis);
-		curRotationQ = curRotationQ.Slerp(newRotationQ, weight);
-		curRotation.Basis = new Basis(curRotationQ);
-		Transform = curRotation;
+
+		this.ApplyRotation(Vector3.Right, Mathf.DegToRad(newRotationVec.X), zoomSpeed, dt);
 	}
 
-	private void handleMouseScroll(InputEvent @event) {
-		if(@event is InputEventMouseButton mouseScrollEvent && mouseScrollEvent.Pressed) {
+	private void handleMouseScroll(InputEvent input) {
+		if(input is InputEventMouseButton mouseScrollEvent && mouseScrollEvent.Pressed) {
 			switch(mouseScrollEvent.ButtonIndex) {
 				case MouseButton.WheelUp:
 					changeTiltIndex(false);
@@ -70,8 +62,8 @@ public partial class TopDownCameraPivot : Node3D, ISaveable<CameraPivotData> {
 		}
 	}
 
-	private void handleTrackPad(InputEvent @event) {
-		if(@event is InputEventPanGesture panGestureEvent) {
+	private void handleTrackPad(InputEvent input) {
+		if(input is InputEventPanGesture panGestureEvent) {
 			if(panGestureEvent.Delta.Y < 0) {
 				changeTiltIndex(true);
 			}

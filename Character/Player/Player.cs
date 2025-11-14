@@ -27,13 +27,11 @@ public partial class Player : CharacterBody3D, ISaveable<PlayerData> {
 	}
 
 	public override void _Ready() {
-		GameManager.Player = this;
-
 		KeyInput = new KeyInput();
 		Movement = new Movement(this);
 		Health = new Health(InitalHealth);
 
-		AddChild(GD.Load<PackedScene>(Scenes.HUD).Instantiate());
+		this.AddScene(Scenes.HUD);
 	}
 
 	public override void _PhysicsProcess(double delta) {
