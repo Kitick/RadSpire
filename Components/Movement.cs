@@ -40,23 +40,9 @@ namespace Components {
 
 			if(direction.Length() < Numbers.EPSILON) { return; }
 
-			// Calculate target rotation
 			float newRotationAngle = Mathf.RadToDeg(Mathf.Atan2(direction.X, direction.Z));
-			Transform3D newRotation = Body.Transform;
-			newRotation.Basis = new Basis(Vector3.Up, Mathf.DegToRad(newRotationAngle));
 
-			// Get current rotation
-			Transform3D curRotation = Body.Transform;
-			Quaternion curRotationQ = new Quaternion(curRotation.Basis);
-
-			// Slerp towards target rotation
-			Quaternion newRotationQ = new Quaternion(newRotation.Basis);
-			float rotationSpeed = RotationSpeed * direction.Length();
-			curRotationQ = curRotationQ.Slerp(newRotationQ, rotationSpeed * dt);
-
-			// Apply rotation
-			curRotation.Basis = new Basis(curRotationQ);
-			Body.Transform = curRotation;
+			Body.ApplyRotation(Vector3.Up, Mathf.DegToRad(newRotationAngle), RotationSpeed, dt);
 		}
 
 		private void ApplyFriction(float dt) {
