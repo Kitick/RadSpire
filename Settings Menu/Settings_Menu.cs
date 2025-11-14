@@ -84,3 +84,10 @@ namespace SettingsPanels {
 		}
 	}
 }
+
+namespace SaveSystem {
+	public readonly record struct SettingsData : ISaveData {
+		public DisplaySettings DisplaySettings { get; init; }
+		public SoundSettings SoundSettings { get; init; }
+	}
+}

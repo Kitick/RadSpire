@@ -233,3 +233,10 @@ public partial class TopDownCameraRig : Node3D, ISaveable<CameraRigData> {
 		GlobalPosition = data.Position;
 	}
 }
+
+namespace SaveSystem {
+	public readonly record struct CameraRigData : ISaveData {
+		public Vector3 Position { get; init; }
+		public Vector3 CenterOffset { get; init; }
+	}
+}

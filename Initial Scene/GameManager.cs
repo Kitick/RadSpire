@@ -37,3 +37,11 @@ public partial class GameManager : Node {
 		return false;
 	}
 }
+
+namespace SaveSystem {
+	public readonly struct GameState : ISaveData {
+		public PlayerData Player { get; init; }
+		public CameraPivotData CameraPivot { get; init; }
+		public CameraRigData CameraRig { get; init; }
+	}
+}

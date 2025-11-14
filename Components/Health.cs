@@ -1,13 +1,6 @@
 using System;
 using SaveSystem;
 
-namespace SaveSystem {
-	public readonly struct HealthData : ISaveData {
-		public int CurrentHealth { get; init; }
-		public int MaxHealth { get; init; }
-	}
-}
-
 namespace Components {
 	public class Health : ISaveable<HealthData> {
 		public int CurrentHealth {
@@ -58,5 +51,12 @@ namespace Components {
 
 		public static float Percent(this Health health) =>
 			(float)health.CurrentHealth / health.MaxHealth;
+	}
+}
+
+namespace SaveSystem {
+	public readonly struct HealthData : ISaveData {
+		public int CurrentHealth { get; init; }
+		public int MaxHealth { get; init; }
 	}
 }

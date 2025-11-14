@@ -118,3 +118,13 @@ namespace SettingsPanels {
 		}
 	}
 }
+
+namespace SaveSystem {
+	public readonly record struct DisplaySettings : ISaveData {
+		public SettingsPanels.Resolution Resolution { get; init; }
+		public bool IsFullscreen { get; init; }
+		public bool IsVSyncEnabled { get; init; }
+		public float Brightness { get; init; }
+		public int FPSCap { get; init; }
+	}
+}

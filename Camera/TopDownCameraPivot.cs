@@ -126,3 +126,11 @@ public partial class TopDownCameraPivot : Node3D, ISaveable<CameraPivotData> {
 		RotationDegrees = data.Rotation;
 	}
 }
+
+namespace SaveSystem {
+	public readonly record struct CameraPivotData : ISaveData {
+		public int TiltIndex { get; init; }
+		public Vector3 Position { get; init; }
+		public Vector3 Rotation { get; init; }
+	}
+}

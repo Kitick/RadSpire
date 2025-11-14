@@ -160,3 +160,13 @@ namespace SettingsPanels {
 		}
 	}
 }
+
+namespace SaveSystem {
+	public readonly record struct SoundSettings : ISaveData {
+		public float MasterVolume { get; init; }
+		public float MusicVolume { get; init; }
+		public float SFXVolume { get; init; }
+		public bool IsMuted { get; init; }
+		public string OutputDevice { get; init; }
+	}
+}

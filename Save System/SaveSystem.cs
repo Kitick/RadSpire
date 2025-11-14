@@ -4,9 +4,15 @@ using System.Linq;
 using System.Text.Json;
 
 namespace SaveSystem {
-	static class SaveService {
+	public interface ISaveData;
+
+	public interface ISaveable<T> where T : ISaveData {
+		T Serialize();
+		void Deserialize(in T data);
+	}
+
+	public static class SaveService {
 		private const string SaveDirName = "saves";
-		private const string FileExt = ".json";
 
 		private static readonly JsonSerializerOptions JsonOptions = DataConverters.CreateOptions();
 
@@ -19,7 +25,7 @@ namespace SaveSystem {
 		}
 
 		private static FileInfo GetFile(string fileName) {
-			var path = Path.Combine(GetSaveDir().FullName, fileName + FileExt);
+			var path = Path.Combine(GetSaveDir().FullName, fileName + ".json");
 			return new FileInfo(path);
 		}
 
@@ -55,7 +61,7 @@ namespace SaveSystem {
 		}
 
 		public static string[] ListSaves() {
-			var files = GetSaveDir().GetFiles("*" + FileExt);
+			var files = GetSaveDir().GetFiles("*.json");
 
 			return files.Select(file => Path.GetFileNameWithoutExtension(file.Name)).ToArray();
 		}

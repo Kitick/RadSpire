@@ -176,3 +176,9 @@ public partial class Player : CharacterBody3D, ISaveable<PlayerData> {
 
 	}
 }
+
+namespace SaveSystem {
+	public readonly record struct PlayerData : ISaveData {
+
+	}
+}
