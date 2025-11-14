@@ -14,7 +14,11 @@ namespace SaveSystem {
 	public static class SaveService {
 		private const string SaveDirName = "saves";
 
-		private static readonly JsonSerializerOptions JsonOptions = DataConverters.CreateOptions();
+		private static readonly JsonSerializerOptions JsonOptions = new() {
+			WriteIndented = true,
+			IndentCharacter = '\t',
+			Converters = { new Vector3Converter() }
+		};
 
 		private static DirectoryInfo GetSaveDir() {
 			var path = Path.Combine(Godot.OS.GetUserDataDir(), SaveDirName);
