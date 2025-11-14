@@ -8,7 +8,7 @@ tab_width = 4
 
 [*.cs]
 csharp_new_line_before_open_brace = none
-csharp_style_prefer_primary_constructors = none
+csharp_style_prefer_primary_constructors = false
 csharp_style_var_when_type_is_apparent = true
 csharp_space_after_keywords_in_control_flow_statements = false
 csharp_style_implicit_object_creation_when_type_is_apparent	= false

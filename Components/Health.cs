@@ -2,17 +2,7 @@ using System;
 using SaveSystem;
 
 namespace Components {
-	public class Health {
-		public enum Status { Alive, Dead }
-
-		public int MaxHealth {
-			get;
-			set {
-				field = Math.Max(0, value);
-				CurrentHealth = CurrentHealth; // Call setter
-			}
-		}
-
+	public class Health : ISaveable<HealthData> {
 		public int CurrentHealth {
 			get;
 			set {
@@ -21,32 +11,50 @@ namespace Components {
 
 				HealthChanged?.Invoke(field, value);
 
-				if(field == 0) { StatusChanged?.Invoke(Status.Alive); }
-				else if(value == 0) { StatusChanged?.Invoke(Status.Dead); }
-
 				field = value;
 			}
 		}
 
-		public Status State {
-			get => field = CurrentHealth > 0 ? Status.Alive : Status.Dead;
+		public int MaxHealth {
+			get;
 			set {
-				if(field == value) { return; }
-
-				CurrentHealth = value switch {
-					Status.Alive => MaxHealth,
-					Status.Dead => 0,
-					_ => CurrentHealth,
-				};
+				field = Math.Max(1, value);
+				CurrentHealth = Math.Min(CurrentHealth, field);
 			}
 		}
 
 		public event Action<int, int>? HealthChanged;
-		public event Action<Status>? StatusChanged;
 
 		public Health(int maxHealth) {
 			MaxHealth = maxHealth;
 			CurrentHealth = maxHealth;
 		}
+
+		public HealthData Serialize() => new HealthData {
+			MaxHealth = MaxHealth,
+			CurrentHealth = CurrentHealth
+		};
+
+		public void Deserialize(in HealthData data) {
+			MaxHealth = data.MaxHealth;
+			CurrentHealth = data.CurrentHealth;
+		}
+	}
+
+	public static class HealthExtensions {
+		public static bool IsAlive(this Health health) => health.CurrentHealth > 0;
+		public static bool IsFull(this Health health) => health.CurrentHealth == health.MaxHealth;
+		public static bool IsHurt(this Health health) => health.CurrentHealth < health.MaxHealth;
+		public static bool IsDead(this Health health) => health.CurrentHealth == 0;
+
+		public static float Percent(this Health health) =>
+			(float)health.CurrentHealth / health.MaxHealth;
+	}
+}
+
+namespace SaveSystem {
+	public readonly struct HealthData : ISaveData {
+		public int CurrentHealth { get; init; }
+		public int MaxHealth { get; init; }
 	}
 }

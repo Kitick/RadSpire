@@ -1,3 +1,4 @@
+using Core;
 using Godot;
 using SaveSystem;
 
@@ -125,5 +126,15 @@ namespace SettingsPanels {
 			SetFPS(fps);
 			GetNode<OptionButton>(FPS_CAP).Select(fps);
 		}
+	}
+}
+
+namespace SaveSystem {
+	public readonly record struct DisplaySettings : ISaveData {
+		public SettingsPanels.Resolution Resolution { get; init; }
+		public bool IsFullscreen { get; init; }
+		public bool IsVSyncEnabled { get; init; }
+		public float Brightness { get; init; }
+		public int FPSCap { get; init; }
 	}
 }
