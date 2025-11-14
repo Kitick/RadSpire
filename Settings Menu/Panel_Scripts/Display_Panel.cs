@@ -50,7 +50,6 @@ namespace SettingsPanels {
 			GetNode<OptionButton>(RESOLUTION).ItemSelected += OnResolutionSelected;
 			GetNode<CheckBox>(FULLSCREEN).Toggled += SetFullscreen;
 			GetNode<CheckBox>(VSYNC).Toggled += SetVSync;
-			//GetNode<HSlider>(BRIGHTNESS).ValueChanged += SetBrightness;
 			GetNode<OptionButton>(FPS_CAP).ItemSelected += OnFPSCapSelected;
 		}
 
@@ -78,11 +77,11 @@ namespace SettingsPanels {
 			float brightness = Mathf.Clamp((float)value, 0.0f, 0.5f);
 
 			if(worldEnv?.Environment != null) {
-				worldEnv.Environment.AdjustmentEnable = true;
-				worldEnv.Environment.AdjustmentExposure = Mathf.Lerp(0.5f, 2.0f, brightness);
+				worldEnv.Environment.TonemapMode = TonemapMode.Linear;
+				worldEnv.Environment.TonemapExposure = Mathf.Lerp(0.5f, 2.0f, brightness);
 			}
 			
-			GD.Print($"Brightness set to {brightness}, exposure set to {worldEnv.Environment.AdjustmentExposure}");
+			GD.Print($"Brightness set to {brightness}, exposure set to {worldEnv.Environment.TonemapExposure}");
 		}
 
 		private static void SetFPS(FPS fps) {
