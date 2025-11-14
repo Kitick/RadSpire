@@ -6,30 +6,6 @@ using SaveSystem;
 namespace SettingsPanels {
 	public enum AudioBus { Master, Music, SFX }
 
-	public static class Extensions {
-		public static string GetName(this AudioBus bus) =>
-			Sound_Panel.BusNames[bus];
-
-		private static int GetIndex(this AudioBus bus) =>
-			AudioServer.GetBusIndex(bus.GetName());
-
-		public static float GetVolume(this AudioBus bus) =>
-			AudioServer.GetBusVolumeLinear(bus.GetIndex()) * 100f;
-
-		public static void SetVolume(this AudioBus bus, float volume) {
-			GD.Print($"Set {bus.GetName()} volume to {volume}{(bus.IsMuted() ? " (muted)" : "")}");
-			AudioServer.SetBusVolumeLinear(bus.GetIndex(), volume / 100f);
-		}
-
-		public static bool IsMuted(this AudioBus bus) =>
-			AudioServer.IsBusMute(bus.GetIndex());
-
-		public static void SetMuted(this AudioBus bus, bool isMuted) {
-			GD.Print($"{(isMuted ? "Muted" : "Unmuted")} {bus.GetName()} bus");
-			AudioServer.SetBusMute(bus.GetIndex(), isMuted);
-		}
-	}
-
 	public partial class Sound_Panel : VBoxContainer, ISaveable<SoundSettings> {
 		// Paths
 		private const string MASTER_SLIDER = "Master_Volume/HSlider";
@@ -156,6 +132,31 @@ namespace SettingsPanels {
 			GetNode<CheckBox>(MUTE_ALL_CHECKBOX).ButtonPressed = data.IsMuted;
 
 			OutputDeviceOption.Select(data.OutputDevice);
+		}
+	}
+
+	// AudioBus extension methods for volume and mute controls
+	public static class AudioBusExtensions {
+		public static string GetName(this AudioBus bus) =>
+			Sound_Panel.BusNames[bus];
+
+		private static int GetIndex(this AudioBus bus) =>
+			AudioServer.GetBusIndex(bus.GetName());
+
+		public static float GetVolume(this AudioBus bus) =>
+			AudioServer.GetBusVolumeLinear(bus.GetIndex()) * 100f;
+
+		public static void SetVolume(this AudioBus bus, float volume) {
+			GD.Print($"Set {bus.GetName()} volume to {volume}{(bus.IsMuted() ? " (muted)" : "")}");
+			AudioServer.SetBusVolumeLinear(bus.GetIndex(), volume / 100f);
+		}
+
+		public static bool IsMuted(this AudioBus bus) =>
+			AudioServer.IsBusMute(bus.GetIndex());
+
+		public static void SetMuted(this AudioBus bus, bool isMuted) {
+			GD.Print($"{(isMuted ? "Muted" : "Unmuted")} {bus.GetName()} bus");
+			AudioServer.SetBusMute(bus.GetIndex(), isMuted);
 		}
 	}
 }
