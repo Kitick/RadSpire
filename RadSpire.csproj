@@ -1,7 +1,6 @@
 <Project Sdk="Godot.NET.Sdk/4.5.0">
 	<PropertyGroup>
-		<TargetFramework>net9.0</TargetFramework>
-		<EnablePreviewFeatures>true</EnablePreviewFeatures>
+		<TargetFramework>net10.0</TargetFramework>
 		<Optimize>true</Optimize>
 
 		<Nullable>enable</Nullable>
