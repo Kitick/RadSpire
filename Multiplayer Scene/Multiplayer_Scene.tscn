@@ -1,0 +1,118 @@
+[gd_scene load_steps=2 format=3 uid="uid://cgiu3la5oqtcb"]
+
+[ext_resource type="Texture2D" uid="uid://ey80t6hrma51" path="res://Game Images/multiplayer_background.png" id="1_ng5tp"]
+
+[node name="MultiplayerScene" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Background" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_ng5tp")
+
+[node name="Multiplayer" type="Label" parent="."]
+layout_mode = 0
+offset_left = 10.0
+offset_right = 117.0
+offset_bottom = 23.0
+scale = Vector2(4, 4)
+text = "MULTIPLAYER"
+
+[node name="Multiplayer_Bar" type="ColorRect" parent="."]
+layout_mode = 0
+offset_top = 80.0
+offset_right = 1920.0
+offset_bottom = 90.0
+
+[node name="Party_Chat" type="ColorRect" parent="."]
+layout_mode = 0
+offset_left = 1504.0
+offset_top = 100.0
+offset_right = 1900.0
+offset_bottom = 464.0
+color = Color(0, 0, 0, 0.50980395)
+
+[node name="Lobby_Chat" type="Label" parent="Party_Chat"]
+layout_mode = 0
+offset_left = 16.0
+offset_right = 109.0
+offset_bottom = 23.0
+scale = Vector2(2, 2)
+text = "Lobby Chat"
+
+[node name="ColorRect" type="ColorRect" parent="Party_Chat"]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -132.0
+offset_bottom = -122.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Party_Chat"]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 60.0
+offset_right = 117.0
+offset_bottom = 110.0
+scale = Vector2(2, 2)
+
+[node name="Username1" type="Label" parent="Party_Chat/VBoxContainer"]
+layout_mode = 2
+text = "> username1"
+
+[node name="Username2" type="Label" parent="Party_Chat/VBoxContainer"]
+layout_mode = 2
+text = "> username2"
+
+[node name="Username3" type="Label" parent="Party_Chat/VBoxContainer"]
+layout_mode = 2
+text = "> username3"
+
+[node name="Multiplayer_Game_Panel" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 100.0
+offset_right = 100.0
+offset_bottom = 236.0
+scale = Vector2(2, 2)
+
+[node name="Host_New_Button" type="Button" parent="Multiplayer_Game_Panel"]
+layout_mode = 2
+text = "Host New"
+
+[node name="Host_Save_Button" type="Button" parent="Multiplayer_Game_Panel"]
+layout_mode = 2
+text = "Host Save"
+
+[node name="Join_Button" type="Button" parent="Multiplayer_Game_Panel"]
+layout_mode = 2
+text = "Join"
+
+[node name="Back_Button" type="Button" parent="Multiplayer_Game_Panel"]
+layout_mode = 2
+text = "Back"
+
+[node name="Settings" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -160.0
+offset_top = 8.0
+offset_right = -90.0
+offset_bottom = 39.0
+grow_horizontal = 0
+scale = Vector2(2, 2)
+text = "Settings"
