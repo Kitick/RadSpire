@@ -6,30 +6,27 @@ using SaveSystem;
 
 public partial class Main_Menu : Control {
 	// Main button paths
-	private const string START_BUTTON = "Main_Button_Panel/Start_Button";
+
+	private const string SINGLEPLAYER_BUTTON = "Main_Button_Panel/Singleplayer_Button";
+	private const string MULTIPLAYER_BUTTON = "Main_Button_Panel/Multiplayer_Button";
 	private const string SETTINGS_BUTTON = "Main_Button_Panel/Settings_Button";
 	private const string QUIT_BUTTON = "Main_Button_Panel/Quit_Button";
 
 	// Popup panel paths
-	private const string START_PANEL = "Start_Button_Panel";
-	private const string ONLINE_BUTTON = "Start_Button_Panel/Online_Button";
-	private const string LOCAL_BUTTON = "Start_Button_Panel/Local_Button";
-	private const string PRIVATE_BUTTON = "Start_Button_Panel/Private_Match_Button";
+	private const string SINGLEPLAYER_BUTTON_PANEL = "Singleplayer_Button_Panel";
+	private const string CONTINUE_BUTTON = "Singleplayer_Button_Panel/Continue_Button";
+	private const string LOAD_SAVED_BUTTON = "Singleplayer_Button_Panel/Load_Saved_Button";
+	private const string START_NEW_BUTTON = "Singleplayer_Button_Panel/Start_New_Button";
 
-	// Local overlay paths
-	private const string LOCAL_OVERLAY = "Local_Overlay_Panel";
-	private const string CONTINUE_BUTTON = "Local_Overlay_Panel/ColorRect/VBoxContainer/Continue_Button";
-	private const string LOAD_SAVED_BUTTON = "Local_Overlay_Panel/ColorRect/VBoxContainer/Load_Saved_Button";
-	private const string START_NEW_BUTTON = "Local_Overlay_Panel/ColorRect/VBoxContainer/Start_New_Button";
-	private const string BACK_TO_MAIN_BUTTON = "Local_Overlay_Panel/ColorRect/VBoxContainer/Back_To_Main_Button";
 
 	// Component references
-	private Button StartButton = null!;
-	private Control StartButtonPanel = null!;
-	private Control LocalOverlayPanel = null!;
+	private Button SingleplayerButton = null!;
+	private Control SingleplayerButtonPanel = null!;
+	private Button MultiplayerButton = null!;
 
 	private Control SettingsInstance = null!;
 
+	//Main
 	public override void _Ready() {
 		GetComponents();
 		InitSettings();
@@ -47,38 +44,36 @@ public partial class Main_Menu : Control {
 
 	private void GetComponents() {
 		// Components
-		StartButton = GetNode<Button>(START_BUTTON);
-
-		StartButtonPanel = GetNode<Control>(START_PANEL);
-		LocalOverlayPanel = GetNode<Control>(LOCAL_OVERLAY);
+		SingleplayerButton = GetNode<Button>(SINGLEPLAYER_BUTTON);
+		SingleplayerButtonPanel = GetNode<Control>(SINGLEPLAYER_BUTTON_PANEL);
+		MultiplayerButton = GetNode<Button>(MULTIPLAYER_BUTTON);
 	}
 
 	private void SetCallbacks() {
 		// Main buttons
-		StartButton.Pressed += OnStartButtonPressed;
+		SingleplayerButton.Pressed += OnSingleplayerButtonPressed;
+		MultiplayerButton.Pressed += OnMultiplayerButtonPressed;
 		GetNode<Button>(SETTINGS_BUTTON).Pressed += OnSettingsButtonPressed;
 		GetNode<Button>(QUIT_BUTTON).Pressed += OnQuitButtonPressed;
 
 		// Hover behavior
-		StartButton.MouseEntered += OnStartButtonHover;
-		StartButton.MouseExited += OnStartButtonUnhover;
-		StartButtonPanel.MouseExited += OnPanelMouseExited;
+		SingleplayerButton.MouseEntered += OnSingleplayerButtonHover;
+		SingleplayerButton.MouseExited += OnSingleplayerButtonUnhover;
+		SingleplayerButtonPanel.MouseExited += OnPanelMouseExited;
 
 		// Popup buttons
-		GetNode<Button>(ONLINE_BUTTON).Pressed += StartOnlineGame;
-		GetNode<Button>(LOCAL_BUTTON).Pressed += StartLocalGame;
-		GetNode<Button>(PRIVATE_BUTTON).Pressed += StartPrivateMatch;
-
-		// Local overlay buttons
 		GetNode<Button>(CONTINUE_BUTTON).Pressed += OnContinueButtonPressed;
 		GetNode<Button>(LOAD_SAVED_BUTTON).Pressed += OnLoadSavedButtonPressed;
 		GetNode<Button>(START_NEW_BUTTON).Pressed += OnStartNewButtonPressed;
-		GetNode<Button>(BACK_TO_MAIN_BUTTON).Pressed += OnBackToMainButtonPressed;
 	}
 
 	//Main Button Handlers
-	private void OnStartButtonPressed() {
-		GD.Print("Start button was pressed!");
+	private void OnSingleplayerButtonPressed() {
+		GD.Print("Singleplayer button was pressed!");
+	}
+
+	private void OnMultiplayerButtonPressed() {
+		GD.Print("Multiplayer button was pressed!");
 	}
 
 	private void OnSettingsButtonPressed() {
@@ -91,8 +86,8 @@ public partial class Main_Menu : Control {
 	}
 
 	//Hover Pop-Up Logic
-	private void OnStartButtonHover() {
-		StartButtonPanel.Visible = true;
+	private void OnSingleplayerButtonHover() {
+		SingleplayerButtonPanel.Visible = true;
 	}
 
 	//Unhover Pop-Up Logic
@@ -100,34 +95,19 @@ public partial class Main_Menu : Control {
 		GetTree().CreateTimer(delay).Timeout += () => {
 			Vector2 mousePos = GetViewport().GetMousePosition();
 
-			bool insideStartButton = StartButton.GetGlobalRect().HasPoint(mousePos);
-			bool insidePanel = StartButtonPanel.GetGlobalRect().HasPoint(mousePos);
+			bool insideSingleplayerButton = SingleplayerButton.GetGlobalRect().HasPoint(mousePos);
+			bool insidePanel = SingleplayerButtonPanel.GetGlobalRect().HasPoint(mousePos);
 
-			if(!insideStartButton && !insidePanel) {
-				StartButtonPanel.Visible = false;
+			if(!insideSingleplayerButton && !insidePanel) {
+				SingleplayerButtonPanel.Visible = false;
 			}
 		};
 	}
 
-	private void OnStartButtonUnhover() => HidePopup();
+	private void OnSingleplayerButtonUnhover() => HidePopup();
 	private void OnPanelMouseExited() => HidePopup();
 
 	//Pop-up panel Buttons Handler
-	private void StartOnlineGame() {
-		GD.Print("Starting Online Game...");
-	}
-
-	private void StartLocalGame() {
-		GD.Print("Starting Local Game...");
-		LocalOverlayPanel.Visible = true;
-		StartButtonPanel.Visible = false;
-	}
-
-	private void StartPrivateMatch() {
-		GD.Print("Starting Private Match...");
-	}
-
-	//Local Overlay Buttons Handler
 	private void OnContinueButtonPressed() {
 		GD.Print("Continue Game Button was pressed!");
 		GameManager.ShouldLoad = true;
@@ -146,13 +126,9 @@ public partial class Main_Menu : Control {
 		LoadGameScene();
 	}
 
+	//Load a New game scene
 	private void LoadGameScene() {
 		GetTree().ChangeSceneToFile(Scenes.GameScene);
 	}
 
-	private void OnBackToMainButtonPressed() {
-		GD.Print("Back button was pressed!");
-		LocalOverlayPanel.Visible = false;
-		StartButtonPanel.Visible = true;
-	}
 }
