@@ -81,3 +81,27 @@ text = "> Load Saved Game"
 layout_mode = 2
 size_flags_horizontal = 0
 text = "> Start New Game"
+
+[node name="Multiplayer_Button_Panel" type="VBoxContainer" parent="."]
+visible = false
+layout_mode = 0
+offset_left = 325.0
+offset_top = 521.0
+offset_right = 482.0
+offset_bottom = 622.0
+scale = Vector2(1.5, 1.5)
+
+[node name="Host_New_Button" type="Button" parent="Multiplayer_Button_Panel"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "> Host New Game"
+
+[node name="Host_Saved_Button" type="Button" parent="Multiplayer_Button_Panel"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "> Host Saved Game"
+
+[node name="Join_Game_Button" type="Button" parent="Multiplayer_Button_Panel"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "> Join Game"
