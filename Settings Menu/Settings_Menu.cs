@@ -37,9 +37,6 @@ namespace SettingsPanels {
 		public override void _Input(InputEvent input) {
 			// Esc
 			if(input.IsActionPressed(Actions.UICancel)) {
-				// Save settings before closing
-				SaveData();
-
 				// close overlay and stop Esc from reaching game
 				Visible = false;
 				GetViewport().SetInputAsHandled();

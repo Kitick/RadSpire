@@ -1,6 +1,12 @@
-[gd_scene load_steps=2 format=3 uid="uid://crye0f0yw8xrb"]
+[gd_scene load_steps=5 format=3 uid="uid://crye0f0yw8xrb"]
 
 [ext_resource type="Script" uid="uid://d1semxqghe872" path="res://HUD/Pause_Menu.cs" id="1_1f24j"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1f24j"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ppbhg"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rlg28"]
 
 [node name="Pause_Menu" type="Control"]
 layout_mode = 3
@@ -27,13 +33,23 @@ grow_vertical = 2
 color = Color(0.41960785, 0.2784314, 0.23921569, 0.45882353)
 
 [node name="PauseText" type="TextEdit" parent="ColorRect"]
+modulate = Color(1.179842, 1.179842, 1.179842, 0.972549)
+self_modulate = Color(1, 1, 1, 0.972549)
+light_mask = 0
 layout_mode = 0
-offset_left = 123.0
-offset_top = 16.0
-offset_right = 185.0
-offset_bottom = 54.0
-text = "PAUSE"
+offset_left = 122.0
+offset_top = 8.0
+offset_right = 181.0
+offset_bottom = 34.0
+theme_override_colors/font_readonly_color = Color(1, 1, 1, 0.96862745)
+theme_override_font_sizes/font_size = 14
+theme_override_styles/normal = SubResource("StyleBoxEmpty_1f24j")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_ppbhg")
+theme_override_styles/read_only = SubResource("StyleBoxEmpty_rlg28")
+text = "PAUSED"
 editable = false
+highlight_all_occurrences = true
+text_direction = 1
 
 [node name="Pause_Buttons" type="VBoxContainer" parent="."]
 layout_mode = 0

@@ -39,20 +39,6 @@ namespace SettingsPanels {
 			// Configure output devices
 			OutputDeviceOption.Populate(AudioServer.GetOutputDeviceList());
 			OutputDeviceOption.Select(AudioServer.OutputDevice);
-
-			PlayDebugSound();
-		}
-
-		private void PlayDebugSound() {
-			var audioStreamPlayer = new AudioStreamPlayer {
-				Stream = GD.Load<AudioStream>("res://Sounds/COD Black Ops 2 Main Menu Theme (In Game original).mp3"),
-				Bus = AudioBus.Music.GetName()
-			};
-
-			AddChild(audioStreamPlayer);
-			audioStreamPlayer.Play();
-
-			GD.Print("Playing debug sound...");
 		}
 
 		private void GetComponents() {
@@ -99,9 +85,9 @@ namespace SettingsPanels {
 		}
 
 		// Callbacks
-		private void OnMasterVolumeChanged(double value) => AudioBus.Master.SetVolume((float)value);
-		private void OnMusicVolumeChanged(double value) => AudioBus.Music.SetVolume((float)value);
-		private void OnSFXVolumeChanged(double value) => AudioBus.SFX.SetVolume((float)value);
+		private void OnMasterVolumeChanged(double value) => AudioBus.Master.SetVolume(value);
+		private void OnMusicVolumeChanged(double value) => AudioBus.Music.SetVolume(value);
+		private void OnSFXVolumeChanged(double value) => AudioBus.SFX.SetVolume(value);
 		private void OnMuteAllToggled(bool isMuted) => SetMuteAll(isMuted);
 
 		private void OnOutputDeviceSelected(long index) {
@@ -144,10 +130,13 @@ namespace SettingsPanels {
 		private static int GetIndex(this AudioBus bus) =>
 			AudioServer.GetBusIndex(bus.GetName());
 
-		public static float GetVolume(this AudioBus bus) =>
-			AudioServer.GetBusVolumeLinear(bus.GetIndex()) * 100f;
+		public static int GetVolume(this AudioBus bus) =>
+			(int)Math.Round(AudioServer.GetBusVolumeLinear(bus.GetIndex()) * 100f);
 
-		public static void SetVolume(this AudioBus bus, float volume) {
+		public static void SetVolume(this AudioBus bus, double volume) =>
+			bus.SetVolume((int)Math.Round(volume));
+
+		public static void SetVolume(this AudioBus bus, int volume) {
 			GD.Print($"Set {bus.GetName()} volume to {volume}{(bus.IsMuted() ? " (muted)" : "")}");
 			AudioServer.SetBusVolumeLinear(bus.GetIndex(), volume / 100f);
 		}
@@ -164,9 +153,9 @@ namespace SettingsPanels {
 
 namespace SaveSystem {
 	public readonly record struct SoundSettings : ISaveData {
-		public float MasterVolume { get; init; }
-		public float MusicVolume { get; init; }
-		public float SFXVolume { get; init; }
+		public int MasterVolume { get; init; }
+		public int MusicVolume { get; init; }
+		public int SFXVolume { get; init; }
 		public bool IsMuted { get; init; }
 		public string OutputDevice { get; init; }
 	}

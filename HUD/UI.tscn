@@ -1,10 +1,13 @@
-[gd_scene load_steps=6 format=3 uid="uid://dxvau62v0efr7"]
+[gd_scene load_steps=9 format=3 uid="uid://dxvau62v0efr7"]
 
 [ext_resource type="Script" uid="uid://bee1n6ixna6g5" path="res://HUD/UI.cs" id="1_jmlhc"]
 [ext_resource type="Script" uid="uid://crgbkjwmhm4is" path="res://HUD/Hotbar.cs" id="2_0odjq"]
 [ext_resource type="Texture2D" uid="uid://bka8hfkmuqsgi" path="res://Textures/211871_pause_icon.png" id="2_785o0"]
 [ext_resource type="Texture2D" uid="uid://dfubgqxo2e74x" path="res://Textures/hotbar_background.png" id="2_rs0cq"]
+[ext_resource type="PackedScene" uid="uid://enwcupqs54ks" path="res://HUD/hotbar.tscn" id="5_c358i"]
 [ext_resource type="PackedScene" uid="uid://crye0f0yw8xrb" path="res://HUD/pause_menu.tscn" id="5_jmlhc"]
+[ext_resource type="PackedScene" uid="uid://bh385aht56k6g" path="res://HUD/inventory.tscn" id="6_785o0"]
+[ext_resource type="PackedScene" uid="uid://bjql4hi1q0ouh" path="res://HUD/quest_log.tscn" id="8_6ymr8"]
 
 [node name="UI" type="CanvasLayer"]
 script = ExtResource("1_jmlhc")
@@ -61,9 +64,24 @@ layout_mode = 2
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
 
+[node name="Hotbar" parent="Hotbar" instance=ExtResource("5_c358i")]
+
 [node name="PauseMenu" parent="." instance=ExtResource("5_jmlhc")]
 offset_left = 1122.0
 offset_top = 2.0
 offset_right = 1122.0
 offset_bottom = 2.0
 script = null
+
+[node name="Inventory" parent="." instance=ExtResource("6_785o0")]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 2.0
+offset_top = 184.0
+offset_right = -1878.0
+offset_bottom = -856.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="QuestLog" parent="." instance=ExtResource("8_6ymr8")]
