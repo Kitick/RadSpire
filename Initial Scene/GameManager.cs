@@ -22,7 +22,7 @@ public partial class GameManager : Node {
 
 	public static void FollowPlayer() {
 		if(Player != null && CameraRig != null) {
-			CameraRig.SetTarget(Player);
+			CameraRig.Target = Player;
 		}
 		else {
 			GD.PrintErr("Failed to set camera target - Player or CameraRig is null");
