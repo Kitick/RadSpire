@@ -14,6 +14,5 @@ script = ExtResource("1_dmntq")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.192698, 0)
 shape = SubResource("CapsuleShape3D_x84vo")
 
-[node name="Knight" parent="." node_paths=PackedStringArray("player") instance=ExtResource("2_ky31d")]
+[node name="Knight" parent="." instance=ExtResource("2_ky31d")]
 script = ExtResource("3_h8o71")
-player = NodePath("..")

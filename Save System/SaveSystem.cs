@@ -17,6 +17,7 @@ namespace SaveSystem {
 		private static readonly JsonSerializerOptions JsonOptions = new() {
 			WriteIndented = true,
 			IndentCharacter = '\t',
+			IndentSize = 1,
 			Converters = { new Vector3Converter() }
 		};
 
