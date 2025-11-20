@@ -61,10 +61,13 @@ namespace Camera {
 
 		private void HandleMouseMotion(InputEventMouseMotion motion) {
 			if(IsPanning) {
-				Vector2 delta2 = -motion.ScreenRelative * PanSensitivity;
-				Vector3 delta = new Vector3(delta2.X, 0, delta2.Y);
+				Vector2 relative = -motion.ScreenRelative * PanSensitivity;
 
-				Drag.Move(delta);
+				float hdg = Mathf.DegToRad(Pose.Heading);
+
+				Vector2 delta = relative.Rotated(-hdg);
+
+				Drag.Move(new Vector3(delta.X, 0, delta.Y));
 			}
 			else if(IsRotating) {
 				Vector2 delta = motion.ScreenRelative * RotateSensitivity;

@@ -9,7 +9,7 @@ namespace Camera {
 		public Vector3 Ground;
 
 		public float Distance { get; set => field = Math.Max(value, 0); }
-		public float Heading { get; set { field = (value + 360) % 360; GD.Print(Heading);} }
+		public float Heading { get; set => field = (value + 360) % 360; }
 		public float Pitch { get; set => field = Math.Clamp(value, -90, 90); }
 
 		public readonly Vector3 CalcPosition() {
@@ -73,7 +73,7 @@ namespace Camera {
 
 			GlobalPosition = Pose.CalcPosition();
 
-			LookAt(Pose.Ground, Vector3.Up);
+			if(Pose.Distance >= Numbers.EPSILON) { LookAt(Pose.Ground, Vector3.Up); }
 		}
 
 		private void Reset() {
@@ -82,7 +82,7 @@ namespace Camera {
 		}
 
 		private void FollowTarget(float dt) {
-			if(Target == null){ return; }
+			if(Target == null) { return; }
 			Pose.Ground = Pose.Ground.SmoothLerp(Target.GlobalPosition, FollowSpeed, dt);
 		}
 
