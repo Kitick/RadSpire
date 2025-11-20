@@ -11,23 +11,23 @@ namespace Camera {
 
 		public override void _Input(InputEvent input) {
 			if(input.IsActionPressed(Actions.CameraReset)) {
-				State = CameraState.Following;
+				Reset();
 			}
 			else if(input is InputEventMouseButton mouseEvent) {
 				if(mouseEvent.ButtonIndex == PanMouseButton) { HandleMousePan(mouseEvent); }
-				else if(mouseEvent.ButtonIndex == RotateMouseButton){ HandleMouseRotate(mouseEvent); }
+				else if(mouseEvent.ButtonIndex == RotateMouseButton) { HandleMouseRotate(mouseEvent); }
 			}
-			else if(input is InputEventMouseMotion mouseMotion && State == CameraState.Dragging) {
+			else if(input is InputEventMouseMotion mouseMotion) {
 				HandleMouseMotion(mouseMotion);
 			}
 		}
 
 		private void HandleMousePan(InputEventMouseButton mouse) {
-			if(State != CameraState.Dragging && mouse.Pressed) {
-				State = CameraState.Dragging;
+			if(State != CameraState.Panning && mouse.Pressed) {
+				State = CameraState.Panning;
 				Drag.Start(Pose.Ground);
 			}
-			else if(State == CameraState.Dragging && !mouse.Pressed) {
+			else if(State == CameraState.Panning && !mouse.Pressed) {
 				State = CameraState.Idle;
 				Drag.End();
 			}
@@ -37,7 +37,13 @@ namespace Camera {
 
 		}
 
+		private void HandleMouseZoom(InputEventMouseMotion motion) {
+
+		}
+
 		private void HandleMouseMotion(InputEventMouseMotion motion) {
+			if(State != CameraState.Panning) { return; }
+
 			Vector2 delta2 = -motion.ScreenRelative * MouseSensitivity;
 			Vector3 delta = new Vector3(delta2.X, 0, delta2.Y);
 

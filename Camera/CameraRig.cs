@@ -29,8 +29,8 @@ namespace Camera {
 	}
 
 	public partial class CameraRig : Node3D, ISaveable<CameraRigData> {
-		public enum CameraState { Idle, Following, Dragging };
-		public CameraState State { get; private set; } = CameraState.Idle;
+		public enum CameraState { Idle, Following, Panning };
+		public CameraState State { get; private set; } = CameraState.Following;
 
 		public CameraPose Pose = new CameraPose() {
 			Distance = 10f,
@@ -57,8 +57,11 @@ namespace Camera {
 		public override void _PhysicsProcess(double delta) {
 			float dt = (float) delta;
 
-			if(State == CameraState.Following && Target != null) {
-				FollowTarget(Target, dt);
+			if(State == CameraState.Following) {
+				FollowTarget(dt);
+			}
+			else if(State == CameraState.Idle && TargetHasMoved()) {
+				Reset();
 			}
 
 			Drag.Update(Pose.Ground, dt);
@@ -75,8 +78,9 @@ namespace Camera {
 			Drag.Reset();
 		}
 
-		private void FollowTarget(Node3D Target, float dt) {
-			GlobalPosition = GlobalPosition.SmoothLerp(Target.GlobalPosition, FollowSpeed, dt);
+		private void FollowTarget(float dt) {
+			if(Target == null){ return; }
+			Pose.Ground = Pose.Ground.SmoothLerp(Target.GlobalPosition, FollowSpeed, dt);
 		}
 
 		private bool TargetHasMoved() {
