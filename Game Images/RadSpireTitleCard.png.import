@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://howutpu3c584"
-path="res://.godot/imported/radispire_title_card.png-77bba513c9f7f0f7d73702c1ae1614ae.ctex"
+path="res://.godot/imported/RadSpireTitleCard.png-9fa814aa22cd1fd560b599315608b6db.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Game Images/radispire_title_card.png"
-dest_files=["res://.godot/imported/radispire_title_card.png-77bba513c9f7f0f7d73702c1ae1614ae.ctex"]
+source_file="res://Game Images/RadSpireTitleCard.png"
+dest_files=["res://.godot/imported/RadSpireTitleCard.png-9fa814aa22cd1fd560b599315608b6db.ctex"]
 
 [params]
 

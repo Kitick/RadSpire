@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://cu2hv8okrdotr"]
+[gd_scene load_steps=5 format=3 uid="uid://dsoftkiu1wcbb"]
 
 [ext_resource type="Script" uid="uid://b28ooub4d3w51" path="res://Character/Player/Player.cs" id="1_dmntq"]
 [ext_resource type="PackedScene" uid="uid://2qtgw8bpsvko" path="res://Assets/kaykit_character_pack_adventures/Characters/gltf/Knight.glb" id="2_ky31d"]

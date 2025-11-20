@@ -7,13 +7,13 @@ namespace SettingsPanels {
 	public partial class Settings_Menu : Control, ISaveable<SettingsData> {
 		private const string SETTINGS_FILENAME = "settings";
 
-		private const string GENERAL_PANEL = "General_Panel";
-		private const string DISPLAY_PANEL = "Display_Panel";
-		private const string SOUND_PANEL = "Sound_Panel";
-		private const string CONTROLLER_PANEL = "Controller_Panel";
-		private const string MK_PANEL = "MK_Panel";
-		private const string ACCESSIBILITY_PANEL = "Accessibility_Panel";
-		private const string EXTRAS_PANEL = "Extras_Panel";
+		private const string GENERAL_PANEL = "General";
+		private const string DISPLAY_PANEL = "Display";
+		private const string SOUND_PANEL = "Sound";
+		private const string CONTROLLER_PANEL = "Controller";
+		private const string MK_PANEL = "MK";
+		private const string ACCESSIBILITY_PANEL = "Accessibility";
+		private const string EXTRAS_PANEL = "Extras";
 
 		private readonly Dictionary<string, string> ButtonToPanelMap = new() {
 			{"Top_Panel/General_Button", GENERAL_PANEL},

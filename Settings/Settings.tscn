@@ -1,13 +1,13 @@
 [gd_scene load_steps=9 format=3 uid="uid://eqxx1dru7wg3"]
 
-[ext_resource type="Script" uid="uid://cbo6y0rpfuy4y" path="res://Settings Menu/Settings_Menu.cs" id="1_dv3nc"]
-[ext_resource type="Script" uid="uid://dl1xjxisuuwfi" path="res://Settings Menu/Panel_Scripts/General_Panel.cs" id="2_n8tfj"]
-[ext_resource type="Script" uid="uid://bs7ass5u0b8e7" path="res://Settings Menu/Panel_Scripts/Display_Panel.cs" id="3_qn140"]
-[ext_resource type="Script" uid="uid://44dvatf1ygry" path="res://Settings Menu/Panel_Scripts/Sound_Panel.cs" id="4_jxq57"]
-[ext_resource type="Script" uid="uid://d07mw0qp2a1v6" path="res://Settings Menu/Panel_Scripts/Controller_Panel.cs" id="5_jh1wv"]
-[ext_resource type="Script" uid="uid://cu4da5ve5cak1" path="res://Settings Menu/Panel_Scripts/Mk_Panel.cs" id="6_uv3og"]
-[ext_resource type="Script" uid="uid://4wltnw8woqlj" path="res://Settings Menu/Panel_Scripts/Accessibility_Panel.cs" id="7_2kpqc"]
-[ext_resource type="Script" uid="uid://bpf4i0aduodir" path="res://Settings Menu/Panel_Scripts/Extras_Panel.cs" id="8_p7xhj"]
+[ext_resource type="Script" uid="uid://cir0b6r530jd0" path="res://Settings/Settings.cs" id="1_dv3nc"]
+[ext_resource type="Script" uid="uid://4s4bl8f2mte1" path="res://Settings/Panels/GeneralPanel.cs" id="2_n8tfj"]
+[ext_resource type="Script" uid="uid://3t87oippuos7" path="res://Settings/Panels/DisplayPanel.cs" id="3_qn140"]
+[ext_resource type="Script" uid="uid://cic25iqvdqxp6" path="res://Settings/Panels/SoundPanel.cs" id="4_jxq57"]
+[ext_resource type="Script" uid="uid://c44ijxtmj7xb" path="res://Settings/Panels/ControllerPanel.cs" id="5_jh1wv"]
+[ext_resource type="Script" uid="uid://8tuxmuyevsjl" path="res://Settings/Panels/MkPanel.cs" id="6_uv3og"]
+[ext_resource type="Script" uid="uid://fxvdaltq3r54" path="res://Settings/Panels/AccessibilityPanel.cs" id="7_2kpqc"]
+[ext_resource type="Script" uid="uid://ccll8met7hayg" path="res://Settings/Panels/ExtrasPanel.cs" id="8_p7xhj"]
 
 [node name="Settings_Menu" type="Control"]
 layout_mode = 3
