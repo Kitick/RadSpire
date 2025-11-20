@@ -4,8 +4,8 @@ using Godot;
 
 namespace Camera {
 	public partial class CameraRig {
-		public MouseButton PanMouseButton = MouseButton.Right;
-		public MouseButton RotateMouseButton = MouseButton.Middle;
+		public MouseButton PanMouseButton = MouseButton.Middle;
+		public MouseButton RotateMouseButton = MouseButton.Right;
 
 		public float PanSensitivity = 0.1f;
 		public float RotateSensitivity = 0.5f;
@@ -69,7 +69,7 @@ namespace Camera {
 
 				Drag.Move(new Vector3(delta.X, 0, delta.Y));
 			}
-			else if(IsRotating) {
+			if(IsRotating) {
 				Vector2 delta = motion.ScreenRelative * RotateSensitivity;
 
 				Pose.Heading -= delta.X;
