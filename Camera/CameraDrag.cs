@@ -13,7 +13,6 @@ namespace Camera {
 		public readonly Timer ResetTimer = new Timer();
 		public TimeSpan ResetCooldown = TimeSpan.FromSeconds(3);
 
-		public float Speed = 12.0f;
 		public float Dampener = 8.0f;
 
 		public CameraDrag() {
@@ -45,11 +44,11 @@ namespace Camera {
 			Vector3 VelocityTarget;
 
 			VelocityTarget = State switch {
-				DragState.Dragging => (Target - Position) * Speed,
+				DragState.Dragging => Target - Position,
 				_ => Vector3.Zero,
 			};
 
-			Velocity = Velocity.SmoothLerp(VelocityTarget, Dampener, dt);
+			Velocity = Velocity.SmoothLerp(VelocityTarget * 2, Dampener, dt);
 		}
 	}
 }

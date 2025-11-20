@@ -9,14 +9,17 @@ namespace Camera {
 		public Vector3 Ground;
 
 		public float Distance { get; set => field = Math.Max(value, 0); }
-		public float Heading { get; set => field = value % 360; }
+		public float Heading { get; set { field = (value + 360) % 360; GD.Print(Heading);} }
 		public float Pitch { get; set => field = Math.Clamp(value, -90, 90); }
 
 		public readonly Vector3 CalcPosition() {
-			float cosHDG = MathF.Cos(Heading);
-			float sinHDG = MathF.Sin(Heading);
-			float cosPIT = MathF.Cos(Pitch);
-			float sinPIT = MathF.Sin(Pitch);
+			float hdg = Mathf.DegToRad(Heading);
+			float pit = Mathf.DegToRad(Pitch);
+
+			float cosHDG = MathF.Cos(hdg);
+			float sinHDG = MathF.Sin(hdg);
+			float cosPIT = MathF.Cos(pit);
+			float sinPIT = MathF.Sin(pit);
 
 			Vector3 orbit = new Vector3(
 				Distance * sinHDG * cosPIT,
@@ -29,7 +32,7 @@ namespace Camera {
 	}
 
 	public partial class CameraRig : Node3D, ISaveable<CameraRigData> {
-		public enum CameraState { Idle, Following, Panning };
+		public enum CameraState { Idle, Following };
 		public CameraState State { get; private set; } = CameraState.Following;
 
 		public CameraPose Pose = new CameraPose() {
