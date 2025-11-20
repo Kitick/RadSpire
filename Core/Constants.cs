@@ -11,7 +11,7 @@ namespace Core {
 		public const string MainMenu = "res://Main Menu/Main_Menu.tscn";
 		public const string SettingsMenu = "res://Settings Menu/Settings_Menu.tscn";
 
-		public const string GameScene = "res://Initial Scene/initial_player_scene.tscn";
+		public const string GameScene = "res://Game World/World.tscn";
 		public const string Player = "res://Character/Player/Player.tscn";
 
 		public const string Camera = "res://Camera/Camera.tscn";
