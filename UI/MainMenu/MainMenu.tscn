@@ -1,0 +1,107 @@
+[gd_scene load_steps=4 format=3 uid="uid://udkefarjp6kf"]
+
+[ext_resource type="Script" uid="uid://ctdqi1hddclge" path="res://UI/MainMenu/MainMenu.cs" id="1_7b88o"]
+[ext_resource type="Texture2D" uid="uid://dfr168nswrve8" path="res://Assets/Images/MainMenuBackground.png" id="2_vpabl"]
+[ext_resource type="Texture2D" uid="uid://howutpu3c584" path="res://Assets/Images/RadSpireTitleCard.png" id="3_ectev"]
+
+[node name="Main_Menu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_7b88o")
+
+[node name="Background" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_vpabl")
+
+[node name="Title_Card" type="TextureRect" parent="."]
+layout_mode = 1
+offset_left = 96.0
+offset_top = 64.0
+offset_right = 1632.0
+offset_bottom = 1088.0
+scale = Vector2(0.3, 0.3)
+texture = ExtResource("3_ectev")
+
+[node name="Main_Button_Panel" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_left = 128.0
+offset_top = 448.0
+offset_right = 235.0
+offset_bottom = 584.0
+scale = Vector2(2, 1.904)
+
+[node name="Singleplayer_Button" type="Button" parent="Main_Button_Panel"]
+layout_mode = 2
+text = "Singleplayer"
+
+[node name="Multiplayer_Button" type="Button" parent="Main_Button_Panel"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Multiplayer"
+
+[node name="Settings_Button" type="Button" parent="Main_Button_Panel"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Settings"
+
+[node name="Quit_Button" type="Button" parent="Main_Button_Panel"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Quit"
+
+[node name="Singleplayer_Button_Panel" type="VBoxContainer" parent="."]
+visible = false
+layout_mode = 0
+offset_left = 352.0
+offset_top = 455.0
+offset_right = 481.0
+offset_bottom = 556.0
+scale = Vector2(1.5, 1.5)
+
+[node name="Continue_Button" type="Button" parent="Singleplayer_Button_Panel"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "> Continue Game"
+
+[node name="Load_Saved_Button" type="Button" parent="Singleplayer_Button_Panel"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "> Load Saved Game"
+
+[node name="Start_New_Button" type="Button" parent="Singleplayer_Button_Panel"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "> Start New Game"
+
+[node name="Multiplayer_Button_Panel" type="VBoxContainer" parent="."]
+visible = false
+layout_mode = 0
+offset_left = 325.0
+offset_top = 521.0
+offset_right = 482.0
+offset_bottom = 622.0
+scale = Vector2(1.5, 1.5)
+
+[node name="Host_New_Button" type="Button" parent="Multiplayer_Button_Panel"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "> Host New Game"
+
+[node name="Host_Saved_Button" type="Button" parent="Multiplayer_Button_Panel"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "> Host Saved Game"
+
+[node name="Join_Game_Button" type="Button" parent="Multiplayer_Button_Panel"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "> Join Game"
