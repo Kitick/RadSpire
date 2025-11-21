@@ -2,7 +2,8 @@ using System;
 using Godot;
 
 namespace SettingsPanels {
-	public partial class Mk_Panel : VBoxContainer {
+	public partial class ControllerPanel : VBoxContainer {
+
 
 	}
 }

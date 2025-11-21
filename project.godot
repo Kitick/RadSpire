@@ -13,11 +13,11 @@ config_version=5
 config/name="RadSpire"
 run/main_scene="uid://udkefarjp6kf"
 config/features=PackedStringArray("4.5", "C#", "Forward Plus")
-config/icon="res://Textures/icon.svg"
+config/icon="uid://8ykhw0g480u8"
 
 [audio]
 
-buses/default_bus_layout="res://Audio/default_bus_layout.tres"
+buses/default_bus_layout="uid://cpvwo1bhm4q26"
 
 [display]
 

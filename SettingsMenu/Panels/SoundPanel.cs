@@ -7,7 +7,7 @@ using SaveSystem;
 namespace SettingsPanels {
 	public enum AudioBus { Master, Music, SFX }
 
-	public partial class Sound_Panel : VBoxContainer, ISaveable<SoundSettings> {
+	public partial class SoundPanel : VBoxContainer, ISaveable<SoundSettings> {
 		// Paths
 		private const string MASTER_SLIDER = "Master_Volume/HSlider";
 		private const string MUSIC_SLIDER = "Music_Volume/HSlider";
@@ -125,7 +125,7 @@ namespace SettingsPanels {
 	// AudioBus extension methods for volume and mute controls
 	public static class AudioBusExtensions {
 		public static string GetName(this AudioBus bus) =>
-			Sound_Panel.BusNames[bus];
+			SoundPanel.BusNames[bus];
 
 		private static int GetIndex(this AudioBus bus) =>
 			AudioServer.GetBusIndex(bus.GetName());

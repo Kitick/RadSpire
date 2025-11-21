@@ -4,7 +4,7 @@ using Core;
 using Godot;
 using SaveSystem;
 
-public partial class Main_Menu : Control {
+public partial class MainMenu : Control {
 	//Paths for all Buttons and Pop-up Panels
 
 	//Initial Main Menu buttons
@@ -82,7 +82,7 @@ public partial class Main_Menu : Control {
 		GetNode<Button>(LOAD_SAVED_BUTTON).Pressed += OnLoadSavedButtonPressed;
 		GetNode<Button>(START_NEW_BUTTON).Pressed += OnStartNewButtonPressed;
 
-		// Popup buttons for Multiplayer 
+		// Popup buttons for Multiplayer
 		GetNode<Button>(HOST_NEW_BUTTON).Pressed += OnHostNewButtonPressed;
 		GetNode<Button>(HOST_SAVED_BUTTON).Pressed += OnHostSavedButtonPressed;
 		GetNode<Button>(JOIN_GAME_BUTTON).Pressed += OnJoinGameButtonPressed;
@@ -112,8 +112,8 @@ public partial class Main_Menu : Control {
 	}
 
 	private void OnMultiplayerButtonHover() {
-        MultiplayerButtonPanel.Visible = true;
-    }
+		MultiplayerButtonPanel.Visible = true;
+	}
 
 	// Unhover Pop-Up Logic
 	private void HidePopup(double delay = 0.05) {
@@ -127,15 +127,14 @@ public partial class Main_Menu : Control {
 			if(!insideSingleplayerButton && !insideSingleplayerPanel) {
 				SingleplayerButtonPanel.Visible = false;
 			}
-			
+
 			// Multiplayer
 			bool insideMultiplayerButton = MultiplayerButton.GetGlobalRect().HasPoint(mousePos);
 			bool insideMultiplayerPanel = MultiplayerButtonPanel.GetGlobalRect().HasPoint(mousePos);
 
-			if(!insideMultiplayerButton && !insideMultiplayerPanel)
-            {
-                MultiplayerButtonPanel.Visible = false;
-            }
+			if(!insideMultiplayerButton && !insideMultiplayerPanel) {
+				MultiplayerButtonPanel.Visible = false;
+			}
 		};
 	}
 
@@ -168,15 +167,15 @@ public partial class Main_Menu : Control {
 
 	// Pop-up panel buttons handler for Multiplayer
 	private void OnHostNewButtonPressed() {
-        GD.Print("Host New Game Button Pressed!");
-    }
+		GD.Print("Host New Game Button Pressed!");
+	}
 
 	private void OnHostSavedButtonPressed() {
-        GD.Print("Host Saved Button Pressed!");
-    }
+		GD.Print("Host Saved Button Pressed!");
+	}
 
 	private void OnJoinGameButtonPressed() {
-        GD.Print("Join Game Button Pressed!");
+		GD.Print("Join Game Button Pressed!");
 	}
 
 	// Load a new game scene

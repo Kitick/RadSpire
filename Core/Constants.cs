@@ -9,7 +9,7 @@ namespace Core {
 		public const string HUD = "res://HUD/UI.tscn";
 
 		public const string MainMenu = "res://MainMenu/MainMenu.tscn";
-		public const string SettingsMenu = "res://Settings/Settings.tscn";
+		public const string SettingsMenu = "res://SettingsMenu/SettingsMenu.tscn";
 
 		public const string GameScene = "res://GameWorld/World.tscn";
 		public const string Player = "res://Character/Player/Player.tscn";
