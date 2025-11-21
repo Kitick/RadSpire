@@ -11,7 +11,7 @@ namespace SettingsPanels {
 		private const string DISPLAY_PANEL = "Display_Panel";
 		private const string SOUND_PANEL = "Sound_Panel";
 		private const string CONTROLLER_PANEL = "Controller_Panel";
-		private const string MK_PANEL = "Mk_Panel";
+		private const string MK_PANEL = "MK_Panel";
 		private const string ACCESSIBILITY_PANEL = "Accessibility_Panel";
 		private const string EXTRAS_PANEL = "Extras_Panel";
 
