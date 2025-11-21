@@ -1,8 +1,8 @@
 [gd_scene load_steps=4 format=3 uid="uid://udkefarjp6kf"]
 
 [ext_resource type="Script" uid="uid://ctdqi1hddclge" path="res://MainMenu/MainMenu.cs" id="1_7b88o"]
-[ext_resource type="Texture2D" uid="uid://dfr168nswrve8" path="res://Game Images/MainMenuBackground.png" id="2_vpabl"]
-[ext_resource type="Texture2D" uid="uid://howutpu3c584" path="res://Game Images/RadSpireTitleCard.png" id="3_ectev"]
+[ext_resource type="Texture2D" uid="uid://dfr168nswrve8" path="res://Assets/Images/MainMenuBackground.png" id="2_vpabl"]
+[ext_resource type="Texture2D" uid="uid://howutpu3c584" path="res://Assets/Images/RadSpireTitleCard.png" id="3_ectev"]
 
 [node name="Main_Menu" type="Control"]
 layout_mode = 3

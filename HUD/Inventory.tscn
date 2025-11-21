@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://bffohbw4kmhwa"]
 
-[ext_resource type="Texture2D" uid="uid://8ykhw0g480u8" path="res://Textures/sword.png" id="1_ck2mn"]
+[ext_resource type="Texture2D" uid="uid://8ykhw0g480u8" path="res://Assets/Textures/sword.png" id="1_ck2mn"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ck2mn"]
 bg_color = Color(0.6, 0.6, 0.6, 0.015686275)

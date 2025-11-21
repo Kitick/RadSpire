@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://howutpu3c584"
-path="res://.godot/imported/RadSpireTitleCard.png-9fa814aa22cd1fd560b599315608b6db.ctex"
+path="res://.godot/imported/RadSpireTitleCard.png-b4a360cc06d49f80a085de36d1c628b7.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Game Images/RadSpireTitleCard.png"
-dest_files=["res://.godot/imported/RadSpireTitleCard.png-9fa814aa22cd1fd560b599315608b6db.ctex"]
+source_file="res://Assets/Images/RadSpireTitleCard.png"
+dest_files=["res://.godot/imported/RadSpireTitleCard.png-b4a360cc06d49f80a085de36d1c628b7.ctex"]
 
 [params]
 

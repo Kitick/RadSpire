@@ -2,8 +2,8 @@
 
 [ext_resource type="Script" uid="uid://bee1n6ixna6g5" path="res://HUD/UI.cs" id="1_jmlhc"]
 [ext_resource type="Script" uid="uid://crgbkjwmhm4is" path="res://HUD/Hotbar.cs" id="2_0odjq"]
-[ext_resource type="Texture2D" uid="uid://bka8hfkmuqsgi" path="res://Textures/211871_pause_icon.png" id="2_785o0"]
-[ext_resource type="Texture2D" uid="uid://dfubgqxo2e74x" path="res://Textures/hotbar_background.png" id="2_rs0cq"]
+[ext_resource type="Texture2D" uid="uid://bka8hfkmuqsgi" path="res://Assets/Textures/211871_pause_icon.png" id="2_785o0"]
+[ext_resource type="Texture2D" uid="uid://dfubgqxo2e74x" path="res://Assets/Textures/hotbar_background.png" id="2_rs0cq"]
 [ext_resource type="PackedScene" uid="uid://etextx8i4ksr" path="res://HUD/Hotbar.tscn" id="5_c358i"]
 [ext_resource type="PackedScene" uid="uid://crye0f0yw8xrb" path="res://HUD/PauseMenu.tscn" id="5_jmlhc"]
 [ext_resource type="PackedScene" uid="uid://bffohbw4kmhwa" path="res://HUD/Inventory.tscn" id="6_785o0"]
