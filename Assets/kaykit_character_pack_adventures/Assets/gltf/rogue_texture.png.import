@@ -4,15 +4,16 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://c5q75a0hablxw"
 path.s3tc="res://.godot/imported/rogue_texture.png-f97add3aa1856bf34258d87d8528965b.s3tc.ctex"
+path.etc2="res://.godot/imported/rogue_texture.png-f97add3aa1856bf34258d87d8528965b.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://Assets/kaykit_character_pack_adventures/Assets/gltf/rogue_texture.png"
-dest_files=["res://.godot/imported/rogue_texture.png-f97add3aa1856bf34258d87d8528965b.s3tc.ctex"]
+dest_files=["res://.godot/imported/rogue_texture.png-f97add3aa1856bf34258d87d8528965b.s3tc.ctex", "res://.godot/imported/rogue_texture.png-f97add3aa1856bf34258d87d8528965b.etc2.ctex"]
 
 [params]
 
