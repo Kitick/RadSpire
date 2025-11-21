@@ -1,10 +1,9 @@
 using System;
 using SaveSystem;
 
-namespace Components {
-    public enum ItemType { Weapon, Armor, Resource, Placeable }
-
+namespace Components 
 	public class ItemBaseData : ISaveable<ItemBaseDataData> {
+        //Basic properties of all items
         public string Id {
             get;
             set {
@@ -37,17 +36,27 @@ namespace Components {
 
         public bool IsStackable {
             get;
-            set;
+            set {
+                if(!value) {
+                    MaxStackSize = 1;
+                }
+                field = value;
+            }
         }
         
         public int MaxStackSize {
             get;
-            set;
-        }
-
-        public ItemType Type {
-            get;
-            set;
+            set {
+                if(value < 1) {
+                    field = 1;
+                    return;
+                }
+                if(!IsStackable && value > 1) {
+                    field = 1;
+                    return;
+                }
+                field = value;
+            }
         }
 
         public bool IsConsumable {
@@ -60,15 +69,21 @@ namespace Components {
             set;
         }
 
-		public ItemBaseDataData Serialize() => new ItemBaseDataData {
+        //Optional components
+        public WeaponBaseData? WeaponBaseComponent {
+            get;
+            set;
+        }
+
+        public ItemBaseDataData Serialize() => new ItemBaseDataData {
             Id = Id,
             Name = Name,
             Description = Description,
             IsStackable = IsStackable,
             MaxStackSize = MaxStackSize,
-            Type = Type,
             IsConsumable = IsConsumable,
-            IconPath = IconPath
+            IconPath = IconPath,
+            WeaponBaseComponent = WeaponBaseComponent?.Serialize()
         };
 
 		public void Deserialize(in ItemBaseDataData data) {
@@ -77,9 +92,17 @@ namespace Components {
             Description = data.Description;
             IsStackable = data.IsStackable;
             MaxStackSize = data.MaxStackSize;
-            Type = data.Type;
             IsConsumable = data.IsConsumable;
             IconPath = data.IconPath;
+
+            if(data.WeaponBaseComponent is null) {
+                WeaponBaseComponent = null;
+                return;
+            }
+            else {
+                WeaponBaseComponent = new WeaponBaseData(1);
+                WeaponBaseComponent.Deserialize(data.WeaponBaseComponent.Value);
+            }
 		}
 	}
 }
@@ -91,8 +114,8 @@ namespace SaveSystem {
         public string Description { get; init; }
         public bool IsStackable { get; init; }
         public int MaxStackSize { get; init; }
-        public Components.ItemType Type { get; init; }
         public bool IsConsumable { get; init; }
         public string IconPath { get; init; }
+        public WeaponBaseDataData? WeaponBaseComponent { get; init; }
 	}
 }
