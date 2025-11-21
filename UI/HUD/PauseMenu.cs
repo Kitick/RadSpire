@@ -1,4 +1,4 @@
-using System;
+using SettingsPanels;
 using Core;
 using Godot;
 
@@ -8,7 +8,7 @@ public partial class PauseMenu : Control {
 	private Button SaveButton = null!;
 	private Button MainMenuButton = null!;
 	[Export] public PackedScene SettingsMenu = null!;
-	private Control SettingsInstance = null!;
+	private SettingsMenu SettingsInstance = null!;
 
 	private const string RESUME_BUTTON = "Pause_Buttons/Resume";
 	private const string SETTINGS_BUTTON = "Pause_Buttons/Settings";
@@ -48,7 +48,7 @@ public partial class PauseMenu : Control {
 	private void OnResumeButtonPressed() {
 		GetTree().Paused = false;
 		Visible = false;
-		Input.MouseMode = Input.MouseModeEnum.Captured;
+		Input.MouseMode = Input.MouseModeEnum.Visible;
 	}
 
 	private void OnSaveButtonPressed() {
@@ -61,17 +61,13 @@ public partial class PauseMenu : Control {
 	}
 
 	private void OnSettingsButtonPressed() {
-		// Only one settings overlay at a time
-		if(SettingsInstance == null || !SettingsInstance.IsInsideTree()) {
-			SettingsInstance = SettingsMenu.Instantiate<Control>();
-			AddChild(SettingsInstance);
-
-			// Let the settings menu decide its own ProcessMode (it sets Always in _Ready)
-			// So DO NOT change SettingsInstance.ProcessMode here.
+		if(SettingsMenu != null) {
+			SettingsInstance = SettingsMenu.Instantiate<SettingsMenu>();
+			GetParent().AddChild(SettingsInstance);
+			SettingsInstance.SetPauseMenu(this);
 		}
 
-		// Just ensure it's visible when button is pressed
-
-		SettingsInstance.Visible = true;
+		Visible = false;
+		SettingsInstance.FromPause();
 	}
 }
