@@ -8,10 +8,10 @@ namespace Core {
 		public const string PauseMenu = "res://HUD/PauseMenu.tscn";
 		public const string HUD = "res://HUD/UI.tscn";
 
-		public const string MainMenu = "res://Main Menu/MainMenu.tscn";
+		public const string MainMenu = "res://MainMenu/MainMenu.tscn";
 		public const string SettingsMenu = "res://Settings/Settings.tscn";
 
-		public const string GameScene = "res://Game World/World.tscn";
+		public const string GameScene = "res://GameWorld/World.tscn";
 		public const string Player = "res://Character/Player/Player.tscn";
 
 		public const string Camera = "res://Camera/Camera.tscn";
