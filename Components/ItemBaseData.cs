@@ -55,6 +55,11 @@ namespace Components {
             set;
         }
 
+        public string IconPath {
+            get;
+            set;
+        }
+
 		public ItemBaseDataData Serialize() => new ItemBaseDataData {
             Id = Id,
             Name = Name,
@@ -62,7 +67,8 @@ namespace Components {
             IsStackable = IsStackable,
             MaxStackSize = MaxStackSize,
             Type = Type,
-            IsConsumable = IsConsumable
+            IsConsumable = IsConsumable,
+            IconPath = IconPath
         };
 
 		public void Deserialize(in ItemBaseDataData data) {
@@ -73,6 +79,7 @@ namespace Components {
             MaxStackSize = data.MaxStackSize;
             Type = data.Type;
             IsConsumable = data.IsConsumable;
+            IconPath = data.IconPath;
 		}
 	}
 }
@@ -86,5 +93,6 @@ namespace SaveSystem {
         public int MaxStackSize { get; init; }
         public Components.ItemType Type { get; init; }
         public bool IsConsumable { get; init; }
+        public string IconPath { get; init; }
 	}
 }
