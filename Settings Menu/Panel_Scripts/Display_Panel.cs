@@ -24,6 +24,7 @@ namespace SettingsPanels {
 		private const string BRIGHTNESS = "Brightness/HSlider";
 		private const string FPS_CAP = "FPS_Cap/OptionButton";
 		
+		private WorldEnvironment worldEnvironment = null!;
 
 		//Options
 		private static readonly Resolution[] RESOLUTION_OPTIONS = [
@@ -44,6 +45,7 @@ namespace SettingsPanels {
 			GetNode<OptionButton>(RESOLUTION).Populate(RESOLUTION_OPTIONS);
 			GetNode<OptionButton>(FPS_CAP).Populate(FPS_OPTIONS);
 			
+			BrightnessWorldEnvironment();
 			SetCallbacks();
 		}
 
@@ -73,13 +75,26 @@ namespace SettingsPanels {
 		// VSYNC
 		private static void SetVSync(bool isVSync) {
 			GD.Print($"Setting VSync to: {isVSync}");
+
+			
 			ProjectSettings.SetSetting("display/window/vsync/use_vsync", isVSync);
 			ProjectSettings.Save();
 		}
 
 		// Brightness
-		private void SetBrightness(double brightnessValue) {
+		private void BrightnessWorldEnvironment() {
+			if(worldEnvironment == null) {
+				worldEnvironment = GetNode<WorldEnvironment>("/root/Settings_Menu/WorldEnvironment");
+			}
+		}
 
+		private void SetBrightness(double brightnessValue) {
+			if(worldEnvironment?.Environment == null) return;
+
+			GD.Print($"Setting brightness to: {brightnessValue}");
+
+			worldEnvironment.Environment.AdjustmentEnabled = true;
+			worldEnvironment.Environment.AdjustmentBrightness = Mathf.Clamp((float)brightnessValue, 0.5f, 2.0f);
 		}
 
 		private static void SetFPS(FPS fps) {

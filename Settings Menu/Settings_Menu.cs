@@ -21,8 +21,7 @@ namespace SettingsPanels {
 			{"Top_Panel/Sound_Button", SOUND_PANEL},
 			{"Top_Panel/Controller_Button", CONTROLLER_PANEL},
 			{"Top_Panel/MK_Button", MK_PANEL},
-			{"Top_Panel/Accessibility_Button", ACCESSIBILITY_PANEL},
-			{"Top_Panel/Extras_Button", EXTRAS_PANEL}
+			{"Top_Panel/Accessibility_Button", ACCESSIBILITY_PANEL}
 		};
 
 		public override void _Ready() {

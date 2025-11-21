@@ -7,7 +7,9 @@
 [ext_resource type="Script" uid="uid://d07mw0qp2a1v6" path="res://Settings Menu/Panel_Scripts/Controller_Panel.cs" id="5_jh1wv"]
 [ext_resource type="Script" uid="uid://cu4da5ve5cak1" path="res://Settings Menu/Panel_Scripts/Mk_Panel.cs" id="6_uv3og"]
 [ext_resource type="Script" uid="uid://4wltnw8woqlj" path="res://Settings Menu/Panel_Scripts/Accessibility_Panel.cs" id="7_2kpqc"]
-[ext_resource type="Script" uid="uid://bpf4i0aduodir" path="res://Settings Menu/Panel_Scripts/Extras_Panel.cs" id="8_p7xhj"]
+
+[sub_resource type="Environment" id="Environment_w7gfg"]
+adjustment_enabled = true
 
 [node name="Settings_Menu" type="Control"]
 layout_mode = 3
@@ -25,15 +27,15 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0, 0, 0.8729805, 1)
+color = Color(1, 1, 1, 0.2)
 
 [node name="Top_Panel" type="HBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -647.0
-offset_right = -32.0
+offset_left = -560.0
+offset_right = -6.0
 offset_bottom = 40.0
 grow_horizontal = 2
 scale = Vector2(2, 2)
@@ -61,10 +63,6 @@ text = "Mouse & Keyboard"
 [node name="Accessibility_Button" type="Button" parent="Top_Panel"]
 layout_mode = 2
 text = "Accessibility"
-
-[node name="Extras_Button" type="Button" parent="Top_Panel"]
-layout_mode = 2
-text = "Extras"
 
 [node name="General_Panel" type="VBoxContainer" parent="."]
 visible = false
@@ -423,23 +421,5 @@ offset_left = 160.0
 offset_right = 184.0
 offset_bottom = 24.0
 
-[node name="Extras_Panel" type="VBoxContainer" parent="."]
-visible = false
-layout_mode = 1
-anchors_preset = 14
-anchor_top = 0.5
-anchor_right = 1.0
-anchor_bottom = 0.5
-offset_left = 64.0
-offset_top = -412.0
-offset_right = -1600.0
-offset_bottom = -377.0
-grow_horizontal = 2
-grow_vertical = 2
-scale = Vector2(2, 2)
-script = ExtResource("8_p7xhj")
-
-[node name="View Credits" type="Button" parent="Extras_Panel"]
-layout_mode = 2
-size_flags_horizontal = 0
-text = "View Credits"
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_w7gfg")
