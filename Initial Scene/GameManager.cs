@@ -1,4 +1,5 @@
 using System;
+using Camera;
 using Core;
 using Godot;
 using SaveSystem;
@@ -12,21 +13,12 @@ public partial class GameManager : Node {
 	public static bool ShouldLoad = true;
 
 	public override void _Ready() {
-		Player = this.AddScene<Player>(Scenes.Player);
 		CameraRig = this.AddScene<CameraRig>(Scenes.Camera);
+		Player = this.AddScene<Player>(Scenes.Player);
+
+		Player.AddCamera(CameraRig);
 
 		if(ShouldLoad) { Load(SaveFileName); }
-
-		FollowPlayer();
-	}
-
-	public static void FollowPlayer() {
-		if(Player != null && CameraRig != null) {
-			CameraRig.SetTarget(Player);
-		}
-		else {
-			GD.PrintErr("Failed to set camera target - Player or CameraRig is null");
-		}
 	}
 
 	public static void Save(string fileName) {

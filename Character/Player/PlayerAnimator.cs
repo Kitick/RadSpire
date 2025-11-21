@@ -2,6 +2,8 @@ using System;
 using Godot;
 
 public partial class PlayerAnimator : Node3D {
+	public bool Debug = false;
+
 	public enum State { Idle, Walking, Sprinting, Crouching, Jumping, Falling, Landing }
 
 	private const string IDLE = "Idle";
@@ -67,7 +69,7 @@ public partial class PlayerAnimator : Node3D {
 	}
 
 	public void SyncAnimation() {
-		GD.Print($"Syncing animation to: {Player.CurrentState}");
+		if(Debug){ GD.Print($"Syncing animation to: {Player.CurrentState}"); }
 
 		CurrentAnimation = Player.CurrentState switch {
 			Player.State.Idle => State.Idle,
@@ -80,7 +82,7 @@ public partial class PlayerAnimator : Node3D {
 	}
 
 	private void OnPlayerMovement(Player.State from, Player.State to) {
-		GD.Print($"Player State change: {from} -> {to}");
+		if(Debug){ GD.Print($"Player State change: {from} -> {to}"); }
 
 		bool jumped = from != Player.State.Falling && to == Player.State.Falling;
 		bool landed = from == Player.State.Falling && to != Player.State.Falling;
