@@ -8,12 +8,21 @@ namespace Camera {
 	public record struct CameraPose {
 		public Vector3 Ground;
 
+		public readonly Vector3 Anchor => Ground + new Vector3(0, Height, 0);
+		public readonly float MinPitch => Mathf.RadToDeg(MathF.Asin(-Height / Distance));
+
 		private const float MinDistance = 3f;
 		private const float MaxDistance = 20f;
+		private const float Height = 1.5f;
 
-		public float Distance { get; set => field = Math.Clamp(value, MinDistance, MaxDistance); }
+		public float Distance { get;
+			set {
+				field = Math.Clamp(value, MinDistance, MaxDistance);
+				Pitch = Pitch; // Re-clamp pitch based on new distance
+			}
+		}
 		public float Heading { get; set => field = (value + 360) % 360; }
-		public float Pitch { get; set => field = Math.Clamp(value, -90, 90); }
+		public float Pitch { get; set => field = Math.Clamp(value, MinPitch, 89); }
 
 		public readonly float RadHDG => Mathf.DegToRad(Heading);
 		public readonly float RadPIT => Mathf.DegToRad(Pitch);
@@ -33,11 +42,11 @@ namespace Camera {
 				Distance * cosHDG * cosPIT
 			);
 
-			return Ground + orbit;
+			return Anchor + orbit;
 		}
 	}
 
-	public partial class CameraRig : Node3D, ISaveable<CameraRigData> {
+	public sealed partial class CameraRig : Node3D, ISaveable<CameraRigData> {
 		public enum CameraState { Idle, Following };
 		public CameraState State { get; private set; } = CameraState.Following;
 
@@ -79,7 +88,7 @@ namespace Camera {
 
 			GlobalPosition = Pose.CalcPosition();
 
-			if(Pose.Distance >= Numbers.EPSILON) { LookAt(Pose.Ground, Vector3.Up); }
+			LookAt(Pose.Anchor, Vector3.Up);
 		}
 
 		private void Reset() {

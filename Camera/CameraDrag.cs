@@ -3,7 +3,7 @@ using Core;
 using Godot;
 
 namespace Camera {
-	public class CameraDrag {
+	public sealed class CameraDrag {
 		public enum DragState { Idle, Dragging, Cooldown };
 		public DragState State { get; private set; } = DragState.Idle;
 

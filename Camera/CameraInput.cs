@@ -3,7 +3,7 @@ using Core;
 using Godot;
 
 namespace Camera {
-	public partial class CameraRig {
+	public sealed partial class CameraRig {
 		public MouseButton PanMouseButton = MouseButton.Middle;
 		public MouseButton RotateMouseButton = MouseButton.Right;
 
