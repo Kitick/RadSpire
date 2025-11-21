@@ -1,11 +1,11 @@
 using System;
+using Camera;
 using Components;
 using Core;
 using Godot;
 using SaveSystem;
 
 public partial class Player : CharacterBody3D, ISaveable<PlayerData> {
-
 	[Export] private int InitalHealth = 100;
 	[Export] private float SprintMultiplier = 2.0f;
 	[Export] private float CrouchMultiplier = 0.5f;
@@ -40,7 +40,7 @@ public partial class Player : CharacterBody3D, ISaveable<PlayerData> {
 			return;
 		}
 
-		float dt = (float)delta;
+		float dt = (float) delta;
 
 		KeyInput.Update();
 
@@ -55,6 +55,11 @@ public partial class Player : CharacterBody3D, ISaveable<PlayerData> {
 		Movement.Update(dt);
 
 		UpdateMovementState();
+	}
+
+	public void AddCamera(CameraRig camera) {
+		KeyInput.Camera = camera;
+		camera.Target = this;
 	}
 
 	private void UpdateMovementState() {

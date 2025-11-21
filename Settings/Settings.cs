@@ -29,17 +29,15 @@ namespace SettingsPanels {
 			// Works both in main menu and paused game
 			ProcessMode = ProcessModeEnum.Always;
 
-			LoadData();
-
+			//LoadData();
 			SetCallbacks();
 		}
 
 		public override void _Input(InputEvent input) {
-			// Esc
 			if(input.IsActionPressed(Actions.UICancel)) {
-				// close overlay and stop Esc from reaching game
-				Visible = false;
 				GetViewport().SetInputAsHandled();
+				SaveData();
+				Visible = false;
 			}
 		}
 

@@ -1,140 +1,119 @@
 using System;
+using Camera;
 using Core;
 using Godot;
 using SaveSystem;
 
-public partial class CameraRig : Node3D, ISaveable<CameraRigData> {
-	public enum CameraState { Idle, Following, Dragging, Cooldown };
+namespace Camera {
+	public record struct CameraPose {
+		public Vector3 Ground;
 
-	public CameraState CurrentState { get; private set; } = CameraState.Idle;
+		private const float MinDistance = 3f;
+		private const float MaxDistance = 20f;
 
-	private CameraPivot CameraPivot = null!;
+		public float Distance { get; set => field = Math.Clamp(value, MinDistance, MaxDistance); }
+		public float Heading { get; set => field = (value + 360) % 360; }
+		public float Pitch { get; set => field = Math.Clamp(value, -90, 90); }
 
-	public Node3D? Target;
+		public readonly float RadHDG => Mathf.DegToRad(Heading);
+		public readonly float RadPIT => Mathf.DegToRad(Pitch);
 
-	public float FollowSpeed = 5.0f;
+		public readonly Vector3 CalcPosition() {
+			float hdg = Mathf.DegToRad(Heading);
+			float pit = Mathf.DegToRad(Pitch);
 
-	public MouseButton DragMouseButton = MouseButton.Right;
-	public float MouseSensitivity = 0.01f;
+			float cosHDG = MathF.Cos(hdg);
+			float sinHDG = MathF.Sin(hdg);
+			float cosPIT = MathF.Cos(pit);
+			float sinPIT = MathF.Sin(pit);
 
-	private Timer DragTimer = new Timer();
+			Vector3 orbit = new Vector3(
+				Distance * sinHDG * cosPIT,
+				Distance * sinPIT,
+				Distance * cosHDG * cosPIT
+			);
 
-	private Vector3 DragTarget = Vector3.Zero;
-	private Vector3 DragVelocity = Vector3.Zero;
-
-	public float DragSpeed = 12.0f;
-	public float DragDamp = 8.0f;
-
-	private readonly TimeSpan Cooldown = TimeSpan.FromSeconds(3);
-
-	private const string CAMERA_PIVOT = "Camera Pivot";
-
-	public override void _Ready() {
-		AddChild(DragTimer);
-		DragTimer.OneShot = true;
-		DragTimer.Timeout += OnDragTimerTimeout;
-
-		CameraPivot = GetNode<CameraPivot>(CAMERA_PIVOT);
-	}
-
-	public override void _PhysicsProcess(double delta) {
-		float dt = (float) delta;
-
-		UpdateState();
-
-		if(CurrentState == CameraState.Following) {
-			FollowTarget(Target!, dt);
-		}
-
-		Vector3 TargetVelocity;
-
-		if(CurrentState == CameraState.Dragging) {
-			TargetVelocity = (DragTarget - GlobalPosition) * DragSpeed;
-		}
-		else {
-			TargetVelocity = Vector3.Zero;
-		}
-
-		DragVelocity = DragVelocity.SmoothLerp(TargetVelocity, DragDamp, dt);
-
-		GlobalPosition += DragVelocity * dt;
-	}
-
-	public override void _Input(InputEvent input) {
-		if(input.IsActionPressed(Actions.CameraReset)) {
-			CurrentState = CameraState.Following;
-			return;
-		}
-
-		if(input is InputEventMouseButton mouseEvent) {
-			HandleMouseEvent(mouseEvent);
-		}
-		else if(input is InputEventMouseMotion mouseMotion && CurrentState == CameraState.Dragging) {
-			HandleMouseMotion(mouseMotion);
+			return Ground + orbit;
 		}
 	}
 
-	private void UpdateState() {
-		if(Target == null) {
-			CurrentState = CameraState.Idle;
+	public partial class CameraRig : Node3D, ISaveable<CameraRigData> {
+		public enum CameraState { Idle, Following };
+		public CameraState State { get; private set; } = CameraState.Following;
+
+		public CameraPose Pose = new CameraPose() {
+			Distance = 10f,
+			Heading = 0f,
+			Pitch = 45f,
+		};
+
+		public Node3D? Target;
+		private Camera3D camera = null!;
+
+		private readonly CameraDrag Drag = new CameraDrag();
+
+		public float FollowSpeed = 5.0f;
+
+		private const string Camera3D = "Camera3D";
+
+		public override void _Ready() {
+			Drag.ResetTimer.Timeout += Reset;
+			AddChild(Drag.ResetTimer);
+
+			camera = GetNode<Camera3D>(Camera3D);
 		}
-		else if(CurrentState != CameraState.Dragging && TargetHasMoved()) {
-			CurrentState = CameraState.Following;
+
+		public override void _PhysicsProcess(double delta) {
+			float dt = (float) delta;
+
+			if(State == CameraState.Following) {
+				FollowTarget(dt);
+			}
+			else if(State == CameraState.Idle && TargetHasMoved()) {
+				Reset();
+			}
+
+			Drag.Update(Pose.Ground, dt);
+
+			Pose.Ground += Drag.Velocity * dt;
+
+			GlobalPosition = Pose.CalcPosition();
+
+			if(Pose.Distance >= Numbers.EPSILON) { LookAt(Pose.Ground, Vector3.Up); }
 		}
-	}
 
-	private void FollowTarget(Node3D Target, float dt) {
-		GlobalPosition = GlobalPosition.SmoothLerp(Target.GlobalPosition, FollowSpeed, dt);
-	}
-
-	private void HandleMouseEvent(InputEventMouseButton input) {
-		if(input.ButtonIndex != DragMouseButton) { return; }
-
-		if(CurrentState != CameraState.Dragging && input.Pressed) {
-			CurrentState = CameraState.Dragging;
-			DragTimer.Stop();
-
-			DragTarget = GlobalPosition;
+		private void Reset() {
+			State = CameraState.Following;
+			Drag.Reset();
 		}
-		else if(CurrentState == CameraState.Dragging && !input.Pressed) {
-			CurrentState = CameraState.Cooldown;
-			DragTimer.Start(Cooldown.Seconds);
+
+		private void FollowTarget(float dt) {
+			if(Target == null) { return; }
+			Pose.Ground = Pose.Ground.SmoothLerp(Target.GlobalPosition, FollowSpeed, dt);
 		}
-	}
 
-	private void HandleMouseMotion(InputEventMouseMotion motion) {
-		Vector2 mouseDelta = -motion.Relative * MouseSensitivity;
+		private bool TargetHasMoved() {
+			if(Target is not CharacterBody3D body) { return false; }
 
-		DragTarget += new Vector3(mouseDelta.X, 0, mouseDelta.Y);
-	}
+			float targetSpeed = body.Velocity.Length();
 
-	private void OnDragTimerTimeout() {
-		CurrentState = CameraState.Following;
-	}
+			bool moved = targetSpeed > Numbers.EPSILON;
 
-	private bool TargetHasMoved() {
-		if(Target is not CharacterBody3D body) { return false; }
+			return moved;
+		}
 
-		float targetSpeed = body.Velocity.Length();
+		public CameraRigData Serialize() => new CameraRigData {
+			Pose = Pose,
+		};
 
-		return targetSpeed > Numbers.EPSILON;
-	}
-
-	public CameraRigData Serialize() => new CameraRigData {
-		Position = GlobalPosition,
-		CameraPivotData = CameraPivot.Serialize(),
-	};
-
-	public void Deserialize(in CameraRigData data) {
-		GlobalPosition = data.Position;
-		CameraPivot.Deserialize(data.CameraPivotData);
+		public void Deserialize(in CameraRigData data) {
+			Pose = data.Pose;
+		}
 	}
 }
 
 namespace SaveSystem {
 	public readonly record struct CameraRigData : ISaveData {
-		public Vector3 Position { get; init; }
-		public Vector3 CenterOffset { get; init; }
-		public CameraPivotData CameraPivotData { get; init; }
+		public CameraPose Pose { get; init; }
 	}
 }

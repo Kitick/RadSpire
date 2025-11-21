@@ -8,7 +8,7 @@ namespace Core {
 		public static Vector3 Vertical(this Vector3 vector) => new Vector3(0, vector.Y, 0);
 
 		// Rotation Smoothing
-		public static float SmoothDecay(float speed, float dt) => 1f - Mathf.Exp(-speed * dt);
+		public static float SmoothDecay(float speed, float dt) => 1f - MathF.Exp(-speed * dt);
 
 		public static Vector3 SmoothLerp(this Vector3 current, Vector3 target, float speed, float dt) =>
 			current.Lerp(target, SmoothDecay(speed, dt));
