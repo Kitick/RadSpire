@@ -8,7 +8,10 @@ namespace Camera {
 	public record struct CameraPose {
 		public Vector3 Ground;
 
-		public float Distance { get; set => field = Math.Max(value, 0); }
+		private const float MinDistance = 3f;
+		private const float MaxDistance = 20f;
+
+		public float Distance { get; set => field = Math.Clamp(value, MinDistance, MaxDistance); }
 		public float Heading { get; set => field = (value + 360) % 360; }
 		public float Pitch { get; set => field = Math.Clamp(value, -90, 90); }
 
