@@ -14,6 +14,7 @@ namespace Components {
         public int CurrentDurability {
             get;
             set {
+                DurabilityChanged?.Invoke(CurrentDurability, value);
                 value = Math.Clamp(value, 0, MaxDurability);
                 if(field == value) { return; }
                 field = value;
@@ -24,10 +25,12 @@ namespace Components {
         }
 
         public event Action? DurabilityZeroed;
+        public event Action<int, int>? DurabilityChanged;
 
         public int MaxDurability {
             get;
             set {
+                DurabilityChanged?.Invoke(CurrentDurability, value);
                 field = Math.Max(1, value);
                 CurrentDurability = Math.Min(CurrentDurability, field);
             }
@@ -57,8 +60,16 @@ namespace Components {
 		public static bool IsDamaged(this WeaponBaseData weaponBaseData) => weaponBaseData.CurrentDurability < weaponBaseData.MaxDurability;
 		public static bool IsBroken(this WeaponBaseData weaponBaseData) => weaponBaseData.CurrentDurability == 0;
 
-		public static float DurabilityPercent(this WeaponBaseData weaponBaseData) =>
-			(float)weaponBaseData.CurrentDurability / weaponBaseData.MaxDurability;
+        public static float DurabilityPercent(this WeaponBaseData weaponBaseData) =>
+            (float) weaponBaseData.CurrentDurability / weaponBaseData.MaxDurability;
+
+        public static void Repair(this WeaponBaseData weaponBaseData, int amount) {
+            weaponBaseData.CurrentDurability = weaponBaseData.CurrentDurability + amount;
+        }
+        
+        public static void Damage(this WeaponBaseData weaponBaseData, int amount) {
+            weaponBaseData.CurrentDurability = weaponBaseData.CurrentDurability - amount;
+        }
 	}
 }
 
