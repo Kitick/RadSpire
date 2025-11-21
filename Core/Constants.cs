@@ -37,4 +37,8 @@ namespace Core {
 		public const string Hotbar4 = "hotbar_4";
 		public const string Hotbar5 = "hotbar_5";
 	}
+
+	public static class Icons {
+        
+    }
 }

@@ -36,6 +36,11 @@ namespace Components {
             }
         }
 
+        public float WeaponBaseAttackValue {
+            get;
+            set;
+        }
+
         public WeaponBaseData(int maxDurability) {
             MaxDurability = maxDurability;
             CurrentDurability = maxDurability;
@@ -44,13 +49,15 @@ namespace Components {
         public WeaponBaseDataData Serialize() => new WeaponBaseDataData {
             Type = Type,
             CurrentDurability = CurrentDurability,
-            MaxDurability = MaxDurability
+            MaxDurability = MaxDurability,
+            WeaponBaseAttackValue = WeaponBaseAttackValue
         };
 
         public void Deserialize(in WeaponBaseDataData data) {
             Type = data.Type;
             CurrentDurability = data.CurrentDurability;
             MaxDurability = data.MaxDurability;
+            WeaponBaseAttackValue = data.WeaponBaseAttackValue;
         }
     }
     
@@ -78,5 +85,6 @@ namespace SaveSystem {
         public Components.WeaponType Type { get; init; }
         public int CurrentDurability { get; init; }
         public int MaxDurability { get; init; }
+        public float WeaponBaseAttackValue { get; init; }
     }
 }
