@@ -12,6 +12,9 @@ namespace Camera {
 		public float Heading { get; set => field = (value + 360) % 360; }
 		public float Pitch { get; set => field = Math.Clamp(value, -90, 90); }
 
+		public readonly float RadHDG => Mathf.DegToRad(Heading);
+		public readonly float RadPIT => Mathf.DegToRad(Pitch);
+
 		public readonly Vector3 CalcPosition() {
 			float hdg = Mathf.DegToRad(Heading);
 			float pit = Mathf.DegToRad(Pitch);

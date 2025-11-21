@@ -1,9 +1,12 @@
 using System;
+using Camera;
 using Core;
 using Godot;
 
 namespace Components {
 	public class KeyInput {
+		public CameraRig? Camera;
+
 		public Vector3 HorizontalInput { get; private set; }
 
 		public bool SprintHeld { get; private set; }
@@ -20,7 +23,7 @@ namespace Components {
 			CrouchHeld = Input.IsActionPressed(Actions.Crouch);
 		}
 
-		private static Vector3 GetHorizontalMovement() {
+		private Vector3 GetHorizontalMovement() {
 			Vector3 direction = Vector3.Zero;
 
 			if(Input.IsActionPressed(Actions.Forward)) { direction += Vector3.Forward; }
@@ -28,7 +31,11 @@ namespace Components {
 			if(Input.IsActionPressed(Actions.Left)) { direction += Vector3.Left; }
 			if(Input.IsActionPressed(Actions.Right)) { direction += Vector3.Right; }
 
-			return direction.Normalized();
+			float hdg = Camera?.Pose.RadHDG ?? 0;
+
+			Vector3 rotated = direction.Rotated(Vector3.Up, hdg);
+
+			return rotated.Normalized();
 		}
 	}
 }

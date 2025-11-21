@@ -63,9 +63,7 @@ namespace Camera {
 			if(IsPanning) {
 				Vector2 relative = -motion.ScreenRelative * PanSensitivity;
 
-				float hdg = Mathf.DegToRad(Pose.Heading);
-
-				Vector2 delta = relative.Rotated(-hdg);
+				Vector2 delta = relative.Rotated(-Pose.RadHDG);
 
 				Drag.Move(new Vector3(delta.X, 0, delta.Y));
 			}

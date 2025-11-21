@@ -13,12 +13,12 @@ public partial class GameManager : Node {
 	public static bool ShouldLoad = true;
 
 	public override void _Ready() {
-		Player = this.AddScene<Player>(Scenes.Player);
 		CameraRig = this.AddScene<CameraRig>(Scenes.Camera);
+		Player = this.AddScene<Player>(Scenes.Player);
+
+		Player.AddCamera(CameraRig);
 
 		if(ShouldLoad) { Load(SaveFileName); }
-
-		CameraRig.Target = Player;
 	}
 
 	public static void Save(string fileName) {
