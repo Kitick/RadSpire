@@ -25,7 +25,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0, 0, 0, 0.39215687)
+color = Color(0, 0, 0.8729805, 1)
 
 [node name="Top_Panel" type="HBoxContainer" parent="."]
 layout_mode = 1
@@ -170,16 +170,14 @@ offset_bottom = 24.0
 layout_mode = 2
 text = "Brightness"
 
-[node name="CanvasLayer" type="CanvasLayer" parent="Display_Panel/Brightness"]
-
-[node name="HSlider" type="HSlider" parent="Display_Panel/Brightness/CanvasLayer"]
-offset_left = 384.0
-offset_top = 290.0
-offset_right = 544.0
-offset_bottom = 306.0
-max_value = 1.0
-step = 0.001
-value = 0.5
+[node name="HSlider" type="HSlider" parent="Display_Panel/Brightness"]
+layout_mode = 0
+offset_left = 160.0
+offset_right = 320.0
+offset_bottom = 16.0
+max_value = 2.0
+step = 0.01
+value = 1.0
 
 [node name="FPS_Cap" type="Label" parent="Display_Panel"]
 layout_mode = 2

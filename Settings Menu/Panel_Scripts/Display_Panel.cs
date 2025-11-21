@@ -22,8 +22,8 @@ namespace SettingsPanels {
 		private const string FULLSCREEN = "Fullscreen/CheckBox";
 		private const string VSYNC = "VSync/CheckBox";
 		private const string BRIGHTNESS = "Brightness/HSlider";
-		private const string WORLD_ENVIRONMENT = "res://World Environment/World_Environment.tscn";
 		private const string FPS_CAP = "FPS_Cap/OptionButton";
+		
 
 		//Options
 		private static readonly Resolution[] RESOLUTION_OPTIONS = [
@@ -39,50 +39,47 @@ namespace SettingsPanels {
 			new FPS { Value = 0 }, //Unlimited
 		];
 
-		//Main
+		// Main
 		public override void _Ready() {
 			GetNode<OptionButton>(RESOLUTION).Populate(RESOLUTION_OPTIONS);
 			GetNode<OptionButton>(FPS_CAP).Populate(FPS_OPTIONS);
-
+			
 			SetCallbacks();
 		}
 
+		// Callbacks
 		private void SetCallbacks() {
 			GetNode<OptionButton>(RESOLUTION).ItemSelected += OnResolutionSelected;
 			GetNode<CheckBox>(FULLSCREEN).Toggled += SetFullscreen;
 			GetNode<CheckBox>(VSYNC).Toggled += SetVSync;
+			GetNode<HSlider>(BRIGHTNESS).ValueChanged += SetBrightness;
 			GetNode<OptionButton>(FPS_CAP).ItemSelected += OnFPSCapSelected;
 		}
 
-		// Static Setters
+		//Resolution
 		private static void SetResolution(Resolution resolution) {
 			GD.Print($"Setting resolution to: {resolution}");
 			Vector2I size = new Vector2I(resolution.Width, resolution.Height);
 			DisplayServer.WindowSetSize(size);
 		}
 
+		// Fullscreen
 		private static void SetFullscreen(bool isFullscreen) {
 			GD.Print($"Setting fullscreen to: {isFullscreen}");
 			var mode = isFullscreen ? DisplayServer.WindowMode.Fullscreen : DisplayServer.WindowMode.Windowed;
 			DisplayServer.WindowSetMode(mode);
 		}
 
+		// VSYNC
 		private static void SetVSync(bool isVSync) {
 			GD.Print($"Setting VSync to: {isVSync}");
 			ProjectSettings.SetSetting("display/window/vsync/use_vsync", isVSync);
 			ProjectSettings.Save();
 		}
 
-		private void SetBrightness(double value) {
-			var worldEnv = GetNode<WorldEnvironment>(WORLD_ENVIRONMENT);
-			float brightness = Mathf.Clamp((float)value, 0.0f, 0.5f);
+		// Brightness
+		private void SetBrightness(double brightnessValue) {
 
-			if(worldEnv?.Environment != null) {
-				worldEnv.Environment.TonemapMode = TonemapMode.Linear;
-				worldEnv.Environment.TonemapExposure = Mathf.Lerp(0.5f, 2.0f, brightness);
-			}
-			
-			GD.Print($"Brightness set to {brightness}, exposure set to {worldEnv.Environment.TonemapExposure}");
 		}
 
 		private static void SetFPS(FPS fps) {
@@ -118,8 +115,8 @@ namespace SettingsPanels {
 			SetVSync(data.IsVSyncEnabled);
 			GetNode<CheckBox>(VSYNC).ButtonPressed = data.IsVSyncEnabled;
 
-			//SetBrightness(data.Brightness);
-			//GetNode<HSlider>(BRIGHTNESS).Value = data.Brightness;
+			SetBrightness(data.Brightness);
+			GetNode<HSlider>(BRIGHTNESS).Value = data.Brightness;
 
 			FPS fps = new FPS { Value = data.FPSCap };
 			SetFPS(fps);

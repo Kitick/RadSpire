@@ -21,7 +21,7 @@ buses/default_bus_layout="res://Audio/default_bus_layout.tres"
 
 [autoload]
 
-WorldEnviorment="*res://World Environment/World_Environment.tscn"
+WorldEnviorment="*res://Settings Menu/World_Environment.tscn"
 
 [display]
 
