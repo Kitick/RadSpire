@@ -2,7 +2,7 @@ using System;
 using Core;
 using Godot;
 
-public partial class UI : CanvasLayer {
+public partial class HUD : CanvasLayer {
 	private Button PauseButton = null!;
 	[Export] private PackedScene PauseMenu = null!;
 	private Control Paused = null!;

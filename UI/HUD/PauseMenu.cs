@@ -2,7 +2,7 @@ using System;
 using Core;
 using Godot;
 
-public partial class Pause_Menu : Control {
+public partial class PauseMenu : Control {
 	private Button ResumeButton = null!;
 	private Button SettingsButton = null!;
 	private Button SaveButton = null!;

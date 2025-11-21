@@ -5,11 +5,11 @@ namespace Core {
 	}
 
 	public static class Scenes {
-		public const string PauseMenu = "res://HUD/PauseMenu.tscn";
-		public const string HUD = "res://HUD/UI.tscn";
+		public const string PauseMenu = "res://UI/HUD/PauseMenu.tscn";
+		public const string HUD = "res://UI/HUD/HUD.tscn";
 
-		public const string MainMenu = "res://MainMenu/MainMenu.tscn";
-		public const string SettingsMenu = "res://SettingsMenu/SettingsMenu.tscn";
+		public const string MainMenu = "res://UI/MainMenu/MainMenu.tscn";
+		public const string SettingsMenu = "res://UI/SettingsMenu/SettingsMenu.tscn";
 
 		public const string GameScene = "res://GameWorld/World.tscn";
 		public const string Player = "res://Character/Player/Player.tscn";
