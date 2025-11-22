@@ -84,7 +84,7 @@ namespace Camera {
 		public readonly Vector3 Anchor => Ground + new Vector3(0, Height, 0);
 
 		public const float Height = 1.5f;
-		public const float MinDistance = 1.25f;
+		public const float MinDistance = 1.5f;
 		public const float MaxDistance = 20f;
 		public const float BufferDistance = 0.25f;
 
@@ -95,12 +95,13 @@ namespace Camera {
 		public readonly float RadHDG => Mathf.DegToRad(Heading);
 		public readonly float RadPIT => Mathf.DegToRad(Pitch);
 
-		public Vector3 CalcPosition(Node3D space) {
-			var direction = Extensions.ToPolar(RadHDG, RadPIT);
+		public readonly Vector3 CalcPosition(Node3D space) {
+			Vector3 direction = Extensions.ToPolar(RadHDG, RadPIT);
 
-			Distance = Math.Min(Distance, space.IntersectRay(Anchor + direction * MinDistance, direction * MaxDistance) - BufferDistance);
+			float distance = Math.Min(Distance, space.IntersectRay(Anchor + direction * MinDistance, direction, MaxDistance) - BufferDistance);
+			distance = Math.Max(distance, MinDistance);
 
-			Vector3 orbit = direction * Distance;
+			Vector3 orbit = direction * distance;
 
 			return Anchor + orbit;
 		}
