@@ -36,13 +36,13 @@ namespace Components {
 		}
 
 		private void UpdateRotation(float dt) {
-			Vector3 direction = Body.Velocity;
+			Vector3 velocity = Body.Velocity.Horizontal();
 
-			if(direction.Length() < Numbers.EPSILON) { return; }
+			if(velocity.Length() < Numbers.EPSILON) { return; }
 
-			float newRotationAngle = Mathf.RadToDeg(Mathf.Atan2(direction.X, direction.Z));
+			float angle = Mathf.Atan2(velocity.X, velocity.Z);
 
-			Body.ApplyRotation(Vector3.Up, Mathf.DegToRad(newRotationAngle), RotationSpeed, dt);
+			Body.ApplyRotation(Vector3.Up, angle, RotationSpeed, dt);
 		}
 
 		private void ApplyFriction(float dt) {
