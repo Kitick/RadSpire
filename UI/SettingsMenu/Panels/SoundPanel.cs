@@ -7,7 +7,7 @@ using SaveSystem;
 namespace SettingsPanels {
 	public enum AudioBus { Master, Music, SFX }
 
-	public partial class SoundPanel : VBoxContainer, ISaveable<SoundSettings> {
+	public sealed partial class SoundPanel : VBoxContainer, ISaveable<SoundSettings> {
 		// Paths
 		private const string MASTER_SLIDER = "Master_Volume/HSlider";
 		private const string MUSIC_SLIDER = "Music_Volume/HSlider";

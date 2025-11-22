@@ -1,77 +1,56 @@
-[gd_scene load_steps=5 format=3 uid="uid://crye0f0yw8xrb"]
+[gd_scene load_steps=2 format=3 uid="uid://crye0f0yw8xrb"]
 
 [ext_resource type="Script" uid="uid://d1semxqghe872" path="res://UI/HUD/PauseMenu.cs" id="1_1f24j"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1f24j"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ppbhg"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rlg28"]
-
-[node name="Pause_Menu" type="Control"]
+[node name="PauseMenu" type="Control"]
 layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+anchors_preset = 0
+offset_right = 200.0
+offset_bottom = 300.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource("1_1f24j")
 
-[node name="ColorRect" type="ColorRect" parent="."]
+[node name="Background" type="ColorRect" parent="."]
 layout_mode = 1
-anchors_preset = 15
+anchors_preset = -1
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 808.0
-offset_top = 276.0
-offset_right = -807.0
-offset_bottom = -488.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.41960785, 0.2784314, 0.23921569, 0.45882353)
 
-[node name="PauseText" type="TextEdit" parent="ColorRect"]
-modulate = Color(1.179842, 1.179842, 1.179842, 0.972549)
-self_modulate = Color(1, 1, 1, 0.972549)
-light_mask = 0
-layout_mode = 0
-offset_left = 122.0
-offset_top = 8.0
-offset_right = 181.0
-offset_bottom = 34.0
-theme_override_colors/font_readonly_color = Color(1, 1, 1, 0.96862745)
-theme_override_font_sizes/font_size = 14
-theme_override_styles/normal = SubResource("StyleBoxEmpty_1f24j")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_ppbhg")
-theme_override_styles/read_only = SubResource("StyleBoxEmpty_rlg28")
+[node name="Label" type="RichTextLabel" parent="Background"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.2
 text = "PAUSED"
-editable = false
-highlight_all_occurrences = true
-text_direction = 1
+horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="Pause_Buttons" type="VBoxContainer" parent="."]
-layout_mode = 0
-offset_left = 899.0
-offset_top = 356.0
-offset_right = 1003.0
-offset_bottom = 525.0
-scale = Vector2(1.2, 1.2)
+[node name="Buttons" type="VBoxContainer" parent="Background"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.1
+anchor_top = 0.2
+anchor_right = 0.9
+anchor_bottom = 1.0
 theme_override_constants/separation = 15
+alignment = 1
 
-[node name="Resume" type="Button" parent="Pause_Buttons"]
+[node name="Resume" type="Button" parent="Background/Buttons"]
 layout_mode = 2
 text = "RESUME"
 
-[node name="Settings" type="Button" parent="Pause_Buttons"]
-layout_mode = 2
-text = "SETTINGS"
-
-[node name="Save" type="Button" parent="Pause_Buttons"]
+[node name="Save" type="Button" parent="Background/Buttons"]
 layout_mode = 2
 text = "SAVE"
 
-[node name="Main_Menu" type="Button" parent="Pause_Buttons"]
+[node name="Settings" type="Button" parent="Background/Buttons"]
+layout_mode = 2
+text = "SETTINGS"
+
+[node name="Main_Menu" type="Button" parent="Background/Buttons"]
 layout_mode = 2
 text = "MAIN MENU"

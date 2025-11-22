@@ -18,23 +18,30 @@ namespace Core {
 	}
 
 	public static class Actions {
-		public const string UICancel = "ui_cancel";
+		public const string MoveForward = "MoveForward";
+		public const string MoveBack = "MoveBack";
+		public const string MoveLeft = "MoveLeft";
+		public const string MoveRight = "MoveRight";
 
-		public const string Forward = "move_forward";
-		public const string Back = "move_back";
-		public const string Left = "move_left";
-		public const string Right = "move_right";
+		public const string Jump = "Jump";
+		public const string Sprint = "Sprint";
+		public const string Crouch = "Crouch";
 
-		public const string Jump = "jump";
-		public const string Sprint = "sprint";
-		public const string Crouch = "crouch";
+		public const string MenuBack = "MenuBack";
+		public const string MenuExit = "MenuExit";
+		public const string CameraReset = "CameraReset";
 
-		public const string CameraReset = "camera_reset";
+		public const string HotbarNext = "HotbarNext";
+		public const string HotbarPrev = "HobarPrev";
+		public const string Hotbar1 = "Hotbar1";
+		public const string Hotbar2 = "Hotbar2";
+		public const string Hotbar3 = "Hotbar3";
+		public const string Hotbar4 = "Hotbar4";
+		public const string Hotbar5 = "Hotbar5";
 
-		public const string Hotbar1 = "hotbar_1";
-		public const string Hotbar2 = "hotbar_2";
-		public const string Hotbar3 = "hotbar_3";
-		public const string Hotbar4 = "hotbar_4";
-		public const string Hotbar5 = "hotbar_5";
+		public const string CameraPan = "PanCamera";
+		public const string CameraRotate = "RotateCamera";
+		public const string ZoomIn = "ZoomIn";
+		public const string ZoomOut = "ZoomOut";
 	}
 }

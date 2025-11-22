@@ -4,7 +4,7 @@ using Godot;
 using SaveSystem;
 
 namespace SettingsPanels {
-	public partial class SettingsMenu : Control, ISaveable<SettingsData> {
+	public sealed partial class SettingsMenu : Control, ISaveable<SettingsData> {
 		private const string SETTINGS_FILENAME = "settings";
 
 		private const string GENERAL_PANEL = "General_Panel";
@@ -33,8 +33,7 @@ namespace SettingsPanels {
 		}
 
 		public override void _Input(InputEvent input) {
-			if(input.IsActionPressed(Actions.UICancel)) {
-				GetViewport().SetInputAsHandled();
+			if(input.IsActionPressed(Actions.MenuExit) || input.IsActionPressed(Actions.MenuBack)) {
 				SaveData();
 				Visible = false;
 			}

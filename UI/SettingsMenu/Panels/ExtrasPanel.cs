@@ -2,7 +2,7 @@ using System;
 using Godot;
 
 namespace SettingsPanels {
-	public partial class ExtrasPanel : VBoxContainer {
+	public sealed partial class ExtrasPanel : VBoxContainer {
 
 	}
 }

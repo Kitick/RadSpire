@@ -4,10 +4,11 @@ using Godot;
 using SaveSystem;
 
 namespace Components {
-	public class Movement : ISaveable<MovementData> {
+	public sealed class Movement : ISaveable<MovementData> {
 		public float BaseSpeed = 2.0f;
 		public float RotationSpeed = 2.0f;
 		public float JumpSpeed = 4.5f;
+		public float TerminalSpeed = 50.0f;
 		public float Friction = 10.0f;
 
 		private readonly CharacterBody3D Body;
@@ -23,7 +24,7 @@ namespace Components {
 		}
 
 		public void Move(Vector3 direction, float multiplier) {
-			Vector3 move = direction * BaseSpeed * multiplier;
+			Vector3 move = direction.Normalized() * BaseSpeed * multiplier;
 			Body.Velocity = new Vector3(move.X, Body.Velocity.Y, move.Z);
 		}
 
@@ -33,16 +34,17 @@ namespace Components {
 
 		private void Fall(float dt) {
 			Body.Velocity += Numbers.GRAVITY * Vector3.Down * dt;
+			Body.Velocity = Body.Velocity.LimitLength(TerminalSpeed);
 		}
 
 		private void UpdateRotation(float dt) {
-			Vector3 direction = Body.Velocity;
+			Vector3 velocity = Body.Velocity.Horizontal();
 
-			if(direction.Length() < Numbers.EPSILON) { return; }
+			if(velocity.Length() < Numbers.EPSILON) { return; }
 
-			float newRotationAngle = Mathf.RadToDeg(Mathf.Atan2(direction.X, direction.Z));
+			float angle = Mathf.Atan2(velocity.X, velocity.Z);
 
-			Body.ApplyRotation(Vector3.Up, Mathf.DegToRad(newRotationAngle), RotationSpeed, dt);
+			Body.ApplyRotation(Vector3.Up, angle, RotationSpeed, dt);
 		}
 
 		private void ApplyFriction(float dt) {
