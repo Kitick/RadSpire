@@ -25,7 +25,7 @@ public partial class PauseMenu : Control {
 
 	public override void _UnhandledInput(InputEvent @event) {
 		// Only close on Esc if the menu is currently shown
-		if(Visible && @event.IsActionPressed(Actions.UICancel)) {
+		if(Visible && @event.IsActionPressed(Actions.MenuExit)) {
 			OnResumeButtonPressed();
 			GetViewport().SetInputAsHandled(); // stop further Esc handling this frame
 		}

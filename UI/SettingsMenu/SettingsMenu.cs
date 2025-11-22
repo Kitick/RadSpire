@@ -34,13 +34,13 @@ namespace SettingsPanels {
 			//LoadData();
 			SetCallbacks();
 		}
-		
+
 		public void SetPauseMenu(PauseMenu pm) {
 			PMenu = pm;
 		}
 
 		public override void _Input(InputEvent input) {
-			if(input.IsActionPressed(Actions.UICancel)) {
+			if(input.IsActionPressed(Actions.MenuExit)) {
 				GetViewport().SetInputAsHandled();
 				SaveData();
 				Visible = false;

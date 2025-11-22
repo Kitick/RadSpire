@@ -15,7 +15,7 @@ public partial class HUD : CanvasLayer {
 		SetCallBacks();
 	}
 	public override void _UnhandledInput(InputEvent input) {
-		if(input.IsActionPressed(Actions.UICancel))
+		if(input.IsActionPressed(Actions.MenuExit))
 			TogglePauseMenu();
 	}
 
