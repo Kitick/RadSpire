@@ -7,7 +7,7 @@ using SaveSystem;
 
 public partial class Player : CharacterBody3D, ISaveable<PlayerData> {
 	[Export] private int InitalHealth = 100;
-	[Export] private float SprintMultiplier = 2.0f;
+	[Export] private float SprintMultiplier = 3.0f;
 	[Export] private float CrouchMultiplier = 0.5f;
 
 	// Components
