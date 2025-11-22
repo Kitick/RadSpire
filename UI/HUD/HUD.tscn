@@ -1,10 +1,11 @@
-[gd_scene load_steps=7 format=3 uid="uid://dxvau62v0efr7"]
+[gd_scene load_steps=8 format=3 uid="uid://dxvau62v0efr7"]
 
-[ext_resource type="Script" uid="uid://bee1n6ixna6g5" path="res://UI/HUD/Hud.cs" id="1_10ibt"]
+[ext_resource type="Script" uid="uid://bee1n6ixna6g5" path="res://UI/HUD/HUD.cs" id="1_10ibt"]
 [ext_resource type="Texture2D" uid="uid://bka8hfkmuqsgi" path="res://Assets/Textures/211871_pause_icon.png" id="2_785o0"]
 [ext_resource type="PackedScene" uid="uid://etextx8i4ksr" path="res://UI/HUD/Hotbar.tscn" id="5_c358i"]
 [ext_resource type="PackedScene" uid="uid://crye0f0yw8xrb" path="res://UI/HUD/PauseMenu.tscn" id="5_jmlhc"]
 [ext_resource type="PackedScene" uid="uid://bffohbw4kmhwa" path="res://UI/HUD/Inventory.tscn" id="6_785o0"]
+[ext_resource type="PackedScene" uid="uid://eqxx1dru7wg3" path="res://UI/SettingsMenu/SettingsMenu.tscn" id="7_q8dl0"]
 [ext_resource type="PackedScene" uid="uid://bjql4hi1q0ouh" path="res://UI/HUD/QuestLog.tscn" id="8_6ymr8"]
 
 [node name="HUD" type="Control"]
@@ -14,7 +15,7 @@ offset_right = 1920.0
 offset_bottom = 1080.0
 script = ExtResource("1_10ibt")
 
-[node name="Pause_Button" type="Button" parent="."]
+[node name="PauseButton" type="Button" parent="."]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
@@ -39,7 +40,6 @@ offset_left = -100.0
 offset_top = -150.0
 offset_right = 100.0
 offset_bottom = 150.0
-script = null
 
 [node name="Inventory" parent="." instance=ExtResource("6_785o0")]
 visible = false
@@ -83,4 +83,7 @@ offset_right = 165.0
 offset_bottom = -50.0
 grow_horizontal = 2
 grow_vertical = 0
-script = null
+
+[node name="Settings" parent="." instance=ExtResource("7_q8dl0")]
+visible = false
+layout_mode = 1

@@ -43,13 +43,13 @@ alignment = 1
 layout_mode = 2
 text = "RESUME"
 
-[node name="Settings" type="Button" parent="Background/Buttons"]
-layout_mode = 2
-text = "SETTINGS"
-
 [node name="Save" type="Button" parent="Background/Buttons"]
 layout_mode = 2
 text = "SAVE"
+
+[node name="Settings" type="Button" parent="Background/Buttons"]
+layout_mode = 2
+text = "SETTINGS"
 
 [node name="Main_Menu" type="Button" parent="Background/Buttons"]
 layout_mode = 2
