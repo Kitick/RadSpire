@@ -4,7 +4,7 @@ using Core;
 using Godot;
 
 namespace Components {
-	public class KeyInput {
+	public sealed class KeyInput {
 		public CameraRig? Camera;
 
 		public Vector3 HorizontalInput { get; private set; }

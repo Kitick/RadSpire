@@ -4,7 +4,7 @@ using Godot;
 using SaveSystem;
 
 namespace Components {
-	public class Movement : ISaveable<MovementData> {
+	public sealed class Movement : ISaveable<MovementData> {
 		public float BaseSpeed = 2.0f;
 		public float RotationSpeed = 2.0f;
 		public float JumpSpeed = 4.5f;
