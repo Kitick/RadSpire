@@ -8,6 +8,7 @@ namespace Components {
 		public float BaseSpeed = 2.0f;
 		public float RotationSpeed = 2.0f;
 		public float JumpSpeed = 4.5f;
+		public float TerminalSpeed = 50.0f;
 		public float Friction = 10.0f;
 
 		private readonly CharacterBody3D Body;
@@ -33,6 +34,7 @@ namespace Components {
 
 		private void Fall(float dt) {
 			Body.Velocity += Numbers.GRAVITY * Vector3.Down * dt;
+			Body.Velocity = Body.Velocity.LimitLength(TerminalSpeed);
 		}
 
 		private void UpdateRotation(float dt) {
