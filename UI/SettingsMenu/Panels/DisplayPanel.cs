@@ -16,7 +16,7 @@ namespace SettingsPanels {
 		public override string ToString() => Value == 0 ? "Unlimited" : $"{Value} FPS";
 	}
 
-	public partial class DisplayPanel : VBoxContainer, ISaveable<DisplaySettings> {
+	public sealed partial class DisplayPanel : VBoxContainer, ISaveable<DisplaySettings> {
 		// Paths
 		private const string RESOLUTION = "Resolution/OptionButton";
 		private const string FULLSCREEN = "Fullscreen/CheckBox";

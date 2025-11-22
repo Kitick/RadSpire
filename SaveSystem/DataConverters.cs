@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 using Godot;
 
 namespace SaveSystem {
-	public class Vector3Converter : JsonConverter<Vector3> {
+	public sealed class Vector3Converter : JsonConverter<Vector3> {
 		public override Vector3 Read(ref Utf8JsonReader reader, Type type, JsonSerializerOptions options) {
 			var doc = JsonDocument.ParseValue(ref reader);
 			var root = doc.RootElement;

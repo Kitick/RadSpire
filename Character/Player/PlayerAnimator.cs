@@ -1,7 +1,7 @@
 using System;
 using Godot;
 
-public partial class PlayerAnimator : Node3D {
+public sealed partial class PlayerAnimator : Node3D {
 	public bool Debug = false;
 
 	public enum State { Idle, Walking, Sprinting, Crouching, Jumping, Falling, Landing }

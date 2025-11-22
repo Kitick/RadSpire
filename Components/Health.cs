@@ -2,7 +2,7 @@ using System;
 using SaveSystem;
 
 namespace Components {
-	public class Health : ISaveable<HealthData> {
+	public sealed class Health : ISaveable<HealthData> {
 		public int CurrentHealth {
 			get;
 			set {

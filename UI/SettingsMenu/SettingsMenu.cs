@@ -4,7 +4,7 @@ using Godot;
 using SaveSystem;
 
 namespace SettingsPanels {
-	public partial class SettingsMenu : Control, ISaveable<SettingsData> {
+	public sealed partial class SettingsMenu : Control, ISaveable<SettingsData> {
 		private const string SETTINGS_FILENAME = "settings";
 
 		private const string GENERAL_PANEL = "General_Panel";
@@ -14,8 +14,6 @@ namespace SettingsPanels {
 		private const string MK_PANEL = "MK_Panel";
 		private const string ACCESSIBILITY_PANEL = "Accessibility_Panel";
 		private const string EXTRAS_PANEL = "Extras_Panel";
-		private bool FPause;
-		private PauseMenu PMenu = null!;
 
 		private readonly Dictionary<string, string> ButtonToPanelMap = new() {
 			{"Top_Panel/General_Button", GENERAL_PANEL},
@@ -34,27 +32,12 @@ namespace SettingsPanels {
 			//LoadData();
 			SetCallbacks();
 		}
-		
-		public void SetPauseMenu(PauseMenu pm) {
-			PMenu = pm;
-		}
 
 		public override void _Input(InputEvent input) {
-			if(input.IsActionPressed(Actions.UICancel)) {
-				GetViewport().SetInputAsHandled();
+			if(input.IsActionPressed(Actions.MenuExit) || input.IsActionPressed(Actions.MenuBack)) {
 				SaveData();
 				Visible = false;
-
-				if(FPause && PMenu != null) {
-					PMenu.Visible = true;
-					GetTree().Paused = true;
-				}
 			}
-		}
-
-		public void FromPause() {
-			FPause = true;
-			Visible = true;
 		}
 
 		private void SetCallbacks() {

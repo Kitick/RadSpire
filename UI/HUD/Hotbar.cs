@@ -2,11 +2,11 @@ using System;
 using Core;
 using Godot;
 
-public partial class Hotbar : Node2D {
+public sealed partial class Hotbar : Control {
 	private int selectedIndex = -1;
 	private GridContainer hotbarSlots = null!;
 
-	private const string HOTBAR = "HotbarSlots";
+	private const string HOTBAR = "Background/GridBackground/HotbarSlots";
 
 	private static readonly Color TintColor = new Color(1f, 1f, 0.3f);
 
