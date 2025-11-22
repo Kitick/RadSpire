@@ -15,33 +15,30 @@ shadow_color = Color(0, 0, 0, 0.9607843)
 
 [node name="QuestLog" type="Control"]
 layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 1109.0
-offset_top = 9.0
-offset_right = 1115.0
-offset_bottom = 14.0
-grow_horizontal = 2
-grow_vertical = 2
+offset_right = 475.0
+offset_bottom = 350.0
 
 [node name="QuestPanel" type="ColorRect" parent="."]
 layout_mode = 1
 anchors_preset = -1
+anchor_top = 0.2
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 823.0
-offset_top = 304.0
-offset_right = -739.0
-offset_bottom = -485.0
+grow_horizontal = 2
+grow_vertical = 2
 color = Color(0.4509804, 0.2627451, 0.1882353, 0.6392157)
 
 [node name="QuestList" type="ItemList" parent="QuestPanel"]
-layout_mode = 0
-offset_left = 9.0
-offset_top = 12.0
-offset_right = 176.0
-offset_bottom = 284.0
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = -5.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_constants/h_separation = 8
 theme_override_constants/v_separation = 12
@@ -55,31 +52,37 @@ item_0/text = "> Find Pablo"
 item_1/text = "> Gather materials"
 
 [node name="Panel" type="Panel" parent="QuestPanel"]
-layout_mode = 0
-offset_left = 181.0
-offset_top = 12.0
-offset_right = 355.0
-offset_bottom = 284.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 5.0
+offset_top = 10.0
+offset_right = -10.0
+offset_bottom = -10.0
 
 [node name="RichTextLabel" type="RichTextLabel" parent="QuestPanel/Panel"]
 layout_mode = 1
-anchors_preset = 15
+anchors_preset = -1
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 2.0
-offset_top = 3.0
-offset_right = -4.0
-offset_bottom = -6.0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = -5.0
+offset_bottom = -5.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/normal = SubResource("StyleBoxFlat_1p556")
 
 [node name="TextEdit" type="TextEdit" parent="QuestPanel/Panel/RichTextLabel"]
-layout_mode = 0
-offset_left = 10.0
-offset_top = 8.0
-offset_right = 160.0
-offset_bottom = 83.0
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.3
+offset_left = 5.0
+offset_top = 5.0
+offset_right = -5.0
 theme_override_colors/font_readonly_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 13
 text = "Locate Pablo and receive the special herb"
@@ -89,37 +92,42 @@ wrap_mode = 1
 [node name="QuestButtons" type="ColorRect" parent="."]
 layout_mode = 1
 anchors_preset = -1
-anchor_right = 0.065000005
-anchor_bottom = 0.037
-offset_left = 823.0
-offset_top = 254.0
-offset_right = 1061.8099
-offset_bottom = 259.855
+anchor_right = 1.0
+anchor_bottom = 0.2
+offset_bottom = -10.0
 color = Color(0.4509804, 0.2627451, 0.1882353, 0.63529414)
 
 [node name="Button" type="Button" parent="QuestButtons"]
-layout_mode = 0
-offset_left = 6.0
-offset_top = 6.0
-offset_right = 91.0
-offset_bottom = 41.0
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.1
+anchor_right = 0.3
+anchor_bottom = 0.9
+offset_left = 15.0
+offset_right = -15.0
 theme_override_colors/font_color = Color(0.80784315, 1, 1, 0.9843137)
 text = "ACTIVE"
 
 [node name="Button2" type="Button" parent="QuestButtons"]
-layout_mode = 0
-offset_left = 133.0
-offset_top = 5.0
-offset_right = 236.0
-offset_bottom = 41.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.35
+anchor_top = 0.1
+anchor_right = 0.65
+anchor_bottom = 0.9
+offset_left = 15.0
+offset_right = -15.0
 theme_override_colors/font_color = Color(0.80784315, 1, 1, 0.9843137)
 text = "COMPLETED"
 
 [node name="Button3" type="Button" parent="QuestButtons"]
-layout_mode = 0
-offset_left = 272.0
-offset_top = 5.0
-offset_right = 357.0
-offset_bottom = 41.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.7
+anchor_top = 0.1
+anchor_right = 1.0
+anchor_bottom = 0.9
+offset_left = 15.0
+offset_right = -15.0
 theme_override_colors/font_color = Color(0.80784315, 1, 1, 0.9843137)
 text = "FAILED"

@@ -13,99 +13,130 @@ corner_radius_top_right = 4
 corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
 
-[node name="Hotbar" type="Node2D"]
+[node name="Hotbar" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 330.0
+offset_bottom = 70.0
 script = ExtResource("1_r24te")
 
-[node name="ColorRect" type="ColorRect" parent="."]
-offset_left = -173.0
-offset_top = -51.0
-offset_right = 175.0
-offset_bottom = 24.0
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
 color = Color(0.4509804, 0.2627451, 0.1882353, 1)
 
-[node name="ColorRect" type="ColorRect" parent="ColorRect"]
-layout_mode = 0
-offset_left = 12.0
-offset_top = 7.0
-offset_right = 336.0
-offset_bottom = 68.0
+[node name="GridBackground" type="ColorRect" parent="Background"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = -5.0
+offset_bottom = -5.0
 color = Color(1, 1, 1, 0.60784316)
 
-[node name="HotbarSlots" type="GridContainer" parent="."]
+[node name="HotbarSlots" type="GridContainer" parent="Background/GridBackground"]
 layout_direction = 2
-offset_left = -154.0
-offset_top = -38.0
-offset_right = 156.0
-offset_bottom = 12.0
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = -5.0
+offset_bottom = -5.0
 theme_override_constants/h_separation = 15
 columns = 5
 
-[node name="Slot1" type="Panel" parent="HotbarSlots"]
+[node name="Slot1" type="Panel" parent="Background/GridBackground/HotbarSlots"]
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_u0wmf")
 
-[node name="TextureRect" type="TextureRect" parent="HotbarSlots/Slot1"]
+[node name="TextureRect" type="TextureRect" parent="Background/GridBackground/HotbarSlots/Slot1"]
 layout_mode = 1
 anchors_preset = -1
-anchor_right = 0.92
-anchor_bottom = 0.94000006
-offset_left = 4.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 5.0
 offset_top = 5.0
+offset_right = -5.0
+offset_bottom = -5.0
 expand_mode = 1
 
-[node name="Slot2" type="Panel" parent="HotbarSlots"]
+[node name="Slot2" type="Panel" parent="Background/GridBackground/HotbarSlots"]
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_u0wmf")
 
-[node name="TextureRect" type="TextureRect" parent="HotbarSlots/Slot2"]
+[node name="TextureRect" type="TextureRect" parent="Background/GridBackground/HotbarSlots/Slot2"]
 layout_mode = 1
 anchors_preset = -1
-anchor_right = 0.92
-anchor_bottom = 0.94000006
-offset_left = 4.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 5.0
 offset_top = 5.0
+offset_right = -5.0
+offset_bottom = -5.0
 expand_mode = 1
 
-[node name="Slot3" type="Panel" parent="HotbarSlots"]
+[node name="Slot3" type="Panel" parent="Background/GridBackground/HotbarSlots"]
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_u0wmf")
 
-[node name="TextureRect" type="TextureRect" parent="HotbarSlots/Slot3"]
+[node name="TextureRect" type="TextureRect" parent="Background/GridBackground/HotbarSlots/Slot3"]
 layout_mode = 1
 anchors_preset = -1
-anchor_right = 0.92
-anchor_bottom = 0.94000006
-offset_left = 4.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 5.0
 offset_top = 5.0
+offset_right = -5.0
+offset_bottom = -5.0
 expand_mode = 1
 
-[node name="Slot4" type="Panel" parent="HotbarSlots"]
+[node name="Slot4" type="Panel" parent="Background/GridBackground/HotbarSlots"]
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_u0wmf")
 
-[node name="TextureRect" type="TextureRect" parent="HotbarSlots/Slot4"]
+[node name="TextureRect" type="TextureRect" parent="Background/GridBackground/HotbarSlots/Slot4"]
 layout_mode = 1
 anchors_preset = -1
-anchor_right = 0.92
-anchor_bottom = 0.94000006
-offset_left = 4.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 5.0
 offset_top = 5.0
+offset_right = -5.0
+offset_bottom = -5.0
 expand_mode = 1
 
-[node name="Slot5" type="Panel" parent="HotbarSlots"]
+[node name="Slot5" type="Panel" parent="Background/GridBackground/HotbarSlots"]
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_u0wmf")
 
-[node name="TextureRect" type="TextureRect" parent="HotbarSlots/Slot5"]
+[node name="TextureRect" type="TextureRect" parent="Background/GridBackground/HotbarSlots/Slot5"]
 layout_mode = 1
 anchors_preset = -1
-anchor_right = 0.92
-anchor_bottom = 0.94000006
-offset_left = 4.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 5.0
 offset_top = 5.0
+offset_right = -5.0
+offset_bottom = -5.0
 expand_mode = 1
