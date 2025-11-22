@@ -46,10 +46,12 @@ public partial class Player : CharacterBody3D, ISaveable<PlayerData> {
 
 		float multiplier = GetMultiplier();
 
-		Movement.Move(KeyInput.HorizontalInput, multiplier);
+		if(IsOnFloor()) {
+			Movement.Move(KeyInput.HorizontalInput, multiplier);
 
-		if(KeyInput.JumpPressed && IsOnFloor()) {
-			Movement.Jump();
+			if(KeyInput.JumpPressed) {
+				Movement.Jump();
+			}
 		}
 
 		Movement.Update(dt);

@@ -29,11 +29,10 @@ namespace Core {
 			query.CollideWithAreas = false;
 
 			var result = spaceState.IntersectRay(query);
-
 			if(result.Count == 0) { return (target - origin).Length(); }
 
-			Vector3 hitPosition = (Vector3) result["position"];
-			return origin.DistanceTo(hitPosition);
+			Vector3 hitpoint = (Vector3) result["position"];
+			return origin.DistanceTo(hitpoint);
 		}
 
 		// Rotation Smoothing

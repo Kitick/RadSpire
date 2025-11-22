@@ -98,7 +98,7 @@ namespace Camera {
 		public Vector3 CalcPosition(Node3D space) {
 			var direction = Extensions.ToPolar(RadHDG, RadPIT);
 
-			Distance = Math.Min(Distance, space.IntersectRay(Anchor, direction * MaxDistance) - BufferDistance);
+			Distance = Math.Min(Distance, space.IntersectRay(Anchor + direction * MinDistance, direction * MaxDistance) - BufferDistance);
 
 			Vector3 orbit = direction * Distance;
 

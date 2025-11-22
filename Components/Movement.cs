@@ -23,7 +23,7 @@ namespace Components {
 		}
 
 		public void Move(Vector3 direction, float multiplier) {
-			Vector3 move = direction * BaseSpeed * multiplier;
+			Vector3 move = direction.Normalized() * BaseSpeed * multiplier;
 			Body.Velocity = new Vector3(move.X, Body.Velocity.Y, move.Z);
 		}
 
