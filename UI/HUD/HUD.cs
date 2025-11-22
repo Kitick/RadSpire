@@ -1,55 +1,78 @@
 using System;
 using Core;
 using Godot;
+using SettingsPanels;
 
-public partial class HUD : CanvasLayer {
-	private Button PauseButton = null!;
-	[Export] private PackedScene PauseMenu = null!;
-	private Control Paused = null!;
+public sealed partial class HUD : Control {
+	public enum MenuState { Game, Paused, Settings };
+	public MenuState State = MenuState.Game;
 
-	private const string PAUSE_BUTTON = "Pause_Button";
+	private PauseMenu PauseMenu = null!;
+	private Control Inventory = null!;
+	private Control QuestLog = null!;
+	private Hotbar Hotbar = null!;
+	private SettingsMenu Settings = null!;
+
+	private const string PAUSE_BUTTON = "PauseButton";
+	private const string PAUSE_MENU = "PauseMenu";
+	private const string INVENTORY = "Inventory";
+	private const string QUESTLOG = "QuestLog";
+	private const string HOTBAR = "Hotbar";
+	private const string SETTINGS = "Settings";
+
+	public bool IsPaused => PauseMenu.Visible;
 
 	public override void _Ready() {
-		PauseMenu = GD.Load<PackedScene>(Scenes.PauseMenu);
+		ProcessMode = ProcessModeEnum.Always;
+
 		GetComponents();
-		SetCallBacks();
+		SetCallbacks();
 	}
-	public override void _UnhandledInput(InputEvent input) {
-		if(input.IsActionPressed(Actions.UICancel))
-			TogglePauseMenu();
+
+	public override void _Input(InputEvent input) {
+		if(input.IsActionPressed(Actions.MenuExit)) {
+			TogglePause();
+		}
 	}
 
 	private void GetComponents() {
-		PauseButton = GetNode<Button>(PAUSE_BUTTON);
+		PauseMenu = GetNode<PauseMenu>(PAUSE_MENU);
+		Settings = GetNode<SettingsMenu>(SETTINGS);
+		Inventory = GetNode<Control>(INVENTORY);
+		QuestLog = GetNode<Control>(QUESTLOG);
+		Hotbar = GetNode<Hotbar>(HOTBAR);
 	}
 
-	private void SetCallBacks() {
-		PauseButton.Pressed += OnPauseButtonPressed;
+	private void SetCallbacks() {
+		GetNode<Button>(PAUSE_BUTTON).Pressed += TogglePause;
+
+		PauseMenu.ResumeButton.Pressed += () => TogglePause(false);
+		PauseMenu.SaveButton.Pressed += SaveGame;
+
+		PauseMenu.SettingsButton.Pressed += () => ToggleSettings(true);
+		PauseMenu.MainMenuButton.Pressed += QuitGame;
 	}
 
-	private void OnPauseButtonPressed() {
-		TogglePauseMenu();
-		GD.Print("Pause button was pressed!");
+	public void TogglePause() => TogglePause(!IsPaused);
+
+	public void TogglePause(bool state) {
+		GetTree().Paused = state;
+		PauseMenu.Visible = state;
 	}
 
-	private void TogglePauseMenu() {
-		if(Paused == null) {
-			Paused = PauseMenu.Instantiate<Control>();
-			AddChild(Paused);
+	public void ToggleSettings() => ToggleSettings(!Settings.Visible);
 
-			// Important:
+	public void ToggleSettings(bool state) {
+		Settings.Visible = state;
+		PauseMenu.Visible = state;
+	}
 
-			Paused.ProcessMode = ProcessModeEnum.WhenPaused;
-			Paused.Visible = false; // start hidden so first toggle shows it
+	public void SaveGame() {
+		GameManager.Save("autosave");
+	}
 
-		}
-
-		bool showing = !Paused.Visible;
-		Paused.Visible = showing;
-		GetTree().Paused = showing;
-
-		Input.MouseMode = showing
-			? Input.MouseModeEnum.Visible
-			: Input.MouseModeEnum.Captured;
+	public void QuitGame() {
+		GetTree().Paused = false;
+		GetTree().ChangeSceneToFile(Scenes.MainMenu);
 	}
 }

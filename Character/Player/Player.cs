@@ -5,7 +5,7 @@ using Core;
 using Godot;
 using SaveSystem;
 
-public partial class Player : CharacterBody3D, ISaveable<PlayerData> {
+public sealed partial class Player : CharacterBody3D, ISaveable<PlayerData> {
 	[Export] private int InitalHealth = 100;
 	[Export] private float SprintMultiplier = 2.0f;
 	[Export] private float CrouchMultiplier = 0.5f;
@@ -46,10 +46,12 @@ public partial class Player : CharacterBody3D, ISaveable<PlayerData> {
 
 		float multiplier = GetMultiplier();
 
-		Movement.Move(KeyInput.HorizontalInput, multiplier);
+		if(IsOnFloor()) {
+			Movement.Move(KeyInput.HorizontalInput, multiplier);
 
-		if(KeyInput.JumpPressed && IsOnFloor()) {
-			Movement.Jump();
+			if(KeyInput.JumpPressed) {
+				Movement.Jump();
+			}
 		}
 
 		Movement.Update(dt);
