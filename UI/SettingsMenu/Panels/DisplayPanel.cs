@@ -2,7 +2,7 @@ using Core;
 using Godot;
 using SaveSystem;
 
-namespace SettingsPanels {
+namespace Settings {
 	public readonly record struct Resolution {
 		public int Width { get; init; }
 		public int Height { get; init; }
@@ -142,7 +142,7 @@ namespace SettingsPanels {
 
 namespace SaveSystem {
 	public readonly record struct DisplaySettings : ISaveData {
-		public SettingsPanels.Resolution Resolution { get; init; }
+		public Settings.Resolution Resolution { get; init; }
 		public bool IsFullscreen { get; init; }
 		public bool IsVSyncEnabled { get; init; }
 		public float Brightness { get; init; }

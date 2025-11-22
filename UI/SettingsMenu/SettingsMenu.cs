@@ -3,7 +3,7 @@ using Core;
 using Godot;
 using SaveSystem;
 
-namespace SettingsPanels {
+namespace Settings {
 	public sealed partial class SettingsMenu : Control, ISaveable<SettingsData> {
 		private const string SETTINGS_FILENAME = "settings";
 
@@ -13,7 +13,6 @@ namespace SettingsPanels {
 		private const string CONTROLLER_PANEL = "Controller_Panel";
 		private const string MK_PANEL = "MK_Panel";
 		private const string ACCESSIBILITY_PANEL = "Accessibility_Panel";
-		private const string EXTRAS_PANEL = "Extras_Panel";
 
 		private readonly Dictionary<string, string> ButtonToPanelMap = new() {
 			{"Top_Panel/General_Button", GENERAL_PANEL},

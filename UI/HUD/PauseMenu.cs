@@ -1,4 +1,4 @@
-using SettingsPanels;
+using Settings;
 using Core;
 using Godot;
 

@@ -1,7 +1,7 @@
 using System;
 using Core;
 using Godot;
-using SettingsPanels;
+using Settings;
 
 public sealed partial class HUD : Control {
 	public enum MenuState { Game, Paused, Settings };

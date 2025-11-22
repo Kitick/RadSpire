@@ -4,11 +4,11 @@ using Core;
 using Godot;
 using SaveSystem;
 
-namespace SettingsPanels {
+namespace Settings {
 	public enum AudioBus { Master, Music, SFX }
 
 	public sealed partial class SoundPanel : VBoxContainer, ISaveable<SoundSettings> {
-		// Paths
+		// Node Paths
 		private const string MASTER_SLIDER = "Master_Volume/HSlider";
 		private const string MUSIC_SLIDER = "Music_Volume/HSlider";
 		private const string SFX_SLIDER = "SFX_Volume/HSlider";
