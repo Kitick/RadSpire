@@ -39,8 +39,8 @@ namespace Core {
 		public const string Hotbar4 = "Hotbar4";
 		public const string Hotbar5 = "Hotbar5";
 
-		public const string PanCamera = "PanCamera";
-		public const string RotateCamera = "RotateCamera";
+		public const string CameraPan = "PanCamera";
+		public const string CameraRotate = "RotateCamera";
 		public const string ZoomIn = "ZoomIn";
 		public const string ZoomOut = "ZoomOut";
 	}

@@ -4,9 +4,6 @@ using Godot;
 
 namespace Camera {
 	public sealed partial class CameraRig {
-		public MouseButton PanMouseButton = MouseButton.Middle;
-		public MouseButton RotateMouseButton = MouseButton.Right;
-
 		public float PanSensitivity = 0.1f;
 		public float RotateSensitivity = 0.5f;
 		public float ZoomSpeed = 1.0f;
@@ -18,46 +15,43 @@ namespace Camera {
 			if(input.IsActionPressed(Actions.CameraReset)) {
 				Reset();
 			}
-			else if(input is InputEventMouseButton mouseEvent) {
-				if(mouseEvent.ButtonIndex == PanMouseButton) { HandleMouseButton(mouseEvent); }
-				else if(mouseEvent.ButtonIndex == RotateMouseButton) { HandleMouseRotate(mouseEvent); }
-				else if(mouseEvent.ButtonIndex == MouseButton.WheelUp || mouseEvent.ButtonIndex == MouseButton.WheelDown) {
-					HandleMouseZoom(mouseEvent);
-				}
-			}
-			else if(input is InputEventMouseMotion mouseMotion) {
+
+			if(input is InputEventMouseMotion mouseMotion) {
 				HandleMouseMotion(mouseMotion);
+			}
+			else {
+				HandlePan(input.IsActionPressed(Actions.CameraPan));
+				HandleRotate(input.IsActionPressed(Actions.CameraRotate));
+				HandleZoom(input);
 			}
 		}
 
-		private void HandleMouseButton(InputEventMouseButton mouse) {
-			if(!IsPanning && mouse.Pressed) {
+		private void HandlePan(bool pressed) {
+			if(!IsPanning && pressed) {
 				IsPanning = true;
 				Drag.Start(Pose.Ground);
 			}
-			else if(IsPanning && !mouse.Pressed) {
+			else if(IsPanning && !pressed) {
 				IsPanning = false;
 				Drag.End();
 			}
 		}
 
-		private void HandleMouseRotate(InputEventMouseButton mouse) {
-			if(!IsRotating && mouse.Pressed) {
+		private void HandleRotate(bool pressed) {
+			if(!IsRotating && pressed) {
 				IsRotating = true;
 			}
-			else if(IsRotating && !mouse.Pressed) {
+			else if(IsRotating && !pressed) {
 				IsRotating = false;
 			}
 		}
 
-		private void HandleMouseZoom(InputEventMouseButton motion) {
-			float delta = ZoomSpeed / 2;
-
-			if(motion.ButtonIndex == MouseButton.WheelUp) {
-				Pose.Distance -= delta;
+		private void HandleZoom(InputEvent input) {
+			if(input.IsActionPressed(Actions.ZoomIn)) {
+				Pose.Distance -= ZoomSpeed;
 			}
-			else if(motion.ButtonIndex == MouseButton.WheelDown) {
-				Pose.Distance += delta;
+			else if(input.IsActionPressed(Actions.ZoomOut)) {
+				Pose.Distance += ZoomSpeed;
 			}
 		}
 
