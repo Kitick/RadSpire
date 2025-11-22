@@ -7,7 +7,6 @@
 [ext_resource type="Script" uid="uid://c44ijxtmj7xb" path="res://UI/SettingsMenu/Panels/ControllerPanel.cs" id="5_jh1wv"]
 [ext_resource type="Script" uid="uid://8tuxmuyevsjl" path="res://UI/SettingsMenu/Panels/MkPanel.cs" id="6_uv3og"]
 [ext_resource type="Script" uid="uid://fxvdaltq3r54" path="res://UI/SettingsMenu/Panels/AccessibilityPanel.cs" id="7_2kpqc"]
-[ext_resource type="Script" uid="uid://ccll8met7hayg" path="res://UI/SettingsMenu/Panels/ExtrasPanel.cs" id="8_p7xhj"]
 
 [sub_resource type="Environment" id="Environment_w7gfg"]
 adjustment_enabled = true
@@ -28,7 +27,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(1, 1, 1, 0.2)
+color = Color(0.1, 0.1, 0.1, 0.8)
 
 [node name="Top_Panel" type="HBoxContainer" parent="."]
 layout_mode = 1
@@ -180,7 +179,7 @@ value = 1.0
 
 [node name="FPS_Cap" type="Label" parent="Display_Panel"]
 layout_mode = 2
-text = "FPS_Cap"
+text = "FPS Cap"
 
 [node name="OptionButton" type="OptionButton" parent="Display_Panel/FPS_Cap"]
 layout_mode = 0

@@ -3,6 +3,7 @@
 using Core;
 using Godot;
 using SaveSystem;
+using Settings;
 
 public partial class MainMenu : Control {
 	//Paths for all Buttons and Pop-up Panels
@@ -27,25 +28,15 @@ public partial class MainMenu : Control {
 
 	// Component references
 	private Button SingleplayerButton = null!;
-	private Control SingleplayerButtonPanel = null!;
 	private Button MultiplayerButton = null!;
+	private Control SingleplayerButtonPanel = null!;
 	private Control MultiplayerButtonPanel = null!;
-	private Control SettingsInstance = null!;
+	private SettingsMenu SettingsInstance = null!;
 
 	// Main
 	public override void _Ready() {
 		GetComponents();
-		InitSettings();
 		SetCallbacks();
-	}
-
-	private void InitSettings() {
-		PackedScene SettingsMenu = GD.Load<PackedScene>(Scenes.SettingsMenu);
-
-		SettingsInstance = SettingsMenu.Instantiate<Control>();
-		SettingsInstance.Visible = false;
-
-		AddChild(SettingsInstance);
 	}
 
 	// Components
@@ -57,6 +48,10 @@ public partial class MainMenu : Control {
 		// Multiplayer Components
 		MultiplayerButton = GetNode<Button>(MULTIPLAYER_BUTTON);
 		MultiplayerButtonPanel = GetNode<Control>(MULTIPLAYER_BUTTON_PANEL);
+
+		// Settings Instance
+		SettingsInstance = this.AddScene<SettingsMenu>(Scenes.SettingsMenu);
+		SettingsInstance.Visible = false;
 	}
 
 	// Callbacks

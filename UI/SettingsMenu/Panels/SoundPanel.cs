@@ -55,7 +55,7 @@ namespace Settings {
 
 		private HSlider GetSlider(AudioBus bus) => GetNode<HSlider>(BusToSlider[bus]);
 
-		private float GetSliderValue(AudioBus bus) => (float)GetSlider(bus).Value;
+		private float GetSliderValue(AudioBus bus) => (float) GetSlider(bus).Value;
 		private void SetSliderValue(AudioBus bus, float value) => GetSlider(bus).Value = value;
 
 		// Sets the initial slider values based on current volumes
@@ -91,19 +91,17 @@ namespace Settings {
 		private void OnMuteAllToggled(bool isMuted) => SetMuteAll(isMuted);
 
 		private void OnOutputDeviceSelected(long index) {
-			string selectedDevice = OutputDeviceOption.GetItemText((int)index);
+			string selectedDevice = OutputDeviceOption.GetItemText((int) index);
 			SetOutputDevice(selectedDevice);
 		}
 
-		public SoundSettings Serialize() {
-			return new SoundSettings {
-				MasterVolume = AudioBus.Master.GetVolume(),
-				MusicVolume = AudioBus.Music.GetVolume(),
-				SFXVolume = AudioBus.SFX.GetVolume(),
-				IsMuted = AudioBus.Master.IsMuted(),
-				OutputDevice = AudioServer.OutputDevice
-			};
-		}
+		public SoundSettings Serialize() => new SoundSettings {
+			MasterVolume = AudioBus.Master.GetVolume(),
+			MusicVolume = AudioBus.Music.GetVolume(),
+			SFXVolume = AudioBus.SFX.GetVolume(),
+			IsMuted = AudioBus.Master.IsMuted(),
+			OutputDevice = AudioServer.OutputDevice,
+		};
 
 		public void Deserialize(in SoundSettings data) {
 			AudioBus.Master.SetVolume(data.MasterVolume);
@@ -131,10 +129,10 @@ namespace Settings {
 			AudioServer.GetBusIndex(bus.GetName());
 
 		public static int GetVolume(this AudioBus bus) =>
-			(int)Math.Round(AudioServer.GetBusVolumeLinear(bus.GetIndex()) * 100f);
+			(int) Math.Round(AudioServer.GetBusVolumeLinear(bus.GetIndex()) * 100f);
 
 		public static void SetVolume(this AudioBus bus, double volume) =>
-			bus.SetVolume((int)Math.Round(volume));
+			bus.SetVolume((int) Math.Round(volume));
 
 		public static void SetVolume(this AudioBus bus, int volume) {
 			GD.Print($"Set {bus.GetName()} volume to {volume}{(bus.IsMuted() ? " (muted)" : "")}");

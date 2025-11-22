@@ -5,30 +5,29 @@ using SaveSystem;
 
 namespace Settings {
 	public sealed partial class SettingsMenu : Control, ISaveable<SettingsData> {
-		private const string SETTINGS_FILENAME = "settings";
+		private const string SAVEFILE = "settings";
 
-		private const string GENERAL_PANEL = "General_Panel";
-		private const string DISPLAY_PANEL = "Display_Panel";
-		private const string SOUND_PANEL = "Sound_Panel";
-		private const string CONTROLLER_PANEL = "Controller_Panel";
-		private const string MK_PANEL = "MK_Panel";
-		private const string ACCESSIBILITY_PANEL = "Accessibility_Panel";
+		private const string GENERAL = "General";
+		private const string DISPLAY = "Display";
+		private const string SOUND = "Sound";
+		private const string CONTROLLER = "Controller";
+		private const string MK = "MK";
+		private const string ACCESSIBILITY = "Accessibility";
 
-		private readonly Dictionary<string, string> ButtonToPanelMap = new() {
-			{"Top_Panel/General_Button", GENERAL_PANEL},
-			{"Top_Panel/Display_Button", DISPLAY_PANEL},
-			{"Top_Panel/Sound_Button", SOUND_PANEL},
-			{"Top_Panel/Controller_Button", CONTROLLER_PANEL},
-			{"Top_Panel/MK_Button", MK_PANEL},
-			{"Top_Panel/Accessibility_Button", ACCESSIBILITY_PANEL}
-		};
+		private readonly string[] Tabs = [GENERAL, DISPLAY, SOUND, CONTROLLER, MK, ACCESSIBILITY];
+
+		private const string HEADER = "Top_Panel";
+
+		private const string TOPANEL = "_Panel";
+		private const string TOBUTTON = "_Button";
+
+		private readonly Dictionary<string, (VBoxContainer panel, Button button)> Nodes = new();
 
 		public override void _Ready() {
-			// Works both in main menu and paused game
 			ProcessMode = ProcessModeEnum.Always;
 
-			//LoadData();
-			SetCallbacks();
+			GetComponents();
+			LoadData();
 		}
 
 		public override void _Input(InputEvent input) {
@@ -38,42 +37,47 @@ namespace Settings {
 			}
 		}
 
-		private void SetCallbacks() {
-			foreach(var (buttonPath, panelPath) in ButtonToPanelMap) {
-				Button button = GetNode<Button>(buttonPath);
-				button.Pressed += () => OnCategoryPressed(panelPath);
+		private void GetComponents() {
+			var header = GetNode<HBoxContainer>(HEADER);
+
+			foreach(var path in Tabs) {
+				var panel = GetNode<VBoxContainer>(path + TOPANEL);
+				var button = header.GetNode<Button>(path + TOBUTTON);
+
+				Nodes[path] = (panel, button);
+				button.Pressed += () => SwitchToPanel(panel);
 			}
 		}
 
-		private void OnCategoryPressed(string panelNameToShow) {
-			foreach(var panelName in ButtonToPanelMap.Values) {
-				bool shouldShow = panelName == panelNameToShow;
-				GetNode<Control>(panelName).Visible = shouldShow;
+		private void SwitchToPanel(VBoxContainer target) {
+			foreach(var (panel, _) in Nodes.Values) {
+				panel.Visible = panel == target;
 			}
 		}
 
 		public void SaveData() {
-			var data = Serialize();
-			SaveService.Save(SETTINGS_FILENAME, data);
+			SaveService.Save(SAVEFILE, Serialize());
 		}
 
 		public void LoadData() {
-			if(SaveService.Exists(SETTINGS_FILENAME)) {
-				var data = SaveService.Load<SettingsData>(SETTINGS_FILENAME);
+			if(SaveService.Exists(SAVEFILE)) {
+				var data = SaveService.Load<SettingsData>(SAVEFILE);
 				Deserialize(data);
 			}
 		}
 
-		public SettingsData Serialize() {
-			return new SettingsData {
-				DisplaySettings = GetNode<DisplayPanel>(DISPLAY_PANEL).Serialize(),
-				SoundSettings = GetNode<SoundPanel>(SOUND_PANEL).Serialize()
-			};
+		private ISaveable<T> CastISaveable<T>(string path) where T : ISaveData {
+			return (ISaveable<T>) Nodes[path].panel;
 		}
 
+		public SettingsData Serialize() => new SettingsData {
+			DisplaySettings = CastISaveable<DisplaySettings>(DISPLAY).Serialize(),
+			SoundSettings = CastISaveable<SoundSettings>(SOUND).Serialize(),
+		};
+
 		public void Deserialize(in SettingsData data) {
-			GetNode<DisplayPanel>(DISPLAY_PANEL).Deserialize(data.DisplaySettings);
-			GetNode<SoundPanel>(SOUND_PANEL).Deserialize(data.SoundSettings);
+			CastISaveable<DisplaySettings>(DISPLAY).Deserialize(data.DisplaySettings);
+			CastISaveable<SoundSettings>(SOUND).Deserialize(data.SoundSettings);
 		}
 	}
 }
