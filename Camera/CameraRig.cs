@@ -41,7 +41,7 @@ namespace Camera {
 				Reset();
 			}
 
-			Drag.Update(Pose.Ground, dt);
+			Drag.Update(Pose.Ground);
 
 			Pose.Ground += Drag.Velocity * dt;
 
