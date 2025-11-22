@@ -51,11 +51,13 @@ namespace Camera {
 		}
 
 		private void HandleMouseZoom(InputEventMouseButton motion) {
+			float delta = ZoomSpeed / 2;
+
 			if(motion.ButtonIndex == MouseButton.WheelUp) {
-				Pose.Distance -= ZoomSpeed;
+				Pose.Distance -= delta;
 			}
 			else if(motion.ButtonIndex == MouseButton.WheelDown) {
-				Pose.Distance += ZoomSpeed;
+				Pose.Distance += delta;
 			}
 		}
 

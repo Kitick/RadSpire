@@ -5,47 +5,6 @@ using Godot;
 using SaveSystem;
 
 namespace Camera {
-	public record struct CameraPose {
-		public Vector3 Ground;
-
-		public readonly Vector3 Anchor => Ground + new Vector3(0, Height, 0);
-		public readonly float MinPitch => Mathf.RadToDeg(MathF.Asin(-Height / Distance));
-
-		private const float MinDistance = 3f;
-		private const float MaxDistance = 20f;
-		private const float Height = 1.5f;
-
-		public float Distance { get;
-			set {
-				field = Math.Clamp(value, MinDistance, MaxDistance);
-				Pitch = Pitch; // Re-clamp pitch based on new distance
-			}
-		}
-		public float Heading { get; set => field = (value + 360) % 360; }
-		public float Pitch { get; set => field = Math.Clamp(value, MinPitch, 89); }
-
-		public readonly float RadHDG => Mathf.DegToRad(Heading);
-		public readonly float RadPIT => Mathf.DegToRad(Pitch);
-
-		public readonly Vector3 CalcPosition() {
-			float hdg = Mathf.DegToRad(Heading);
-			float pit = Mathf.DegToRad(Pitch);
-
-			float cosHDG = MathF.Cos(hdg);
-			float sinHDG = MathF.Sin(hdg);
-			float cosPIT = MathF.Cos(pit);
-			float sinPIT = MathF.Sin(pit);
-
-			Vector3 orbit = new Vector3(
-				Distance * sinHDG * cosPIT,
-				Distance * sinPIT,
-				Distance * cosHDG * cosPIT
-			);
-
-			return Anchor + orbit;
-		}
-	}
-
 	public sealed partial class CameraRig : Node3D, ISaveable<CameraRigData> {
 		public enum CameraState { Idle, Following };
 		public CameraState State { get; private set; } = CameraState.Following;
@@ -86,7 +45,7 @@ namespace Camera {
 
 			Pose.Ground += Drag.Velocity * dt;
 
-			GlobalPosition = Pose.CalcPosition();
+			GlobalPosition = Pose.CalcPosition(this);
 
 			LookAt(Pose.Anchor, Vector3.Up);
 		}
@@ -117,6 +76,33 @@ namespace Camera {
 
 		public void Deserialize(in CameraRigData data) {
 			Pose = data.Pose;
+		}
+	}
+
+	public record struct CameraPose {
+		public Vector3 Ground;
+		public readonly Vector3 Anchor => Ground + new Vector3(0, Height, 0);
+
+		public const float Height = 1.5f;
+		public const float MinDistance = 1.25f;
+		public const float MaxDistance = 20f;
+		public const float BufferDistance = 0.25f;
+
+		public float Distance { get; set => field = Math.Clamp(value, MinDistance, MaxDistance); }
+		public float Heading { get; set => field = (value + 360) % 360; }
+		public float Pitch { get; set => field = Math.Clamp(value, -89, 89); }
+
+		public readonly float RadHDG => Mathf.DegToRad(Heading);
+		public readonly float RadPIT => Mathf.DegToRad(Pitch);
+
+		public Vector3 CalcPosition(Node3D space) {
+			var direction = Extensions.ToPolar(RadHDG, RadPIT);
+
+			Distance = Math.Min(Distance, space.IntersectRay(Anchor, direction * MaxDistance) - BufferDistance);
+
+			Vector3 orbit = direction * Distance;
+
+			return Anchor + orbit;
 		}
 	}
 }
