@@ -53,6 +53,11 @@ layout_mode = 2
 size_flags_horizontal = 0
 text = "Settings"
 
+[node name="Extras_Button" type="Button" parent="Main_Button_Panel"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Extras"
+
 [node name="Quit_Button" type="Button" parent="Main_Button_Panel"]
 layout_mode = 2
 size_flags_horizontal = 0

@@ -11,6 +11,7 @@ public partial class MainMenu : Control {
 	private const string SINGLEPLAYER_BUTTON = "Main_Button_Panel/Singleplayer_Button";
 	private const string MULTIPLAYER_BUTTON = "Main_Button_Panel/Multiplayer_Button";
 	private const string SETTINGS_BUTTON = "Main_Button_Panel/Settings_Button";
+	private const string EXTRAS_BUTTON = "Main_Button_Panel/Extras_Button";
 	private const string QUIT_BUTTON = "Main_Button_Panel/Quit_Button";
 
 	// Pop-up panel for Singleplayer
@@ -65,6 +66,7 @@ public partial class MainMenu : Control {
 		SingleplayerButton.Pressed += OnSingleplayerButtonPressed;
 		MultiplayerButton.Pressed += OnMultiplayerButtonPressed;
 		GetNode<Button>(SETTINGS_BUTTON).Pressed += OnSettingsButtonPressed;
+		GetNode<Button>(EXTRAS_BUTTON).Pressed += OnExtrasButtonPressed;
 		GetNode<Button>(QUIT_BUTTON).Pressed += OnQuitButtonPressed;
 
 		// Hover behavior for Singleplayer
@@ -98,7 +100,12 @@ public partial class MainMenu : Control {
 	}
 
 	private void OnSettingsButtonPressed() {
+		GD.Print("Settings button was pressed!");
 		SettingsInstance.Visible = true;
+	}
+
+	private void OnExtrasButtonPressed() {
+		GD.Print("Extras button was pressed!");
 	}
 
 	private void OnQuitButtonPressed() {
