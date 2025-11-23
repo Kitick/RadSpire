@@ -1,7 +1,7 @@
 using System;
 using Godot;
 
-namespace SettingsPanels {
+namespace Settings {
 	public sealed partial class AccessibilityPanel : VBoxContainer {
 
 	}

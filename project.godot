@@ -23,8 +23,7 @@ buses/default_bus_layout="uid://cpvwo1bhm4q26"
 
 window/size/viewport_width=1920
 window/size/viewport_height=1080
-window/vsync/use_vsync=false
-window/brightness=0.0
+window/stretch/mode="viewport"
 
 [dotnet]
 
