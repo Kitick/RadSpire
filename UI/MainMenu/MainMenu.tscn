@@ -43,10 +43,59 @@ scale = Vector2(2, 1.904)
 layout_mode = 2
 text = "Singleplayer"
 
+[node name="Singleplayer_Popup" type="VBoxContainer" parent="Main_Button_Panel/Singleplayer_Button"]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = 4.0
+scale = Vector2(0.75, 0.75)
+
+[node name="Continue_Button" type="Button" parent="Main_Button_Panel/Singleplayer_Button/Singleplayer_Popup"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "> Continue Game"
+
+[node name="Load_Saved_Button" type="Button" parent="Main_Button_Panel/Singleplayer_Button/Singleplayer_Popup"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "> Load Saved Game"
+
+[node name="Start_New_Button" type="Button" parent="Main_Button_Panel/Singleplayer_Button/Singleplayer_Popup"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "> Start New Game"
+
 [node name="Multiplayer_Button" type="Button" parent="Main_Button_Panel"]
 layout_mode = 2
 size_flags_horizontal = 0
 text = "Multiplayer"
+
+[node name="Multiplayer_Popup" type="VBoxContainer" parent="Main_Button_Panel/Multiplayer_Button"]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_top = 4.0
+scale = Vector2(0.75, 0.75)
+
+[node name="Host_New_Button" type="Button" parent="Main_Button_Panel/Multiplayer_Button/Multiplayer_Popup"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "> Host New Game"
+
+[node name="Host_Saved_Button" type="Button" parent="Main_Button_Panel/Multiplayer_Button/Multiplayer_Popup"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "> Host Saved Game"
+
+[node name="Join_Game_Button" type="Button" parent="Main_Button_Panel/Multiplayer_Button/Multiplayer_Popup"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "> Join Game"
 
 [node name="Settings_Button" type="Button" parent="Main_Button_Panel"]
 layout_mode = 2
@@ -62,51 +111,3 @@ text = "Extras"
 layout_mode = 2
 size_flags_horizontal = 0
 text = "Quit"
-
-[node name="Singleplayer_Button_Panel" type="VBoxContainer" parent="."]
-visible = false
-layout_mode = 0
-offset_left = 352.0
-offset_top = 455.0
-offset_right = 481.0
-offset_bottom = 556.0
-scale = Vector2(1.5, 1.5)
-
-[node name="Continue_Button" type="Button" parent="Singleplayer_Button_Panel"]
-layout_mode = 2
-size_flags_horizontal = 0
-text = "> Continue Game"
-
-[node name="Load_Saved_Button" type="Button" parent="Singleplayer_Button_Panel"]
-layout_mode = 2
-size_flags_horizontal = 0
-text = "> Load Saved Game"
-
-[node name="Start_New_Button" type="Button" parent="Singleplayer_Button_Panel"]
-layout_mode = 2
-size_flags_horizontal = 0
-text = "> Start New Game"
-
-[node name="Multiplayer_Button_Panel" type="VBoxContainer" parent="."]
-visible = false
-layout_mode = 0
-offset_left = 325.0
-offset_top = 521.0
-offset_right = 482.0
-offset_bottom = 622.0
-scale = Vector2(1.5, 1.5)
-
-[node name="Host_New_Button" type="Button" parent="Multiplayer_Button_Panel"]
-layout_mode = 2
-size_flags_horizontal = 0
-text = "> Host New Game"
-
-[node name="Host_Saved_Button" type="Button" parent="Multiplayer_Button_Panel"]
-layout_mode = 2
-size_flags_horizontal = 0
-text = "> Host Saved Game"
-
-[node name="Join_Game_Button" type="Button" parent="Multiplayer_Button_Panel"]
-layout_mode = 2
-size_flags_horizontal = 0
-text = "> Join Game"

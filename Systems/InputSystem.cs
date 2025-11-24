@@ -4,7 +4,7 @@ using Godot;
 
 namespace Systems {
 	public sealed partial class InputSystem : Node {
-		public static readonly bool Debug = true;
+		public static readonly bool Debug = false;
 
 		// Name must match action name
 		public enum ActionEvent {
@@ -35,10 +35,10 @@ namespace Systems {
 
 		public override void _Input(InputEvent input) {
 			if(input is InputEventMouseMotion mouse) {
-				GD.Print($"InputSystem: Mouse moved {mouse.Relative}");
+				if(Debug) { GD.Print($"InputSystem: Mouse moved {mouse.Relative}"); }
 			}
 			else if(input is InputEventJoypadMotion joypad) {
-				GD.Print($"InputSystem: Joypad moved {joypad.Axis} : {joypad.AxisValue}");
+				if(Debug) { GD.Print($"InputSystem: Joypad moved {joypad.Axis} : {joypad.AxisValue}"); }
 			}
 			else {
 				CheckActionEvents(input);

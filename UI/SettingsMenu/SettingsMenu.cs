@@ -29,6 +29,7 @@ namespace Settings {
 
 		public override void _EnterTree() {
 			ProcessMode = ProcessModeEnum.Always;
+			Visible = false;
 
 			GetComponents();
 			SetInputCallbacks();

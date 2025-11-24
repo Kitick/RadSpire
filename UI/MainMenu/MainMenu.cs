@@ -6,33 +6,39 @@ using SaveSystem;
 using Settings;
 
 public partial class MainMenu : Control {
+	public static readonly bool Debug = true;
+
+	enum MenuState { Normal, SinglePopup, MultiPopup }
+
 	//Paths for all Buttons and Pop-up Panels
 
 	//Initial Main Menu buttons
-	private const string SINGLEPLAYER_BUTTON = "Main_Button_Panel/Singleplayer_Button";
-	private const string MULTIPLAYER_BUTTON = "Main_Button_Panel/Multiplayer_Button";
-	private const string SETTINGS_BUTTON = "Main_Button_Panel/Settings_Button";
-	private const string EXTRAS_BUTTON = "Main_Button_Panel/Extras_Button";
-	private const string QUIT_BUTTON = "Main_Button_Panel/Quit_Button";
+	private const string MAIN_BUTTON_PANEL = "Main_Button_Panel";
+	private const string SINGLEPLAYER_BUTTON = MAIN_BUTTON_PANEL + "/Singleplayer_Button";
+	private const string MULTIPLAYER_BUTTON = MAIN_BUTTON_PANEL + "/Multiplayer_Button";
+	private const string SETTINGS_BUTTON = MAIN_BUTTON_PANEL + "/Settings_Button";
+	private const string EXTRAS_BUTTON = MAIN_BUTTON_PANEL + "/Extras_Button";
+	private const string QUIT_BUTTON = MAIN_BUTTON_PANEL + "/Quit_Button";
 
 	// Pop-up panel for Singleplayer
-	private const string SINGLEPLAYER_BUTTON_PANEL = "Singleplayer_Button_Panel";
-	private const string CONTINUE_BUTTON = "Singleplayer_Button_Panel/Continue_Button";
-	private const string LOAD_SAVED_BUTTON = "Singleplayer_Button_Panel/Load_Saved_Button";
-	private const string START_NEW_BUTTON = "Singleplayer_Button_Panel/Start_New_Button";
+	private const string SINGLEPLAYER_POPUP = SINGLEPLAYER_BUTTON + "/Singleplayer_Popup";
+	private const string CONTINUE_BUTTON = SINGLEPLAYER_POPUP + "/Continue_Button";
+	private const string LOAD_SAVED_BUTTON = SINGLEPLAYER_POPUP + "/Load_Saved_Button";
+	private const string START_NEW_BUTTON = SINGLEPLAYER_POPUP + "/Start_New_Button";
 
 	// Pop-up panel for Multiplayer
-	private const string MULTIPLAYER_BUTTON_PANEL = "Multiplayer_Button_Panel";
-	private const string HOST_NEW_BUTTON = "Multiplayer_Button_Panel/Host_New_Button";
-	private const string HOST_SAVED_BUTTON = "Multiplayer_Button_Panel/Host_Saved_Button";
-	private const string JOIN_GAME_BUTTON = "Multiplayer_Button_Panel/Join_Game_Button";
+	private const string MULTIPLAYER_POPUP = MULTIPLAYER_BUTTON + "/Multiplayer_Popup";
+	private const string HOST_NEW_BUTTON = MULTIPLAYER_POPUP + "/Host_New_Button";
+	private const string HOST_SAVED_BUTTON = MULTIPLAYER_POPUP + "/Host_Saved_Button";
+	private const string JOIN_GAME_BUTTON = MULTIPLAYER_POPUP + "/Join_Game_Button";
 
 	// Component references
 	private Button SingleplayerButton = null!;
 	private Button MultiplayerButton = null!;
 	private Control SingleplayerButtonPanel = null!;
 	private Control MultiplayerButtonPanel = null!;
-	private SettingsMenu SettingsInstance = null!;
+
+	private SettingsMenu Settings = null!;
 
 	// Main
 	public override void _Ready() {
@@ -44,15 +50,14 @@ public partial class MainMenu : Control {
 	private void GetComponents() {
 		// Singleplayer Components
 		SingleplayerButton = GetNode<Button>(SINGLEPLAYER_BUTTON);
-		SingleplayerButtonPanel = GetNode<Control>(SINGLEPLAYER_BUTTON_PANEL);
+		SingleplayerButtonPanel = GetNode<Control>(SINGLEPLAYER_POPUP);
 
 		// Multiplayer Components
 		MultiplayerButton = GetNode<Button>(MULTIPLAYER_BUTTON);
-		MultiplayerButtonPanel = GetNode<Control>(MULTIPLAYER_BUTTON_PANEL);
+		MultiplayerButtonPanel = GetNode<Control>(MULTIPLAYER_POPUP);
 
 		// Settings Instance
-		SettingsInstance = this.AddScene<SettingsMenu>(Scenes.SettingsMenu);
-		SettingsInstance.Visible = false;
+		Settings = this.AddScene<SettingsMenu>(Scenes.SettingsMenu);
 	}
 
 	// Callbacks
@@ -85,6 +90,13 @@ public partial class MainMenu : Control {
 		GetNode<Button>(JOIN_GAME_BUTTON).Pressed += OnJoinGameButtonPressed;
 	}
 
+	private void SetState(MenuState state) {
+		if(Debug){ GD.Print($"MainMenu: Setting Menu State to {state}"); }
+
+		SingleplayerButtonPanel.Visible = state == MenuState.SinglePopup;
+		MultiplayerButtonPanel.Visible = state == MenuState.MultiPopup;
+	}
+
 	// Main Menu Button Handlers
 	private void OnSingleplayerButtonPressed() {
 		GD.Print("Singleplayer button was pressed!");
@@ -96,7 +108,7 @@ public partial class MainMenu : Control {
 
 	private void OnSettingsButtonPressed() {
 		GD.Print("Settings button was pressed!");
-		SettingsInstance.Visible = true;
+		Settings.OpenMenu();
 	}
 
 	private void OnExtrasButtonPressed() {
@@ -110,32 +122,31 @@ public partial class MainMenu : Control {
 
 	// Hover Pop-Up Logic
 	private void OnSingleplayerButtonHover() {
-		SingleplayerButtonPanel.Visible = true;
+		SetState(MenuState.SinglePopup);
 	}
 
 	private void OnMultiplayerButtonHover() {
-		MultiplayerButtonPanel.Visible = true;
+		SetState(MenuState.MultiPopup);
 	}
 
 	// Unhover Pop-Up Logic
-	private void HidePopup(double delay = 0.05) {
+	private bool IsMouseInside(Control button, Control panel) {
+		Vector2 mousePos = GetViewport().GetMousePosition();
+
+		bool isInsideButton = button.GetGlobalRect().HasPoint(mousePos);
+		bool isInsidePanel = panel.GetGlobalRect().HasPoint(mousePos);
+
+		return isInsideButton || isInsidePanel;
+	}
+
+	private void HidePopup(double delay = 0.5) {
 		GetTree().CreateTimer(delay).Timeout += () => {
-			Vector2 mousePos = GetViewport().GetMousePosition();
-
-			// Singleplayer
-			bool insideSingleplayerButton = SingleplayerButton.GetGlobalRect().HasPoint(mousePos);
-			bool insideSingleplayerPanel = SingleplayerButtonPanel.GetGlobalRect().HasPoint(mousePos);
-
-			if(!insideSingleplayerButton && !insideSingleplayerPanel) {
-				SingleplayerButtonPanel.Visible = false;
+			if(!IsMouseInside(SingleplayerButton, SingleplayerButtonPanel)) {
+				SetState(MenuState.Normal);
 			}
 
-			// Multiplayer
-			bool insideMultiplayerButton = MultiplayerButton.GetGlobalRect().HasPoint(mousePos);
-			bool insideMultiplayerPanel = MultiplayerButtonPanel.GetGlobalRect().HasPoint(mousePos);
-
-			if(!insideMultiplayerButton && !insideMultiplayerPanel) {
-				MultiplayerButtonPanel.Visible = false;
+			if(!IsMouseInside(MultiplayerButton, MultiplayerButtonPanel)) {
+				SetState(MenuState.Normal);
 			}
 		};
 	}
