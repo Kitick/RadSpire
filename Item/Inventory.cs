@@ -106,6 +106,17 @@ public partial class Inventory : ISaveable<InventoryData> {
 		return -1;
 	}
 
+	public bool IsEmptySlot(int row, int column) {
+		int index = GetIndex(row, column);
+		if(index == -1) {
+			return false;
+		}
+		if(ItemSlots[index].IsEmpty()) {
+			return true;
+		}
+		return false;
+	}
+
 	public int GetTotalQuantity(string itemId) {
 		if(GetItemIndex(itemId) == -1) {
 			return 0;
@@ -149,6 +160,50 @@ public partial class Inventory : ISaveable<InventoryData> {
 			return item;
 		}
 		return AddItem(item, GetRow(emptySlotIndex), GetColumn(emptySlotIndex));
+	}
+
+
+	public bool RemoveItem(int row, int column) {
+		int index = GetIndex(row, column);
+		if(index == -1) {
+			return false;
+		}
+		ItemSlots[index].ClearSlot();
+		return true;
+	}
+
+
+	public bool RemoveItem(int rows, int columns, int quantity) {
+		int index = GetIndex(rows, columns);
+		if(index == -1) {
+			return false;
+		}
+		if(ItemSlots[index].IsEmpty()) {
+			return false;
+		}
+		if(ItemSlots[index].Item.Quantity < quantity) {
+			return false;
+		}
+		ItemSlots[index].RemoveItem(quantity);
+		return true;
+	}
+
+	public bool RemoveItem(Item item) {
+		int quantityInInventory = GetTotalQuantity(item.Data.Id);
+		if(quantityInInventory < item.Quantity) {
+			return false;
+		}
+		int quantityToRemove = item.Quantity;
+		while(quantityToRemove > 0) {
+			int index = GetItemIndex(item.Data.Id);
+			if(index == -1) {
+				break;
+			}
+			ItemSlot slot = ItemSlots[index];
+			int removedQuantity = slot.RemoveItem(quantityToRemove);
+			quantityToRemove -= removedQuantity;
+		}
+		return true;
 	}
 
 	private ItemSlotData[] SerializeItemSlots() {
