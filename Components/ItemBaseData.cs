@@ -1,7 +1,7 @@
 using System;
 using SaveSystem;
 
-namespace Components 
+namespace Components {
 	public class ItemBaseData : ISaveable<ItemBaseDataData> {
         //Basic properties of all items
         public string Id {
@@ -73,6 +73,17 @@ namespace Components
         public WeaponBaseData? WeaponBaseComponent {
             get;
             set;
+        }
+
+        public ItemBaseData() {
+            Id = "DefaultItem";
+            Name = "Default Item";
+            Description = "Default Item Description";
+            IsStackable = false;
+            MaxStackSize = 1;
+            IsConsumable = false;
+            IconPath = "NONE";
+            WeaponBaseComponent = null;
         }
 
         public ItemBaseDataData Serialize() => new ItemBaseDataData {

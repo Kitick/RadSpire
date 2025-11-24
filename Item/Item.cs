@@ -4,9 +4,14 @@ using Core;
 using SaveSystem;
 
 public class Item : ISaveable<ItemData> {
-	public ItemBaseData Data {
+	public Components.ItemBaseData Data {
         get;
         set;
+    }
+
+    public Item() {
+        Data = new Components.ItemBaseData();
+        Quantity = 0;
     }
 
     public int Quantity {

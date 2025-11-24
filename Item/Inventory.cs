@@ -7,7 +7,7 @@ using SaveSystem;
 
 public partial class Inventory : ISaveable<InventoryData> {
     [Export] private int MaxSlots;
-    //[Export] private ItemBaseData[] Items;
+    [Export] private ItemSlot[] ItemSlots;
 
 
 
