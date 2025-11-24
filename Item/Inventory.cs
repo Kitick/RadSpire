@@ -23,6 +23,26 @@ public partial class Inventory : ISaveable<InventoryData> {
 		}
 	}
 
+	public bool IsFull() {
+		for(int i = 0; i < ItemSlots.Length; i++) {
+			if(ItemSlots[i].IsEmpty()) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public bool ItemExists(string itemId) {
+		for(int i = 0; i < ItemSlots.Length; i++) {
+			if(!ItemSlots[i].IsEmpty() && ItemSlots[i].Item != null && ItemSlots[i].Item.Data != null) {
+				if(ItemSlots[i].ContainsItem(itemId)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
 	private ItemSlotData[] SerializeItemSlots() {
 		ItemSlotData[] itemSlots = new ItemSlotData[ItemSlots.Length];
 		for(int i = 0; i < ItemSlots.Length; i++) {

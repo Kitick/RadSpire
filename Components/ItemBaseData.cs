@@ -86,6 +86,17 @@ namespace Components {
             WeaponBaseComponent = null;
         }
 
+        public bool SameItem(ItemBaseData other) {
+            if(other == null) {
+                return false;
+            }
+            return Id == other.Id;
+        }
+
+        public bool IsItem(string itemId) {
+            return Id == itemId;
+        }
+
         public ItemBaseDataData Serialize() => new ItemBaseDataData {
             Id = Id,
             Name = Name,

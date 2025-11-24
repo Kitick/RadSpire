@@ -54,6 +54,13 @@ public class ItemSlot : ISaveable<ItemSlotData> {
         Item = null;
     }
 
+    public bool ContainsItem(string itemId) {
+        if(IsEmpty() || Item == null || Item.Data == null) {
+            return false;
+        }
+        return Item.Data.Id == itemId;
+    }
+
     public ItemSlotData Serialize() {
         return new ItemSlotData {
             Item = Item?.Serialize()

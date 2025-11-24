@@ -8,12 +8,6 @@ public class Item : ISaveable<ItemData> {
         get;
         set;
     }
-
-    public Item() {
-        Data = new Components.ItemBaseData();
-        Quantity = 0;
-    }
-
     public int Quantity {
         get;
         set {
@@ -31,6 +25,25 @@ public class Item : ISaveable<ItemData> {
             }
             field = value;
         }
+    }
+
+    public Item() {
+        Data = new Components.ItemBaseData();
+        Quantity = 0;
+    }
+
+    public bool SameItem(Item other) {
+        if(other == null || other.Data == null || Data == null) {
+            return false;
+        }
+        return Data.Id == other.Data.Id;
+    }
+
+    public bool IsItem(string itemId) {
+        if(Data == null) {
+            return false;
+        }
+        return Data.Id == itemId;
     }
 
 	public ItemData Serialize() => new ItemData {
