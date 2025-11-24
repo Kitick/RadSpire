@@ -19,6 +19,10 @@ config/icon="uid://8ykhw0g480u8"
 
 buses/default_bus_layout="uid://cpvwo1bhm4q26"
 
+[autoload]
+
+InputSystem="*res://Systems/InputSystem.cs"
+
 [display]
 
 window/size/viewport_width=1920
