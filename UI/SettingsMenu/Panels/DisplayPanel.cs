@@ -21,7 +21,7 @@ namespace Settings {
 	}
 
 	public sealed partial class DisplayPanel : VBoxContainer, ISaveable<DisplaySettings> {
-		public static bool Debug = false;
+		public static readonly bool Debug = false;
 
 		// Node Paths
 		private const string RESOLUTION = "Resolution/OptionButton";
