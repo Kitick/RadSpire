@@ -6,7 +6,7 @@ using SaveSystem;
 using Settings;
 
 public partial class MainMenu : Control {
-	public static readonly bool Debug = true;
+	public static readonly bool Debug = false;
 
 	enum MenuState { Normal, SinglePopup, MultiPopup }
 

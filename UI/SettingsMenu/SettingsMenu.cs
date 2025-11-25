@@ -23,7 +23,7 @@ namespace Settings {
 		private const string TOPANEL = "_Panel";
 		private const string TOBUTTON = "_Button";
 
-		private readonly Dictionary<string, (VBoxContainer panel, Button button)> Nodes = new();
+		private readonly Dictionary<string, (VBoxContainer panel, Button button)> Nodes = [];
 
 		private event Action? OnExit;
 
