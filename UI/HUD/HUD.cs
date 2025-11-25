@@ -2,6 +2,7 @@ using System;
 using Core;
 using Godot;
 using Settings;
+using Systems;
 
 public sealed partial class HUD : Control {
 	public enum MenuState { Game, Paused, Settings };
@@ -22,17 +23,26 @@ public sealed partial class HUD : Control {
 
 	public bool IsPaused => PauseMenu.Visible;
 
-	public override void _Ready() {
+	private event Action? OnExit;
+
+	public override void _EnterTree() {
 		ProcessMode = ProcessModeEnum.Always;
 
+		SetInputCallbacks();
+		RequestReady();
+	}
+
+	public override void _Ready() {
 		GetComponents();
 		SetCallbacks();
 	}
 
-	public override void _Input(InputEvent input) {
-		if(input.IsActionPressed(Actions.MenuExit)) {
-			TogglePause();
-		}
+	public override void _ExitTree() {
+		OnExit?.Invoke();
+	}
+
+	private void SetInputCallbacks() {
+		OnExit += InputSystem.ActionEvent.MenuExit.WhenPressed(TogglePause);
 	}
 
 	private void GetComponents() {

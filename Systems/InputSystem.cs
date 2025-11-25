@@ -11,7 +11,10 @@ namespace Systems {
 			MoveForward, MoveBack, MoveLeft, MoveRight,
 			Jump, Sprint, Crouch,
 			MenuBack, MenuExit,
+			Hotbar1, Hotbar2, Hotbar3, Hotbar4, Hotbar5,
+			HotbarNext, HotbarPrev,
 		};
+
 		public static readonly ActionEvent[] Actions = Enum.GetValues<ActionEvent>();
 
 		public static event Action<ActionEvent>? OnActionPressed;
