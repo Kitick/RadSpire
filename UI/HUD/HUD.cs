@@ -2,7 +2,7 @@ using System;
 using Core;
 using Godot;
 using Settings;
-using Systems;
+using InputSystem;
 
 public sealed partial class HUD : Control {
 	public enum MenuState { Game, Paused, Settings };
@@ -42,7 +42,7 @@ public sealed partial class HUD : Control {
 	}
 
 	private void SetInputCallbacks() {
-		OnExit += InputSystem.ActionEvent.MenuExit.WhenPressed(TogglePause);
+		OnExit += ActionEvent.MenuExit.WhenPressed(TogglePause);
 	}
 
 	private void GetComponents() {

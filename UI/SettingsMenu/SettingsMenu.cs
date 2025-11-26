@@ -1,9 +1,8 @@
 using System;
 using System.Collections.Generic;
-using Core;
 using Godot;
+using InputSystem;
 using SaveSystem;
-using Systems;
 
 namespace Settings {
 	public sealed partial class SettingsMenu : Control, ISaveable<SettingsData> {
@@ -40,8 +39,8 @@ namespace Settings {
 		}
 
 		private void SetInputCallbacks() {
-			OnExit += InputSystem.ActionEvent.MenuBack.WhenPressed(CloseMenu);
-			OnExit += InputSystem.ActionEvent.MenuExit.WhenPressed(CloseMenu);
+			OnExit += ActionEvent.MenuBack.WhenPressed(CloseMenu);
+			OnExit += ActionEvent.MenuExit.WhenPressed(CloseMenu);
 		}
 
 		private void GetComponents() {

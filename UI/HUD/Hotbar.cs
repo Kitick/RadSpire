@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Godot;
-using Systems;
+using InputSystem;
 
 public sealed partial class Hotbar : Control {
 	public static readonly bool Debug = false;
@@ -51,14 +51,14 @@ public sealed partial class Hotbar : Control {
 	}
 
 	private void SetInputCallbacks() {
-		OnExit += InputSystem.ActionEvent.Hotbar1.WhenPressed(() => SelectedSlot = 0);
-		OnExit += InputSystem.ActionEvent.Hotbar2.WhenPressed(() => SelectedSlot = 1);
-		OnExit += InputSystem.ActionEvent.Hotbar3.WhenPressed(() => SelectedSlot = 2);
-		OnExit += InputSystem.ActionEvent.Hotbar4.WhenPressed(() => SelectedSlot = 3);
-		OnExit += InputSystem.ActionEvent.Hotbar5.WhenPressed(() => SelectedSlot = 4);
+		OnExit += ActionEvent.Hotbar1.WhenPressed(() => SelectedSlot = 0);
+		OnExit += ActionEvent.Hotbar2.WhenPressed(() => SelectedSlot = 1);
+		OnExit += ActionEvent.Hotbar3.WhenPressed(() => SelectedSlot = 2);
+		OnExit += ActionEvent.Hotbar4.WhenPressed(() => SelectedSlot = 3);
+		OnExit += ActionEvent.Hotbar5.WhenPressed(() => SelectedSlot = 4);
 
-		OnExit += InputSystem.ActionEvent.HotbarNext.WhenPressed(() => SelectedSlot++);
-		OnExit += InputSystem.ActionEvent.HotbarPrev.WhenPressed(() => SelectedSlot--);
+		OnExit += ActionEvent.HotbarNext.WhenPressed(() => SelectedSlot++);
+		OnExit += ActionEvent.HotbarPrev.WhenPressed(() => SelectedSlot--);
 	}
 
 	private void SelectSlot(Panel slot) {

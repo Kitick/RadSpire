@@ -1,19 +1,18 @@
 using System;
-using Core;
 using Godot;
 
-namespace Systems {
+namespace InputSystem {
+	// Name must match action name
+	public enum ActionEvent {
+		MoveForward, MoveBack, MoveLeft, MoveRight,
+		Jump, Sprint, Crouch,
+		MenuBack, MenuExit,
+		Hotbar1, Hotbar2, Hotbar3, Hotbar4, Hotbar5,
+		HotbarNext, HotbarPrev,
+	};
+
 	public sealed partial class InputSystem : Node {
 		public static readonly bool Debug = false;
-
-		// Name must match action name
-		public enum ActionEvent {
-			MoveForward, MoveBack, MoveLeft, MoveRight,
-			Jump, Sprint, Crouch,
-			MenuBack, MenuExit,
-			Hotbar1, Hotbar2, Hotbar3, Hotbar4, Hotbar5,
-			HotbarNext, HotbarPrev,
-		};
 
 		public static readonly ActionEvent[] Actions = Enum.GetValues<ActionEvent>();
 
@@ -50,7 +49,7 @@ namespace Systems {
 	}
 
 	public static class InputSystemExtensions {
-		private static Action<InputSystem.ActionEvent> CreateHandler(InputSystem.ActionEvent keyEvent, Action callback) {
+		private static Action<ActionEvent> CreateHandler(ActionEvent keyEvent, Action callback) {
 			return (action) => {
 				if(action == keyEvent) {
 					callback?.Invoke();
@@ -58,14 +57,14 @@ namespace Systems {
 			};
 		}
 
-		public static Action WhenPressed(this InputSystem.ActionEvent keyEvent, Action callback) {
-			Action<InputSystem.ActionEvent> handler = CreateHandler(keyEvent, callback);
+		public static Action WhenPressed(this ActionEvent keyEvent, Action callback) {
+			Action<ActionEvent> handler = CreateHandler(keyEvent, callback);
 			InputSystem.OnActionPressed += handler;
 			return () => InputSystem.OnActionPressed -= handler;
 		}
 
-		public static Action WhenReleased(this InputSystem.ActionEvent keyEvent, Action callback) {
-			Action<InputSystem.ActionEvent> handler = CreateHandler(keyEvent, callback);
+		public static Action WhenReleased(this ActionEvent keyEvent, Action callback) {
+			Action<ActionEvent> handler = CreateHandler(keyEvent, callback);
 			InputSystem.OnActionReleased += handler;
 			return () => InputSystem.OnActionReleased -= handler;
 		}
