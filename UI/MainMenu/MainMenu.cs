@@ -91,7 +91,7 @@ public partial class MainMenu : Control {
 	}
 
 	private void SetState(MenuState state) {
-		if(Debug){ GD.Print($"MainMenu: Setting Menu State to {state}"); }
+		if(Debug) { GD.Print($"MainMenu: Setting Menu State to {state}"); }
 
 		SingleplayerButtonPanel.Visible = state == MenuState.SinglePopup;
 		MultiplayerButtonPanel.Visible = state == MenuState.MultiPopup;
@@ -99,24 +99,22 @@ public partial class MainMenu : Control {
 
 	// Main Menu Button Handlers
 	private void OnSingleplayerButtonPressed() {
-		GD.Print("Singleplayer button was pressed!");
+
 	}
 
 	private void OnMultiplayerButtonPressed() {
-		GD.Print("Multiplayer button was pressed!");
+
 	}
 
 	private void OnSettingsButtonPressed() {
-		GD.Print("Settings button was pressed!");
 		Settings.OpenMenu();
 	}
 
 	private void OnExtrasButtonPressed() {
-		GD.Print("Extras button was pressed!");
+
 	}
 
 	private void OnQuitButtonPressed() {
-		GD.Print("Quit button was pressed!");
 		GetTree().Quit();
 	}
 
@@ -130,22 +128,23 @@ public partial class MainMenu : Control {
 	}
 
 	// Unhover Pop-Up Logic
-	private bool IsMouseInside(Control button, Control panel) {
+	private bool IsMouseInside(params Control[] nodes) {
 		Vector2 mousePos = GetViewport().GetMousePosition();
 
-		bool isInsideButton = button.GetGlobalRect().HasPoint(mousePos);
-		bool isInsidePanel = panel.GetGlobalRect().HasPoint(mousePos);
+		bool IsInside = false;
+		foreach(var node in nodes) {
+			if(node.GetGlobalRect().HasPoint(mousePos)) {
+				IsInside = true;
+				break;
+			}
+		}
 
-		return isInsideButton || isInsidePanel;
+		return IsInside;
 	}
 
-	private void HidePopup(double delay = 0.5) {
+	private void HidePopup(double delay = 0.25) {
 		GetTree().CreateTimer(delay).Timeout += () => {
-			if(!IsMouseInside(SingleplayerButton, SingleplayerButtonPanel)) {
-				SetState(MenuState.Normal);
-			}
-
-			if(!IsMouseInside(MultiplayerButton, MultiplayerButtonPanel)) {
+			if(!IsMouseInside(SingleplayerButton, SingleplayerButtonPanel, MultiplayerButton, MultiplayerButtonPanel)) {
 				SetState(MenuState.Normal);
 			}
 		};
