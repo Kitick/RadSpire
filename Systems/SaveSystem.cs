@@ -14,10 +14,14 @@ namespace SaveSystem {
 	public static class SaveService {
 		private const string SaveDirName = "saves";
 
-		private static readonly JsonSerializerOptions JsonOptions = new() {
+		private static readonly JsonSerializerOptions FileJsonOptions = new() {
 			WriteIndented = true,
 			IndentCharacter = '\t',
 			IndentSize = 1,
+			Converters = { new Vector3Converter() }
+		};
+
+		private static readonly JsonSerializerOptions DataJsonOptions = new() {
 			Converters = { new Vector3Converter() }
 		};
 
@@ -35,7 +39,7 @@ namespace SaveSystem {
 		}
 
 		private static void Write<T>(this FileInfo file, in T data) where T : struct, ISaveData {
-			var json = JsonSerializer.Serialize(data, JsonOptions);
+			var json = JsonSerializer.Serialize(data, FileJsonOptions);
 			File.WriteAllText(file.FullName, json);
 		}
 
@@ -43,9 +47,17 @@ namespace SaveSystem {
 			if(!file.Exists) { throw new FileNotFoundException("Save file not found", file.Name); }
 
 			var json = File.ReadAllText(file.FullName);
-			var data = JsonSerializer.Deserialize<T>(json, JsonOptions);
+			var data = JsonSerializer.Deserialize<T>(json, FileJsonOptions);
 
 			return data;
+		}
+
+		public static string Serialize<T>(in T data) where T : struct, ISaveData {
+			return JsonSerializer.Serialize(data, DataJsonOptions);
+		}
+
+		public static T Deserialize<T>(string json) where T : struct, ISaveData {
+			return JsonSerializer.Deserialize<T>(json, DataJsonOptions);
 		}
 
 		public static void Save<T>(string fileName, in T data) where T : struct, ISaveData {
