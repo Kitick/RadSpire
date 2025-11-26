@@ -2,6 +2,7 @@
 
 using Core;
 using Godot;
+using Network;
 using SaveSystem;
 using Settings;
 
@@ -164,15 +165,17 @@ public partial class MainMenu : Control {
 
 	// Pop-up panel buttons handler for Multiplayer
 	private void OnHostNewButtonPressed() {
-		GD.Print("Host New Game Button Pressed!");
+		var network = GetTree().GetRoot().GetNode<Network.Network>("Network");
+		network.Host();
 	}
 
 	private void OnHostSavedButtonPressed() {
-		GD.Print("Host Saved Button Pressed!");
+
 	}
 
 	private void OnJoinGameButtonPressed() {
-		GD.Print("Join Game Button Pressed!");
+		var network = GetTree().GetRoot().GetNode<Network.Network>("Network");
+		network.Join("127.0.0.1");
 	}
 
 	// Load a new game scene
