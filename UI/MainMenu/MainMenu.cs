@@ -10,6 +10,8 @@ public partial class MainMenu : Control {
 
 	enum MenuState { Normal, SinglePopup, MultiPopup }
 
+	private const float HideDelay = 0.25f;
+
 	//Paths for all Buttons and Pop-up Panels
 
 	//Initial Main Menu buttons
@@ -70,14 +72,14 @@ public partial class MainMenu : Control {
 		GetNode<Button>(QUIT_BUTTON).Pressed += OnQuitButtonPressed;
 
 		// Hover behavior for Singleplayer
-		SingleplayerButton.MouseEntered += OnSingleplayerButtonHover;
-		SingleplayerButton.MouseExited += OnSingleplayerButtonUnhover;
-		SingleplayerButtonPanel.MouseExited += OnSingleplayerPanelMouseExited;
+		SingleplayerButton.MouseEntered += () => SetState(MenuState.SinglePopup);
+		SingleplayerButton.MouseExited += HidePopup;
+		SingleplayerButtonPanel.MouseExited += HidePopup;
 
 		// Hover behavior for Multiplayer
-		MultiplayerButton.MouseEntered += OnMultiplayerButtonHover;
-		MultiplayerButton.MouseExited += OnMultiplayerButtonUnhover;
-		MultiplayerButtonPanel.MouseExited += OnMultiplayerPanelMouseExited;
+		MultiplayerButton.MouseEntered += () => SetState(MenuState.MultiPopup);
+		MultiplayerButton.MouseExited += HidePopup;
+		MultiplayerButtonPanel.MouseExited += HidePopup;
 
 		// Popup buttons for Singleplayer
 		GetNode<Button>(CONTINUE_BUTTON).Pressed += OnContinueButtonPressed;
@@ -118,15 +120,6 @@ public partial class MainMenu : Control {
 		GetTree().Quit();
 	}
 
-	// Hover Pop-Up Logic
-	private void OnSingleplayerButtonHover() {
-		SetState(MenuState.SinglePopup);
-	}
-
-	private void OnMultiplayerButtonHover() {
-		SetState(MenuState.MultiPopup);
-	}
-
 	// Unhover Pop-Up Logic
 	private bool IsMouseInside(params Control[] nodes) {
 		Vector2 mousePos = GetViewport().GetMousePosition();
@@ -142,21 +135,13 @@ public partial class MainMenu : Control {
 		return IsInside;
 	}
 
-	private void HidePopup(double delay = 0.25) {
-		GetTree().CreateTimer(delay).Timeout += () => {
+	private void HidePopup() {
+		GetTree().CreateTimer(HideDelay).Timeout += () => {
 			if(!IsMouseInside(SingleplayerButton, SingleplayerButtonPanel, MultiplayerButton, MultiplayerButtonPanel)) {
 				SetState(MenuState.Normal);
 			}
 		};
 	}
-
-	// Singleplayer Hide Pop-ups
-	private void OnSingleplayerButtonUnhover() => HidePopup();
-	private void OnSingleplayerPanelMouseExited() => HidePopup();
-
-	// Multiplayer Hide Pop-ups
-	private void OnMultiplayerButtonUnhover() => HidePopup();
-	private void OnMultiplayerPanelMouseExited() => HidePopup();
 
 	// Pop-up panel buttons handler for Singleplayer
 	private void OnContinueButtonPressed() {
