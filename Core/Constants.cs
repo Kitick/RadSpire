@@ -32,7 +32,7 @@ namespace Core {
 		public const string CameraReset = "CameraReset";
 
 		public const string HotbarNext = "HotbarNext";
-		public const string HotbarPrev = "HobarPrev";
+		public const string HotbarPrev = "HotbarPrev";
 		public const string Hotbar1 = "Hotbar1";
 		public const string Hotbar2 = "Hotbar2";
 		public const string Hotbar3 = "Hotbar3";
