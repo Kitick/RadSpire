@@ -2,56 +2,36 @@ using Godot;
 using System;
 
 public partial class NetStats : Control {
-    
-    Label lblPing, lblLoss, lblFPS;
 
-    private double pingSendTimer = 0.0;
-    private const double PingSendInterval = 0.5;
-    private double smoothedPingMs = -1.0;
-    private const double PingSmoothingAlpha = 0.15;
+    Label lblPing = null!;
+    Label lblLoss = null!;
+    Label lblFPS = null!;
+
+    private ulong _lastPingTime;
 
     // Main
-    public override void _Process(double delta) {
+    public override void _Ready() {
         SetCallbacks();
 
-        pingSendTimer += delta;
-        if (pingSendTimer >= PingSendInterval)
-        {
-            pingSendTimer = 0.0;
-            SendPing();
-        }
-
-            lblFPS.Text = $"FPS: {Engine.GetFramesPerSecond()}";
+        lblFPS.Text = $"FPS: {Engine.GetFramesPerSecond()}";
     }
 
     // Ping
     private void SendPing() {
-        ulong sentUsec = Godot.Time.GetTicksUsec();
-        int myId = GetMultiplayer().GetUniqueId();
-        
-        
-        RpcId(1, "ServerEchoPing", sentUsec);
+        _lastPingTime = Time.GetTicksMsec();
+        RpcId(1, nameof(ReceivePingRequest), Multiplayer.GetUniqueId());
     }
 
-    [Rpc]
-    public void ServerEchoPing(ulong clientTimestampUsec, int clientId) {
-        RpcId(clientId, "ClientReceivePong", clientTimestampUsec);
+    [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = false)]
+    public void ReceivePingRequest(int senderId) {
+        RpcId(senderId, nameof(ReceivePingReply));
     }
     
-    [Rpc]
-    public void ClientReceivePong(ulong clientTimestampUsec) {
-        ulong nowUsec = Godot.Time.GetTicksUsec();
-        double rttMs = (nowUsec - clientTimestampUsec) / 1000.0;
-
-        if (smoothedPingMs < 0) {
-            smoothedPingMs = rttMs;
-        }
-            
-        else {
-            smoothedPingMs = smoothedPingMs * (1.0 - PingSmoothingAlpha) + rttMs * PingSmoothingAlpha;
-        }      
-
-        lblPing.Text = $"Ping: {smoothedPingMs:F1} ms";
+    [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
+    public void ReceivePingReply() {
+        ulong currentTime = Time. GetTicksMsec();
+        ulong ping = currentTime - _lastPingTime;
+        lblPing.Text = $"Ping: {ping} ms";
     }
 
     // Callbacks
