@@ -1,6 +1,7 @@
+using System;
 using System.Collections.Generic;
-using Core;
 using Godot;
+using InputSystem;
 using SaveSystem;
 
 namespace Settings {
@@ -21,20 +22,25 @@ namespace Settings {
 		private const string TOPANEL = "_Panel";
 		private const string TOBUTTON = "_Button";
 
-		private readonly Dictionary<string, (VBoxContainer panel, Button button)> Nodes = new();
+		private readonly Dictionary<string, (VBoxContainer panel, Button button)> Nodes = [];
 
-		public override void _Ready() {
+		private event Action? OnExit;
+
+		public override void _EnterTree() {
 			ProcessMode = ProcessModeEnum.Always;
+			Visible = false;
 
 			GetComponents();
-			LoadData();
+			SetInputCallbacks();
 		}
 
-		public override void _Input(InputEvent input) {
-			if(input.IsActionPressed(Actions.MenuExit) || input.IsActionPressed(Actions.MenuBack)) {
-				SaveData();
-				Visible = false;
-			}
+		public override void _ExitTree() {
+			OnExit?.Invoke();
+		}
+
+		private void SetInputCallbacks() {
+			OnExit += ActionEvent.MenuBack.WhenPressed(CloseMenu);
+			OnExit += ActionEvent.MenuExit.WhenPressed(CloseMenu);
 		}
 
 		private void GetComponents() {
@@ -53,6 +59,20 @@ namespace Settings {
 			foreach(var (panel, _) in Nodes.Values) {
 				panel.Visible = panel == target;
 			}
+		}
+
+		public void OpenMenu() {
+			if(Visible) { return; }
+
+			LoadData();
+			Visible = true;
+		}
+
+		public void CloseMenu() {
+			if(!Visible) { return; }
+
+			SaveData();
+			Visible = false;
 		}
 
 		public void SaveData() {

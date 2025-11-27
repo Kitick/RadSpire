@@ -1,46 +1,74 @@
 using System;
-using Core;
+using System.Collections.Generic;
 using Godot;
+using InputSystem;
 
 public sealed partial class Hotbar : Control {
-	private int selectedIndex = -1;
-	private GridContainer hotbarSlots = null!;
+	public static readonly bool Debug = false;
+
+	public int SelectedSlot {
+		get;
+		set {
+			value += HotbarSlots.Count;
+			value %= HotbarSlots.Count;
+			field = value;
+			SelectSlot(HotbarSlots[value]);
+		}
+	}
+
+	private readonly List<Panel> HotbarSlots = [];
+
+	private static readonly Color NormalColor = Colors.White;
+	private static readonly Color SelectColor = new Color(1f, 1f, 0.3f);
+	private static readonly Vector2 SelectedScale = new Vector2(1.05f, 1.05f);
 
 	private const string HOTBAR = "Background/GridBackground/HotbarSlots";
 
-	private static readonly Color TintColor = new Color(1f, 1f, 0.3f);
+	private event Action? OnExit;
+
+	public override void _EnterTree() {
+		SetInputCallbacks();
+		RequestReady();
+	}
 
 	public override void _Ready() {
-		hotbarSlots = GetNode<GridContainer>(HOTBAR);
+		GetComponents();
+		SelectedSlot = 0;
 	}
 
-	public override void _Input(InputEvent input) {
-		if(input.IsActionPressed(Actions.Hotbar1)) { SelectSlot(0); }
-		if(input.IsActionPressed(Actions.Hotbar2)) { SelectSlot(1); }
-		if(input.IsActionPressed(Actions.Hotbar3)) { SelectSlot(2); }
-		if(input.IsActionPressed(Actions.Hotbar4)) { SelectSlot(3); }
-		if(input.IsActionPressed(Actions.Hotbar5)) { SelectSlot(4); }
+	public override void _ExitTree() {
+		OnExit?.Invoke();
 	}
 
-	private void SelectSlot(int index) {
-		// Reset previous slot
-		if(selectedIndex >= 0 && selectedIndex < hotbarSlots.GetChildCount()) {
-			var prev = hotbarSlots.GetChild<Panel>(selectedIndex);
-			prev.SelfModulate = Colors.White;
-			prev.Scale = Vector2.One;
+	private void GetComponents() {
+		var container = GetNode<GridContainer>(HOTBAR);
+
+		foreach(var child in container.GetChildren()) {
+			if(child is Panel slot) {
+				HotbarSlots.Add(slot);
+			}
 		}
+	}
 
-		// Highlight new slot
-		if(index >= 0 && index < hotbarSlots.GetChildCount()) {
-			var slot = hotbarSlots.GetChild<Panel>(index);
-			slot.SelfModulate = TintColor;
+	private void SetInputCallbacks() {
+		OnExit += ActionEvent.Hotbar1.WhenPressed(() => SelectedSlot = 0);
+		OnExit += ActionEvent.Hotbar2.WhenPressed(() => SelectedSlot = 1);
+		OnExit += ActionEvent.Hotbar3.WhenPressed(() => SelectedSlot = 2);
+		OnExit += ActionEvent.Hotbar4.WhenPressed(() => SelectedSlot = 3);
+		OnExit += ActionEvent.Hotbar5.WhenPressed(() => SelectedSlot = 4);
 
-			// with slight enlargement
-			slot.Scale = new Vector2(1.05f, 1.05f);
+		OnExit += ActionEvent.HotbarNext.WhenPressed(() => SelectedSlot++);
+		OnExit += ActionEvent.HotbarPrev.WhenPressed(() => SelectedSlot--);
+	}
 
-			selectedIndex = index;
+	private void SelectSlot(Panel slot) {
+		if(Debug) { GD.Print($"Hotbar: Selecting slot {HotbarSlots.IndexOf(slot)}"); }
 
-			GD.Print($"Hotbar slot {index + 1} selected");
+		foreach(var other in HotbarSlots) {
+			bool selected = other == slot;
+
+			other.SelfModulate = selected ? SelectColor : NormalColor;
+			other.Scale = selected ? SelectedScale : Vector2.One;
 		}
 	}
 }
