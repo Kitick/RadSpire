@@ -43,6 +43,8 @@ public partial class MainMenu : Control {
 
 	private SettingsMenu Settings = null!;
 
+	private Network.Network Network => GetTree().GetRoot().GetNode<Network.Network>("Network");
+
 	// Main
 	public override void _Ready() {
 		GetComponents();
@@ -165,8 +167,7 @@ public partial class MainMenu : Control {
 
 	// Pop-up panel buttons handler for Multiplayer
 	private void OnHostNewButtonPressed() {
-		var network = GetTree().GetRoot().GetNode<Network.Network>("Network");
-		network.Host();
+		Network.Host();
 	}
 
 	private void OnHostSavedButtonPressed() {
@@ -174,13 +175,11 @@ public partial class MainMenu : Control {
 	}
 
 	private void OnJoinGameButtonPressed() {
-		var network = GetTree().GetRoot().GetNode<Network.Network>("Network");
-		network.Join("127.0.0.1");
+		Network.Join("127.0.0.1");
 	}
 
 	// Load a new game scene
 	private void LoadGameScene() {
 		GetTree().ChangeSceneToFile(Scenes.GameScene);
 	}
-
 }
