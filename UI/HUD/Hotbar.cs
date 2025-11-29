@@ -26,6 +26,8 @@ public sealed partial class Hotbar : Control {
 
 	private event Action? OnExit;
 
+	public Inventory HotBarInventory { get; set; } = new(1, 5);
+
 	public override void _EnterTree() {
 		SetInputCallbacks();
 		RequestReady();
@@ -70,5 +72,18 @@ public sealed partial class Hotbar : Control {
 			other.SelfModulate = selected ? SelectColor : NormalColor;
 			other.Scale = selected ? SelectedScale : Vector2.One;
 		}
+	}
+
+	public ItemSlot GetSelectedItemSlot() {
+		int index = SelectedSlot;
+		return HotBarInventory.ItemSlots[index];
+	}
+
+	public Item GetSelectedItem() {
+		int index = SelectedSlot;
+		if(HotBarInventory.ItemSlots[index].IsEmpty()) {
+			return null;
+		}
+		return HotBarInventory.ItemSlots[index].Item;
 	}
 }
