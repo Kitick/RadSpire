@@ -53,6 +53,7 @@ public class Item : ISaveable<ItemData> {
 
     //Components
     public Durability? Durability { get; set; }
+    public Crafting? Crafting { get; set; }
 
     public Item() {
         Id = "DefaultItem";
@@ -78,7 +79,8 @@ public class Item : ISaveable<ItemData> {
         MaxStackSize = MaxStackSize,
         IsConsumable = IsConsumable,
         IconPath = IconPath,
-        Durability = Durability?.Serialize()
+        Durability = Durability?.Serialize(),
+        Crafting = Crafting?.Serialize(),
     };
 
 	public void Deserialize(in ItemData data) {
@@ -92,6 +94,10 @@ public class Item : ISaveable<ItemData> {
             Durability = new Durability(data.Durability.Value.MaxDurability);
             Durability.Deserialize(data.Durability.Value);
         }
+        if(data.Crafting != null) {
+            Crafting = new Crafting();
+            Crafting.Deserialize(data.Crafting.Value);
+        }
 	}
 }
 
@@ -104,5 +110,6 @@ namespace SaveSystem {
         public bool IsConsumable { get; init; }
         public string IconPath { get; init; }
         public DurabilityData? Durability { get; init; }
+        public CraftingData? Crafting { get; init; }
     }
 }
