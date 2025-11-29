@@ -4,10 +4,7 @@ using Core;
 using SaveSystem;
 
 public partial class Inventory : ISaveable<InventoryData> {
-	public string Name {
-		get;
-		set;
-	}
+	public string Name { get; set; }
 
 	public int MaxSlotsRows {
 		get;
@@ -18,8 +15,8 @@ public partial class Inventory : ISaveable<InventoryData> {
 			MaxSlots = value * MaxSlotsColumns;
 			field = value;
 		}
-	}
-	
+	} = 4;
+
 	public int MaxSlotsColumns {
 		get;
 		set {
@@ -29,12 +26,9 @@ public partial class Inventory : ISaveable<InventoryData> {
 			MaxSlots = value * MaxSlotsRows;
 			field = value;
 		}
-	}
+	} = 8;
 
-	public int MaxSlots {
-		get;
-		private set;
-    }
+	public int MaxSlots { get; private set; } = 32;
 
 	public ItemSlot[] ItemSlots;
 
@@ -86,10 +80,10 @@ public partial class Inventory : ISaveable<InventoryData> {
 		return true;
 	}
 
-	public int GetItemIndex(string itemId) {
+	public int GetItemIndex(Item item) {
 		for(int i = 0; i < ItemSlots.Length; i++) {
-			if(!ItemSlots[i].IsEmpty() && ItemSlots[i].Item != null && ItemSlots[i].Item.Data != null) {
-				if(ItemSlots[i].ContainsItem(itemId)) {
+			if(!ItemSlots[i].IsEmpty()) {
+				if(ItemSlots[i].SameItem(item)) {
 					return i;
 				}
 			}
@@ -117,28 +111,27 @@ public partial class Inventory : ISaveable<InventoryData> {
 		return false;
 	}
 
-	public int GetTotalQuantity(string itemId) {
-		if(GetItemIndex(itemId) == -1) {
+	public int GetTotalQuantity(Item item) {
+		if(GetItemIndex(item) == -1) {
 			return 0;
 		}
 		int totalQuantity = 0;
 		for(int i = 0; i < ItemSlots.Length; i++) {
-			if(!ItemSlots[i].IsEmpty() && ItemSlots[i].Item != null && ItemSlots[i].Item.Data != null) {
-				if(ItemSlots[i].ContainsItem(itemId)) {
-					totalQuantity += ItemSlots[i].Item.Quantity;
+			if(!ItemSlots[i].IsEmpty()) {
+				if(ItemSlots[i].SameItem(item)) {
+					totalQuantity += ItemSlots[i].Quantity;
 				}
 			}
 		}
 		return totalQuantity;
 	}
 
-	public Item AddItem(Item item, int row, int column) {
+	public ItemSlot AddItem(ItemSlot item, int row, int column) {
 		int index = GetIndex(row, column);
 		if(index == -1) {
 			return item;
 		}
-		ItemSlot slot = ItemSlots[index];
-		Item remainingItem = slot.AddItem(item);
+		ItemSlot remainingItem = ItemSlots[index].combineItemSlot(item);
 		if(remainingItem.Quantity == 0) {
 			return remainingItem;
 		}
@@ -146,12 +139,12 @@ public partial class Inventory : ISaveable<InventoryData> {
 		if(remainingItemSlot == -1) {
 			return remainingItem;
 		}
-		remainingItem = ItemSlots[remainingItemSlot].AddItem(remainingItem);
+		remainingItem = ItemSlots[remainingItemSlot].combineItemSlot(remainingItem);
 		return remainingItem;
 	}
 
-	public Item AddItem(Item item) {
-		int index = GetItemIndex(item.Data.Id);
+	public ItemSlot AddItem(ItemSlot item) {
+		int index = GetItemIndex(item.Item);
 		if(index != -1) {
 			return AddItem(item, GetRow(index), GetColumn(index));
 		}
@@ -181,26 +174,28 @@ public partial class Inventory : ISaveable<InventoryData> {
 		if(ItemSlots[index].IsEmpty()) {
 			return false;
 		}
-		if(ItemSlots[index].Item.Quantity < quantity) {
+		if(ItemSlots[index].Quantity < quantity) {
 			return false;
 		}
 		ItemSlots[index].RemoveItem(quantity);
 		return true;
 	}
 
-	public bool RemoveItem(Item item) {
-		int quantityInInventory = GetTotalQuantity(item.Data.Id);
+	public bool RemoveItem(ItemSlot item) {
+		if(item.IsEmpty()) {
+			return false;
+		}
+		int quantityInInventory = GetTotalQuantity(item.Item);
 		if(quantityInInventory < item.Quantity) {
 			return false;
 		}
 		int quantityToRemove = item.Quantity;
 		while(quantityToRemove > 0) {
-			int index = GetItemIndex(item.Data.Id);
+			int index = GetItemIndex(item.Item);
 			if(index == -1) {
 				break;
 			}
-			ItemSlot slot = ItemSlots[index];
-			int removedQuantity = slot.RemoveItem(quantityToRemove);
+			int removedQuantity = ItemSlots[index].RemoveItem(quantityToRemove).Quantity;
 			quantityToRemove -= removedQuantity;
 		}
 		return true;
@@ -218,14 +213,12 @@ public partial class Inventory : ISaveable<InventoryData> {
 		Name = Name,
 		MaxSlotsRows = MaxSlotsRows,
 		MaxSlotsColumns = MaxSlotsColumns,
-		MaxSlots = MaxSlots,
 		ItemSlots = SerializeItemSlots(),
 	};
 
 	public void Deserialize(in InventoryData data) {
 		MaxSlotsRows = data.MaxSlotsRows;
 		MaxSlotsColumns = data.MaxSlotsColumns;
-		MaxSlots = data.MaxSlots;
 		ItemSlots = new ItemSlot[MaxSlots];
         for(int i = 0; i < ItemSlots.Length; i++) {
 			ItemSlots[i].Deserialize(data.ItemSlots[i]);
@@ -238,7 +231,6 @@ namespace SaveSystem {
 		public string Name { get; init; }
 		public int MaxSlotsRows { get; init; }
 		public int MaxSlotsColumns { get; init; }
-		public int MaxSlots { get; init; }
         public ItemSlotData[] ItemSlots { get; init; }
     }
 }

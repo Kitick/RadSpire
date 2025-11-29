@@ -4,62 +4,102 @@ using Core;
 using SaveSystem;
 
 public class Item : ISaveable<ItemData> {
-	public Components.ItemBaseData Data {
-        get;
-        set;
-    }
-    public int Quantity {
+    //Basic properties of all items
+    public string Id {
         get;
         set {
-            if(value < 0) {
-                field = 0;
-                return;
-            }
-            if(!Data.IsStackable && value > 1) {
-                field = 1;
-                return;
-            }
-            if(Data.IsStackable && value > Data.MaxStackSize) {
-                field = Data.MaxStackSize;
+            if(string.IsNullOrWhiteSpace(value)) {
                 return;
             }
             field = value;
         }
     }
 
+    public string Name {
+        get;
+        set {
+            if(string.IsNullOrWhiteSpace(value)) {
+                return;
+            }
+            field = value;
+        }
+    }
+
+    public string Description {
+        get;
+        set {
+            if(string.IsNullOrWhiteSpace(value)) {
+                return;
+            }
+            field = value;
+        }
+    }
+    
+    public int MaxStackSize { 
+        get; set {
+            if(value < 1) {
+                field = 1;
+                return;
+            }
+            field = value;
+        }
+    }
+    
+    public bool IsStackable => MaxStackSize > 1;
+
+    public bool IsConsumable { get; set; }
+
+    public string IconPath { get; set; }
+
     public Item() {
-        Data = new Components.ItemBaseData();
-        Quantity = 0;
+        Id = "DefaultItem";
+        Name = "Default Item";
+        Description = "Default Item Description";
+        MaxStackSize = 1;
+        IsConsumable = false;
+        IconPath = "NONE";
     }
 
     public bool SameItem(Item other) {
-        if(other == null || other.Data == null || Data == null) {
+        if(other == null) {
             return false;
         }
-        return Data.Id == other.Data.Id;
+        return Id == other.Id;
     }
 
     public bool IsItem(string itemId) {
-        if(Data == null) {
+        if(Id == null) {
             return false;
         }
-        return Data.Id == itemId;
+        return Id == itemId;
     }
 
 	public ItemData Serialize() => new ItemData {
-        ItemBaseData = Data.Serialize(),
-        Quantity = Quantity
+        Id = Id,
+        Name = Name,
+        Description = Description,
+        MaxStackSize = MaxStackSize,
+        IsConsumable = IsConsumable,
+        IconPath = IconPath,
     };
 
 	public void Deserialize(in ItemData data) {
-        Data.Deserialize(data.ItemBaseData);
-        Quantity = data.Quantity;
+            Id = data.Id;
+			Name = data.Name;
+            Description = data.Description;
+            MaxStackSize = data.MaxStackSize;
+            IsConsumable = data.IsConsumable;
+            IconPath = data.IconPath;
 	}
 }
 
 namespace SaveSystem {
     public readonly record struct ItemData : ISaveData {
-        public ItemBaseDataData ItemBaseData { get; init; }
-        public int Quantity { get; init; }
+        public string Id { get; init; }
+        public string Name { get; init; }
+        public string Description { get; init; }
+        public int MaxStackSize { get; init; }
+        public bool IsConsumable { get; init; }
+        public string IconPath { get; init; }
     }
 }

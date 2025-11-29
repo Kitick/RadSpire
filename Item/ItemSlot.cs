@@ -6,64 +6,118 @@ using SaveSystem;
 public class ItemSlot : ISaveable<ItemSlotData> {
     public Item? Item { get; set; }
 
+    public int Quantity {
+        get;
+        set {
+            if(value < 0) {
+                field = 0;
+                return;
+            }
+            if(Item == null) {
+                field = 0;
+                return;
+            }
+            if(!Item.IsStackable && value > 1) {
+                field = 1;
+                return;
+            }
+            if(Item.IsStackable && value > Item.MaxStackSize) {
+                field = Item.MaxStackSize;
+                return;
+            }
+            field = value;
+        }
+    }
+
     public ItemSlot() {
         Item = null;
+        Quantity = 0;
+    }
+
+    public ItemSlot(Item item, int quantity) {
+        Item = item;
+        Quantity = quantity;
+    }
+
+    public ItemSlot(Item item) {
+        Item = item;
+        Quantity = 1;
     }
 
     public bool IsEmpty() {
         if(Item == null) {
             return true;
         }
-        if(Item.Quantity <= 0) {
+        if(Quantity <= 0) {
             return true;
         }
         return false;
     }
 
-    public Item AddItem(Item item) {
-        Item returnItem = item;
-        if (IsEmpty()) {
-            Item = item;
-            returnItem.Quantity = 0;
-            return returnItem;
+    public ItemSlot AddItem(Item item) {
+        ItemSlot returnItemStack = new ItemSlot(item);
+        returnItemStack = combineItemSlot(returnItemStack);
+        return returnItemStack;
+    }
+    
+    public ItemSlot combineItemSlot(ItemSlot other) {
+        ItemSlot returnItemStack = other;
+        if(IsEmpty()) {
+            Item = other.Item;
+            Quantity = other.Quantity;
+            returnItemStack.Quantity = 0;
+            return returnItemStack;
         }
-        if (Item != null && Item.Data != null && item.Data != null && Item.Data.Id == item.Data.Id && Item.Data.IsStackable) {
-            int space = Item.Data.MaxStackSize - Item.Quantity;
-            if (space <= 0) {
-                return returnItem; 
+        if(SameItem(other) && Item.IsStackable) {
+            int space = Item.MaxStackSize - Quantity;
+            if(space <= 0) {
+                return returnItemStack;
             }
-            int transfer = Math.Min(space, item.Quantity);
-            Item.Quantity += transfer;
-            item.Quantity -= transfer;
-            returnItem.Quantity = item.Quantity;
-            return returnItem;
+            int transfer = Math.Min(space, other.Quantity);
+            Quantity += transfer;
+            other.Quantity -= transfer;
+            returnItemStack.Quantity = other.Quantity;
+            return returnItemStack;
         }
-        return returnItem;
+        return returnItemStack;
     }
 
-    public int RemoveItem(int quantity) {
-        if (IsEmpty() || Item == null) {
-            return 0;
+    public ItemSlot RemoveItem(int quantity) {
+        ItemSlot returnItemStack = new ItemSlot();
+        if(IsEmpty()) {
+            return returnItemStack;
         }
-        int removeQuantity = Math.Min(quantity, Item.Quantity);
-        Item.Quantity -= removeQuantity;
-        return removeQuantity;
+        returnItemStack.Item = Item;
+        returnItemStack.Quantity = Quantity;
+        int removeQuantity = Math.Min(quantity, Quantity);
+        Quantity -= removeQuantity;
+        returnItemStack.Quantity -= removeQuantity;
+        return returnItemStack;
     }
 
     public void ClearSlot() {
         Item = null;
+        Quantity = 0;
     }
 
-    public bool ContainsItem(string itemId) {
-        if(IsEmpty() || Item == null || Item.Data == null) {
+    public bool SameItem(Item item) {
+        if(IsEmpty()) {
             return false;
         }
-        return Item.Data.Id == itemId;
+        return Item.SameItem(item);
+    }
+
+    public bool SameItem(ItemSlot other) {
+        if(IsEmpty() || other.IsEmpty()) {
+            return false;
+        }
+        return Item.SameItem(other.Item);
     }
 
     public ItemSlotData Serialize() {
         return new ItemSlotData {
-            Item = Item?.Serialize()
+            Item = Item?.Serialize(),
+            Quantity = Quantity,
         };
     }
 
@@ -76,11 +130,13 @@ public class ItemSlot : ISaveable<ItemSlotData> {
             Item = new Item();
             Item.Deserialize(data.Item.Value);
         }
+        Quantity = data.Quantity;
     }
 }
 
 namespace SaveSystem {
     public readonly record struct ItemSlotData : ISaveData {
         public ItemData? Item { get; init; }
+        public int Quantity { get; init; }
     }
 }
