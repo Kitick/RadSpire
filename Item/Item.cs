@@ -51,6 +51,9 @@ public class Item : ISaveable<ItemData> {
 
     public string IconPath { get; set; }
 
+    //Components
+    public Durability? Durability { get; set; }
+
     public Item() {
         Id = "DefaultItem";
         Name = "Default Item";
@@ -58,6 +61,7 @@ public class Item : ISaveable<ItemData> {
         MaxStackSize = 1;
         IsConsumable = false;
         IconPath = "NONE";
+        Durability = null;
     }
 
     public bool SameItem(Item other) {
@@ -66,14 +70,7 @@ public class Item : ISaveable<ItemData> {
         }
         return Id == other.Id;
     }
-
-    public bool IsItem(string itemId) {
-        if(Id == null) {
-            return false;
-        }
-        return Id == itemId;
-    }
-
+    
 	public ItemData Serialize() => new ItemData {
         Id = Id,
         Name = Name,
