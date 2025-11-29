@@ -70,7 +70,7 @@ public class Item : ISaveable<ItemData> {
         }
         return Id == other.Id;
     }
-    
+
 	public ItemData Serialize() => new ItemData {
         Id = Id,
         Name = Name,
@@ -78,15 +78,20 @@ public class Item : ISaveable<ItemData> {
         MaxStackSize = MaxStackSize,
         IsConsumable = IsConsumable,
         IconPath = IconPath,
+        Durability = Durability?.Serialize()
     };
 
 	public void Deserialize(in ItemData data) {
-            Id = data.Id;
-			Name = data.Name;
-            Description = data.Description;
-            MaxStackSize = data.MaxStackSize;
-            IsConsumable = data.IsConsumable;
-            IconPath = data.IconPath;
+        Id = data.Id;
+        Name = data.Name;
+        Description = data.Description;
+        MaxStackSize = data.MaxStackSize;
+        IsConsumable = data.IsConsumable;
+        IconPath = data.IconPath;
+        if(data.Durability != null) {
+            Durability = new Durability(data.Durability.Value.MaxDurability);
+            Durability.Deserialize(data.Durability.Value);
+        }
 	}
 }
 
@@ -98,5 +103,6 @@ namespace SaveSystem {
         public int MaxStackSize { get; init; }
         public bool IsConsumable { get; init; }
         public string IconPath { get; init; }
+        public DurabilityData? Durability { get; init; }
     }
 }
