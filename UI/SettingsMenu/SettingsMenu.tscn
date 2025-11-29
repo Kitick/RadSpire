@@ -65,7 +65,6 @@ layout_mode = 2
 text = "Accessibility"
 
 [node name="General_Panel" type="VBoxContainer" parent="."]
-visible = false
 layout_mode = 1
 anchors_preset = 14
 anchor_top = 0.5
@@ -120,6 +119,7 @@ size_flags_horizontal = 0
 text = "Reset Settings"
 
 [node name="Display_Panel" type="VBoxContainer" parent="."]
+visible = false
 layout_mode = 1
 anchors_preset = 14
 anchor_top = 0.5
