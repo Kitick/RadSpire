@@ -6,13 +6,9 @@ using Settings;
 
 public sealed partial class HUD : Control {
 	public enum MenuState { Game, Paused, Settings };
-	public MenuState State {
-		get;
-		set {
-			ChangeState(field, value);
-			field = value;
-		}
-	} = MenuState.Game;
+
+	private readonly FiniteStateMachine<MenuState> StateMachine;
+	public MenuState State => StateMachine.State;
 
 	private PauseMenu PauseMenu = null!;
 	private Control Inventory = null!;
@@ -29,14 +25,14 @@ public sealed partial class HUD : Control {
 
 	private event Action? OnExit;
 
-	public override void _EnterTree() {
-		ProcessMode = ProcessModeEnum.Always;
-
-		SetInputCallbacks();
-		RequestReady();
+	public HUD() {
+		StateMachine = new(MenuState.Game, OnStateChanged);
 	}
 
 	public override void _Ready() {
+		ProcessMode = ProcessModeEnum.Always;
+
+		SetInputCallbacks();
 		GetComponents();
 		SetCallbacks();
 	}
@@ -57,15 +53,15 @@ public sealed partial class HUD : Control {
 	}
 
 	private void SetCallbacks() {
-		GetNode<Button>(PAUSE_BUTTON).Pressed += () => State = MenuState.Paused;
+		GetNode<Button>(PAUSE_BUTTON).Pressed += () => StateMachine.TransitionTo(MenuState.Paused);
 
 		PauseMenu.ResumeButton.Pressed += TogglePause;
 		PauseMenu.SaveButton.Pressed += SaveGame;
-		PauseMenu.SettingsButton.Pressed += () => State = MenuState.Settings;
+		PauseMenu.SettingsButton.Pressed += () => StateMachine.TransitionTo(MenuState.Settings);
 		PauseMenu.MainMenuButton.Pressed += QuitGame;
 	}
 
-	private void ChangeState(MenuState from, MenuState to) {
+	private void OnStateChanged(MenuState from, MenuState to) {
 		GetTree().Paused = to != MenuState.Game;
 		PauseMenu.Visible = to == MenuState.Paused;
 
@@ -74,12 +70,12 @@ public sealed partial class HUD : Control {
 
 	private void OpenSettings() {
 		var settings = this.AddScene<SettingsMenu>(Scenes.SettingsMenu);
-		settings.OnMenuClosed += () => State = MenuState.Paused;
+		settings.OnMenuClosed += () => StateMachine.TransitionTo(MenuState.Paused);
 		settings.OpenMenu();
 	}
 
 	private void TogglePause() {
-		State = IsPaused ? MenuState.Game : MenuState.Paused;
+		StateMachine.TransitionTo(IsPaused ? MenuState.Game : MenuState.Paused);
 	}
 
 	public static void SaveGame() {

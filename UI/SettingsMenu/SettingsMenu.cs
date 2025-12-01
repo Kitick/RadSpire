@@ -27,7 +27,7 @@ namespace Settings {
 		public event Action? OnMenuClosed;
 		private event Action? OnExit;
 
-		public override void _EnterTree() {
+		public override void _Ready() {
 			ProcessMode = ProcessModeEnum.Always;
 
 			GetComponents();
