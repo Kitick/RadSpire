@@ -19,7 +19,7 @@ anchor_bottom = 1.0
 offset_left = 768.0
 offset_top = 256.0
 offset_right = -832.0
-offset_bottom = -284.0
+offset_bottom = -444.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.5)
@@ -80,20 +80,18 @@ scale = Vector2(1.5, 1.5)
 layout_mode = 2
 placeholder_text = "Input Password"
 
-[node name="HostButton" type="Button" parent="ColorRect"]
+[node name="OptionContainer" type="HBoxContainer" parent="ColorRect"]
 layout_mode = 0
-offset_left = 104.0
-offset_top = 304.0
-offset_right = 148.0
-offset_bottom = 335.0
-scale = Vector2(2.5, 2.5)
-text = "Host"
+offset_left = 51.0
+offset_top = 288.0
+offset_right = 176.0
+offset_bottom = 328.0
+scale = Vector2(1.75, 1.75)
 
-[node name="CancelButton" type="Button" parent="ColorRect"]
-layout_mode = 0
-offset_left = 32.0
-offset_top = 448.0
-offset_right = 92.0
-offset_bottom = 479.0
-scale = Vector2(1.5, 1.5)
+[node name="CancelButton" type="Button" parent="ColorRect/OptionContainer"]
+layout_mode = 2
 text = "Cancel"
+
+[node name="HostButton" type="Button" parent="ColorRect/OptionContainer"]
+layout_mode = 2
+text = "  Host  "
