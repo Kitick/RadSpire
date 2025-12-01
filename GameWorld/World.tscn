@@ -42,5 +42,5 @@ skeleton = NodePath("")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D"]
 shape = SubResource("BoxShape3D_xta5t")
 
-[node name="State Loader" type="Node" parent="."]
+[node name="GameManager" type="Node" parent="."]
 script = ExtResource("3_m15j5")
