@@ -1,4 +1,6 @@
-[gd_scene format=3 uid="uid://bnjymb23oq215"]
+[gd_scene load_steps=2 format=3 uid="uid://bnjymb23oq215"]
+
+[ext_resource type="Script" uid="uid://b8g2rj5h77k4d" path="res://UI/HostPanel/HostPanel.cs" id="1_8i2cy"]
 
 [node name="HostPanel" type="Control"]
 layout_mode = 3
@@ -7,6 +9,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_8i2cy")
 
 [node name="ColorRect" type="ColorRect" parent="."]
 layout_mode = 1
@@ -20,6 +23,15 @@ offset_bottom = -284.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.5)
+
+[node name="lblHost" type="Label" parent="ColorRect"]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 14.0
+offset_right = 102.0
+offset_bottom = 37.0
+scale = Vector2(1.625, 1.625)
+text = "Host Game"
 
 [node name="GameNameContainer" type="VBoxContainer" parent="ColorRect"]
 layout_mode = 0
@@ -71,8 +83,17 @@ placeholder_text = "Input Password"
 [node name="HostButton" type="Button" parent="ColorRect"]
 layout_mode = 0
 offset_left = 104.0
-offset_top = 384.0
+offset_top = 304.0
 offset_right = 148.0
-offset_bottom = 415.0
+offset_bottom = 335.0
 scale = Vector2(2.5, 2.5)
 text = "Host"
+
+[node name="CancelButton" type="Button" parent="ColorRect"]
+layout_mode = 0
+offset_left = 32.0
+offset_top = 448.0
+offset_right = 92.0
+offset_bottom = 479.0
+scale = Vector2(1.5, 1.5)
+text = "Cancel"
