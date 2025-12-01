@@ -4,7 +4,7 @@ using Core;
 using Godot;
 using SaveSystem;
 
-public class Weapon : Item, ISaveable<ItemData> {
+public partial class Weapon : Item, ISaveable<WeaponData> {
     public float BaseAttack { get; set; }
     public float AttackSpeed { get; set; }
     public float Range { get; set; }

@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="Item" load_steps=3 format=3 uid="uid://cuir5siy4hxft"]
+
+[ext_resource type="Texture2D" uid="uid://di6lvqbjfukk1" path="res://Assets/scrimsy fruit icons/color/red/red strawberry.png" id="1_7v25h"]
+[ext_resource type="Script" uid="uid://3l5yftlfas15" path="res://Item/Item.cs" id="1_a8qwm"]
+
+[resource]
+script = ExtResource("1_a8qwm")
+Id = "StrawberryRed"
+Name = "Red Strawberry"
+Description = "A delicously ripe red strawberry."
+IsConsumable = true
+IconTexture = ExtResource("1_7v25h")
+metadata/_custom_type_script = "uid://3l5yftlfas15"
