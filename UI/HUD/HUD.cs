@@ -5,11 +5,11 @@ using Settings;
 using InputSystem;
 
 public sealed partial class HUD : Control {
-	public enum MenuState { Game, Paused, Settings };
+	public enum MenuState { Game, Paused, Settings, Inventory };
 	public MenuState State = MenuState.Game;
 
 	private PauseMenu PauseMenu = null!;
-	private Control Inventory = null!;
+	private InventoryUI Inventory = null!;
 	private Control QuestLog = null!;
 	private Hotbar Hotbar = null!;
 	private SettingsMenu Settings = null!;
@@ -25,6 +25,9 @@ public sealed partial class HUD : Control {
 
 	private event Action? OnExit;
 
+	public Player Player = null!;
+	public bool InventoryOpen => Inventory.Visible;
+
 	public override void _EnterTree() {
 		ProcessMode = ProcessModeEnum.Always;
 
@@ -35,6 +38,13 @@ public sealed partial class HUD : Control {
 	public override void _Ready() {
 		GetComponents();
 		SetCallbacks();
+		Player = GetParent<Player>();
+	}
+
+	public override void _Input(InputEvent @event) {
+		if(@event.IsActionPressed("OpenInventory")) {
+			ToggleInventory();
+		}
 	}
 
 	public override void _ExitTree() {
@@ -48,7 +58,7 @@ public sealed partial class HUD : Control {
 	private void GetComponents() {
 		PauseMenu = GetNode<PauseMenu>(PAUSE_MENU);
 		Settings = GetNode<SettingsMenu>(SETTINGS);
-		Inventory = GetNode<Control>(INVENTORY);
+		Inventory = GetNode<InventoryUI>(INVENTORY);
 		QuestLog = GetNode<Control>(QUESTLOG);
 		Hotbar = GetNode<Hotbar>(HOTBAR);
 	}
@@ -84,5 +94,17 @@ public sealed partial class HUD : Control {
 	public void QuitGame() {
 		GetTree().Paused = false;
 		GetTree().ChangeSceneToFile(Scenes.MainMenu);
+	}
+
+	public void ToggleInventory() {
+		if(InventoryOpen) {
+			Inventory.Visible = true;
+			Hotbar.Visible = true;
+			State = MenuState.Inventory;
+		}
+		else {
+			Inventory.Visible = false;
+			State = MenuState.Game;
+		}
 	}
 }

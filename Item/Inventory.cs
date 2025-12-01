@@ -1,10 +1,20 @@
 using System;
 using Components;
 using Core;
+using Godot;
 using SaveSystem;
 
 public partial class Inventory : ISaveable<InventoryData> {
-	public string Name { get; set; }
+	public event Action OnInventoryChanged;
+	public string Name {
+		get;
+		set {
+			if(string.IsNullOrWhiteSpace(value)) {
+				return;
+			}
+			field = value;
+		} 
+	} = "Inventory";
 
 	public int MaxSlotsRows {
 		get;
@@ -91,6 +101,25 @@ public partial class Inventory : ISaveable<InventoryData> {
 		return -1;
 	}
 
+	public ItemSlot GetItemSlot(int row, int column) {
+		int index = GetIndex(row, column);
+		if(index == -1) {
+			return new ItemSlot();
+		}
+		return ItemSlots[index];
+	}
+
+	public Item GetItem(int row, int column) {
+		int index = GetIndex(row, column);
+		if(index == -1) {
+			return null;
+		}
+		if(ItemSlots[index].IsEmpty()) {
+			return new Item();
+		}
+		return ItemSlots[index].Item;
+	}
+
 	public int GetEmptySlotIndex() {
 		for(int i = 0; i < ItemSlots.Length; i++) {
 			if(ItemSlots[i].IsEmpty()) {
@@ -131,6 +160,7 @@ public partial class Inventory : ISaveable<InventoryData> {
 		if(index == -1) {
 			return item;
 		}
+		OnInventoryChanged?.Invoke();
 		ItemSlot remainingItem = ItemSlots[index].combineItemSlot(item);
 		if(remainingItem.Quantity == 0) {
 			return remainingItem;
@@ -144,6 +174,8 @@ public partial class Inventory : ISaveable<InventoryData> {
 	}
 
 	public ItemSlot AddItem(ItemSlot item) {
+		if(item.Item == null) return item;
+		OnInventoryChanged?.Invoke();
 		int index = GetItemIndex(item.Item);
 		if(index != -1) {
 			return AddItem(item, GetRow(index), GetColumn(index));
@@ -161,6 +193,7 @@ public partial class Inventory : ISaveable<InventoryData> {
 		if(index == -1) {
 			return false;
 		}
+		OnInventoryChanged?.Invoke();
 		ItemSlots[index].ClearSlot();
 		return true;
 	}
@@ -177,6 +210,7 @@ public partial class Inventory : ISaveable<InventoryData> {
 		if(ItemSlots[index].Quantity < quantity) {
 			return false;
 		}
+		OnInventoryChanged?.Invoke();
 		ItemSlots[index].RemoveItem(quantity);
 		return true;
 	}
@@ -189,6 +223,7 @@ public partial class Inventory : ISaveable<InventoryData> {
 		if(quantityInInventory < item.Quantity) {
 			return false;
 		}
+		OnInventoryChanged?.Invoke();
 		int quantityToRemove = item.Quantity;
 		while(quantityToRemove > 0) {
 			int index = GetItemIndex(item.Item);

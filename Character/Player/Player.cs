@@ -9,6 +9,9 @@ public sealed partial class Player : CharacterBody3D, ISaveable<PlayerData> {
 	[Export] private int InitalHealth = 100;
 	[Export] private float SprintMultiplier = 2.0f;
 	[Export] private float CrouchMultiplier = 0.5f;
+	
+	// Inventory's last row is hotbar
+	public Inventory PlayerInventory = null!;
 
 	// Components
 	private KeyInput KeyInput = null!;
@@ -30,6 +33,7 @@ public sealed partial class Player : CharacterBody3D, ISaveable<PlayerData> {
 		KeyInput = new KeyInput();
 		Movement = new Movement(this);
 		Health = new Health(InitalHealth);
+		PlayerInventory = new Inventory(4, 5);
 
 		this.AddScene(Scenes.HUD);
 	}
@@ -83,12 +87,14 @@ public sealed partial class Player : CharacterBody3D, ISaveable<PlayerData> {
 
 	public PlayerData Serialize() => new PlayerData {
 		Health = Health.Serialize(),
-		Movement = Movement.Serialize()
+		Movement = Movement.Serialize(),
+		Inventory = PlayerInventory.Serialize()
 	};
 
 	public void Deserialize(in PlayerData data) {
 		Health.Deserialize(data.Health);
 		Movement.Deserialize(data.Movement);
+		PlayerInventory.Deserialize(data.Inventory);
 	}
 }
 
@@ -96,5 +102,6 @@ namespace SaveSystem {
 	public readonly record struct PlayerData : ISaveData {
 		public HealthData Health { get; init; }
 		public MovementData Movement { get; init; }
+		public InventoryData Inventory { get; init; }
 	}
 }

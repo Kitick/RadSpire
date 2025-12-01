@@ -26,7 +26,8 @@ public sealed partial class Hotbar : Control {
 
 	private event Action? OnExit;
 
-	public Inventory HotBarInventory { get; set; } = new(1, 5);
+    private Player player = null!;
+	private Inventory PlayerInventory = null!;
 
 	public override void _EnterTree() {
 		SetInputCallbacks();
@@ -36,6 +37,10 @@ public sealed partial class Hotbar : Control {
 	public override void _Ready() {
 		GetComponents();
 		SelectedSlot = 0;
+        player = GetParent<HUD>().Player;
+        PlayerInventory = player.PlayerInventory;
+		PlayerInventory.OnInventoryChanged += updateHotBarUI;
+		updateHotBarUI();
 	}
 
 	public override void _ExitTree() {
@@ -64,7 +69,10 @@ public sealed partial class Hotbar : Control {
 	}
 
 	private void SelectSlot(Panel slot) {
-		if(Debug) { GD.Print($"Hotbar: Selecting slot {HotbarSlots.IndexOf(slot)}"); }
+		if(Debug) {
+			GD.Print($"Hotbar: Selecting slot {HotbarSlots.IndexOf(slot)}"); 
+			GD.Print($"Hotbar: Selected item: {GetSelectedItem().Name}");
+		}
 
 		foreach(var other in HotbarSlots) {
 			bool selected = other == slot;
@@ -76,14 +84,43 @@ public sealed partial class Hotbar : Control {
 
 	public ItemSlot GetSelectedItemSlot() {
 		int index = SelectedSlot;
-		return HotBarInventory.ItemSlots[index];
+		return PlayerInventory.GetItemSlot(PlayerInventory.MaxSlotsRows - 1, index);
 	}
 
 	public Item GetSelectedItem() {
 		int index = SelectedSlot;
-		if(HotBarInventory.ItemSlots[index].IsEmpty()) {
+		if(PlayerInventory.ItemSlots[index].IsEmpty()) {
 			return null;
 		}
-		return HotBarInventory.ItemSlots[index].Item;
+		return PlayerInventory.GetItem(PlayerInventory.MaxSlotsRows - 1, index);
 	}
+
+    public void updateHotBarUI(){
+		PlayerInventory = player.PlayerInventory;
+        for(int i = 0; i < PlayerInventory.MaxSlotsColumns - 1; i++){
+			ItemSlot itemSlot = new ItemSlot();
+			itemSlot = PlayerInventory.GetItemSlot(PlayerInventory.MaxSlotsRows - 1, i);
+			var slotUI = GetNode<Control>($"HotbarSlots/Slot{i + 1}");
+			var icon = slotUI.GetNode<TextureRect>("TextureRect");
+			var quantityLabel = slotUI.GetNode<Label>("ItemCountLabel");
+			if(!itemSlot.IsEmpty()){
+				icon.Texture = itemSlot.Item.IconTexture;
+				icon.Visible = true;
+				if(itemSlot.Quantity > 1){
+					quantityLabel.Text = itemSlot.Quantity.ToString();
+					quantityLabel.Visible = true;
+				}
+				else{
+					quantityLabel.Text = "";
+					quantityLabel.Visible = false;
+				}
+			}
+			else{
+				icon.Texture = null;
+				icon.Visible = false;
+				quantityLabel.Text = "";
+				quantityLabel.Visible = false;
+			}
+        }
+    }
 }

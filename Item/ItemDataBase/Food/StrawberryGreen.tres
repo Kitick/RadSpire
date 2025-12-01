@@ -1,13 +1,13 @@
 [gd_resource type="Resource" script_class="Item" load_steps=3 format=3 uid="uid://cx03lm8w7yhmy"]
 
-[ext_resource type="Texture2D" uid="uid://di6lvqbjfukk1" path="res://Assets/scrimsy fruit icons/color/red/red strawberry.png" id="1_dlhq7"]
+[ext_resource type="Texture2D" uid="uid://cjnvforli3ks" path="res://Assets/scrimsy fruit icons/color/green/green strawberry.png" id="1_dlhq7"]
 [ext_resource type="Script" uid="uid://3l5yftlfas15" path="res://Item/Item.cs" id="2_m1wcb"]
 
 [resource]
 script = ExtResource("2_m1wcb")
-Id = "StrawberryRed"
-Name = "Red Strawberry"
-Description = "A delicously ripe red strawberry."
+Id = "StrawberryGreen"
+Name = "Green Strawberry"
+Description = "An unripe green strawberry. I guess it was picked too early ..."
 IsConsumable = true
 IconTexture = ExtResource("1_dlhq7")
 metadata/_custom_type_script = "uid://3l5yftlfas15"

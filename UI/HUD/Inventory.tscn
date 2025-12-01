@@ -65,6 +65,14 @@ offset_bottom = -5.0
 texture = ExtResource("1_ck2mn")
 expand_mode = 1
 
+[node name="ItemCountLabel" type="Label" parent="Background/GridBackground/GridContainer/InvSlot1"]
+layout_mode = 0
+offset_left = 0.9375
+offset_top = 39.8475
+offset_right = 55.9375
+offset_bottom = 62.8475
+horizontal_alignment = 2
+
 [node name="InvSlot2" type="Panel" parent="Background/GridBackground/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
@@ -81,6 +89,14 @@ offset_top = 5.0
 offset_right = -5.0
 offset_bottom = -5.0
 expand_mode = 1
+
+[node name="ItemCountLabel" type="Label" parent="Background/GridBackground/GridContainer/InvSlot2"]
+layout_mode = 0
+offset_left = 0.9375
+offset_top = 39.8475
+offset_right = 55.9375
+offset_bottom = 62.8475
+horizontal_alignment = 2
 
 [node name="InvSlot3" type="Panel" parent="Background/GridBackground/GridContainer"]
 layout_mode = 2
@@ -99,6 +115,14 @@ offset_right = -5.0
 offset_bottom = -5.0
 expand_mode = 1
 
+[node name="ItemCountLabel" type="Label" parent="Background/GridBackground/GridContainer/InvSlot3"]
+layout_mode = 0
+offset_left = 0.9375
+offset_top = 39.8475
+offset_right = 55.9375
+offset_bottom = 62.8475
+horizontal_alignment = 2
+
 [node name="InvSlot4" type="Panel" parent="Background/GridBackground/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
@@ -115,6 +139,14 @@ offset_top = 5.0
 offset_right = -5.0
 offset_bottom = -5.0
 expand_mode = 1
+
+[node name="ItemCountLabel" type="Label" parent="Background/GridBackground/GridContainer/InvSlot4"]
+layout_mode = 0
+offset_left = 0.9375
+offset_top = 39.8475
+offset_right = 55.9375
+offset_bottom = 62.8475
+horizontal_alignment = 2
 
 [node name="InvSlot5" type="Panel" parent="Background/GridBackground/GridContainer"]
 layout_mode = 2
@@ -133,6 +165,14 @@ offset_right = -5.0
 offset_bottom = -5.0
 expand_mode = 1
 
+[node name="ItemCountLabel" type="Label" parent="Background/GridBackground/GridContainer/InvSlot5"]
+layout_mode = 0
+offset_left = 0.9375
+offset_top = 39.8475
+offset_right = 55.9375
+offset_bottom = 62.8475
+horizontal_alignment = 2
+
 [node name="InvSlot6" type="Panel" parent="Background/GridBackground/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
@@ -149,6 +189,14 @@ offset_top = 5.0
 offset_right = -5.0
 offset_bottom = -5.0
 expand_mode = 1
+
+[node name="ItemCountLabel" type="Label" parent="Background/GridBackground/GridContainer/InvSlot6"]
+layout_mode = 0
+offset_left = 0.9375
+offset_top = 39.8475
+offset_right = 55.9375
+offset_bottom = 62.8475
+horizontal_alignment = 2
 
 [node name="InvSlot7" type="Panel" parent="Background/GridBackground/GridContainer"]
 layout_mode = 2
@@ -167,6 +215,14 @@ offset_right = -5.0
 offset_bottom = -5.0
 expand_mode = 1
 
+[node name="ItemCountLabel" type="Label" parent="Background/GridBackground/GridContainer/InvSlot7"]
+layout_mode = 0
+offset_left = 0.9375
+offset_top = 39.8475
+offset_right = 55.9375
+offset_bottom = 62.8475
+horizontal_alignment = 2
+
 [node name="InvSlot8" type="Panel" parent="Background/GridBackground/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
@@ -183,6 +239,14 @@ offset_top = 5.0
 offset_right = -5.0
 offset_bottom = -5.0
 expand_mode = 1
+
+[node name="ItemCountLabel" type="Label" parent="Background/GridBackground/GridContainer/InvSlot8"]
+layout_mode = 0
+offset_left = 0.9375
+offset_top = 39.8475
+offset_right = 55.9375
+offset_bottom = 62.8475
+horizontal_alignment = 2
 
 [node name="InvSlot9" type="Panel" parent="Background/GridBackground/GridContainer"]
 layout_mode = 2
@@ -201,6 +265,14 @@ offset_right = -5.0
 offset_bottom = -5.0
 expand_mode = 1
 
+[node name="ItemCountLabel" type="Label" parent="Background/GridBackground/GridContainer/InvSlot9"]
+layout_mode = 0
+offset_left = 0.9375
+offset_top = 39.8475
+offset_right = 55.9375
+offset_bottom = 62.8475
+horizontal_alignment = 2
+
 [node name="InvSlot10" type="Panel" parent="Background/GridBackground/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
@@ -217,6 +289,14 @@ offset_top = 5.0
 offset_right = -5.0
 offset_bottom = -5.0
 expand_mode = 1
+
+[node name="ItemCountLabel" type="Label" parent="Background/GridBackground/GridContainer/InvSlot10"]
+layout_mode = 0
+offset_left = 0.9375
+offset_top = 39.8475
+offset_right = 55.9375
+offset_bottom = 62.8475
+horizontal_alignment = 2
 
 [node name="InvSlot11" type="Panel" parent="Background/GridBackground/GridContainer"]
 layout_mode = 2
@@ -235,6 +315,14 @@ offset_right = -5.0
 offset_bottom = -5.0
 expand_mode = 1
 
+[node name="ItemCountLabel" type="Label" parent="Background/GridBackground/GridContainer/InvSlot11"]
+layout_mode = 0
+offset_left = 0.9375
+offset_top = 39.8475
+offset_right = 55.9375
+offset_bottom = 62.8475
+horizontal_alignment = 2
+
 [node name="InvSlot12" type="Panel" parent="Background/GridBackground/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
@@ -251,6 +339,14 @@ offset_top = 5.0
 offset_right = -5.0
 offset_bottom = -5.0
 expand_mode = 1
+
+[node name="ItemCountLabel" type="Label" parent="Background/GridBackground/GridContainer/InvSlot12"]
+layout_mode = 0
+offset_left = 0.9375
+offset_top = 39.8475
+offset_right = 55.9375
+offset_bottom = 62.8475
+horizontal_alignment = 2
 
 [node name="InvSlot13" type="Panel" parent="Background/GridBackground/GridContainer"]
 layout_mode = 2
@@ -269,6 +365,14 @@ offset_right = -5.0
 offset_bottom = -5.0
 expand_mode = 1
 
+[node name="ItemCountLabel" type="Label" parent="Background/GridBackground/GridContainer/InvSlot13"]
+layout_mode = 0
+offset_left = 0.9375
+offset_top = 39.8475
+offset_right = 55.9375
+offset_bottom = 62.8475
+horizontal_alignment = 2
+
 [node name="InvSlot14" type="Panel" parent="Background/GridBackground/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
@@ -286,6 +390,14 @@ offset_right = -5.0
 offset_bottom = -5.0
 expand_mode = 1
 
+[node name="ItemCountLabel" type="Label" parent="Background/GridBackground/GridContainer/InvSlot14"]
+layout_mode = 0
+offset_left = 0.9375
+offset_top = 39.8475
+offset_right = 55.9375
+offset_bottom = 62.8475
+horizontal_alignment = 2
+
 [node name="InvSlot15" type="Panel" parent="Background/GridBackground/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
@@ -302,6 +414,14 @@ offset_top = 5.0
 offset_right = -5.0
 offset_bottom = -5.0
 expand_mode = 1
+
+[node name="ItemCountLabel" type="Label" parent="Background/GridBackground/GridContainer/InvSlot15"]
+layout_mode = 0
+offset_left = 0.9375
+offset_top = 39.8475
+offset_right = 55.9375
+offset_bottom = 62.8475
+horizontal_alignment = 2
 
 [node name="TabBackground" type="ColorRect" parent="."]
 layout_mode = 1
