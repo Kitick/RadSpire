@@ -97,7 +97,7 @@ public sealed partial class HUD : Control {
 	}
 
 	public void ToggleInventory() {
-		if(InventoryOpen) {
+		if(!InventoryOpen) {
 			Inventory.Visible = true;
 			Hotbar.Visible = true;
 			State = MenuState.Inventory;
