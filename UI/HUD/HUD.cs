@@ -3,9 +3,10 @@ using Core;
 using Godot;
 using InputSystem;
 using Settings;
+using Host;
 
 public sealed partial class HUD : Control {
-	public enum MenuState { Game, Paused, Settings };
+	public enum MenuState { Game, Paused, Settings, Host };
 
 	private readonly FiniteStateMachine<MenuState> StateMachine;
 	public MenuState State => StateMachine.State;
@@ -57,6 +58,7 @@ public sealed partial class HUD : Control {
 
 		PauseMenu.ResumeButton.Pressed += TogglePause;
 		PauseMenu.SaveButton.Pressed += SaveGame;
+		PauseMenu.HostButton.Pressed += () => StateMachine.TransitionTo(MenuState.Host);
 		PauseMenu.SettingsButton.Pressed += () => StateMachine.TransitionTo(MenuState.Settings);
 		PauseMenu.MainMenuButton.Pressed += QuitGame;
 	}
@@ -64,8 +66,15 @@ public sealed partial class HUD : Control {
 	private void OnStateChanged(MenuState from, MenuState to) {
 		GetTree().Paused = to != MenuState.Game;
 		PauseMenu.Visible = to == MenuState.Paused;
-
+		
+		if(to == MenuState.Host) { OpenHostPanel(); }
 		if(to == MenuState.Settings) { OpenSettings(); }
+	}
+
+	private void OpenHostPanel() {
+		var host = this.AddScene<HostPanel>(Scenes.HostPanel);
+		host.OnMenuClosed += () => StateMachine.TransitionTo(MenuState.Paused);
+		host.OpenMenu();
 	}
 
 	private void OpenSettings() {

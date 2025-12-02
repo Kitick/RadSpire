@@ -15,6 +15,7 @@ namespace Core {
 		public const string Player = "res://Character/Player/Player.tscn";
 
 		public const string Camera = "res://Camera/Camera.tscn";
+		public const string HostPanel = "res://UI/HostPanel/HostPanel.tscn";
 	}
 
 	public static class Actions {
