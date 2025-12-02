@@ -8,6 +8,7 @@ script = ExtResource("2_c5aqb")
 Id = "AppleRed"
 Name = "Red Apple"
 Description = "A common red apple. Its a perfect  delicious fresh snack for a traveler."
+MaxStackSize = 64
 IsConsumable = true
 IconTexture = ExtResource("1_wficj")
 metadata/_custom_type_script = "uid://3l5yftlfas15"

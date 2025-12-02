@@ -18,6 +18,29 @@ public sealed partial class GameManager : Node {
 
 		Player.AddCamera(CameraRig);
 
+		Item item = GD.Load<Item>("res://Item/ItemDataBase/Food/AppleRed.tres");
+		if(item == null) {
+			GD.PrintErr("Failed to load test item.");
+		} else {
+			GD.Print($"Loaded test item: {item.Name}");
+			ItemSlot testSlot = new ItemSlot(item, 5);
+			if(!testSlot.IsEmpty()){
+				GD.Print($"Test ItemSlot has {testSlot.Quantity} x {testSlot.Item.Name}.");
+				Player.PlayerInventory.AddItem(testSlot);
+				if(Player.PlayerInventory.GetTotalQuantity(item) >= 5){
+					GD.Print("Player inventory successfully contains the test item after addition.");
+					Item3DIcon item3DIcon = new Item3DIcon();
+					item3DIcon.Item = item;
+					item3DIcon.SpawnItem3D(new Vector3(0, 5, 0));
+					AddChild(item3DIcon);
+				} else {
+					GD.PrintErr("Player inventory does not contain the test item after addition.");
+				}
+			} else {
+				GD.PrintErr("Test ItemSlot is empty.");
+			}
+		}
+
 		if(ShouldLoad) { Load(SaveFileName); }
 	}
 

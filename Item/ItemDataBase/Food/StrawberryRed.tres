@@ -8,6 +8,7 @@ script = ExtResource("1_a8qwm")
 Id = "StrawberryRed"
 Name = "Red Strawberry"
 Description = "A delicously ripe red strawberry."
+MaxStackSize = 64
 IsConsumable = true
 IconTexture = ExtResource("1_7v25h")
 metadata/_custom_type_script = "uid://3l5yftlfas15"
