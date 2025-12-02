@@ -26,7 +26,7 @@ public sealed partial class Hotbar : Control {
 
 	private event Action? OnExit;
 
-    private Player player = null!;
+	private Player player = null!;
 	private Inventory PlayerInventory = null!;
 
 	public override void _EnterTree() {
@@ -35,10 +35,15 @@ public sealed partial class Hotbar : Control {
 	}
 
 	public override void _Ready() {
+		base._Ready();
 		GetComponents();
 		SelectedSlot = 0;
-        player = GetParent<HUD>().Player;
-        PlayerInventory = player.PlayerInventory;
+		if((player = GetParent<HUD>().Player) == null) {
+			GD.PrintErr("Hotbar could not find Player node in parent HUD.");
+			return;
+		}
+		GD.Print("Hotbar successfully found Player node in parent HUD.");
+		PlayerInventory = player.PlayerInventory;
 		PlayerInventory.OnInventoryChanged += updateHotBarUI;
 		updateHotBarUI();
 	}
@@ -95,12 +100,12 @@ public sealed partial class Hotbar : Control {
 		return PlayerInventory.GetItem(PlayerInventory.MaxSlotsRows - 1, index);
 	}
 
-    public void updateHotBarUI(){
+	public void updateHotBarUI(){
 		PlayerInventory = player.PlayerInventory;
-        for(int i = 0; i < PlayerInventory.MaxSlotsColumns - 1; i++){
+		for(int i = 0; i < PlayerInventory.MaxSlotsColumns - 1; i++){
 			ItemSlot itemSlot = new ItemSlot();
 			itemSlot = PlayerInventory.GetItemSlot(PlayerInventory.MaxSlotsRows - 1, i);
-			var slotUI = GetNode<Control>($"HotbarSlots/Slot{i + 1}");
+			var slotUI = GetNode<Control>($"Background/GridBackground/HotbarSlots/Slot{i + 1}");
 			var icon = slotUI.GetNode<TextureRect>("TextureRect");
 			var quantityLabel = slotUI.GetNode<Label>("ItemCountLabel");
 			if(!itemSlot.IsEmpty()){
@@ -121,6 +126,6 @@ public sealed partial class Hotbar : Control {
 				quantityLabel.Text = "";
 				quantityLabel.Visible = false;
 			}
-        }
-    }
+		}
+	}
 }

@@ -31,13 +31,24 @@ public sealed partial class HUD : Control {
 		StateMachine = new(MenuState.Game, OnStateChanged);
 	}
 
+	public override void _EnterTree() {
+		base._EnterTree();
+		Player = GetParent<Player>();
+		if(Player == null) {
+			GD.PrintErr("HUD could not find Player node in parent.");
+		}
+		else {
+			GD.Print("HUD successfully found Player node in parent.");
+		}
+	}
+
 	public override void _Ready() {
+		// Player is initialized in _EnterTree so child controls can access it in their _Ready
 		ProcessMode = ProcessModeEnum.Always;
 
 		SetInputCallbacks();
 		GetComponents();
 		SetCallbacks();
-		Player = GetParent<Player>();
 	}
 
 	public override void _Input(InputEvent @event) {
