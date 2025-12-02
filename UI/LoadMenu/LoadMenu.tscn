@@ -1,8 +1,8 @@
 [gd_scene load_steps=4 format=3 uid="uid://dv4igypq0dbv8"]
 
-[ext_resource type="Texture2D" uid="uid://ey80t6hrma51" path="res://Assets/Images/LoadMenuBackground.png" id="1_668ho"]
+[ext_resource type="Texture2D" uid="uid://ey80t6hrma51" path="res://Assets/Images/Menu/background_kneeling.png" id="1_668ho"]
 [ext_resource type="Script" uid="uid://cnc1drhp35q8y" path="res://UI/LoadMenu/LoadMenu.cs" id="1_bhsh3"]
-[ext_resource type="Texture2D" uid="uid://8ykhw0g480u8" path="res://Assets/Textures/sword.png" id="2_yf308"]
+[ext_resource type="Texture2D" uid="uid://8ykhw0g480u8" path="res://Assets/Images/Icons/sword.png" id="2_yf308"]
 
 [node name="LoadMenu" type="Control"]
 layout_mode = 3
