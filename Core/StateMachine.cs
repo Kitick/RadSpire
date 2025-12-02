@@ -5,14 +5,15 @@ public sealed class FiniteStateMachine<TState> where TState : Enum {
 
 	public event Action<TState, TState>? OnStateChanged;
 
-	public FiniteStateMachine(TState initalState) => State = initalState;
+	public FiniteStateMachine(TState inital) => State = inital;
+	public FiniteStateMachine(TState inital, Action<TState, TState> onChanged) : this(inital) => OnStateChanged += onChanged;
 
 	public void TransitionTo(TState newState) {
 		if(State.Equals(newState)) { return; }
 
-		var old = State;
+		var last = State;
 		State = newState;
 
-		OnStateChanged?.Invoke(old, newState);
+		OnStateChanged?.Invoke(last, newState);
 	}
 }

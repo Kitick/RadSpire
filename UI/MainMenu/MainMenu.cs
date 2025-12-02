@@ -40,8 +40,6 @@ public partial class MainMenu : Control {
 	private Control SingleplayerButtonPanel = null!;
 	private Control MultiplayerButtonPanel = null!;
 
-	private SettingsMenu Settings = null!;
-
 	// Main
 	public override void _Ready() {
 		GetComponents();
@@ -57,9 +55,6 @@ public partial class MainMenu : Control {
 		// Multiplayer Components
 		MultiplayerButton = GetNode<Button>(MULTIPLAYER_BUTTON);
 		MultiplayerButtonPanel = GetNode<Control>(MULTIPLAYER_POPUP);
-
-		// Settings Instance
-		Settings = this.AddScene<SettingsMenu>(Scenes.SettingsMenu);
 	}
 
 	// Callbacks
@@ -109,7 +104,8 @@ public partial class MainMenu : Control {
 	}
 
 	private void OnSettingsButtonPressed() {
-		Settings.OpenMenu();
+		var settings = this.AddScene<SettingsMenu>(Scenes.SettingsMenu);
+		settings.OpenMenu();
 	}
 
 	private void OnExtrasButtonPressed() {

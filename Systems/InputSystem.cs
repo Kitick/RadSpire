@@ -19,6 +19,11 @@ namespace InputSystem {
 		public static event Action<ActionEvent>? OnActionPressed;
 		public static event Action<ActionEvent>? OnActionReleased;
 
+		public override void _Ready() {
+			if(Debug) { GD.Print("InputSystem: Ready"); }
+			ProcessMode = ProcessModeEnum.Always;
+		}
+
 		private static void CheckActionEvents(InputEvent input) {
 			foreach(var action in Actions) {
 				string name = action.ToString();
