@@ -10,6 +10,10 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+tooltip_text = "Slope to avoid:
+Min: 0°
+Max: 45°
+"
 focus_mode = 2
 script = ExtResource("1_xiopc")
 
