@@ -1,14 +1,12 @@
 using System;
 using Godot;
+using Systems.JSON;
 
 namespace Network {
-	public interface INetworkData;
+	public interface INetworkData : IJSONData;
 
-	public interface INetworkable<T> where T : INetworkData {
+	public interface INetworkable<T> : IJSONable<T> where T : INetworkData {
 		event Action? OnStateChanged;
-
-		T Export();
-		void Import(in T data);
 	}
 
 	public sealed partial class Network : Node {

@@ -1,15 +1,11 @@
-using System;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
+using Systems.JSON;
 
 namespace SaveSystem {
-	public interface ISaveData;
-
-	public interface ISaveable<T> where T : ISaveData {
-		T Serialize();
-		void Deserialize(in T data);
-	}
+	public interface ISaveData : IJSONData;
+	public interface ISaveable<T> : IJSONable<T> where T : ISaveData;
 
 	public static class SaveService {
 		private const string SaveDirName = "saves";
@@ -18,11 +14,6 @@ namespace SaveSystem {
 			WriteIndented = true,
 			IndentCharacter = '\t',
 			IndentSize = 1,
-			Converters = { new Vector3Converter() }
-		};
-
-		private static readonly JsonSerializerOptions DataJsonOptions = new() {
-			Converters = { new Vector3Converter() }
 		};
 
 		private static DirectoryInfo GetSaveDir() {
@@ -50,14 +41,6 @@ namespace SaveSystem {
 			var data = JsonSerializer.Deserialize<T>(json, FileJsonOptions);
 
 			return data;
-		}
-
-		public static string Serialize<T>(in T data) where T : struct, ISaveData {
-			return JsonSerializer.Serialize(data, DataJsonOptions);
-		}
-
-		public static T Deserialize<T>(string json) where T : struct, ISaveData {
-			return JsonSerializer.Deserialize<T>(json, DataJsonOptions);
 		}
 
 		public static void Save<T>(string fileName, in T data) where T : struct, ISaveData {
