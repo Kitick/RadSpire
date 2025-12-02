@@ -4,7 +4,7 @@ using Core;
 using Godot;
 using SaveSystem;
 
-public partial class GameManager : Node {
+public sealed partial class GameManager : Node {
 	private static Player Player = null!;
 	private static CameraRig CameraRig = null!;
 

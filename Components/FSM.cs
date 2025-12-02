@@ -1,6 +1,6 @@
 using System;
 
-public class FiniteStateMachine<TState> where TState : Enum {
+public sealed class FiniteStateMachine<TState> where TState : Enum {
 	public TState State { get; private set; }
 
 	public event Action<TState, TState>? OnStateChanged;

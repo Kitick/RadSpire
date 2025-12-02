@@ -2,14 +2,14 @@ using System;
 using SaveSystem;
 
 namespace Components {
-	public class Health : ISaveable<HealthData> {
+	public sealed class Health : ISaveable<HealthData> {
 		public int CurrentHealth {
 			get;
 			set {
 				value = Math.Clamp(value, 0, MaxHealth);
 				if(field == value) { return; }
 
-				HealthChanged?.Invoke(field, value);
+				OnHealthChanged?.Invoke(field, value);
 
 				field = value;
 			}
@@ -23,7 +23,7 @@ namespace Components {
 			}
 		}
 
-		public event Action<int, int>? HealthChanged;
+		public event Action<int, int>? OnHealthChanged;
 
 		public Health(int maxHealth) {
 			MaxHealth = maxHealth;
@@ -48,7 +48,7 @@ namespace Components {
 		public static bool IsDead(this Health health) => health.CurrentHealth == 0;
 
 		public static float Percent(this Health health) =>
-			(float)health.CurrentHealth / health.MaxHealth;
+			(float) health.CurrentHealth / health.MaxHealth;
 	}
 }
 

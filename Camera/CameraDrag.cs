@@ -3,7 +3,7 @@ using Core;
 using Godot;
 
 namespace Camera {
-	public class CameraDrag {
+	public sealed class CameraDrag {
 		public enum DragState { Idle, Dragging, Cooldown };
 		public DragState State { get; private set; } = DragState.Idle;
 
@@ -12,8 +12,6 @@ namespace Camera {
 
 		public readonly Timer ResetTimer = new Timer();
 		public TimeSpan ResetCooldown = TimeSpan.FromSeconds(3);
-
-		public float Dampener = 8.0f;
 
 		public CameraDrag() {
 			ResetTimer.OneShot = true;
@@ -40,7 +38,7 @@ namespace Camera {
 			ResetTimer.Stop();
 		}
 
-		public void Update(Vector3 Position, float dt) {
+		public void Update(Vector3 Position) {
 			Vector3 VelocityTarget;
 
 			VelocityTarget = State switch {
@@ -48,7 +46,7 @@ namespace Camera {
 				_ => Vector3.Zero,
 			};
 
-			Velocity = Velocity.SmoothLerp(VelocityTarget * 2, Dampener, dt);
+			Velocity = VelocityTarget;
 		}
 	}
 }
