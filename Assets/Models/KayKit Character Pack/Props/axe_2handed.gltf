@@ -57,7 +57,7 @@
         {
             "mimeType" : "image/png",
             "name" : "barbarian_texture",
-            "uri" : "barbarian_texture.png"
+            "uri" : "../Characters/Barbarian_barbarian_texture.png"
         }
     ],
     "accessors" : [

@@ -57,7 +57,7 @@
         {
             "mimeType" : "image/png",
             "name" : "mage_texture",
-            "uri" : "mage_texture.png"
+            "uri" : "../Characters/Mage_mage_texture.png"
         }
     ],
     "accessors" : [

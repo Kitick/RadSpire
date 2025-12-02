@@ -57,7 +57,7 @@
         {
             "mimeType" : "image/png",
             "name" : "rogue_texture",
-            "uri" : "rogue_texture.png"
+            "uri" : "../Characters/Rogue_rogue_texture.png"
         }
     ],
     "accessors" : [
