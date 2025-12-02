@@ -1,41 +1,38 @@
 using System;
 using Core;
 using Godot;
-using Settings;
 using InputSystem;
+using Settings;
 
 public sealed partial class HUD : Control {
 	public enum MenuState { Game, Paused, Settings, Inventory };
-	public MenuState State = MenuState.Game;
+
+	private readonly FiniteStateMachine<MenuState> StateMachine;
+	public MenuState State => StateMachine.State;
 
 	private PauseMenu PauseMenu = null!;
 	private InventoryUI Inventory = null!;
 	private Control QuestLog = null!;
 	private Hotbar Hotbar = null!;
-	private SettingsMenu Settings = null!;
 
 	private const string PAUSE_BUTTON = "PauseButton";
 	private const string PAUSE_MENU = "PauseMenu";
 	private const string INVENTORY = "Inventory";
 	private const string QUESTLOG = "QuestLog";
 	private const string HOTBAR = "Hotbar";
-	private const string SETTINGS = "Settings";
 
-	public bool IsPaused => PauseMenu.Visible;
+	public bool IsPaused => GetTree().Paused;
 
 	private event Action? OnExit;
 
-	public Player Player = null!;
-	public bool InventoryOpen => Inventory.Visible;
-
-	public override void _EnterTree() {
-		ProcessMode = ProcessModeEnum.Always;
-
-		SetInputCallbacks();
-		RequestReady();
+	public HUD() {
+		StateMachine = new(MenuState.Game, OnStateChanged);
 	}
 
 	public override void _Ready() {
+		ProcessMode = ProcessModeEnum.Always;
+
+		SetInputCallbacks();
 		GetComponents();
 		SetCallbacks();
 		Player = GetParent<Player>();
@@ -57,37 +54,38 @@ public sealed partial class HUD : Control {
 
 	private void GetComponents() {
 		PauseMenu = GetNode<PauseMenu>(PAUSE_MENU);
-		Settings = GetNode<SettingsMenu>(SETTINGS);
 		Inventory = GetNode<InventoryUI>(INVENTORY);
 		QuestLog = GetNode<Control>(QUESTLOG);
 		Hotbar = GetNode<Hotbar>(HOTBAR);
 	}
 
 	private void SetCallbacks() {
-		GetNode<Button>(PAUSE_BUTTON).Pressed += TogglePause;
+		GetNode<Button>(PAUSE_BUTTON).Pressed += () => StateMachine.TransitionTo(MenuState.Paused);
 
-		PauseMenu.ResumeButton.Pressed += () => TogglePause(false);
+		PauseMenu.ResumeButton.Pressed += TogglePause;
 		PauseMenu.SaveButton.Pressed += SaveGame;
-
-		PauseMenu.SettingsButton.Pressed += () => ToggleSettings(true);
+		PauseMenu.SettingsButton.Pressed += () => StateMachine.TransitionTo(MenuState.Settings);
 		PauseMenu.MainMenuButton.Pressed += QuitGame;
 	}
 
-	public void TogglePause() => TogglePause(!IsPaused);
+	private void OnStateChanged(MenuState from, MenuState to) {
+		GetTree().Paused = to != MenuState.Game;
+		PauseMenu.Visible = to == MenuState.Paused;
 
-	public void TogglePause(bool state) {
-		GetTree().Paused = state;
-		PauseMenu.Visible = state;
+		if(to == MenuState.Settings) { OpenSettings(); }
 	}
 
-	public void ToggleSettings() => ToggleSettings(!Settings.Visible);
-
-	public void ToggleSettings(bool state) {
-		Settings.Visible = state;
-		PauseMenu.Visible = state;
+	private void OpenSettings() {
+		var settings = this.AddScene<SettingsMenu>(Scenes.SettingsMenu);
+		settings.OnMenuClosed += () => StateMachine.TransitionTo(MenuState.Paused);
+		settings.OpenMenu();
 	}
 
-	public void SaveGame() {
+	private void TogglePause() {
+		StateMachine.TransitionTo(IsPaused ? MenuState.Game : MenuState.Paused);
+	}
+
+	public static void SaveGame() {
 		GameManager.Save("autosave");
 	}
 

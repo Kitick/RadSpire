@@ -47,6 +47,10 @@ text = "RESUME"
 layout_mode = 2
 text = "SAVE"
 
+[node name="Host" type="Button" parent="Background/Buttons"]
+layout_mode = 2
+text = "HOST"
+
 [node name="Settings" type="Button" parent="Background/Buttons"]
 layout_mode = 2
 text = "SETTINGS"
