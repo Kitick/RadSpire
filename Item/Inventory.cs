@@ -160,22 +160,23 @@ public partial class Inventory : ISaveable<InventoryData> {
 		if(index == -1) {
 			return item;
 		}
-		OnInventoryChanged?.Invoke();
 		ItemSlot remainingItem = ItemSlots[index].combineItemSlot(item);
 		if(remainingItem.Quantity == 0) {
+			OnInventoryChanged?.Invoke();
 			return remainingItem;
 		}
 		int remainingItemSlot = GetEmptySlotIndex();
 		if(remainingItemSlot == -1) {
+			OnInventoryChanged?.Invoke();
 			return remainingItem;
 		}
 		remainingItem = ItemSlots[remainingItemSlot].combineItemSlot(remainingItem);
+		OnInventoryChanged?.Invoke();
 		return remainingItem;
 	}
 
 	public ItemSlot AddItem(ItemSlot item) {
 		if(item.Item == null) return item;
-		OnInventoryChanged?.Invoke();
 		int index = GetItemIndex(item.Item);
 		if(index != -1) {
 			return AddItem(item, GetRow(index), GetColumn(index));
@@ -193,8 +194,8 @@ public partial class Inventory : ISaveable<InventoryData> {
 		if(index == -1) {
 			return false;
 		}
-		OnInventoryChanged?.Invoke();
 		ItemSlots[index].ClearSlot();
+		OnInventoryChanged?.Invoke();
 		return true;
 	}
 
@@ -210,8 +211,8 @@ public partial class Inventory : ISaveable<InventoryData> {
 		if(ItemSlots[index].Quantity < quantity) {
 			return false;
 		}
-		OnInventoryChanged?.Invoke();
 		ItemSlots[index].RemoveItem(quantity);
+		OnInventoryChanged?.Invoke();
 		return true;
 	}
 
@@ -223,7 +224,6 @@ public partial class Inventory : ISaveable<InventoryData> {
 		if(quantityInInventory < item.Quantity) {
 			return false;
 		}
-		OnInventoryChanged?.Invoke();
 		int quantityToRemove = item.Quantity;
 		while(quantityToRemove > 0) {
 			int index = GetItemIndex(item.Item);
@@ -233,6 +233,7 @@ public partial class Inventory : ISaveable<InventoryData> {
 			int removedQuantity = ItemSlots[index].RemoveItem(quantityToRemove).Quantity;
 			quantityToRemove -= removedQuantity;
 		}
+		OnInventoryChanged?.Invoke();
 		return true;
 	}
 
