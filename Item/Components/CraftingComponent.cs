@@ -8,6 +8,10 @@ namespace Components {
             set;
         }
 
+        public Crafting() {
+            CraftingRecipe = new Inventory(3, 3);
+        }
+
         public CraftingData Serialize() => new CraftingData {
             CraftingRecipe = CraftingRecipe.Serialize(),
         };

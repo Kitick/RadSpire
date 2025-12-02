@@ -3,6 +3,7 @@ using Components;
 using Core;
 using SaveSystem;
 using Godot;
+using System.Collections.Generic;
 
 [GlobalClass]
 public partial class Item : Resource, ISaveable<ItemData> {
@@ -56,8 +57,27 @@ public partial class Item : Resource, ISaveable<ItemData> {
     [Export] public Texture2D IconTexture { get; set; } = null!;
     [Export] public PackedScene? Item3DScene { get; set; } = null;
     //Components
-    public Durability? Durability { get; set; } = null;
-    public Crafting? Crafting { get; set; } = null;
+    public enum ItemComponentType {
+        WeaponBase,
+        Defense,
+        Durability,
+        Crafting,
+    }
+    public Dictionary<ItemComponentType, IItemComponent> components = new();
+
+    public void addComponent(ItemComponentType type, IItemComponent component) {
+        if(components.ContainsKey(type)) {
+            components[type] = component;
+            return;
+        }
+        components.Add(type, component);
+    }
+
+    public void removeComponent(ItemComponentType type) {
+        if(components.ContainsKey(type)) {
+            components.Remove(type);
+        }
+    }
 
     public bool SameItem(Item other) {
         if(other == null) {
@@ -74,9 +94,16 @@ public partial class Item : Resource, ISaveable<ItemData> {
         IsConsumable = IsConsumable,
         IconTexture = IconTexture,
         Item3DScene = Item3DScene,
-        Durability = Durability?.Serialize(),
-        Crafting = Crafting?.Serialize(),
+        ComponentsData = SerializeComponents(),
     };
+
+    public Dictionary<ItemComponentType, IItemComponent> SerializeComponents(){
+        Dictionary<ItemComponentType, IItemComponent> serializedComponents = new();
+        foreach(var component in components) {
+            serializedComponents.Add(component.Key, component.Value);
+        }
+        return serializedComponents;
+    }
 
     public void Deserialize(in ItemData data) {
         Id = data.Id;
@@ -88,14 +115,15 @@ public partial class Item : Resource, ISaveable<ItemData> {
         if(data.Item3DScene != null) {
             Item3DScene = data.Item3DScene;
         }
-        if(data.Durability != null) {
-            Durability = new Durability(data.Durability.Value.MaxDurability);
-            Durability.Deserialize(data.Durability.Value);
+        components = DeserializeComponents(data);
+    }
+
+    public Dictionary<ItemComponentType, IItemComponent> DeserializeComponents(in ItemData data){
+        Dictionary<ItemComponentType, IItemComponent> deserializedComponents = new();
+        foreach(var component in data.ComponentsData) {
+            deserializedComponents.Add(component.Key, component.Value);
         }
-        if(data.Crafting != null) {
-            Crafting = new Crafting();
-            Crafting.Deserialize(data.Crafting.Value);
-        }
+        return deserializedComponents;
     }
 }
 
@@ -110,5 +138,6 @@ namespace SaveSystem {
         public PackedScene? Item3DScene { get; init; }
         public DurabilityData? Durability { get; init; }
         public CraftingData? Crafting { get; init; }
+        public Dictionary<Item.ItemComponentType, IItemComponent> ComponentsData { get; init; }
     }
 }
