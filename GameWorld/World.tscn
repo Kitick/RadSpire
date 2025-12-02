@@ -1,36 +1,36 @@
 [gd_scene load_steps=41 format=4 uid="uid://cj70horwpl6yp"]
 
-[ext_resource type="PackedScene" uid="uid://d3uhhyfgvghhc" path="res://Assets/Medieval Village Pack - Dec 2020-20251121T225732Z-1-001/Medieval Village Pack - Dec 2020/Buildings/FBX/House_1.fbx" id="2_8bqr4"]
-[ext_resource type="PackedScene" uid="uid://deo7b22hrao1m" path="res://Assets/Medieval Village Pack - Dec 2020-20251121T225732Z-1-001/Medieval Village Pack - Dec 2020/Buildings/FBX/Sawmill.fbx" id="2_re7ba"]
+[ext_resource type="PackedScene" uid="uid://d3uhhyfgvghhc" path="res://Assets/Models/Medieval Village Pack/Structures/House_1.fbx" id="2_8bqr4"]
+[ext_resource type="PackedScene" uid="uid://deo7b22hrao1m" path="res://Assets/Models/Medieval Village Pack/Structures/Sawmill.fbx" id="2_re7ba"]
 [ext_resource type="Script" uid="uid://c8u56j53mc51o" path="res://GameWorld/GameManager.cs" id="3_m15j5"]
 [ext_resource type="Texture2D" uid="uid://cqfyw0m0lp0t2" path="res://Assets/GroundTextures/rocky_terrain_02_nor_gl_2k.png" id="3_re7ba"]
 [ext_resource type="Texture2D" uid="uid://cekryk6bo4kk6" path="res://Assets/GroundTextures/rocky_terrain_02_diff_2k.jpg" id="3_v7no4"]
-[ext_resource type="PackedScene" uid="uid://c4tefgbbadwsk" path="res://Assets/Medieval Village Pack - Dec 2020-20251121T225732Z-1-001/Medieval Village Pack - Dec 2020/Buildings/FBX/Inn.fbx" id="3_xxpmp"]
-[ext_resource type="PackedScene" uid="uid://cud5i26cigw4l" path="res://Assets/Medieval Village Pack - Dec 2020-20251121T225732Z-1-001/Medieval Village Pack - Dec 2020/Buildings/FBX/Bell_Tower.fbx" id="4_j2inr"]
-[ext_resource type="PackedScene" uid="uid://ckt8qpan7su6e" path="res://Assets/Medieval Village Pack - Dec 2020-20251121T225732Z-1-001/Medieval Village Pack - Dec 2020/Buildings/FBX/House_4.fbx" id="5_lmiwq"]
+[ext_resource type="PackedScene" uid="uid://c4tefgbbadwsk" path="res://Assets/Models/Medieval Village Pack/Structures/Inn.fbx" id="3_xxpmp"]
+[ext_resource type="PackedScene" uid="uid://cud5i26cigw4l" path="res://Assets/Models/Medieval Village Pack/Structures/Bell_Tower.fbx" id="4_j2inr"]
+[ext_resource type="PackedScene" uid="uid://ckt8qpan7su6e" path="res://Assets/Models/Medieval Village Pack/Structures/House_4.fbx" id="5_lmiwq"]
 [ext_resource type="Texture2D" uid="uid://bfebagd01x6u7" path="res://Assets/GroundTextures/rocky_terrain_02_rough_2k.png" id="5_xxpmp"]
-[ext_resource type="PackedScene" uid="uid://cxl1oqrbo14fc" path="res://Assets/Medieval Village Pack - Dec 2020-20251121T225732Z-1-001/Medieval Village Pack - Dec 2020/Props/FBX/Bonfire.fbx" id="10_lmiwq"]
-[ext_resource type="PackedScene" uid="uid://hpeblfbxgvbw" path="res://Assets/Medieval Village Pack - Dec 2020-20251121T225732Z-1-001/Medieval Village Pack - Dec 2020/Props/FBX/Well.fbx" id="11_40j5v"]
-[ext_resource type="PackedScene" uid="uid://ddhspmucvvxe4" path="res://Assets/Medieval Village Pack - Dec 2020-20251121T225732Z-1-001/Medieval Village Pack - Dec 2020/Props/FBX/Rock_2.fbx" id="12_mf5tq"]
-[ext_resource type="PackedScene" uid="uid://d1av2xr8xjunc" path="res://Assets/Medieval Village Pack - Dec 2020-20251121T225732Z-1-001/Medieval Village Pack - Dec 2020/Props/FBX/Rock_1.fbx" id="13_kyufb"]
-[ext_resource type="PackedScene" uid="uid://bakn2dou42e5d" path="res://Assets/Medieval Village Pack - Dec 2020-20251121T225732Z-1-001/Medieval Village Pack - Dec 2020/Buildings/FBX/Stable.fbx" id="14_kyufb"]
-[ext_resource type="PackedScene" uid="uid://dofulmvhfj05h" path="res://Assets/Medieval Village Pack - Dec 2020-20251121T225732Z-1-001/Medieval Village Pack - Dec 2020/Buildings/FBX/House_2.fbx" id="15_glxvt"]
-[ext_resource type="PackedScene" uid="uid://cpuey3odyg76i" path="res://Assets/Medieval Village Pack - Dec 2020-20251121T225732Z-1-001/Medieval Village Pack - Dec 2020/Buildings/FBX/Mill.fbx" id="16_3isho"]
-[ext_resource type="PackedScene" uid="uid://dsgfixo4tks8u" path="res://Assets/Medieval Village Pack - Dec 2020-20251121T225732Z-1-001/Medieval Village Pack - Dec 2020/Props/FBX/MarketStand_1.fbx" id="17_3ne75"]
-[ext_resource type="PackedScene" uid="uid://c44dcirb6ftpi" path="res://Assets/Medieval Village Pack - Dec 2020-20251121T225732Z-1-001/Medieval Village Pack - Dec 2020/Props/FBX/Hay.fbx" id="18_g8sa8"]
-[ext_resource type="PackedScene" uid="uid://dg0ih0iyn0wf" path="res://Assets/Medieval Village Pack - Dec 2020-20251121T225732Z-1-001/Medieval Village Pack - Dec 2020/Buildings/FBX/Blacksmith.fbx" id="19_22nhs"]
+[ext_resource type="PackedScene" uid="uid://cxl1oqrbo14fc" path="res://Assets/Models/Medieval Village Pack/Props/Bonfire.fbx" id="10_lmiwq"]
+[ext_resource type="PackedScene" uid="uid://hpeblfbxgvbw" path="res://Assets/Models/Medieval Village Pack/Structures/Well.fbx" id="11_40j5v"]
+[ext_resource type="PackedScene" uid="uid://ddhspmucvvxe4" path="res://Assets/Models/Medieval Village Pack/Scenery/Rock_2.fbx" id="12_mf5tq"]
+[ext_resource type="PackedScene" uid="uid://d1av2xr8xjunc" path="res://Assets/Models/Medieval Village Pack/Scenery/Rock_1.fbx" id="13_kyufb"]
+[ext_resource type="PackedScene" uid="uid://bakn2dou42e5d" path="res://Assets/Models/Medieval Village Pack/Structures/Stable.fbx" id="14_kyufb"]
+[ext_resource type="PackedScene" uid="uid://dofulmvhfj05h" path="res://Assets/Models/Medieval Village Pack/Structures/House_2.fbx" id="15_glxvt"]
+[ext_resource type="PackedScene" uid="uid://cpuey3odyg76i" path="res://Assets/Models/Medieval Village Pack/Structures/Mill.fbx" id="16_3isho"]
+[ext_resource type="PackedScene" uid="uid://dsgfixo4tks8u" path="res://Assets/Models/Medieval Village Pack/Structures/MarketStand_1.fbx" id="17_3ne75"]
+[ext_resource type="PackedScene" uid="uid://c44dcirb6ftpi" path="res://Assets/Models/Medieval Village Pack/Props/Hay.fbx" id="18_g8sa8"]
+[ext_resource type="PackedScene" uid="uid://dg0ih0iyn0wf" path="res://Assets/Models/Medieval Village Pack/Structures/Blacksmith.fbx" id="19_22nhs"]
 [ext_resource type="Shader" uid="uid://bi3o8elbtqoni" path="res://addons/simplegrasstextured/shaders/grass.gdshader" id="19_hpsh1"]
 [ext_resource type="Texture2D" uid="uid://c4ggdp0kg5wjk" path="res://addons/simplegrasstextured/textures/grassbushcc008.png" id="20_tcfo5"]
 [ext_resource type="Script" uid="uid://2juaclm8gc1n" path="res://addons/simplegrasstextured/grass.gd" id="21_fbbkc"]
-[ext_resource type="PackedScene" uid="uid://dohp05na2yp8s" path="res://Assets/Medieval Village Pack - Dec 2020-20251121T225732Z-1-001/Medieval Village Pack - Dec 2020/Props/FBX/Mountain_Group_1.fbx" id="22_tc1fg"]
-[ext_resource type="PackedScene" uid="uid://ydpko7uslb27" path="res://Assets/Medieval Village Pack - Dec 2020-20251121T225732Z-1-001/Medieval Village Pack - Dec 2020/Props/FBX/MountainLarge_Single.fbx" id="23_kkwm0"]
-[ext_resource type="PackedScene" uid="uid://dv7lo2ij14jsk" path="res://Assets/Medieval Village Pack - Dec 2020-20251121T225732Z-1-001/Medieval Village Pack - Dec 2020/Props/FBX/Mountain_Group_2.fbx" id="24_dafcy"]
-[ext_resource type="PackedScene" uid="uid://c1finj1b7omuq" path="res://Assets/Medieval Village Pack - Dec 2020-20251121T225732Z-1-001/Medieval Village Pack - Dec 2020/Props/FBX/Mountain_Single.fbx" id="25_wx3wl"]
-[ext_resource type="PackedScene" uid="uid://dlhlctsgyyo42" path="res://Assets/Medieval Village Pack - Dec 2020-20251121T225732Z-1-001/Medieval Village Pack - Dec 2020/Props/FBX/Resource_PineTree_Group.fbx" id="26_kkwm0"]
-[ext_resource type="PackedScene" uid="uid://w7knhtapvnw8" path="res://Assets/Medieval Village Pack - Dec 2020-20251121T225732Z-1-001/Medieval Village Pack - Dec 2020/Props/FBX/WallTowers_DoorClosed_SecondAge.fbx" id="27_dhdln"]
-[ext_resource type="PackedScene" uid="uid://bo6qi4t0w0lib" path="res://Assets/Medieval Village Pack - Dec 2020-20251121T225732Z-1-001/Medieval Village Pack - Dec 2020/Props/FBX/Resource_Rock_1.fbx" id="28_dhdln"]
-[ext_resource type="PackedScene" uid="uid://dfmv1jvwu8c5r" path="res://Assets/Medieval Village Pack - Dec 2020-20251121T225732Z-1-001/Medieval Village Pack - Dec 2020/Props/FBX/Resource_Rock_2.fbx" id="29_iraqr"]
-[ext_resource type="PackedScene" uid="uid://bfl6vuwyyysqy" path="res://Assets/Medieval Village Pack - Dec 2020-20251121T225732Z-1-001/Medieval Village Pack - Dec 2020/Props/FBX/Resource_Rock_3.fbx" id="30_v85xl"]
+[ext_resource type="PackedScene" uid="uid://dohp05na2yp8s" path="res://Assets/Models/Medieval Village Pack/Scenery/Mountain_Group_1.fbx" id="22_tc1fg"]
+[ext_resource type="PackedScene" uid="uid://ydpko7uslb27" path="res://Assets/Models/Medieval Village Pack/Scenery/MountainLarge_Single.fbx" id="23_kkwm0"]
+[ext_resource type="PackedScene" uid="uid://dv7lo2ij14jsk" path="res://Assets/Models/Medieval Village Pack/Scenery/Mountain_Group_2.fbx" id="24_dafcy"]
+[ext_resource type="PackedScene" uid="uid://c1finj1b7omuq" path="res://Assets/Models/Medieval Village Pack/Scenery/Mountain_Single.fbx" id="25_wx3wl"]
+[ext_resource type="PackedScene" uid="uid://dlhlctsgyyo42" path="res://Assets/Models/Medieval Village Pack/Scenery/Resource_PineTree_Group.fbx" id="26_kkwm0"]
+[ext_resource type="PackedScene" uid="uid://w7knhtapvnw8" path="res://Assets/Models/Medieval Village Pack/Walls/WallTowers_DoorClosed_SecondAge.fbx" id="27_dhdln"]
+[ext_resource type="PackedScene" uid="uid://bo6qi4t0w0lib" path="res://Assets/Models/Medieval Village Pack/Scenery/Resource_Rock_1.fbx" id="28_dhdln"]
+[ext_resource type="PackedScene" uid="uid://dfmv1jvwu8c5r" path="res://Assets/Models/Medieval Village Pack/Scenery/Resource_Rock_2.fbx" id="29_iraqr"]
+[ext_resource type="PackedScene" uid="uid://bfl6vuwyyysqy" path="res://Assets/Models/Medieval Village Pack/Scenery/Resource_Rock_3.fbx" id="30_v85xl"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_lmiwq"]
 
@@ -172,8 +172,20 @@ script = ExtResource("3_m15j5")
 [node name="House_1" parent="Buildings" instance=ExtResource("2_8bqr4")]
 transform = Transform3D(2.9930089, 0, 3.360342, 0, 4.5, 0, -3.360342, 0, 2.9930089, -26.692902, 1.9, 0)
 
+[node name="House_2" parent="Buildings" instance=ExtResource("15_glxvt")]
+transform = Transform3D(3.7400212, 0, -1.418535, 0, 4, 0, 1.418535, 0, 3.7400212, 61.06896, 1.5231705, 56.718254)
+
+[node name="House_3" parent="Buildings" instance=ExtResource("15_glxvt")]
+transform = Transform3D(3.7400212, 0, -1.418535, 0, 4, 0, 1.418535, 0, 3.7400212, -12.072834, 1.5231705, -72.307816)
+
+[node name="House_4" parent="Buildings" instance=ExtResource("5_lmiwq")]
+transform = Transform3D(4.5, 0, 0, 0, 4.5, 0, 0, 0, 4.5, -19.9, 1.9, 39.779)
+
 [node name="Sawmill" parent="Buildings" instance=ExtResource("2_re7ba")]
 transform = Transform3D(4.1316094, 0, -1.7832001, 0, 4.5, 0, 1.7832001, 0, 4.1316094, 14.583, 1.9, -20.021)
+
+[node name="Bell_Tower" parent="Buildings" instance=ExtResource("4_j2inr")]
+transform = Transform3D(4.2484264, 0, 1.4835337, 0, 4.5, 0, -1.4835337, 0, 4.2484264, -19.416191, 1.9, -20.022797)
 
 [node name="Inn" parent="Buildings" instance=ExtResource("3_xxpmp")]
 transform = Transform3D(4.2508287, 0, 1.4766359, 0, 4.5, 0, -1.4766359, 0, 4.2508287, 21.314072, 1.9, 32.99713)
@@ -181,23 +193,11 @@ transform = Transform3D(4.2508287, 0, 1.4766359, 0, 4.5, 0, -1.4766359, 0, 4.250
 [node name="Inn2" parent="Buildings" instance=ExtResource("3_xxpmp")]
 transform = Transform3D(3.602303, 0, -2.6969264, 0, 4.5000005, 0, 2.6969264, 0, 3.602303, -35.162308, 1.9, 79.08607)
 
-[node name="Bell_Tower" parent="Buildings" instance=ExtResource("4_j2inr")]
-transform = Transform3D(4.2484264, 0, 1.4835337, 0, 4.5, 0, -1.4835337, 0, 4.2484264, -19.416191, 1.9, -20.022797)
-
-[node name="House_4" parent="Buildings" instance=ExtResource("5_lmiwq")]
-transform = Transform3D(4.5, 0, 0, 0, 4.5, 0, 0, 0, 4.5, -19.9, 1.9, 39.779)
-
 [node name="Well" parent="Buildings" instance=ExtResource("11_40j5v")]
 transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, -5.019518, 3.1685333, 11.195259)
 
 [node name="Stable" parent="Buildings" instance=ExtResource("14_kyufb")]
 transform = Transform3D(4, 0, 0, 0, 4, 0, 0, 0, 4, -57.657944, 1.9389801, 65.048965)
-
-[node name="House_2" parent="Buildings" instance=ExtResource("15_glxvt")]
-transform = Transform3D(3.7400212, 0, -1.418535, 0, 4, 0, 1.418535, 0, 3.7400212, 61.06896, 1.5231705, 56.718254)
-
-[node name="House_3" parent="Buildings" instance=ExtResource("15_glxvt")]
-transform = Transform3D(3.7400212, 0, -1.418535, 0, 4, 0, 1.418535, 0, 3.7400212, -12.072834, 1.5231705, -72.307816)
 
 [node name="Mill" parent="Buildings" instance=ExtResource("16_3isho")]
 process_mode = 3
