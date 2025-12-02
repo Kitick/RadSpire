@@ -4,7 +4,7 @@ using Core;
 using Godot;
 using SaveSystem;
 using Settings;
-using Host;
+using MultiplayerPanels;
 using LoadMenuScene;
 
 public partial class MainMenu : Control {

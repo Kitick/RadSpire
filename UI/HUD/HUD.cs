@@ -3,7 +3,7 @@ using Core;
 using Godot;
 using InputSystem;
 using Settings;
-using Host;
+using MultiplayerPanels;
 
 public sealed partial class HUD : Control {
 	public enum MenuState { Game, Paused, Settings, Host };
@@ -66,7 +66,7 @@ public sealed partial class HUD : Control {
 	private void OnStateChanged(MenuState from, MenuState to) {
 		GetTree().Paused = to != MenuState.Game;
 		PauseMenu.Visible = to == MenuState.Paused;
-		
+
 		if(to == MenuState.Host) { OpenHostPanel(); }
 		if(to == MenuState.Settings) { OpenSettings(); }
 	}

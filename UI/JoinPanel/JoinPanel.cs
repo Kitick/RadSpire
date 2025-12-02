@@ -1,6 +1,8 @@
-using Godot;
 using System;
+using Godot;
 
-public partial class JoinPanel : Control
-{
+namespace MultiplayerPanels {
+	public partial class JoinPanel : Control {
+
+	}
 }
