@@ -47,7 +47,7 @@ theme_override_font_sizes/font_size = 128
 icon = ExtResource("2_yf308")
 alignment = 0
 
-[node name="InfoText" type="Label" parent="VLoadContainer/Load1"]
+[node name="InfoText1" type="Label" parent="VLoadContainer/Load1"]
 layout_mode = 0
 offset_left = 610.0
 offset_top = 61.0
@@ -62,7 +62,7 @@ theme_override_font_sizes/font_size = 128
 icon = ExtResource("2_yf308")
 alignment = 0
 
-[node name="InfoText" type="Label" parent="VLoadContainer/Load2"]
+[node name="InfoText2" type="Label" parent="VLoadContainer/Load2"]
 layout_mode = 0
 offset_left = 610.0
 offset_top = 61.0
@@ -77,7 +77,7 @@ theme_override_font_sizes/font_size = 128
 icon = ExtResource("2_yf308")
 alignment = 0
 
-[node name="InfoText" type="Label" parent="VLoadContainer/Load3"]
+[node name="InfoText3" type="Label" parent="VLoadContainer/Load3"]
 layout_mode = 0
 offset_left = 610.0
 offset_top = 61.0
@@ -92,7 +92,7 @@ theme_override_font_sizes/font_size = 128
 icon = ExtResource("2_yf308")
 alignment = 0
 
-[node name="InfoText" type="Label" parent="VLoadContainer/Load4"]
+[node name="InfoText4" type="Label" parent="VLoadContainer/Load4"]
 layout_mode = 0
 offset_left = 610.0
 offset_top = 61.0
@@ -107,7 +107,7 @@ theme_override_font_sizes/font_size = 128
 icon = ExtResource("2_yf308")
 alignment = 0
 
-[node name="InfoText" type="Label" parent="VLoadContainer/Load5"]
+[node name="InfoText5" type="Label" parent="VLoadContainer/Load5"]
 layout_mode = 0
 offset_left = 610.0
 offset_top = 61.0

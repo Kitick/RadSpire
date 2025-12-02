@@ -14,13 +14,10 @@ namespace Settings {
 		private const string CONTROLLER = "Controller";
 		private const string MK = "MK";
 		private const string ACCESSIBILITY = "Accessibility";
-
-		private readonly string[] Tabs = [GENERAL, DISPLAY, SOUND, CONTROLLER, MK, ACCESSIBILITY];
-
 		private const string HEADER = "Top_Panel";
-
 		private const string TOPANEL = "_Panel";
 		private const string TOBUTTON = "_Button";
+		private readonly string[] Tabs = [GENERAL, DISPLAY, SOUND, CONTROLLER, MK, ACCESSIBILITY];
 
 		private readonly Dictionary<string, (VBoxContainer panel, Button button)> Nodes = [];
 

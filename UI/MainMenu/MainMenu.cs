@@ -4,6 +4,8 @@ using Core;
 using Godot;
 using SaveSystem;
 using Settings;
+using Host;
+using LoadMenuScene;
 
 public partial class MainMenu : Control {
 	public static readonly bool Debug = false;
@@ -160,11 +162,13 @@ public partial class MainMenu : Control {
 
 	// Pop-up panel buttons handler for Multiplayer
 	private void OnHostNewButtonPressed() {
-		GD.Print("Host New Game Button Pressed!");
+		var host = this.AddScene<HostPanel>(Scenes.HostPanel);
+		host.OpenMenu();
 	}
 
 	private void OnHostSavedButtonPressed() {
-		GD.Print("Host Saved Button Pressed!");
+		var loadMenu = this.AddScene<LoadMenu>(Scenes.LoadMenu);
+		loadMenu.OpenMenu();
 	}
 
 	private void OnJoinGameButtonPressed() {
