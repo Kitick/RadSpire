@@ -55,7 +55,7 @@ public partial class Item : Resource, ISaveable<ItemData> {
     public bool IsStackable => MaxStackSize > 1;
     [Export] public bool IsConsumable { get; set; } = false;
     [Export] public Texture2D IconTexture { get; set; } = null!;
-    [Export] public PackedScene? Item3DScene { get; set; } = null;
+    
     //Components
     public enum ItemComponentType {
         WeaponBase,
@@ -79,6 +79,10 @@ public partial class Item : Resource, ISaveable<ItemData> {
         }
     }
 
+    public bool HasComponent(ItemComponentType type) {
+        return components.ContainsKey(type);
+    }
+
     public bool SameItem(Item other) {
         if(other == null) {
             return false;
@@ -93,7 +97,6 @@ public partial class Item : Resource, ISaveable<ItemData> {
         MaxStackSize = MaxStackSize,
         IsConsumable = IsConsumable,
         IconTexture = IconTexture,
-        Item3DScene = Item3DScene,
         ComponentsData = SerializeComponents(),
     };
 
@@ -112,9 +115,6 @@ public partial class Item : Resource, ISaveable<ItemData> {
         MaxStackSize = data.MaxStackSize;
         IsConsumable = data.IsConsumable;
         IconTexture = data.IconTexture;
-        if(data.Item3DScene != null) {
-            Item3DScene = data.Item3DScene;
-        }
         components = DeserializeComponents(data);
     }
 
@@ -135,9 +135,6 @@ namespace SaveSystem {
         public int MaxStackSize { get; init; }
         public bool IsConsumable { get; init; }
         public Texture2D IconTexture { get; init; }
-        public PackedScene? Item3DScene { get; init; }
-        public DurabilityData? Durability { get; init; }
-        public CraftingData? Crafting { get; init; }
         public Dictionary<Item.ItemComponentType, IItemComponent> ComponentsData { get; init; }
     }
 }
