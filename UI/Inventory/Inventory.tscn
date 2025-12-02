@@ -1,0 +1,441 @@
+[gd_scene load_steps=3 format=3 uid="uid://bffohbw4kmhwa"]
+
+[ext_resource type="Texture2D" uid="uid://8ykhw0g480u8" path="res://Assets/Images/Icons/sword.png" id="1_ck2mn"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7pfaa"]
+bg_color = Color(0.6066884, 0.5630471, 0.49756545, 1)
+border_width_left = 5
+border_width_top = 5
+border_color = Color(0.39688924, 0.3968893, 0.396889, 1)
+border_blend = true
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[node name="Inventory" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 350.0
+offset_bottom = 250.0
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.1
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.45054996, 0.2622559, 0.190151, 1)
+
+[node name="GridBackground" type="ColorRect" parent="Background"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.025
+anchor_top = 0.035
+anchor_right = 0.975
+anchor_bottom = 0.965
+color = Color(1, 1, 1, 0.60784316)
+
+[node name="GridContainer" type="GridContainer" parent="Background/GridBackground"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.025
+anchor_top = 0.03
+anchor_right = 0.975
+anchor_bottom = 0.97
+theme_override_constants/h_separation = 7
+theme_override_constants/v_separation = 5
+columns = 5
+
+[node name="InvSlot1" type="Panel" parent="Background/GridBackground/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_7pfaa")
+
+[node name="TextureRect" type="TextureRect" parent="Background/GridBackground/GridContainer/InvSlot1"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = -5.0
+offset_bottom = -5.0
+texture = ExtResource("1_ck2mn")
+expand_mode = 1
+
+[node name="ItemCountLabel" type="Label" parent="Background/GridBackground/GridContainer/InvSlot1"]
+layout_mode = 0
+offset_left = 0.9375
+offset_top = 39.8475
+offset_right = 55.9375
+offset_bottom = 62.8475
+horizontal_alignment = 2
+
+[node name="InvSlot2" type="Panel" parent="Background/GridBackground/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_7pfaa")
+
+[node name="TextureRect" type="TextureRect" parent="Background/GridBackground/GridContainer/InvSlot2"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = -5.0
+offset_bottom = -5.0
+expand_mode = 1
+
+[node name="ItemCountLabel" type="Label" parent="Background/GridBackground/GridContainer/InvSlot2"]
+layout_mode = 0
+offset_left = 0.9375
+offset_top = 39.8475
+offset_right = 55.9375
+offset_bottom = 62.8475
+horizontal_alignment = 2
+
+[node name="InvSlot3" type="Panel" parent="Background/GridBackground/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_7pfaa")
+
+[node name="TextureRect" type="TextureRect" parent="Background/GridBackground/GridContainer/InvSlot3"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = -5.0
+offset_bottom = -5.0
+expand_mode = 1
+
+[node name="ItemCountLabel" type="Label" parent="Background/GridBackground/GridContainer/InvSlot3"]
+layout_mode = 0
+offset_left = 0.9375
+offset_top = 39.8475
+offset_right = 55.9375
+offset_bottom = 62.8475
+horizontal_alignment = 2
+
+[node name="InvSlot4" type="Panel" parent="Background/GridBackground/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_7pfaa")
+
+[node name="TextureRect" type="TextureRect" parent="Background/GridBackground/GridContainer/InvSlot4"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = -5.0
+offset_bottom = -5.0
+expand_mode = 1
+
+[node name="ItemCountLabel" type="Label" parent="Background/GridBackground/GridContainer/InvSlot4"]
+layout_mode = 0
+offset_left = 0.9375
+offset_top = 39.8475
+offset_right = 55.9375
+offset_bottom = 62.8475
+horizontal_alignment = 2
+
+[node name="InvSlot5" type="Panel" parent="Background/GridBackground/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_7pfaa")
+
+[node name="TextureRect" type="TextureRect" parent="Background/GridBackground/GridContainer/InvSlot5"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = -5.0
+offset_bottom = -5.0
+expand_mode = 1
+
+[node name="ItemCountLabel" type="Label" parent="Background/GridBackground/GridContainer/InvSlot5"]
+layout_mode = 0
+offset_left = 0.9375
+offset_top = 39.8475
+offset_right = 55.9375
+offset_bottom = 62.8475
+horizontal_alignment = 2
+
+[node name="InvSlot6" type="Panel" parent="Background/GridBackground/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_7pfaa")
+
+[node name="TextureRect" type="TextureRect" parent="Background/GridBackground/GridContainer/InvSlot6"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = -5.0
+offset_bottom = -5.0
+expand_mode = 1
+
+[node name="ItemCountLabel" type="Label" parent="Background/GridBackground/GridContainer/InvSlot6"]
+layout_mode = 0
+offset_left = 0.9375
+offset_top = 39.8475
+offset_right = 55.9375
+offset_bottom = 62.8475
+horizontal_alignment = 2
+
+[node name="InvSlot7" type="Panel" parent="Background/GridBackground/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_7pfaa")
+
+[node name="TextureRect" type="TextureRect" parent="Background/GridBackground/GridContainer/InvSlot7"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = -5.0
+offset_bottom = -5.0
+expand_mode = 1
+
+[node name="ItemCountLabel" type="Label" parent="Background/GridBackground/GridContainer/InvSlot7"]
+layout_mode = 0
+offset_left = 0.9375
+offset_top = 39.8475
+offset_right = 55.9375
+offset_bottom = 62.8475
+horizontal_alignment = 2
+
+[node name="InvSlot8" type="Panel" parent="Background/GridBackground/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_7pfaa")
+
+[node name="TextureRect" type="TextureRect" parent="Background/GridBackground/GridContainer/InvSlot8"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = -5.0
+offset_bottom = -5.0
+expand_mode = 1
+
+[node name="ItemCountLabel" type="Label" parent="Background/GridBackground/GridContainer/InvSlot8"]
+layout_mode = 0
+offset_left = 0.9375
+offset_top = 39.8475
+offset_right = 55.9375
+offset_bottom = 62.8475
+horizontal_alignment = 2
+
+[node name="InvSlot9" type="Panel" parent="Background/GridBackground/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_7pfaa")
+
+[node name="TextureRect" type="TextureRect" parent="Background/GridBackground/GridContainer/InvSlot9"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = -5.0
+offset_bottom = -5.0
+expand_mode = 1
+
+[node name="ItemCountLabel" type="Label" parent="Background/GridBackground/GridContainer/InvSlot9"]
+layout_mode = 0
+offset_left = 0.9375
+offset_top = 39.8475
+offset_right = 55.9375
+offset_bottom = 62.8475
+horizontal_alignment = 2
+
+[node name="InvSlot10" type="Panel" parent="Background/GridBackground/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_7pfaa")
+
+[node name="TextureRect" type="TextureRect" parent="Background/GridBackground/GridContainer/InvSlot10"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = -5.0
+offset_bottom = -5.0
+expand_mode = 1
+
+[node name="ItemCountLabel" type="Label" parent="Background/GridBackground/GridContainer/InvSlot10"]
+layout_mode = 0
+offset_left = 0.9375
+offset_top = 39.8475
+offset_right = 55.9375
+offset_bottom = 62.8475
+horizontal_alignment = 2
+
+[node name="InvSlot11" type="Panel" parent="Background/GridBackground/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_7pfaa")
+
+[node name="TextureRect" type="TextureRect" parent="Background/GridBackground/GridContainer/InvSlot11"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = -5.0
+offset_bottom = -5.0
+expand_mode = 1
+
+[node name="ItemCountLabel" type="Label" parent="Background/GridBackground/GridContainer/InvSlot11"]
+layout_mode = 0
+offset_left = 0.9375
+offset_top = 39.8475
+offset_right = 55.9375
+offset_bottom = 62.8475
+horizontal_alignment = 2
+
+[node name="InvSlot12" type="Panel" parent="Background/GridBackground/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_7pfaa")
+
+[node name="TextureRect" type="TextureRect" parent="Background/GridBackground/GridContainer/InvSlot12"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = -5.0
+offset_bottom = -5.0
+expand_mode = 1
+
+[node name="ItemCountLabel" type="Label" parent="Background/GridBackground/GridContainer/InvSlot12"]
+layout_mode = 0
+offset_left = 0.9375
+offset_top = 39.8475
+offset_right = 55.9375
+offset_bottom = 62.8475
+horizontal_alignment = 2
+
+[node name="InvSlot13" type="Panel" parent="Background/GridBackground/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_7pfaa")
+
+[node name="TextureRect" type="TextureRect" parent="Background/GridBackground/GridContainer/InvSlot13"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = -5.0
+offset_bottom = -5.0
+expand_mode = 1
+
+[node name="ItemCountLabel" type="Label" parent="Background/GridBackground/GridContainer/InvSlot13"]
+layout_mode = 0
+offset_left = 0.9375
+offset_top = 39.8475
+offset_right = 55.9375
+offset_bottom = 62.8475
+horizontal_alignment = 2
+
+[node name="InvSlot14" type="Panel" parent="Background/GridBackground/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_7pfaa")
+
+[node name="TextureRect" type="TextureRect" parent="Background/GridBackground/GridContainer/InvSlot14"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = -5.0
+offset_bottom = -5.0
+expand_mode = 1
+
+[node name="ItemCountLabel" type="Label" parent="Background/GridBackground/GridContainer/InvSlot14"]
+layout_mode = 0
+offset_left = 0.9375
+offset_top = 39.8475
+offset_right = 55.9375
+offset_bottom = 62.8475
+horizontal_alignment = 2
+
+[node name="InvSlot15" type="Panel" parent="Background/GridBackground/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_7pfaa")
+
+[node name="TextureRect" type="TextureRect" parent="Background/GridBackground/GridContainer/InvSlot15"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = -5.0
+offset_bottom = -5.0
+expand_mode = 1
+
+[node name="ItemCountLabel" type="Label" parent="Background/GridBackground/GridContainer/InvSlot15"]
+layout_mode = 0
+offset_left = 0.9375
+offset_top = 39.8475
+offset_right = 55.9375
+offset_bottom = 62.8475
+horizontal_alignment = 2
+
+[node name="TabBackground" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.3
+anchor_bottom = 0.1
+offset_bottom = 1.0
+color = Color(0.4509804, 0.2627451, 0.1882353, 1)
+
+[node name="Label" type="RichTextLabel" parent="TabBackground"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+text = "INVENTORY"
+horizontal_alignment = 1
+vertical_alignment = 1

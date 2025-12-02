@@ -1,8 +1,8 @@
 [gd_scene load_steps=4 format=3 uid="uid://dv4igypq0dbv8"]
 
-[ext_resource type="Texture2D" uid="uid://ey80t6hrma51" path="res://Assets/Images/LoadMenuBackground.png" id="1_668ho"]
+[ext_resource type="Texture2D" uid="uid://ey80t6hrma51" path="res://Assets/Images/Menu/background_kneeling.png" id="1_668ho"]
 [ext_resource type="Script" uid="uid://cnc1drhp35q8y" path="res://UI/LoadMenu/LoadMenu.cs" id="1_bhsh3"]
-[ext_resource type="Texture2D" uid="uid://8ykhw0g480u8" path="res://Assets/Textures/sword.png" id="2_yf308"]
+[ext_resource type="Texture2D" uid="uid://8ykhw0g480u8" path="res://Assets/Images/Icons/sword.png" id="2_yf308"]
 
 [node name="LoadMenu" type="Control"]
 layout_mode = 3
@@ -47,7 +47,7 @@ theme_override_font_sizes/font_size = 128
 icon = ExtResource("2_yf308")
 alignment = 0
 
-[node name="InfoText" type="Label" parent="VLoadContainer/Load1"]
+[node name="InfoText1" type="Label" parent="VLoadContainer/Load1"]
 layout_mode = 0
 offset_left = 610.0
 offset_top = 61.0
@@ -62,7 +62,7 @@ theme_override_font_sizes/font_size = 128
 icon = ExtResource("2_yf308")
 alignment = 0
 
-[node name="InfoText" type="Label" parent="VLoadContainer/Load2"]
+[node name="InfoText2" type="Label" parent="VLoadContainer/Load2"]
 layout_mode = 0
 offset_left = 610.0
 offset_top = 61.0
@@ -77,7 +77,7 @@ theme_override_font_sizes/font_size = 128
 icon = ExtResource("2_yf308")
 alignment = 0
 
-[node name="InfoText" type="Label" parent="VLoadContainer/Load3"]
+[node name="InfoText3" type="Label" parent="VLoadContainer/Load3"]
 layout_mode = 0
 offset_left = 610.0
 offset_top = 61.0
@@ -92,7 +92,7 @@ theme_override_font_sizes/font_size = 128
 icon = ExtResource("2_yf308")
 alignment = 0
 
-[node name="InfoText" type="Label" parent="VLoadContainer/Load4"]
+[node name="InfoText4" type="Label" parent="VLoadContainer/Load4"]
 layout_mode = 0
 offset_left = 610.0
 offset_top = 61.0
@@ -107,7 +107,7 @@ theme_override_font_sizes/font_size = 128
 icon = ExtResource("2_yf308")
 alignment = 0
 
-[node name="InfoText" type="Label" parent="VLoadContainer/Load5"]
+[node name="InfoText5" type="Label" parent="VLoadContainer/Load5"]
 layout_mode = 0
 offset_left = 610.0
 offset_top = 61.0
