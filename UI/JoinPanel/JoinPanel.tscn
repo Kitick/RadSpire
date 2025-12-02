@@ -1,0 +1,113 @@
+[gd_scene load_steps=2 format=3 uid="uid://bg5jxcp2jtwjp"]
+
+[ext_resource type="Script" uid="uid://i6fifnxwdq60" path="res://UI/JoinPanel/JoinPanel.cs" id="1_4o4uc"]
+
+[node name="JoinPanel" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_4o4uc")
+
+[node name="PanelArea" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 400.0
+offset_top = 128.0
+offset_right = -400.0
+offset_bottom = -184.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.5)
+
+[node name="VWhiteLine" type="ColorRect" parent="PanelArea"]
+layout_mode = 0
+offset_left = 384.0
+offset_right = 392.0
+offset_bottom = 768.0
+
+[node name="JoinGame" type="Label" parent="PanelArea"]
+layout_mode = 0
+offset_left = 32.0
+offset_top = 16.0
+offset_right = 111.0
+offset_bottom = 39.0
+scale = Vector2(2.5, 2.5)
+text = "Join Game"
+
+[node name="NoPassword" type="Label" parent="PanelArea"]
+layout_mode = 0
+offset_left = 80.0
+offset_top = 128.0
+offset_right = 181.0
+offset_bottom = 151.0
+scale = Vector2(2.5, 2.5)
+text = "No Password"
+
+[node name="NoPasswordCheckBox" type="CheckBox" parent="PanelArea/NoPassword"]
+layout_mode = 0
+offset_left = -25.0
+offset_top = -3.0
+offset_right = 104.0
+offset_bottom = 28.0
+
+[node name="NotFull" type="Label" parent="PanelArea"]
+layout_mode = 0
+offset_left = 80.0
+offset_top = 192.0
+offset_right = 181.0
+offset_bottom = 215.0
+scale = Vector2(2.5, 2.5)
+text = "Not Full"
+
+[node name="NotFullCheckBox" type="CheckBox" parent="PanelArea/NotFull"]
+layout_mode = 0
+offset_left = -25.0
+offset_top = -3.0
+offset_right = 64.0
+offset_bottom = 28.0
+
+[node name="VLineEditContainer" type="VBoxContainer" parent="PanelArea"]
+layout_mode = 0
+offset_left = 448.0
+offset_top = 16.0
+offset_right = 876.0
+offset_bottom = 86.0
+scale = Vector2(1.5, 1.5)
+
+[node name="GameNameInsert" type="LineEdit" parent="PanelArea/VLineEditContainer"]
+layout_mode = 2
+placeholder_text = "Enter Game Name"
+
+[node name="IPAddressDirect" type="LineEdit" parent="PanelArea/VLineEditContainer"]
+layout_mode = 2
+placeholder_text = "Enter Direct IP Address"
+
+[node name="ItemList" type="ItemList" parent="PanelArea"]
+layout_mode = 0
+offset_left = 448.0
+offset_top = 128.0
+offset_right = 1088.0
+offset_bottom = 168.0
+
+[node name="CancelButton" type="Button" parent="PanelArea"]
+layout_mode = 0
+offset_left = 32.0
+offset_top = 672.0
+offset_right = 92.0
+offset_bottom = 703.0
+scale = Vector2(2.5, 2.5)
+text = "Cancel"
+
+[node name="JoinButton" type="Button" parent="PanelArea"]
+layout_mode = 0
+offset_left = 938.0
+offset_top = 672.0
+offset_right = 998.0
+offset_bottom = 703.0
+scale = Vector2(2.5, 2.5)
+text = "JOIN"

@@ -14,21 +14,18 @@ namespace Settings {
 		private const string CONTROLLER = "Controller";
 		private const string MK = "MK";
 		private const string ACCESSIBILITY = "Accessibility";
-
-		private readonly string[] Tabs = [GENERAL, DISPLAY, SOUND, CONTROLLER, MK, ACCESSIBILITY];
-
 		private const string HEADER = "Top_Panel";
-
 		private const string TOPANEL = "_Panel";
 		private const string TOBUTTON = "_Button";
+		private readonly string[] Tabs = [GENERAL, DISPLAY, SOUND, CONTROLLER, MK, ACCESSIBILITY];
 
 		private readonly Dictionary<string, (VBoxContainer panel, Button button)> Nodes = [];
 
+		public event Action? OnMenuClosed;
 		private event Action? OnExit;
 
-		public override void _EnterTree() {
+		public override void _Ready() {
 			ProcessMode = ProcessModeEnum.Always;
-			Visible = false;
 
 			GetComponents();
 			SetInputCallbacks();
@@ -36,6 +33,7 @@ namespace Settings {
 
 		public override void _ExitTree() {
 			OnExit?.Invoke();
+			OnMenuClosed?.Invoke();
 		}
 
 		private void SetInputCallbacks() {
@@ -62,24 +60,19 @@ namespace Settings {
 		}
 
 		public void OpenMenu() {
-			if(Visible) { return; }
-
 			LoadData();
-			Visible = true;
 		}
 
-		public void CloseMenu() {
-			if(!Visible) { return; }
-
+		private void CloseMenu() {
 			SaveData();
-			Visible = false;
+			QueueFree();
 		}
 
-		public void SaveData() {
+		private void SaveData() {
 			SaveService.Save(SAVEFILE, Serialize());
 		}
 
-		public void LoadData() {
+		private void LoadData() {
 			if(SaveService.Exists(SAVEFILE)) {
 				var data = SaveService.Load<SettingsData>(SAVEFILE);
 				Deserialize(data);

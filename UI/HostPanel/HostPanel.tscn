@@ -1,0 +1,98 @@
+[gd_scene load_steps=2 format=3 uid="uid://bnjymb23oq215"]
+
+[ext_resource type="Script" uid="uid://b8g2rj5h77k4d" path="res://UI/HostPanel/HostPanel.cs" id="1_8i2cy"]
+
+[node name="HostPanel" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_8i2cy")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 768.0
+offset_top = 256.0
+offset_right = -832.0
+offset_bottom = -444.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.5)
+
+[node name="lblHostText" type="Label" parent="ColorRect"]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 14.0
+offset_right = 102.0
+offset_bottom = 37.0
+scale = Vector2(1.625, 1.625)
+text = "Host Game"
+
+[node name="GameNameContainer" type="VBoxContainer" parent="ColorRect"]
+layout_mode = 0
+offset_left = 64.0
+offset_top = 64.0
+offset_right = 256.0
+offset_bottom = 144.0
+
+[node name="lblGameName" type="Label" parent="ColorRect/GameNameContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_font_sizes/font_size = 32
+text = "Game Name"
+
+[node name="InputGameName" type="LineEdit" parent="ColorRect/GameNameContainer"]
+layout_mode = 2
+placeholder_text = "Input Game Name"
+
+[node name="PasswordContainer" type="VBoxContainer" parent="ColorRect"]
+layout_mode = 0
+offset_left = 64.0
+offset_top = 160.0
+offset_right = 256.0
+offset_bottom = 240.0
+
+[node name="lblPassword" type="Label" parent="ColorRect/PasswordContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Password"
+
+[node name="PasswordCheckbox" type="CheckBox" parent="ColorRect/PasswordContainer/lblPassword"]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -40.0
+offset_top = -18.0
+offset_bottom = 6.0
+grow_horizontal = 0
+grow_vertical = 2
+scale = Vector2(1.5, 1.5)
+button_pressed = true
+
+[node name="InputPassword" type="LineEdit" parent="ColorRect/PasswordContainer"]
+layout_mode = 2
+placeholder_text = "Input Password"
+
+[node name="OptionContainer" type="HBoxContainer" parent="ColorRect"]
+layout_mode = 0
+offset_left = 51.0
+offset_top = 288.0
+offset_right = 176.0
+offset_bottom = 328.0
+scale = Vector2(1.75, 1.75)
+
+[node name="CancelButton" type="Button" parent="ColorRect/OptionContainer"]
+layout_mode = 2
+text = "Cancel"
+
+[node name="HostButton" type="Button" parent="ColorRect/OptionContainer"]
+layout_mode = 2
+text = "  Host  "
