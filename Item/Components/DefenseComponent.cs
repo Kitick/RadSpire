@@ -3,8 +3,8 @@ using SaveSystem;
 
 namespace Components {
     public class Defense : IItemComponent, ISaveable<DefenseData> {
-        public float DefenseVal { get; set; }
-        public float KnockbackResist { get; set; }
+        public float DefenseVal { get; set; } = 0;
+        public float KnockbackResist { get; set; } = 0;
 
         public DefenseData Serialize() => new DefenseData {
             DefenseVal = DefenseVal,
