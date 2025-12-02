@@ -48,7 +48,7 @@ public partial class Item3DIcon : Node3D {
         CurrentItem3DScene.GlobalPosition = position;
 
         // ---- SpriteMeshInstance is a MeshInstance3D ----
-        var spriteMesh = CurrentItem3DScene.GetNodeOrNull<Node3D>("SpriteMeshInstance");
+        var spriteMesh = CurrentItem3DScene.GetNodeOrNull<Node3D>("RigidBody3D/SpriteMeshInstance");
 
         if (spriteMesh == null)
         {
