@@ -5,6 +5,7 @@ using Godot;
 using SaveSystem;
 using Settings;
 using Host;
+using LoadMenuScene;
 
 public partial class MainMenu : Control {
 	public static readonly bool Debug = false;
@@ -166,7 +167,8 @@ public partial class MainMenu : Control {
 	}
 
 	private void OnHostSavedButtonPressed() {
-		GD.Print("Host Saved Button Pressed!");
+		var loadMenu = this.AddScene<LoadMenu>(Scenes.LoadMenu);
+		loadMenu.OpenMenu();
 	}
 
 	private void OnJoinGameButtonPressed() {
