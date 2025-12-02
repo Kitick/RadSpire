@@ -2,7 +2,7 @@ using System;
 using SaveSystem;
 
 namespace Components {
-    public class Crafting : ISaveable<CraftingData> {
+    public class Crafting : IItemComponent, ISaveable<CraftingData> {
         public Inventory CraftingRecipe {
             get;
             set;

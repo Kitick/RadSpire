@@ -24,6 +24,8 @@ public sealed partial class HUD : Control {
 	public bool IsPaused => GetTree().Paused;
 
 	private event Action? OnExit;
+	public Player Player = null!;
+	public bool InventoryOpen => Inventory.Visible;
 
 	public HUD() {
 		StateMachine = new(MenuState.Game, OnStateChanged);
@@ -98,11 +100,11 @@ public sealed partial class HUD : Control {
 		if(!InventoryOpen) {
 			Inventory.Visible = true;
 			Hotbar.Visible = true;
-			State = MenuState.Inventory;
+			StateMachine.TransitionTo(MenuState.Inventory);
 		}
 		else {
 			Inventory.Visible = false;
-			State = MenuState.Game;
+			StateMachine.TransitionTo(MenuState.Game);
 		}
 	}
 }

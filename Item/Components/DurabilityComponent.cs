@@ -2,7 +2,7 @@ using System;
 using SaveSystem;
 
 namespace Components {
-    public class Durability : ISaveable<DurabilityData> {
+    public class Durability : IItemComponent, ISaveable<DurabilityData> {
         public int CurrentDurability {
             get;
             set {
@@ -34,13 +34,13 @@ namespace Components {
         }
 
         public DurabilityData Serialize() => new DurabilityData {
-            CurrentDurability = CurrentDurability,
-            MaxDurability = MaxDurability,
+            currentDurability = CurrentDurability,
+            maxDurability = MaxDurability,
         };
 
         public void Deserialize(in DurabilityData data) {
-            CurrentDurability = data.CurrentDurability;
-            MaxDurability = data.MaxDurability;
+            CurrentDurability = data.currentDurability;
+            MaxDurability = data.maxDurability;
         }
     }
     
@@ -64,7 +64,7 @@ namespace Components {
 
 namespace SaveSystem {
     public readonly struct DurabilityData : ISaveData {
-        public int CurrentDurability { get; init; }
-        public int MaxDurability { get; init; }
+        public int currentDurability { get; init; }
+        public int maxDurability { get; init; }
     }
 }
