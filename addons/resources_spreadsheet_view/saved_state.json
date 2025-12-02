@@ -2,13 +2,13 @@
   "column_properties": {
     "res://Item/ItemDataBase/": {
       "metadata/_custom_type_script": {
-        "visibility": 0
+        "visibility": 0.0
       },
       "resource_local_to_scene": {
-        "visibility": 0
+        "visibility": 0.0
       },
       "resource_name": {
-        "visibility": 0
+        "visibility": 0.0
       }
     }
   },
@@ -16,6 +16,11 @@
     "res://Item/ItemDataBase/"
   ],
   "table_functions": {
-
+    "filter": [
+      "return true"
+    ],
+    "process": [
+      "return value"
+    ]
   }
 }
