@@ -37,6 +37,7 @@ public partial class InvSlotUI : Panel {
 		if(@event is InputEventMouseButton mouseEvent) {
 			if(mouseEvent.ButtonIndex == MouseButton.Left && mouseEvent.Pressed) {
 				OnSlotClicked?.Invoke(SlotIndex);
+				GD.Print($"[InvSlotUI] Slot {SlotIndex} clicked.");
 			}
 		}
 	}

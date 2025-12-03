@@ -46,25 +46,37 @@ public partial class InventoryUI: Control {
 			if(PlayerInventory.IsEmptySlot(PlayerInventory.GetRow(slotIndex), PlayerInventory.GetColumn(slotIndex))) {
 				return;
 			}
-			HeldItemSlotUI = new InvSlotUI();
-			HeldItemSlotUI.UpdateSlotUI(PlayerInventory.GetItemSlot(PlayerInventory.GetRow(slotIndex), PlayerInventory.GetColumn(slotIndex)));
-			AddChild(HeldItemSlotUI);
-			MouseHasItemSlot = true;
+			if(InvSlotTemplate != null) {
+				HeldItemSlotUI = InvSlotTemplate.Instantiate<InvSlotUI>();
+			}
+			else {
+				HeldItemSlotUI = new InvSlotUI();
+			}
+			ItemSlot original = PlayerInventory.GetItemSlot(PlayerInventory.GetRow(slotIndex), PlayerInventory.GetColumn(slotIndex));
 			HeldItemSlot = new ItemSlot();
-			HeldItemSlot = PlayerInventory.GetItemSlot(PlayerInventory.GetRow(slotIndex), PlayerInventory.GetColumn(slotIndex));
+			HeldItemSlot.Item = original.Item;
+			HeldItemSlot.Quantity = original.Quantity;
+			AddChild(HeldItemSlotUI);
+			HeldItemSlotUI.MouseFilter = Control.MouseFilterEnum.Ignore;
+			HeldItemSlotUI.ZIndex = 100;
+			HeldItemSlotUI?.UpdateSlotUI(HeldItemSlot);
+			MouseHasItemSlot = true;
 			PlayerInventory.RemoveItem(PlayerInventory.GetRow(slotIndex), PlayerInventory.GetColumn(slotIndex));
 		}
 		else {
+			if(HeldItemSlot == null) return;
 			if(PlayerInventory.IsEmptySlot(PlayerInventory.GetRow(slotIndex), PlayerInventory.GetColumn(slotIndex))) {
 				PlayerInventory.AddItem(HeldItemSlot, PlayerInventory.GetRow(slotIndex), PlayerInventory.GetColumn(slotIndex));
 				MouseHasItemSlot = false;
-				HeldItemSlotUI.QueueFree();
+				HeldItemSlotUI?.QueueFree();
 				HeldItemSlotUI = null;
 				HeldItemSlot = null;
 			}
 			else if(!HeldItemSlot.SameItem(PlayerInventory.GetItem(PlayerInventory.GetRow(slotIndex), PlayerInventory.GetColumn(slotIndex)))) {
 				ItemSlot tempSlot = new ItemSlot();
-				tempSlot = PlayerInventory.GetItemSlot(PlayerInventory.GetRow(slotIndex), PlayerInventory.GetColumn(slotIndex));
+				ItemSlot original = PlayerInventory.GetItemSlot(PlayerInventory.GetRow(slotIndex), PlayerInventory.GetColumn(slotIndex));
+				tempSlot.Item = original.Item;
+				tempSlot.Quantity = original.Quantity;
 				PlayerInventory.RemoveItem(PlayerInventory.GetRow(slotIndex), PlayerInventory.GetColumn(slotIndex));
 				PlayerInventory.AddItem(HeldItemSlot, PlayerInventory.GetRow(slotIndex), PlayerInventory.GetColumn(slotIndex));
 				HeldItemSlot = tempSlot;
@@ -72,16 +84,18 @@ public partial class InventoryUI: Control {
 			}
 			else {
 				ItemSlot remainSlot = PlayerInventory.AddItem(HeldItemSlot, PlayerInventory.GetRow(slotIndex), PlayerInventory.GetColumn(slotIndex));
-				if(remainSlot.IsEmpty()) {
-					MouseHasItemSlot = false;
-					HeldItemSlotUI.QueueFree();
-					HeldItemSlotUI = null;
-					HeldItemSlot = null;
-				}
-                else {
+					if(remainSlot.IsEmpty()) {
+						MouseHasItemSlot = false;
+						HeldItemSlotUI?.QueueFree();
+						HeldItemSlotUI = null;
+						HeldItemSlot = null;
+					}
+				else {
 					HeldItemSlot = remainSlot;
-					HeldItemSlotUI.UpdateSlotUI(HeldItemSlot);
-                }
+					if(HeldItemSlotUI != null && HeldItemSlot != null) {
+						HeldItemSlotUI.UpdateSlotUI(HeldItemSlot);
+					}
+				}
 			}
 		}
 	}
@@ -89,18 +103,16 @@ public partial class InventoryUI: Control {
 	public override void _Process(double delta){
 		if(MouseHasItemSlot && HeldItemSlotUI != null) {
 			Vector2 mousePos = GetViewport().GetMousePosition();
-			HeldItemSlotUI.GlobalPosition = mousePos;
+			Vector2 half = new Vector2(16, 16);
+			HeldItemSlotUI.GlobalPosition = mousePos - half;
 		}
 	}
 	
-	public override void _UnhandledInput(InputEvent @event)
-	{
-		if (@event is InputEventMouseButton mouseButton && mouseButton.Pressed)
-		{
+	public override void _UnhandledInput(InputEvent @event){
+		if (@event is InputEventMouseButton mouseButton && mouseButton.Pressed){
 			Vector2 clickPos = mouseButton.GlobalPosition;
-			if (!GetGlobalRect().HasPoint(clickPos))
-			{
-				GD.Print("Clicked outside InventoryUI");
+			if (MouseHasItemSlot && !GetGlobalRect().HasPoint(clickPos)){
+				//Drop item
 			}
 		}
 	}
