@@ -23,6 +23,7 @@ namespace Network {
 			Multiplayer.PeerConnected += OnPeerConnected;
 			Multiplayer.PeerDisconnected += OnPeerDisconnected;
 			Multiplayer.ConnectedToServer += OnConnectedToServer;
+			Multiplayer.ServerDisconnected += OnServerDisconnected;
 
 			GD.Print("NetworkExample: Ready. Press H to Host, J to Join localhost");
 		}
@@ -31,6 +32,7 @@ namespace Network {
 			Multiplayer.PeerConnected -= OnPeerConnected;
 			Multiplayer.PeerDisconnected -= OnPeerDisconnected;
 			Multiplayer.ConnectedToServer -= OnConnectedToServer;
+			Multiplayer.ServerDisconnected -= OnServerDisconnected;
 		}
 
 		public override void _Process(double delta) {
@@ -127,6 +129,11 @@ namespace Network {
 		private void OnPeerDisconnected(long peerId) {
 			GD.Print($"NetworkExample: Peer {peerId} disconnected");
 			RemovePlayer((int)peerId);
+		}
+
+		private void OnServerDisconnected() {
+			GD.Print("NetworkExample: Server disconnected, cleaning up...");
+			DisconnectAndCleanup();
 		}
 
 		[Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = false)]

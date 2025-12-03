@@ -45,7 +45,8 @@ namespace Network {
 				if(Multiplayer.IsServer()) {
 					CallDeferred(nameof(BroadcastCurrentState));
 				}
-			} else if(!Multiplayer.IsServer()) {
+			}
+			else if(!Multiplayer.IsServer()) {
 				// We're a client and this is a remote player - request current state from host
 				CallDeferred(nameof(RequestCurrentState));
 			}

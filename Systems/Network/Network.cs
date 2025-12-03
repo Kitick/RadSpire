@@ -22,15 +22,21 @@ namespace Network {
 
 		public event Action? OnHostStarted;
 		public event Action? OnJoinedServer;
+		public event Action? OnServerDisconnected;
 		public event Action<int>? OnPeerConnected;
 		public event Action<int>? OnPeerDisconnected;
 
 		public override void _Ready() {
-			Multiplayer.PeerConnected += id => OnPeerConnected?.Invoke((int)id);
-			Multiplayer.PeerDisconnected += id => OnPeerDisconnected?.Invoke((int)id);
+			Multiplayer.PeerConnected += id => OnPeerConnected?.Invoke((int) id);
+			Multiplayer.PeerDisconnected += id => OnPeerDisconnected?.Invoke((int) id);
 			Multiplayer.ConnectedToServer += () => {
 				CurrentPeerId = Multiplayer.GetUniqueId();
 				OnJoinedServer?.Invoke();
+			};
+			Multiplayer.ServerDisconnected += () => {
+				if(Debug) { GD.Print("Network: Server disconnected"); }
+				Disconnect();
+				OnServerDisconnected?.Invoke();
 			};
 		}
 
