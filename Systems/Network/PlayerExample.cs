@@ -1,55 +1,44 @@
 using System;
+using Core;
+using Godot;
 
 namespace Network {
-	public sealed class PlayerStats : INetworkable<PlayerStatData> {
+	/// <summary>
+	/// Player controller - implements INetworkable for syncing position.
+	/// This class doesn't know anything about the network model, only Serialize/Deserialize.
+	/// </summary>
+	public sealed class PlayerController : INetworkable<PlayerPositionData> {
+		private readonly ColorRect Visual;
+		private const float Speed = 200f;
+
 		public event Action? OnStateChanged;
 
-		public int Health {
-			get;
-			set {
-				if(field != value) {
-					field = value;
-					OnStateChanged?.Invoke();
-				}
-			}
-		} = 100;
+		public PlayerController(ColorRect visual) {
+			Visual = visual;
+		}
 
-		public int Armor {
-			get;
-			set {
-				if(field != value) {
-					field = value;
-					OnStateChanged?.Invoke();
-				}
-			}
-		} = 50;
+		public void Update(float delta) {
+			Vector2 input = Input.GetVector(Actions.MoveLeft, Actions.MoveRight, Actions.MoveForward, Actions.MoveBack);
 
-		public string Name {
-			get;
-			set {
-				if(field != value) {
-					field = value;
-					OnStateChanged?.Invoke();
-				}
+			if(input != Vector2.Zero) {
+				var velocity = input.Normalized() * Speed;
+				Visual.Position += velocity * delta;
+				OnStateChanged?.Invoke();
 			}
-		} = "";
+		}
 
-		public PlayerStatData Serialize() => new PlayerStatData {
-			Health = Health,
-			Armor = Armor,
-			Experience = Name,
+		public PlayerPositionData Serialize() => new PlayerPositionData {
+			X = Visual.Position.X,
+			Y = Visual.Position.Y
 		};
 
-		public void Deserialize(in PlayerStatData data) {
-			Health = data.Health;
-			Armor = data.Armor;
-			Name = data.Experience;
+		public void Deserialize(in PlayerPositionData data) {
+			Visual.Position = new Vector2(data.X, data.Y);
 		}
 	}
 
-	public readonly record struct PlayerStatData : INetworkData {
-		public int Health { get; init; }
-		public int Armor { get; init; }
-		public string Experience { get; init; }
+	public readonly record struct PlayerPositionData : INetworkData {
+		public float X { get; init; }
+		public float Y { get; init; }
 	}
 }
