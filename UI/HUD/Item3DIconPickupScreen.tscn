@@ -1,0 +1,47 @@
+[gd_scene load_steps=2 format=3 uid="uid://dgp554upqcvte"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jxj8p"]
+bg_color = Color(1, 1, 1, 0.078431375)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[node name="Item3DIconPickupScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
+custom_minimum_size = Vector2(360, 220)
+layout_mode = 0
+offset_left = 1.0
+offset_top = 33.0
+offset_right = 361.0
+offset_bottom = 253.0
+
+[node name="PromptContainer" type="VBoxContainer" parent="ScrollContainer"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="Instruction" type="Panel" parent="."]
+z_index = 1
+layout_mode = 0
+offset_top = 1.0
+offset_right = 129.0
+offset_bottom = 29.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_jxj8p")
+
+[node name="Label" type="Label" parent="Instruction"]
+z_index = 2
+layout_mode = 0
+offset_left = 6.0
+offset_top = 4.0
+offset_right = 121.0
+offset_bottom = 24.0
+theme_override_font_sizes/font_size = 14
+text = "Press E to Collect"
+vertical_alignment = 1

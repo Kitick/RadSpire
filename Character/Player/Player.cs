@@ -17,6 +17,7 @@ public sealed partial class Player : CharacterBody3D, ISaveable<PlayerData> {
 	private KeyInput KeyInput = null!;
 	private Health Health = null!;
 	private Movement Movement = null!;
+	
 
 	// State Machine
 	public enum State { Idle, Walking, Sprinting, Crouching, Falling }

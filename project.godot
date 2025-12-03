@@ -8,18 +8,6 @@
 
 config_version=5
 
-[addons]
-
-resources_spreadsheet_view/array_color_tint=100.0
-resources_spreadsheet_view/color_rows=true
-resources_spreadsheet_view/array_min_width=128.0
-resources_spreadsheet_view/resource_preview_size=32.0
-resources_spreadsheet_view/clip_headers=false
-resources_spreadsheet_view/dupe_arrays=true
-resources_spreadsheet_view/context_menu_on_leftclick=false
-resources_spreadsheet_view/fold_docks=true
-resources_spreadsheet_view/resource_cell_label_mode=1
-resources_spreadsheet_view/freeze_first_column=true
 [SimpleGrassTextured]
 
 Shortcuts/airbrush_tool=Object(Shortcut,"resource_local_to_scene":false,"resource_name":"","events":[Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":true,"keycode":68,"physical_keycode":0,"key_label":0,"unicode":0,"location":0,"echo":false,"script":null)
@@ -44,6 +32,19 @@ Shortcuts/density_decrement=Object(Shortcut,"resource_local_to_scene":false,"res
 ],"script":null)
 
 
+[addons]
+
+resources_spreadsheet_view/array_color_tint=100.0
+resources_spreadsheet_view/color_rows=true
+resources_spreadsheet_view/array_min_width=128.0
+resources_spreadsheet_view/resource_preview_size=32.0
+resources_spreadsheet_view/clip_headers=false
+resources_spreadsheet_view/dupe_arrays=true
+resources_spreadsheet_view/context_menu_on_leftclick=false
+resources_spreadsheet_view/fold_docks=true
+resources_spreadsheet_view/resource_cell_label_mode=1
+resources_spreadsheet_view/freeze_first_column=true
+
 [application]
 
 config/name="RadSpire"
@@ -65,6 +66,7 @@ SimpleGrass="*res://addons/simplegrasstextured/singleton.tscn"
 window/size/viewport_width=1920
 window/size/viewport_height=1080
 window/stretch/mode="viewport"
+window/per_pixel_transparency/allowed=true
 
 [dotnet]
 
@@ -72,7 +74,6 @@ project/assembly_name="RadSpire"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/resources_spreadsheet_view/plugin.cfg", "res://addons/sprite_mesh/plugin.cfg")
 enabled=PackedStringArray("res://addons/simplegrasstextured/plugin.cfg")
 
 [filesystem]
