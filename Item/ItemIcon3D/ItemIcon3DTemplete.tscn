@@ -1,21 +1,17 @@
-[gd_scene load_steps=9 format=3 uid="uid://qlstn0sukjru"]
+[gd_scene load_steps=7 format=3 uid="uid://qlstn0sukjru"]
 
 [ext_resource type="Script" uid="uid://xdmm7egms4uv" path="res://addons/sprite_mesh/sprite_mesh_instance.gd" id="1_dimww"]
 [ext_resource type="Script" uid="uid://onnxwjckopnl" path="res://addons/sprite_mesh/sprite_mesh.gd" id="2_xcpaa"]
-[ext_resource type="Script" uid="uid://qfny5vgx6qf0" path="res://Item/ItemIcon3D/ItemIconTriggerArea.cs" id="3_xcpaa"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_aua6x"]
 
-[sub_resource type="ArrayMesh" id="ArrayMesh_w15wk"]
+[sub_resource type="ArrayMesh" id="ArrayMesh_dimww"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xcpaa"]
 
 [sub_resource type="Resource" id="Resource_w15wk"]
 script = ExtResource("2_xcpaa")
 material = SubResource("StandardMaterial3D_xcpaa")
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_sbeq7"]
-size = Vector3(2.0369873, 2.046753, 1.8126221)
 
 [node name="ItemIcon3DTemplete" type="Node3D"]
 
@@ -25,15 +21,9 @@ size = Vector3(2.0369873, 2.046753, 1.8126221)
 shape = SubResource("BoxShape3D_aua6x")
 
 [node name="SpriteMeshInstance" type="MeshInstance3D" parent="RigidBody3D"]
-mesh = SubResource("ArrayMesh_w15wk")
+mesh = SubResource("ArrayMesh_dimww")
 skeleton = NodePath("../..")
 script = ExtResource("1_dimww")
 depth = 5.0
 generated_sprite_mesh = SubResource("Resource_w15wk")
 metadata/_custom_type_script = "uid://xdmm7egms4uv"
-
-[node name="PickupArea" type="Area3D" parent="RigidBody3D"]
-script = ExtResource("3_xcpaa")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D/PickupArea"]
-shape = SubResource("BoxShape3D_sbeq7")

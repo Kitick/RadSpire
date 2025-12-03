@@ -1,11 +1,15 @@
-[gd_scene load_steps=5 format=3 uid="uid://dsoftkiu1wcbb"]
+[gd_scene load_steps=7 format=3 uid="uid://dsoftkiu1wcbb"]
 
 [ext_resource type="Script" uid="uid://b28ooub4d3w51" path="res://Character/Player/Player.cs" id="1_dmntq"]
 [ext_resource type="PackedScene" uid="uid://2qtgw8bpsvko" path="res://Assets/Models/KayKit Character Pack/Characters/Knight.glb" id="2_ky31d"]
 [ext_resource type="Script" uid="uid://dvgtwgqv7chou" path="res://Character/Player/PlayerAnimator.cs" id="3_h8o71"]
+[ext_resource type="Script" uid="uid://b70ecws6vpvm0" path="res://Character/Player/InteractionArea.cs" id="4_iytxy"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_x84vo"]
 height = 2.46875
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_ep33s"]
+radius = 3.0
 
 [node name="Player" type="CharacterBody3D"]
 script = ExtResource("1_dmntq")
@@ -16,3 +20,9 @@ shape = SubResource("CapsuleShape3D_x84vo")
 
 [node name="Knight" parent="." instance=ExtResource("2_ky31d")]
 script = ExtResource("3_h8o71")
+
+[node name="InteractionArea" type="Area3D" parent="."]
+script = ExtResource("4_iytxy")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="InteractionArea"]
+shape = SubResource("SphereShape3D_ep33s")

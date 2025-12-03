@@ -31,7 +31,7 @@ public sealed partial class GameManager : Node {
 					GD.Print("Player inventory successfully contains the test item after addition.");
 					Item3DIcon item3DIcon = new Item3DIcon();
 					item3DIcon.Item = item;
-					item3DIcon.SpawnItem3D(new Vector3(0, 5, 0));
+					item3DIcon.SpawnItem3D(new Vector3(0, 5, 5));
 					AddChild(item3DIcon);
 				} else {
 					GD.PrintErr("Player inventory does not contain the test item after addition.");

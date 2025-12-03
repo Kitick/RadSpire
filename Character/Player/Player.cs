@@ -17,7 +17,8 @@ public sealed partial class Player : CharacterBody3D, ISaveable<PlayerData> {
 	private KeyInput KeyInput = null!;
 	private Health Health = null!;
 	private Movement Movement = null!;
-	
+	private Item3DIconPickup Item3DIconPickupComponent = null!;
+
 
 	// State Machine
 	public enum State { Idle, Walking, Sprinting, Crouching, Falling }
@@ -35,6 +36,8 @@ public sealed partial class Player : CharacterBody3D, ISaveable<PlayerData> {
 		Movement = new Movement(this);
 		Health = new Health(InitalHealth);
 		PlayerInventory = new Inventory(4, 5);
+		Item3DIconPickupComponent = new Item3DIconPickup();
+		AddChild(Item3DIconPickupComponent);
 
 		this.AddScene(Scenes.HUD);
 	}
