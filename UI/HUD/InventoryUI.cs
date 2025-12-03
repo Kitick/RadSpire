@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection.Metadata;
 using Godot; 
 
 public partial class InventoryUI: Control {
@@ -42,62 +43,136 @@ public partial class InventoryUI: Control {
 	}
 
 	public void HandleOnSlotClicked(int slotIndex) {
+		if (MouseHasItemSlot) {
+			HandlePlaceItemSlot(slotIndex);
+		} else {
+			HandlePickupItemSlot(slotIndex);
+		}
+	}
+
+	public void HandlePickupItemSlot(int slotIndex) {
 		if(!MouseHasItemSlot) {
-			if(PlayerInventory.IsEmptySlot(PlayerInventory.GetRow(slotIndex), PlayerInventory.GetColumn(slotIndex))) {
+			if(IsItemSlotEmpty(slotIndex)) {
+				GD.Print("Clicked on empty slot, nothing to pick up.");
 				return;
 			}
-			if(InvSlotTemplate != null) {
-				HeldItemSlotUI = InvSlotTemplate.Instantiate<InvSlotUI>();
-			}
-			else {
-				HeldItemSlotUI = new InvSlotUI();
-			}
-			ItemSlot original = PlayerInventory.GetItemSlot(PlayerInventory.GetRow(slotIndex), PlayerInventory.GetColumn(slotIndex));
-			HeldItemSlot = new ItemSlot();
-			HeldItemSlot.Item = original.Item;
-			HeldItemSlot.Quantity = original.Quantity;
-			AddChild(HeldItemSlotUI);
-			HeldItemSlotUI.MouseFilter = Control.MouseFilterEnum.Ignore;
-			HeldItemSlotUI.ZIndex = 100;
-			HeldItemSlotUI?.UpdateSlotUI(HeldItemSlot);
+			GD.Print("Picking up item from slot index: " + slotIndex);
+			HeldItemSlot = GetItemSlotCopy(slotIndex);
+			HeldItemSlotUI = CreateHeldItemSlotUI();
+			HeldItemSlotUI.UpdateSlotUI(HeldItemSlot);
 			MouseHasItemSlot = true;
 			PlayerInventory.RemoveItem(PlayerInventory.GetRow(slotIndex), PlayerInventory.GetColumn(slotIndex));
 		}
-		else {
-			if(HeldItemSlot == null) return;
-			if(PlayerInventory.IsEmptySlot(PlayerInventory.GetRow(slotIndex), PlayerInventory.GetColumn(slotIndex))) {
-				PlayerInventory.AddItem(HeldItemSlot, PlayerInventory.GetRow(slotIndex), PlayerInventory.GetColumn(slotIndex));
+	}
+
+	public ItemSlot GetItemSlotCopy(int slotIndex) {
+		ItemSlot original = PlayerInventory.GetItemSlot(PlayerInventory.GetRow(slotIndex), PlayerInventory.GetColumn(slotIndex));
+		if(original == null || original.IsEmpty()) {
+			GD.PrintErr("Error: Original ItemSlot is null/empty in GetItemSlotCopy");
+			return new ItemSlot();
+		}
+		if (original.Item != null) {
+			GD.Print("Getting copy of ItemSlot: " + original.Item.Name + " x" + original.Quantity);
+		} else {
+			GD.Print("Getting copy of ItemSlot: <no item> x" + original.Quantity);
+		}
+		ItemSlot copy = new ItemSlot();
+		copy.Item = original.Item;
+		copy.Quantity = original.Quantity;
+		return copy;
+	}
+
+	public InvSlotUI CreateHeldItemSlotUI() {
+		if(InvSlotTemplate == null) {
+			InvSlotTemplate = GD.Load<PackedScene>("res://UI/Inventory/InvSlotUITemplate.tscn");
+		}
+		InvSlotUI invSlotUI = InvSlotTemplate.Instantiate<InvSlotUI>();
+		AddChild(invSlotUI);
+		invSlotUI.MouseFilter = Control.MouseFilterEnum.Ignore;
+		invSlotUI.ZIndex = 100;
+		invSlotUI.Visible = true;
+		return invSlotUI;
+	}
+
+	public void HandlePlaceItemSlot(int slotIndex) {
+		if (MouseHasItemSlot) {
+			if (HeldItemSlot == null) return;
+			HandlePlaceItemSlotOnEmptySlot(slotIndex);
+			if (!MouseHasItemSlot || HeldItemSlot == null) {
+				return;
+			}
+			HandlePlaceItemSlotOnNonEmptySlot(slotIndex);
+		}
+	}
+
+	public void HandlePlaceItemSlotOnEmptySlot(int slotIndex) {
+		if(IsItemSlotEmpty(slotIndex)) {
+			if(HeldItemSlot == null) {
+				GD.Print("Error: HeldItemSlot is null in HandlePlaceItemSlotOnEmptySlot");
+				return;
+			}
+			GD.Print("Placing held item into empty slot index: " + slotIndex);
+			PlayerInventory.AddItem(HeldItemSlot, PlayerInventory.GetRow(slotIndex), PlayerInventory.GetColumn(slotIndex));
+			MouseHasItemSlot = false;
+			HeldItemSlotUI?.QueueFree();
+			HeldItemSlotUI = null;
+			HeldItemSlot = null;
+		}
+	}
+
+	public void HandlePlaceItemSlotOnNonEmptySlot(int slotIndex) {
+		if(!IsItemSlotEmpty(slotIndex)) {
+			if(HeldItemSlot == null) {
+				GD.Print("Error: HeldItemSlot is null in HandlePlaceItemSlotOnNonEmptySlot");
+				return;
+			}
+			GD.Print("Placing held item onto non-empty slot index: " + slotIndex);
+			HandlePlaceItemSlotOnDifferentItem(slotIndex);
+			HandlePlaceItemSlotOnSameItem(slotIndex);
+		}
+	}
+
+	public void HandlePlaceItemSlotOnDifferentItem(int slotIndex) {
+		if (HeldItemSlot == null) return;
+		Item targetItem = PlayerInventory.GetItem(PlayerInventory.GetRow(slotIndex), PlayerInventory.GetColumn(slotIndex));
+		if (targetItem == null) return;
+		if(!HeldItemSlot.SameItem(targetItem)) {
+			GD.Print("Placing held item onto different item slot index: " + slotIndex);
+			ItemSlot tempSlot = GetItemSlotCopy(slotIndex);
+			PlayerInventory.RemoveItem(PlayerInventory.GetRow(slotIndex), PlayerInventory.GetColumn(slotIndex));
+			PlayerInventory.AddItem(HeldItemSlot, PlayerInventory.GetRow(slotIndex), PlayerInventory.GetColumn(slotIndex));
+			HeldItemSlot = tempSlot;
+			HeldItemSlotUI = CreateHeldItemSlotUI();
+			HeldItemSlotUI.UpdateSlotUI(HeldItemSlot);
+		}
+	}
+	
+	public void HandlePlaceItemSlotOnSameItem(int slotIndex) {
+		if (HeldItemSlot == null) return;
+		Item targetItem = PlayerInventory.GetItem(PlayerInventory.GetRow(slotIndex), PlayerInventory.GetColumn(slotIndex));
+		if (targetItem == null) return;
+		if (HeldItemSlot.SameItem(targetItem)) {
+			GD.Print("Placing held item onto same item slot index: " + slotIndex);
+			ItemSlot remainSlot = PlayerInventory.AddItem(HeldItemSlot, PlayerInventory.GetRow(slotIndex), PlayerInventory.GetColumn(slotIndex));
+			if(remainSlot.IsEmpty()) {
+				GD.Print("All held items placed into slot index: " + slotIndex);
 				MouseHasItemSlot = false;
 				HeldItemSlotUI?.QueueFree();
 				HeldItemSlotUI = null;
 				HeldItemSlot = null;
 			}
-			else if(!HeldItemSlot.SameItem(PlayerInventory.GetItem(PlayerInventory.GetRow(slotIndex), PlayerInventory.GetColumn(slotIndex)))) {
-				ItemSlot tempSlot = new ItemSlot();
-				ItemSlot original = PlayerInventory.GetItemSlot(PlayerInventory.GetRow(slotIndex), PlayerInventory.GetColumn(slotIndex));
-				tempSlot.Item = original.Item;
-				tempSlot.Quantity = original.Quantity;
-				PlayerInventory.RemoveItem(PlayerInventory.GetRow(slotIndex), PlayerInventory.GetColumn(slotIndex));
-				PlayerInventory.AddItem(HeldItemSlot, PlayerInventory.GetRow(slotIndex), PlayerInventory.GetColumn(slotIndex));
-				HeldItemSlot = tempSlot;
-				HeldItemSlotUI.UpdateSlotUI(HeldItemSlot);
-			}
 			else {
-				ItemSlot remainSlot = PlayerInventory.AddItem(HeldItemSlot, PlayerInventory.GetRow(slotIndex), PlayerInventory.GetColumn(slotIndex));
-					if(remainSlot.IsEmpty()) {
-						MouseHasItemSlot = false;
-						HeldItemSlotUI?.QueueFree();
-						HeldItemSlotUI = null;
-						HeldItemSlot = null;
-					}
-				else {
-					HeldItemSlot = remainSlot;
-					if(HeldItemSlotUI != null && HeldItemSlot != null) {
-						HeldItemSlotUI.UpdateSlotUI(HeldItemSlot);
-					}
+				GD.Print("Some held items remain after placing into slot index: " + slotIndex);
+				HeldItemSlot = remainSlot;
+				if(HeldItemSlotUI != null && HeldItemSlot != null) {
+					HeldItemSlotUI.UpdateSlotUI(HeldItemSlot);
 				}
 			}
 		}
+	}
+
+	public bool IsItemSlotEmpty(int slotIndex) {
+		return PlayerInventory.IsEmptySlot(PlayerInventory.GetRow(slotIndex), PlayerInventory.GetColumn(slotIndex));
 	}
 
 	public override void _Process(double delta){
@@ -116,7 +191,6 @@ public partial class InventoryUI: Control {
 			}
 		}
 	}
-
 
 	public void updateInventoryUI(){
 		player = GetParent<HUD>().Player;
