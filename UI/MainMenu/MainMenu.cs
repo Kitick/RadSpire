@@ -172,7 +172,8 @@ public partial class MainMenu : Control {
 	}
 
 	private void OnJoinGameButtonPressed() {
-		GD.Print("Join Game Button Pressed!");
+		var join = this.AddScene<JoinPanel>(Scenes.JoinPanel);
+		join.OpenMenu();
 	}
 
 	// Load a new game scene
