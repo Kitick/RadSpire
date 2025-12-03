@@ -86,19 +86,23 @@ namespace Components {
         }
 
         public void CreatePickupScreen() {
+            GD.Print("[Item3DIconPickup] Creating pickup screen.");
             RemovePickupScreen();
             Item3DIconPickupScreenInstance = Item3DIconPickupScreenTemplate.Instantiate<Control>();
             if(Item3DIconPickupScreenInstance == null) {
                 GD.PrintErr("[Item3DIconPickup] CreatePickupScreen: Failed to instantiate pickup screen.");
                 return;
             }
+            GD.Print("[Item3DIconPickup] Pickup screen created successfully.");
             AddChild(Item3DIconPickupScreenInstance);
         }
 
         public void RemovePickupScreen() {
+            GD.Print("[Item3DIconPickup] Removing pickup screen.");
             if(Item3DIconPickupScreenInstance != null) {
                 Item3DIconPickupScreenInstance.QueueFree();
                 Item3DIconPickupScreenInstance = null;
+                GD.Print("[Item3DIconPickup] Pickup screen removed successfully.");
             }
         }
 
@@ -107,10 +111,16 @@ namespace Components {
                 GD.PrintErr("[Item3DIconPickup] CreateItemIconPrompt called but Item is null.");
                 return;
             }
+            GD.Print("[Item3DIconPickup] Creating item icon prompt.");
             Control promptInstance = Item3DIconPromptTemplate.Instantiate<Control>();
+            if(promptInstance == null) {
+                GD.PrintErr("[Item3DIconPickup] CreateItemIconPrompt: Failed to instantiate prompt.");
+                return;
+            }
+            GD.Print("[Item3DIconPickup] Item icon prompt created successfully.");
             promptInstance.GetNode<Label>("GlassPanel/Label").Text = $"{item3DIcon.Item?.Name}";
             promptInstance.GetNode<TextureRect>("GlassPanel/TextureRect").Texture = item3DIcon.Item.IconTexture;
-            if(Item3DIconPickupScreenInstance != null) {
+            if(Item3DIconPickupScreenInstance == null) {
                 CreatePickupScreen();
             }
             Item3DIconPickupScreenInstance.GetNode<VBoxContainer>("ScrollContainer/PromptContainer").AddChild(promptInstance);
@@ -122,6 +132,7 @@ namespace Components {
                 GD.PrintErr("[Item3DIconPickup] RemoveItemIconPrompt called but Item is null.");
                 return;
             }
+            GD.Print("[Item3DIconPickup] Removing item icon prompt.");
             if(ItemsInRange.ContainsKey(item3DIcon)) {
                 Item3DIconPickupScreenInstance.GetNode<VBoxContainer>("ScrollContainer/PromptContainer").RemoveChild(ItemsInRange[item3DIcon]);
                 ItemsInRange[item3DIcon].QueueFree();
