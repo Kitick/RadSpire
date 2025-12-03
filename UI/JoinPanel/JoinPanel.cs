@@ -5,8 +5,7 @@ using InputSystem;
 namespace MultiplayerPanels {
 	public partial class JoinPanel : Control {
 		
-		// Paths for Buttons
-
+		// Paths for Panel Attributes
 		private const string NO_PASSWORD_CHECKBOX = "PanelArea/NoPassword/NoPasswordCheckBox";
 		private const string NOT_FULL_CHECKBOX = "PanelArea/NotFull/NotFullCheckBox";
 		private const string CANCEL_BUTTON = "PanelArea/CancelButton";
@@ -24,8 +23,8 @@ namespace MultiplayerPanels {
 		}
 
 		private void SetCallbacks() {
-			GetNode<CheckBox>(NO_PASSWORD_CHECKBOX).Toggled += OnNoPasswordCheckboxPressed;
-			GetNode<CheckBox>(NOT_FULL_CHECKBOX).Toggled += OnNotFullCheckboxPressed;
+			GetNode<CheckBox>(NO_PASSWORD_CHECKBOX).Toggled += OnNoPasswordCheckboxToggled;
+			GetNode<CheckBox>(NOT_FULL_CHECKBOX).Toggled += OnNotFullCheckboxToggled;
 			GetNode<Button>(CANCEL_BUTTON).Pressed += OnCancelButtonPressed;
 			GetNode<Button>(JOIN_BUTTON).Pressed += OnJoinButtonPressed;
 		}
@@ -41,14 +40,14 @@ namespace MultiplayerPanels {
 		}
 		
 		// CallBacks
-		private void OnNoPasswordCheckboxPressed(bool pressed) {
+		private void OnNoPasswordCheckboxToggled(bool check) {
 			//Implementation Here
-			GD.Print($"No Password Toggled: {pressed}");
+			GD.Print($"No Password Toggled: {check}");
 		}
 
-		private void OnNotFullCheckboxPressed(bool pressed) {
+		private void OnNotFullCheckboxToggled(bool check) {
 			//Implementation Here
-			GD.Print($"No Password Toggled: {pressed}");
+			GD.Print($"No Password Toggled: {check}");
 		}
 		private void OnCancelButtonPressed() {
 			CloseMenu();  

@@ -4,9 +4,8 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://c261y1q50n8cp"
 path.s3tc="res://.godot/imported/Knight_knight_texture.png-32c56cddd566f5fabba9657dbcb97f4a.s3tc.ctex"
-path.etc2="res://.godot/imported/Knight_knight_texture.png-32c56cddd566f5fabba9657dbcb97f4a.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc", "etc2_astc"],
+"imported_formats": ["s3tc_bptc"],
 "vram_texture": true
 }
 generator_parameters={
@@ -16,7 +15,7 @@ generator_parameters={
 [deps]
 
 source_file="res://Assets/Models/KayKit Character Pack/Characters/Knight_knight_texture.png"
-dest_files=["res://.godot/imported/Knight_knight_texture.png-32c56cddd566f5fabba9657dbcb97f4a.s3tc.ctex", "res://.godot/imported/Knight_knight_texture.png-32c56cddd566f5fabba9657dbcb97f4a.etc2.ctex"]
+dest_files=["res://.godot/imported/Knight_knight_texture.png-32c56cddd566f5fabba9657dbcb97f4a.s3tc.ctex"]
 
 [params]
 
