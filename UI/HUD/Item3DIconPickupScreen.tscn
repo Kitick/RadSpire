@@ -29,7 +29,7 @@ offset_bottom = 253.0
 
 [node name="PromptContainer" type="VBoxContainer" parent="ScrollContainer"]
 layout_mode = 2
-theme_override_constants/separation = 5
+theme_override_constants/separation = 55
 
 [node name="Instruction" type="Panel" parent="."]
 z_index = 1

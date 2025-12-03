@@ -63,7 +63,6 @@ namespace Components {
             }
             GD.Print($"[Item3DIconPickup] Picking up item: {itemIcon3D.Item.Name}");
             PlayerInventory.AddItem(itemIcon3D.Item);
-            ItemsInRange.Remove(itemIcon3D);
             RemoveItemIconPrompt(itemIcon3D);
             itemIcon3D.QueueFree();
             GD.Print("[Item3DIconPickup] Item picked up and removed from the world.");
