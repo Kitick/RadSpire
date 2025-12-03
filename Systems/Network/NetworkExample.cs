@@ -94,20 +94,33 @@ namespace Network {
 
 		private void OnConnectedToServer() {
 			GD.Print($"NetworkExample: Connected to server as peer {Multiplayer.GetUniqueId()}");
-			SpawnLocalPlayer(Multiplayer.GetUniqueId());
 
-			// Request existing players from host
-			RpcId(1, nameof(RequestExistingPlayers));
+			// Request existing players from host FIRST, then spawn ourselves
+			// This ensures the host creates our NetworkSync before we start sending
+			RpcId(1, nameof(RequestSpawnOnHost));
 		}
 
 		private void OnPeerConnected(long peerId) {
 			GD.Print($"NetworkExample: Peer {peerId} connected");
 
+			// Host spawns the remote player immediately when they connect
+			// This ensures the NetworkSync exists before the client sends data
 			if(Multiplayer.IsServer() && peerId != 1) {
-				// Host: Tell the new peer about all existing players
+				SpawnRemotePlayer((int)peerId);
+
+				// Tell ALL existing clients about the new player
+				// This ensures everyone has the NetworkSync node before broadcasts happen
+				Rpc(nameof(SpawnRemotePlayer), (int)peerId);
+
+				// Tell the new peer about all existing players
 				foreach(var existingPeerId in Players.Keys) {
-					RpcId(peerId, nameof(SpawnRemotePlayer), existingPeerId);
+					if(existingPeerId != peerId) {
+						RpcId(peerId, nameof(SpawnRemotePlayer), existingPeerId);
+					}
 				}
+
+				// Tell the new peer to spawn their local player now that host is ready
+				RpcId(peerId, nameof(SpawnYourLocalPlayer));
 			}
 		}
 
@@ -117,13 +130,30 @@ namespace Network {
 		}
 
 		[Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = false)]
-		private void RequestExistingPlayers() {
+		private void RequestSpawnOnHost() {
 			if(!Multiplayer.IsServer()) return;
 
 			var requesterId = Multiplayer.GetRemoteSenderId();
+			GD.Print($"NetworkExample: Host received spawn request from peer {requesterId}");
+
+			// Spawn their remote representation on host if not already done
+			SpawnRemotePlayer(requesterId);
+
+			// Send them all existing players
 			foreach(var existingPeerId in Players.Keys) {
-				RpcId(requesterId, nameof(SpawnRemotePlayer), existingPeerId);
+				if(existingPeerId != requesterId) {
+					RpcId(requesterId, nameof(SpawnRemotePlayer), existingPeerId);
+				}
 			}
+
+			// Tell them to spawn their local player
+			RpcId(requesterId, nameof(SpawnYourLocalPlayer));
+		}
+
+		[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = false)]
+		private void SpawnYourLocalPlayer() {
+			GD.Print($"NetworkExample: Host told us to spawn local player");
+			SpawnLocalPlayer(Multiplayer.GetUniqueId());
 		}
 
 		private void SpawnLocalPlayer(int peerId) {
@@ -140,7 +170,7 @@ namespace Network {
 			AddChild(visual);
 
 			var controller = new PlayerController(visual);
-			var sync = new NetworkSync<PlayerPositionData>(controller, peerId) {
+			var sync = new NetworkSync<PlayerPositionData>(controller, peerId, "player") {
 				Validator = ValidateMovement
 			};
 			AddChild(sync);
@@ -148,20 +178,11 @@ namespace Network {
 			Players[peerId] = new PlayerVisual(visual, controller, sync);
 			GD.Print($"NetworkExample: Spawned LOCAL player {peerId} at {spawnPos}");
 
-			// Tell others about us
+			// If we're the host, tell all clients about this new player
 			if(Multiplayer.IsServer()) {
 				Rpc(nameof(SpawnRemotePlayer), peerId);
-			} else {
-				RpcId(1, nameof(NotifyPlayerSpawned), peerId);
 			}
-		}
-
-		[Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = false)]
-		private void NotifyPlayerSpawned(int peerId) {
-			if(!Multiplayer.IsServer()) return;
-
-			// Broadcast to all other clients
-			Rpc(nameof(SpawnRemotePlayer), peerId);
+			// Clients don't need to notify - the host already spawned us in OnPeerConnected/RequestSpawnOnHost
 		}
 
 		[Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = false)]
@@ -180,7 +201,7 @@ namespace Network {
 			AddChild(visual);
 
 			var controller = new PlayerController(visual);
-			var sync = new NetworkSync<PlayerPositionData>(controller, peerId);
+			var sync = new NetworkSync<PlayerPositionData>(controller, peerId, "player");
 			AddChild(sync);
 
 			Players[peerId] = new PlayerVisual(visual, controller, sync);
