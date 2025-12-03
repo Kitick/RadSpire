@@ -89,8 +89,16 @@ public partial class InventoryUI: Control {
 		InvSlotUI invSlotUI = InvSlotTemplate.Instantiate<InvSlotUI>();
 		AddChild(invSlotUI);
 		invSlotUI.MouseFilter = Control.MouseFilterEnum.Ignore;
+		foreach (var child in invSlotUI.GetChildren()){
+			if (child is Control ctrl)
+				ctrl.MouseFilter = Control.MouseFilterEnum.Ignore;
+		}
+
 		invSlotUI.ZIndex = 100;
 		invSlotUI.Visible = true;
+		var style = new StyleBoxFlat();
+		style.BgColor = new Color(1,1,1, 0);
+		invSlotUI.AddThemeStyleboxOverride("panel", style);
 		return invSlotUI;
 	}
 
@@ -142,6 +150,8 @@ public partial class InventoryUI: Control {
 			PlayerInventory.RemoveItem(PlayerInventory.GetRow(slotIndex), PlayerInventory.GetColumn(slotIndex));
 			PlayerInventory.AddItem(HeldItemSlot, PlayerInventory.GetRow(slotIndex), PlayerInventory.GetColumn(slotIndex));
 			HeldItemSlot = tempSlot;
+			HeldItemSlotUI?.QueueFree();
+			HeldItemSlotUI = null;
 			HeldItemSlotUI = CreateHeldItemSlotUI();
 			HeldItemSlotUI.UpdateSlotUI(HeldItemSlot);
 		}

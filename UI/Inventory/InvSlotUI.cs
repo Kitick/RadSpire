@@ -36,6 +36,10 @@ public partial class InvSlotUI : Panel {
 	public override void _GuiInput(InputEvent @event) {
 		if(@event is InputEventMouseButton mouseEvent) {
 			if(mouseEvent.ButtonIndex == MouseButton.Left && mouseEvent.Pressed) {
+				if(SlotIndex == -1) {
+					GD.PrintErr("[InvSlotUI] SlotIndex is -1, cannot handle click.");
+					return;
+				}
 				OnSlotClicked?.Invoke(SlotIndex);
 				GD.Print($"[InvSlotUI] Slot {SlotIndex} clicked.");
 			}
