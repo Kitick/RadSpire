@@ -188,6 +188,14 @@ public partial class Inventory : ISaveable<InventoryData> {
 		return AddItem(item, GetRow(emptySlotIndex), GetColumn(emptySlotIndex));
 	}
 
+	public bool AddItem(Item item) {
+		if(item == null) {
+			return false;
+		}
+		ItemSlot itemSlot = new ItemSlot(item, 1);
+		ItemSlot remainingItem = AddItem(itemSlot);
+		return !remainingItem.IsEmpty();
+	}
 
 	public bool RemoveItem(int row, int column) {
 		int index = GetIndex(row, column);

@@ -44,7 +44,6 @@ public sealed partial class HUD : Control {
 	}
 
 	public override void _Ready() {
-		// Player is initialized in _EnterTree so child controls can access it in their _Ready
 		ProcessMode = ProcessModeEnum.Always;
 
 		SetInputCallbacks();
