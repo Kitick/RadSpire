@@ -24,12 +24,9 @@ namespace Components {
 		}
 
 		private Vector3 GetHorizontalMovement() {
-			Vector3 direction = Vector3.Zero;
+			Vector2 inputVector = Input.GetVector(Actions.MoveLeft, Actions.MoveRight, Actions.MoveForward, Actions.MoveBack);
 
-			if(Input.IsActionPressed(Actions.MoveForward)) { direction += Vector3.Forward; }
-			if(Input.IsActionPressed(Actions.MoveBack)) { direction += Vector3.Back; }
-			if(Input.IsActionPressed(Actions.MoveLeft)) { direction += Vector3.Left; }
-			if(Input.IsActionPressed(Actions.MoveRight)) { direction += Vector3.Right; }
+			Vector3 direction = new Vector3(inputVector.X, 0, inputVector.Y);
 
 			float hdg = Camera?.Pose.RadHDG ?? 0;
 
