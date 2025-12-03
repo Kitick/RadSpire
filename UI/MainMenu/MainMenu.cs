@@ -4,7 +4,7 @@ using Core;
 using Godot;
 using SaveSystem;
 using Settings;
-using Host;
+using MultiplayerPanels;
 using LoadMenuScene;
 
 public partial class MainMenu : Control {
@@ -172,7 +172,8 @@ public partial class MainMenu : Control {
 	}
 
 	private void OnJoinGameButtonPressed() {
-		GD.Print("Join Game Button Pressed!");
+		var join = this.AddScene<JoinPanel>(Scenes.JoinPanel);
+		join.OpenMenu();
 	}
 
 	// Load a new game scene

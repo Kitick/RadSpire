@@ -2,7 +2,7 @@ using System;
 using Godot;
 using InputSystem;
 
-namespace Host {
+namespace MultiplayerPanels {
 	public sealed partial class HostPanel : Control {
 		public event Action? OnMenuClosed;
 		private event Action? OnExit;

@@ -18,6 +18,7 @@ namespace Core {
 
 		public const string LoadMenu = "res://UI/LoadMenu/LoadMenu.tscn";
 		public const string HostPanel = "res://UI/HostPanel/HostPanel.tscn";
+		public const string JoinPanel = "res://UI/JoinPanel/JoinPanel.tscn";
 	}
 
 	public static class Actions {
