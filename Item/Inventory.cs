@@ -1,59 +1,31 @@
 using System;
-using Components;
-using Core;
-using Godot;
 using SaveSystem;
 
-public partial class Inventory : ISaveable<InventoryData> {
-	public event Action OnInventoryChanged;
-	public string Name {
-		get;
-		set {
-			if(string.IsNullOrWhiteSpace(value)) {
-				return;
-			}
-			field = value;
-		} 
-	} = "Inventory";
+public sealed partial class Inventory : ISaveable<InventoryData> {
+	public event Action? OnInventoryChanged;
 
-	public int MaxSlotsRows {
-		get;
-		set {
-			if(value < 1) {
-				value = 1;
-			}
-			MaxSlots = value * MaxSlotsColumns;
-			field = value;
-		}
-	} = 4;
+	private const int DefaultRows = 4;
+	private const int DefaultColumns = 8;
 
-	public int MaxSlotsColumns {
+	public int MaxRows {
 		get;
-		set {
-			if(value < 1) {
-				value = 1;
-			}
-			MaxSlots = value * MaxSlotsRows;
-			field = value;
-		}
-	} = 8;
+		private set => field = Math.Max(1, value);
+	}
 
-	public int MaxSlots { get; private set; } = 32;
+	public int MaxColumns {
+		get;
+		private set => field = Math.Max(1, value);
+	}
+
+	public int MaxSlots => MaxRows * MaxColumns;
 
 	public ItemSlot[] ItemSlots;
 
-	public Inventory() {
-		MaxSlotsRows = 4;
-		MaxSlotsColumns = 8;
-		ItemSlots = new ItemSlot[MaxSlots];
-		for(int i = 0; i < ItemSlots.Length; i++) {
-			ItemSlots[i] = new ItemSlot();
-		}
-	}
+	public Inventory() : this(DefaultRows, DefaultColumns) { }
 
 	public Inventory(int rows, int columns) {
-		MaxSlotsRows = rows;
-		MaxSlotsColumns = columns;
+		MaxRows = rows;
+		MaxColumns = columns;
 		ItemSlots = new ItemSlot[MaxSlots];
 		for(int i = 0; i < ItemSlots.Length; i++) {
 			ItemSlots[i] = new ItemSlot();
@@ -61,24 +33,24 @@ public partial class Inventory : ISaveable<InventoryData> {
 	}
 
 	public int GetIndex(int row, int column) {
-		if(row < 0 || column < 0 || row >= MaxSlotsRows || column >= MaxSlotsColumns) {
+		if(row < 0 || column < 0 || row >= MaxRows || column >= MaxColumns) {
 			return -1;
 		}
-		return row * MaxSlotsColumns + column;
+		return row * MaxColumns + column;
 	}
 
 	public int GetRow(int index) {
 		if(index < 0 || index >= MaxSlots) {
 			return -1;
 		}
-		return index / MaxSlotsColumns;
+		return index / MaxColumns;
 	}
 
 	public int GetColumn(int index) {
 		if(index < 0 || index >= MaxSlots) {
 			return -1;
 		}
-		return index % MaxSlotsColumns;
+		return index % MaxColumns;
 	}
 
 	public bool IsFull() {
@@ -254,15 +226,14 @@ public partial class Inventory : ISaveable<InventoryData> {
 	}
 
 	public InventoryData Serialize() => new InventoryData {
-		Name = Name,
-		MaxSlotsRows = MaxSlotsRows,
-		MaxSlotsColumns = MaxSlotsColumns,
+		MaxSlotsRows = MaxRows,
+		MaxSlotsColumns = MaxColumns,
 		ItemSlots = SerializeItemSlots(),
 	};
 
 	public void Deserialize(in InventoryData data) {
-		MaxSlotsRows = data.MaxSlotsRows;
-		MaxSlotsColumns = data.MaxSlotsColumns;
+		MaxRows = data.MaxSlotsRows;
+		MaxColumns = data.MaxSlotsColumns;
 		ItemSlots = new ItemSlot[MaxSlots];
 		for(int i = 0; i < ItemSlots.Length; i++) {
 			ItemSlots[i].Deserialize(data.ItemSlots[i]);
@@ -272,7 +243,6 @@ public partial class Inventory : ISaveable<InventoryData> {
 
 namespace SaveSystem {
 	public readonly record struct InventoryData : ISaveData {
-		public string Name { get; init; }
 		public int MaxSlotsRows { get; init; }
 		public int MaxSlotsColumns { get; init; }
 		public ItemSlotData[] ItemSlots { get; init; }
