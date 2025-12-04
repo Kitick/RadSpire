@@ -19,7 +19,7 @@ namespace Components {
         public override void _Ready() {
             base._Ready();
             Player = GetParent<Player>();
-            PlayerInventory = Player.PlayerInventory;
+            PlayerInventory = Player.Inventory;
             PlayerInteractionArea = Player.GetNode<InteractionArea>("InteractionArea");
             if(PlayerInteractionArea == null) {
                 GD.PrintErr("[Item3DIconPickup] _Ready: Player InteractionArea not found.");
@@ -51,7 +51,7 @@ namespace Components {
 
         public void PickupItem() {
             Player = GetParent<Player>();
-            PlayerInventory = Player.PlayerInventory;
+            PlayerInventory = Player.Inventory;
             if(ItemsInRange.Count == 0) {
                 GD.Print("[Item3DIconPickup] No item icons in range to pick up.");
                 return;
