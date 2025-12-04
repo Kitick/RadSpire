@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using Godot;
 
 public partial class InventoryManager : Node {
-    Dictionary<string, Inventory> Inventories = new Dictionary<string, Inventory>();
+    public Dictionary<string, Inventory> Inventories = new Dictionary<string, Inventory>();
+    public InventoryUIManager InventoryUIManager = null!;
+    public event Action<string>? InventoryChanged;
 
     public override void _Ready() {
         base._Ready();
@@ -19,8 +21,15 @@ public partial class InventoryManager : Node {
             return;
         }
         Inventories.Add(inventory.Name, inventory);
+
         GD.Print($"[InventoryManager] Registered inventory: {inventory.Name}");
     }
 
-    
+    public Inventory GetInventory(string name) {
+        if(Inventories.ContainsKey(name)) {
+            return Inventories[name];
+        }
+        GD.PrintErr($"[InventoryManager] GetInventory: Inventory with name {name} not found.");
+        return null!;
+    }
 }
