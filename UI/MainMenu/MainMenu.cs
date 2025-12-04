@@ -186,6 +186,9 @@ public partial class MainMenu : Control {
 	}
 
 	private void OnLoadSavedButtonPressed() {
+		var loadMenu = this.AddScene<LoadMenu>(Scenes.LoadMenu);
+		loadMenu.OpenMenu();
+
 		var saves = SaveService.ListSaves();
 
 		GD.Print("Available Saves:");
