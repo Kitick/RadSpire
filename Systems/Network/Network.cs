@@ -9,7 +9,9 @@ namespace Network {
 		event Action? OnStateChanged;
 	}
 
-	public sealed partial class Network : Node {
+	public sealed partial class Server : Node {
+		public static Server Instance { get; private set; } = null!;
+
 		public static readonly bool Debug = true;
 
 		private const int Port = 8080;
@@ -28,6 +30,7 @@ namespace Network {
 		public event Action<int>? OnPeerDisconnected;
 
 		public override void _Ready() {
+			Instance = this;
 			SetCallbacks();
 		}
 
@@ -42,9 +45,7 @@ namespace Network {
 		}
 
 		private static void Log(string message) {
-			if(Debug) {
-				GD.Print($"[Network] {message}");
-			}
+			if(Debug) { GD.Print($"[Network] {message}"); }
 		}
 
 		public Error Host() {
