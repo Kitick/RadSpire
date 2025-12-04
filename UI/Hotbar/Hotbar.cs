@@ -9,14 +9,19 @@ public sealed partial class Hotbar : Control, IInventoryUI {
 	public int SelectedSlot {
 		get;
 		set {
-			value += HotbarSlots.Count;
-			value %= HotbarSlots.Count;
-			field = value;
+			if(HotbarSlots.Count == 0) {
+				field = 0;
+			}
+			else{
+				value += HotbarSlots.Count;
+				value %= HotbarSlots.Count;
+				field = value;
+			}
 			SelectSlot(HotbarSlots[value]);
 		}
 	}
 
-	private readonly List<Panel> HotbarSlots = [];
+	private readonly List<Panel> HotbarSlots = new List<Panel>();
 
 	private static readonly Color NormalColor = Colors.White;
 	private static readonly Color SelectColor = new Color(1f, 1f, 0.3f);
@@ -78,6 +83,7 @@ public sealed partial class Hotbar : Control, IInventoryUI {
 			slotInstance.SlotIndex = i;
 			slotInstance.OnSlotClicked += HandleOnSlotClicked;
 			HotbarSlotUIs.Add(slotInstance);
+			HotbarSlots.Add(slotInstance);
 			GridContainer.AddChild(slotInstance);
 		}
 	}

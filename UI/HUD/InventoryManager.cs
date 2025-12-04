@@ -14,6 +14,7 @@ public partial class InventoryManager : Node {
     public override void _Ready() {
         base._Ready();
         InventoryUIManager = new InventoryUIManager(this);
+        AddChild(InventoryUIManager);
     }
 
     public void RegisterInventory(Inventory inventory, IInventoryUI uiControl) {
