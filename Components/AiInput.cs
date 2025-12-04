@@ -17,32 +17,73 @@ namespace Components {
 
 		private readonly float SprintDistance = 7.0f;
 		private readonly float StopDistance = 1.5f;
+		private readonly float DetectionRadius = 15.0f;
 
 		public AiInput(Node3D self, Node3D target) {
 			Self = self;
 			Target = target;
+			PickNewWanderAction();
 		}
+		
+		private float WanderTimer = 0f;
+		private float WanderDuration = 2.0f; // how long to do each action
+		private Vector3 CurrentWanderDir = Vector3.Zero;
+
+		private readonly Vector3[] WanderDirections = new[]{
+			new Vector3(1, 0, 0),   // right
+			new Vector3(-1, 0, 0),  // left
+			new Vector3(0, 0, 1),   // forward
+			new Vector3(0, 0, -1),  // backward
+			Vector3.Zero            // stand still
+		};
 
 		public void Update() {
 			HorizontalInput = Vector3.Zero;
 			SprintHeld = false;
 			CrouchHeld = false;
 
-			if (Target is null) {
-				return;
+			// -------------------------
+			// 1. FIRST: see if player is close enough to chase
+			// -------------------------
+			if (Target != null) {
+				Vector3 toTarget = Target.GlobalPosition - Self.GlobalPosition;
+				toTarget.Y = 0f;
+				float dist = toTarget.Length();
+
+				if (dist <= DetectionRadius) {
+					// CHASE PLAYER
+					if (dist > StopDistance) {
+						HorizontalInput = toTarget.Normalized();
+						SprintHeld = dist > SprintDistance;
+					}
+					return; // chasing → no wandering
+				}
 			}
 
-			Vector3 toTarget = Target.GlobalPosition - Self.GlobalPosition;
-			toTarget.Y = 0f;
-			float dist = toTarget.Length();
+			// -------------------------
+			// 2. OTHERWISE: wander
+			// -------------------------
+			UpdateWander();
+		}
 
-			if (dist <= StopDistance) {
-				// close enough → stand still (maybe attack elsewhere)
-				return;
+		private void UpdateWander() {
+			WanderTimer -= 0.025f;
+
+			if (WanderTimer <= 0f) {
+				PickNewWanderAction();
 			}
 
-			HorizontalInput = toTarget.Normalized();
-			SprintHeld = dist > SprintDistance;
+			HorizontalInput = CurrentWanderDir;
+		}
+
+		private void PickNewWanderAction() {
+			// choose a random direction or stop
+			int i = (int)(GD.Randi() % WanderDirections.Length);
+			CurrentWanderDir = WanderDirections[i];
+
+			// choose how long this action lasts
+			WanderDuration = (float)GD.RandRange(1.5f, 4.0f);
+			WanderTimer = WanderDuration;
 		}
 	}
 }
