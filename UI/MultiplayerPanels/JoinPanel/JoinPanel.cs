@@ -8,12 +8,13 @@ namespace MultiplayerPanels {
 		private static readonly Logger Log = new(nameof(JoinPanel), enabled: true);
 
 		// Paths for Panel Attributes
-		private const string NO_PASSWORD_CHECKBOX = "PanelArea/NoPassword/NoPasswordCheckBox";
-		private const string NOT_FULL_CHECKBOX = "PanelArea/NotFull/NotFullCheckBox";
-		private const string CANCEL_BUTTON = "PanelArea/CancelButton";
-		private const string JOIN_BUTTON = "PanelArea/JoinButton";
-		private const string IP_ADDRESS_INPUT = "PanelArea/VLineEditContainer/IPAddressDirect";
-		private const string STATUS_LABEL = "PanelArea/JoinGame";
+		private const string PANEL_AREA = "PanelArea";
+		private const string NO_PASSWORD_CHECKBOX = PANEL_AREA + "/NoPassword/NoPasswordCheckBox";
+		private const string NOT_FULL_CHECKBOX = PANEL_AREA + "/NotFull/NotFullCheckBox";
+		private const string CANCEL_BUTTON = PANEL_AREA + "/CancelButton";
+		private const string JOIN_BUTTON = PANEL_AREA + "/JoinButton";
+		private const string IP_ADDRESS_INPUT = PANEL_AREA + "/VLineEditContainer/IPAddressDirect";
+		private const string STATUS_LABEL = PANEL_AREA + "/JoinGame";
 
 		// Component References
 		private LineEdit inputIPAddress = null!;
