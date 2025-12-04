@@ -44,11 +44,22 @@ public partial class MainMenu : Control {
 	private Control MultiplayerButtonPanel = null!;
 
 	private SettingsMenu Settings = null!;
+	//Load Scene Reference
+	private HostPanel _hostPanel;
 
 	// Main
 	public override void _Ready() {
+		LoadScenes();
 		GetComponents();
 		SetCallbacks();
+	}
+
+	//Load Scenes
+	public void LoadScenes() {
+		var packed1 = GD.Load<PackedScene>("res://UI/MultiplayerPanels/HostPanel/HostPanel.tscn");
+        _hostPanel = packed1.Instantiate<HostPanel>();
+		_hostPanel.Visible = false;
+        AddChild(_hostPanel);
 	}
 
 	// Components
@@ -163,7 +174,10 @@ public partial class MainMenu : Control {
 
 	// Pop-up panel buttons handler for Multiplayer
 	private void OnHostNewButtonPressed() {
+		var host = this.AddScene<HostPanel>(Scenes.HostPanel);
+		host.OpenMenu();
 
+		_hostPanel.UpdateHostText("Host New Game");
 	}
 
 	private void OnHostSavedButtonPressed() {
@@ -173,5 +187,10 @@ public partial class MainMenu : Control {
 	private void OnJoinGameButtonPressed() {
 		var join = this.AddScene<JoinPanel>(Scenes.JoinPanel);
 		join.OpenMenu();
+	}
+
+	// Load a new game scene
+	private void LoadGameScene() {
+		GetTree().ChangeSceneToFile(Scenes.GameScene);
 	}
 }
