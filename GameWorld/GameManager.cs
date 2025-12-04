@@ -16,14 +16,15 @@ public sealed partial class GameManager : Node {
 		CameraRig = this.AddScene<CameraRig>(Scenes.Camera);
 		Player = this.AddScene<Player>(Scenes.Player);
 
-		Player.AddCamera(CameraRig);
+		CameraRig.Target = Player;
+		Player.KeyInput.Camera = CameraRig;
 
 		Item item1 = GD.Load<Item>("res://Item/ItemDataBase/Food/AppleRed.tres");
 		Item3DIcon item3DIcon1 = new Item3DIcon();
 		item3DIcon1.Item = item1;
 		item3DIcon1.SpawnItem3D(new Vector3(0, 5, 5));
 		AddChild(item3DIcon1);
-	
+
 		Item item2 = GD.Load<Item>("res://Item/ItemDataBase/Food/AppleYellow.tres");
 		Item3DIcon item3DIcon2 = new Item3DIcon();
 		item3DIcon2.Item = item2;
