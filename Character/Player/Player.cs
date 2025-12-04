@@ -14,6 +14,7 @@ public sealed partial class Player : CharacterBody3D, ISaveable<PlayerData> {
 	// Inventories
 	public readonly Inventory Inventory = new Inventory(3, 5);
 	public readonly Inventory Hotbar = new Inventory(1, 5);
+	public InventoryManager InventoryManager = null!;
 
 	// Components
 	public readonly KeyInput KeyInput;
@@ -37,12 +38,22 @@ public sealed partial class Player : CharacterBody3D, ISaveable<PlayerData> {
 		Movement = new Movement(this);
 		Health = new Health(InitalHealth);
 		PickupComponent = new Item3DIconPickup();
+		InventoryManager = new InventoryManager();
 	}
 
 	public override void _Ready() {
 		AddChild(PickupComponent);
+		AddChild(InventoryManager);
 
 		this.AddScene(Scenes.HUD);
+		AddInventoriesToInventoryManager();
+	}
+
+	public void AddInventoriesToInventoryManager() {
+		InventoryUI inventoryUI = GetNode<HUD>("HUD").GetNode<InventoryUI>("Inventory");
+		InventoryManager.RegisterInventory(Inventory, inventoryUI);
+		Hotbar hotbarUI = GetNode<HUD>("HUD").GetNode<Hotbar>("Hotbar");
+		InventoryManager.RegisterInventory(Hotbar, hotbarUI);
 	}
 
 	public override void _PhysicsProcess(double delta) {

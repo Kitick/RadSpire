@@ -47,13 +47,14 @@ public sealed partial class Hotbar : Control, IInventoryUI {
 
 	private void GetPlayer() {
 		Player = GetParent<HUD>().Player;
+		Inventory = Player.Hotbar;
 		if(Player == null) {
 			GD.PrintErr("Hotbar could not find Player node in parent HUD.");
 			return;
 		}
 		GD.Print("Hotbar successfully found Player node in parent HUD.");
 
-		Player.Inventory.OnInventoryChanged += UpdateInventoryUI;
+		Inventory.OnInventoryChanged += UpdateInventoryUI;
 	}
 
 	public override void _ExitTree() {
@@ -66,7 +67,7 @@ public sealed partial class Hotbar : Control, IInventoryUI {
 			GD.PrintErr("InventoryUI SetUpInventoryUI: Player is null.");
 			return;
 		}
-		Inventory = Player.Inventory;
+		Inventory = Player.Hotbar;
 		GridContainer = GetNode<Control>("Background/GridBackground/HotbarSlots");
 		if(InvSlotTemplate == null) {
 			InvSlotTemplate = GD.Load<PackedScene>("res://UI/Inventory/InvSlotUITemplate.tscn");
