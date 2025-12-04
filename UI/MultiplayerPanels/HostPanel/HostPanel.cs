@@ -16,6 +16,7 @@ namespace MultiplayerPanels {
 
 		//Component Reference
 		public static Label hostText = null!;
+		public static LineEdit inputGameName = null!;
 		public static LineEdit inputPassword = null!;
 
 		// Events
@@ -40,16 +41,17 @@ namespace MultiplayerPanels {
 		//Get Components
 		private void GetComponents() {
 			hostText = GetNode<Label>(LABEL_HOST_TEXT);
+			inputGameName = GetNode<LineEdit>(INPUT_GAME_NAME_TEXT);
 			inputPassword = GetNode<LineEdit>(INPUT_PASSWORD_TEXT);
 		}
 
 		// Set Callbacks
 		private void SetCallbacks() {
 			GetNode<CheckBox>(PASSWORD_CHECKBOX).Toggled += OnPasswordCheckboxToggled;
-			inputPassword.TextChanged += OnInputGameNameTextChanged;
-			inputPassword.TextSubmitted += OnInputGameNameTextSubmitted;
-			GetNode<LineEdit>(INPUT_PASSWORD_TEXT).TextChanged += OnInputPasswordTextChanged;
-			GetNode<LineEdit>(INPUT_PASSWORD_TEXT).TextSubmitted += OnInputPasswordTextSubmitted;
+			inputGameName.TextChanged += OnInputGameNameTextChanged;
+			inputPassword.TextChanged += OnInputPasswordTextChanged;
+			inputGameName.Connect("text_submitted", Callable.From<string>(text => OnAnyTextSubmitted(INPUT_GAME_NAME_TEXT, text)));
+			inputPassword.Connect("text_submitted", Callable.From<string>(text => OnAnyTextSubmitted(INPUT_PASSWORD_TEXT, text)));
 			GetNode<Button>(CANCEL_BUTTON).Pressed += OnCancelButtonPressed;
 			GetNode<Button>(HOST_BUTTON).Pressed += OnHostButtonPressed;
 		}
@@ -74,24 +76,28 @@ namespace MultiplayerPanels {
 			}
 		}
 
+		// User Text Input
 		private void OnInputGameNameTextChanged(string newtext) {
 			// Implementation Here
-			GD.Print($"New Text: {newtext}");
-		}
-
-		private void OnInputGameNameTextSubmitted(string submittedtext) {
-			// Implementation Here
-			GD.Print($"Submitted Text: {submittedtext}");
+			GD.Print($"Game Name New Text: {newtext}");
 		}
 
 		private void OnInputPasswordTextChanged(string newtext) {
 			// Implementation Here
-			GD.Print($"New Text: {newtext}");
+			GD.Print($"Password New Text: {newtext}");
 		}
 
-		private void OnInputPasswordTextSubmitted(string submittedtext) {
-			// Implementation Here
-			GD.Print($"Submitted Text: {submittedtext}");
+		// User Text Submission
+		private void OnAnyTextSubmitted(string sourceName, string submittedText) {
+			if(sourceName == null) return;
+
+			if(sourceName == INPUT_GAME_NAME_TEXT) {
+				GD.Print($"Game Name Submitted: {submittedText}");
+			}
+
+			else if(sourceName == INPUT_PASSWORD_TEXT) {
+				GD.Print($"Password Submitted: {submittedText}");
+			}
 		}
 
 		// Set Scene Input Callbacks
@@ -101,7 +107,7 @@ namespace MultiplayerPanels {
 		}
 
 		//Scene Input Callbacks
-		public void OpenMenu() {}
+		public void OpenMenu(){}
 
 		public void CloseMenu() {
 			QueueFree();
