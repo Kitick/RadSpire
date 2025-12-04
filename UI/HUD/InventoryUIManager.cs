@@ -20,12 +20,10 @@ public partial class InventoryUIManager : Control {
 
     public override void _Process(double delta) {
         base._Process(delta);
-        GD.Print("InventoryUIManager._Process running; HeldItemSlotExist=" + HeldItemSlotExist);
         if(HeldItemSlotExist) {
             Vector2 mousePosition = GetViewport().GetMousePosition();
             Vector2 half = new Vector2(16, 16);
             HeldItemSlotUI!.GlobalPosition = mousePosition - half;
-            GD.Print("HeldItemSlotUI Position: " + HeldItemSlotUI.GlobalPosition);
         }
     }
 

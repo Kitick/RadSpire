@@ -46,6 +46,7 @@ public sealed partial class Hotbar : Control, IInventoryUI {
 
 	public override void _Ready() {
 		SetUpInventoryUI();
+		GetPlayer();
 
 		UpdateInventoryUI();
 	}

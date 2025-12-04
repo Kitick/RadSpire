@@ -8,8 +8,6 @@ public partial class InventoryManager : Node3D {
 	public PackedScene? InventoryUIManagerTemplate = null!;
 	private bool MouseHasItemSlot = false;
 	private ItemSlot? HeldItemSlot = null;
-	private bool IgnoreNextClick = false;
-
 	public event Action<ItemSlot>? StartMoveItemEvent;
 	public event Action? EndMoveItemEvent;
 
@@ -66,11 +64,6 @@ public partial class InventoryManager : Node3D {
 	}
 
 	public void HandleOnSlotClicked(string inventoryName, int slotIndex) {
-		if (IgnoreNextClick) {
-			IgnoreNextClick = false;
-			GD.Print("Ignoring immediate click after pickup");
-			return;
-		}
 		if (MouseHasItemSlot) {
 			HandlePlaceItemSlot(inventoryName, slotIndex);
 		} else {
@@ -88,7 +81,6 @@ public partial class InventoryManager : Node3D {
 			HeldItemSlot = GetItemSlotCopy(inventoryName, slotIndex);
 			StartMoveItemEvent?.Invoke(HeldItemSlot);
 			MouseHasItemSlot = true;
-			IgnoreNextClick = true;
 			GetInventory(inventoryName).RemoveItem(GetInventory(inventoryName).GetRow(slotIndex), GetInventory(inventoryName).GetColumn(slotIndex));
 		}
 	}
@@ -134,6 +126,8 @@ public partial class InventoryManager : Node3D {
 			GD.Print("Placing held item into empty slot inventory:" + inventoryName + " index: " + slotIndex);
 			GetInventory(inventoryName).AddItem(HeldItemSlot, GetInventory(inventoryName).GetRow(slotIndex), GetInventory(inventoryName).GetColumn(slotIndex));
 			EndMoveItemEvent?.Invoke();
+			MouseHasItemSlot = false;
+			HeldItemSlot = null;
 		}
 	}
 	
@@ -174,6 +168,8 @@ public partial class InventoryManager : Node3D {
 			if(remainSlot.IsEmpty()) {
 				GD.Print("All held items placed into slot inventory:" + inventoryName + " index: " + slotIndex);
 				EndMoveItemEvent?.Invoke();
+				MouseHasItemSlot = false;
+				HeldItemSlot = null;
 			}
 			else {
 				GD.Print("Some held items remain after placing into slot inventory:" + inventoryName + " index: " + slotIndex);
@@ -219,8 +215,9 @@ public partial class InventoryManager : Node3D {
 				droppedItemIcon.SpawnItem3D(dropPosition);
 				GetParent<Player>().GetParent().AddChild(droppedItemIcon);
 			}
-
 			EndMoveItemEvent?.Invoke();
+			MouseHasItemSlot = false;
+			HeldItemSlot = null;
 		}
 	}
 }
