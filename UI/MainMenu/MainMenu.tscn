@@ -25,10 +25,10 @@ texture = ExtResource("2_vpabl")
 [node name="Title_Card" type="TextureRect" parent="."]
 layout_mode = 1
 anchors_preset = -1
-offset_left = 40.0
-offset_top = 60.0
-offset_right = 1657.0
-offset_bottom = 1084.0
+offset_left = 44.0
+offset_top = 105.0
+offset_right = 1661.0
+offset_bottom = 955.0
 scale = Vector2(0.3, 0.3)
 texture = ExtResource("3_ectev")
 
