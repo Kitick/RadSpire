@@ -1,6 +1,7 @@
 using System;
 using Godot;
 using InputSystem;
+using Network;
 
 namespace MultiplayerPanels {
 	public sealed partial class HostPanel : Control {
@@ -63,11 +64,18 @@ namespace MultiplayerPanels {
 		private void OnCancelButtonPressed() =>	CloseMenu();
 
 		private void OnHostButtonPressed() {
-			// Implementation Here
-			GD.Print($"Host Button Pressed");
+			Error result = Server.Instance.Host();
+			if (result == Error.Ok) {
+				GD.Print("[HostPanel] Successfully started hosting");
+				GameManager.Instance.StartGame();
+				CloseMenu();
+			} else {
+				GD.PrintErr($"[HostPanel] Failed to host: {result}");
+				UpdateHostText($"Failed to host: {result}");
+			}
 		}
 
-		private void OnPasswordCheckboxToggled(bool check) {	
+		private void OnPasswordCheckboxToggled(bool check) {
 			if(check == true) {
 				inputPassword.Show();
 			}

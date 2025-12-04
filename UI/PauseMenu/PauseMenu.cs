@@ -1,6 +1,8 @@
-using Settings;
+using System;
 using Core;
 using Godot;
+using Network;
+using Settings;
 
 public sealed partial class PauseMenu : Control {
 	public Button ResumeButton = null!;
@@ -27,5 +29,23 @@ public sealed partial class PauseMenu : Control {
 		SaveButton = GetNode<Button>(SAVE_BUTTON);
 		HostButton = GetNode<Button>(HOST_BUTTON);
 		MainMenuButton = GetNode<Button>(MAIN_MENU_BUTTON);
+	}
+
+	public void OpenMenu() {
+		UpdateHostButtonText();
+		Visible = true;
+	}
+
+	public void CloseMenu() {
+		Visible = false;
+	}
+
+	public void UpdateHostButtonText() {
+		if(Server.Instance.IsNetworkConnected) {
+			HostButton.Text = "Disconnect";
+		}
+		else {
+			HostButton.Text = "Host";
+		}
 	}
 }

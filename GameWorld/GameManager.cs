@@ -35,7 +35,6 @@ public sealed partial class GameManager : Node {
 
 		KeyInput.Update(CameraRig);
 		LocalPlayer.Update(dt, KeyInput);
-		// NetworkSync handles broadcasting automatically via Movement.OnStateChanged
 	}
 
 	private void GetComponents() {
@@ -48,25 +47,6 @@ public sealed partial class GameManager : Node {
 
 	private static void Log(string message) {
 		if(Debug) { GD.Print($"[GameManager] {message}"); }
-	}
-
-	private void SpawnTestItem(string path, Vector3 position) {
-		Item item = GD.Load<Item>(path);
-		Item3DIcon item3DIcon = new Item3DIcon();
-		item3DIcon.Item = item;
-		item3DIcon.Name = item.Name + "3DIcon";
-		item3DIcon.SpawnItem3D(position);
-		AddChild(item3DIcon);
-	}
-
-	private void SpawnTestItems() {
-		SpawnTestItem(Items.AppleRed, new Vector3(0, 5, 5));
-		SpawnTestItem(Items.AppleYellow, new Vector3(0, 5, 6));
-		SpawnTestItem(Items.AppleGreen, new Vector3(0, 5, 7));
-		SpawnTestItem(Items.BananaYellow, new Vector3(0, 5, 8));
-		SpawnTestItem(Items.BananaGreen, new Vector3(0, 5, 9));
-		SpawnTestItem(Items.StrawberryGreen, new Vector3(0, 5, 10));
-		SpawnTestItem(Items.StrawberryRed, new Vector3(0, 5, 11));
 	}
 
 	public bool Save(string fileName) {
@@ -105,11 +85,30 @@ public sealed partial class GameManager : Node {
 
 	public void StartGame() {
 		GetTree().ChangeSceneToFile(Scenes.GameScene);
-		SpawnTestItems();
+		//SpawnTestItems();
 	}
 
 	public void QuitGame() {
 		GetTree().Quit();
+	}
+
+	private void SpawnTestItem(string path, Vector3 position) {
+		Item item = GD.Load<Item>(path);
+		Item3DIcon item3DIcon = new Item3DIcon();
+		item3DIcon.Item = item;
+		item3DIcon.Name = item.Name + "3DIcon";
+		item3DIcon.SpawnItem3D(position);
+		AddChild(item3DIcon);
+	}
+
+	private void SpawnTestItems() {
+		SpawnTestItem(Items.AppleRed, new Vector3(0, 5, 5));
+		SpawnTestItem(Items.AppleYellow, new Vector3(0, 5, 6));
+		SpawnTestItem(Items.AppleGreen, new Vector3(0, 5, 7));
+		SpawnTestItem(Items.BananaYellow, new Vector3(0, 5, 8));
+		SpawnTestItem(Items.BananaGreen, new Vector3(0, 5, 9));
+		SpawnTestItem(Items.StrawberryGreen, new Vector3(0, 5, 10));
+		SpawnTestItem(Items.StrawberryRed, new Vector3(0, 5, 11));
 	}
 }
 
