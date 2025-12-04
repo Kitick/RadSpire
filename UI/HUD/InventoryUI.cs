@@ -31,7 +31,7 @@ public partial class InventoryUI: Control {
 		if(InvSlotTemplate == null) {
 			InvSlotTemplate = GD.Load<PackedScene>("res://UI/Inventory/InvSlotUITemplate.tscn");
 		}
-		InventorySlots = (PlayerInventory.MaxSlotsRows - 1) * PlayerInventory.MaxSlotsColumns;
+		InventorySlots = PlayerInventory.MaxSlotsRows * PlayerInventory.MaxSlotsColumns;
 		for(int i = 0; i < InventorySlots; i++) {
 			InvSlotUI slotInstance = InvSlotTemplate.Instantiate<InvSlotUI>();
 			slotInstance.SlotIndex = i;

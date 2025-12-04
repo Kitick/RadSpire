@@ -264,10 +264,10 @@ public partial class Inventory : ISaveable<InventoryData> {
 		MaxSlotsRows = data.MaxSlotsRows;
 		MaxSlotsColumns = data.MaxSlotsColumns;
 		ItemSlots = new ItemSlot[MaxSlots];
-        for(int i = 0; i < ItemSlots.Length; i++) {
+		for(int i = 0; i < ItemSlots.Length; i++) {
 			ItemSlots[i].Deserialize(data.ItemSlots[i]);
 		}
-    }
+	}
 }
 
 namespace SaveSystem {
@@ -275,6 +275,6 @@ namespace SaveSystem {
 		public string Name { get; init; }
 		public int MaxSlotsRows { get; init; }
 		public int MaxSlotsColumns { get; init; }
-        public ItemSlotData[] ItemSlots { get; init; }
-    }
+		public ItemSlotData[] ItemSlots { get; init; }
+	}
 }
