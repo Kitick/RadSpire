@@ -16,7 +16,8 @@ namespace Network {
 		private const int MaxPlayers = 10;
 
 		private ENetMultiplayerPeer? Peer;
-		public int CurrentPeerId { get; private set; } = -1;
+		public int PeerId => Multiplayer.GetUniqueId();
+
 		public bool IsNetworkConnected => Peer != null && Multiplayer.MultiplayerPeer != null;
 		public bool IsHost => IsNetworkConnected && Multiplayer.IsServer();
 
@@ -27,59 +28,69 @@ namespace Network {
 		public event Action<int>? OnPeerDisconnected;
 
 		public override void _Ready() {
+			SetCallbacks();
+		}
+
+		private void SetCallbacks() {
 			Multiplayer.PeerConnected += id => OnPeerConnected?.Invoke((int) id);
 			Multiplayer.PeerDisconnected += id => OnPeerDisconnected?.Invoke((int) id);
-			Multiplayer.ConnectedToServer += () => {
-				CurrentPeerId = Multiplayer.GetUniqueId();
-				OnJoinedServer?.Invoke();
-			};
+			Multiplayer.ConnectedToServer += () => OnJoinedServer?.Invoke();
 			Multiplayer.ServerDisconnected += () => {
-				if(Debug) { GD.Print("Network: Server disconnected"); }
 				Disconnect();
 				OnServerDisconnected?.Invoke();
 			};
 		}
 
-		public void Host() {
-			if(Debug) { GD.Print("Network: Starting server"); }
-
-			Peer = new ENetMultiplayerPeer();
-			var result = Peer.CreateServer(Port, MaxPlayers);
-
-			if(result != Error.Ok) {
-				GD.PrintErr($"Network: Failed to start server: {result}");
-				return;
+		private static void Log(string message) {
+			if(Debug) {
+				GD.Print($"[Network] {message}");
 			}
-
-			Multiplayer.MultiplayerPeer = Peer;
-			CurrentPeerId = Multiplayer.GetUniqueId();
-			if(Debug) { GD.Print($"Network: Server started (Peer ID: {CurrentPeerId})"); }
-			OnHostStarted?.Invoke();
 		}
 
-		public void Join(string address) {
-			if(Debug) { GD.Print($"Network: Joining server at {address}:{Port}"); }
+		public Error Host() {
+			Log("Starting server");
 
 			Peer = new ENetMultiplayerPeer();
-			var result = Peer.CreateClient(address, Port);
+
+			Error result = Peer.CreateServer(Port, MaxPlayers);
 
 			if(result != Error.Ok) {
-				GD.PrintErr($"Network: Failed to join server: {result}");
-				return;
+				GD.PrintErr($"Failed to start server: {result}");
+				return result;
 			}
 
 			Multiplayer.MultiplayerPeer = Peer;
-			if(Debug) { GD.Print("Network: Attempting to join server..."); }
+
+			Log($"Server started (Peer ID: {PeerId})");
+			OnHostStarted?.Invoke();
+
+			return result;
+		}
+
+		public Error Join(string address) {
+			Log($"Joining server at {address}:{Port}");
+
+			Peer = new ENetMultiplayerPeer();
+			Error result = Peer.CreateClient(address, Port);
+
+			if(result != Error.Ok) {
+				GD.PrintErr($"[Network] Failed to join server: {result}");
+				return result;
+			}
+
+			Multiplayer.MultiplayerPeer = Peer;
+			Log("Attempting to join server...");
+
+			return result;
 		}
 
 		public void Disconnect() {
-			if(Peer == null) return;
+			if(Peer == null) { return; }
 
-			if(Debug) { GD.Print("Network: Disconnecting"); }
+			Log("Disconnecting");
 			Peer.Close();
 			Peer = null;
 			Multiplayer.MultiplayerPeer = null;
-			CurrentPeerId = -1;
 		}
 	}
 }
