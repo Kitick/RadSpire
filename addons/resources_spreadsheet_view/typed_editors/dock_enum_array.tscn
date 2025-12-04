@@ -106,9 +106,9 @@ text = "Options:"
 
 [node name="OptionButton" type="OptionButton" parent="HBoxContainer/Control2/HBoxContainer/HFlowContainer"]
 layout_mode = 2
-item_count = 2
 selected = 0
 fit_to_longest_item = false
+item_count = 2
 popup/item_0/text = "Add"
 popup/item_0/id = 0
 popup/item_1/text = "Erase"
