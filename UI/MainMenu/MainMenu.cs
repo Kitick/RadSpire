@@ -54,7 +54,7 @@ public partial class MainMenu : Control {
 
 	//Load Scenes
 	public void LoadScenes() {
-		var packed1 = GD.Load<PackedScene>("res://UI/HostPanel/HostPanel.tscn");
+		var packed1 = GD.Load<PackedScene>("res://UI/MultiplayerPanels/HostPanel/HostPanel.tscn");
         _hostPanel = packed1.Instantiate<HostPanel>();
 		_hostPanel.Visible = false;
         AddChild(_hostPanel);
@@ -178,7 +178,6 @@ public partial class MainMenu : Control {
 		host.OpenMenu();
 
 		_hostPanel.UpdateHostText("Host New Game");
-
 	}
 
 	private void OnHostSavedButtonPressed() {

@@ -65,7 +65,6 @@ namespace MultiplayerPanels {
 
 		private void OnPasswordCheckboxToggled(bool check) {
 			// Implementation Here
-			
 			GD.Print($"Password Checkbox Toggled: {check}");
 		}
 

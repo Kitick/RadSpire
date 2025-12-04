@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://bg5jxcp2jtwjp"]
 
-[ext_resource type="Script" uid="uid://i6fifnxwdq60" path="res://UI/JoinPanel/JoinPanel.cs" id="1_4o4uc"]
+[ext_resource type="Script" uid="uid://i6fifnxwdq60" path="res://UI/MultiplayerPanels/JoinPanel/JoinPanel.cs" id="1_4o4uc"]
 
 [node name="JoinPanel" type="Control"]
 layout_mode = 3
