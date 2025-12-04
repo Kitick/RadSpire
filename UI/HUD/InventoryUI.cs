@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Reflection.Metadata;
 using Godot;
 
 public partial class InventoryUI: Control {

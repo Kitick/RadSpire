@@ -27,7 +27,12 @@ public sealed partial class Hotbar : Control {
 	private event Action? OnExit;
 
 	private Player Player = null!;
-
+	private Inventory PlayerHotbar = null!;
+	private List<InvSlotUI> HotbarSlotUIs = new List<InvSlotUI>();
+	private int NumHotbarSlots = 0;
+	private PackedScene? InvSlotTemplate = null!;
+	private Control? GridContainer = null!;
+	
 	public override void _EnterTree() {
 		SetInputCallbacks();
 		RequestReady();
