@@ -4,6 +4,8 @@ using SaveSystem;
 public sealed partial class Inventory : ISaveable<InventoryData> {
 	public event Action? OnInventoryChanged;
 
+	public string Name { get; set; } = "Default Inventory";
+
 	private const int DefaultRows = 4;
 	private const int DefaultColumns = 8;
 
