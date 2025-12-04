@@ -1,4 +1,5 @@
 using System;
+using Components;
 using Camera;
 using Core;
 using Godot;
@@ -7,6 +8,8 @@ using SaveSystem;
 public sealed partial class GameManager : Node {
 	private static Player Player = null!;
 	private static CameraRig CameraRig = null!;
+
+	private static KeyInput KeyInput => new KeyInput();
 
 	[Export] private string SaveFileName = "autosave";
 
@@ -25,7 +28,7 @@ public sealed partial class GameManager : Node {
 		Player = this.AddScene<Player>(Scenes.Player);
 
 		CameraRig.Target = Player;
-		Player.KeyInput.Camera = CameraRig;
+		KeyInput.Camera = CameraRig;
 
 		SpawnTestItem(Items.AppleRed, new Vector3(0, 5, 5));
 		SpawnTestItem(Items.AppleYellow, new Vector3(0, 5, 6));
@@ -36,6 +39,10 @@ public sealed partial class GameManager : Node {
 		SpawnTestItem(Items.StrawberryRed, new Vector3(0, 5, 11));
 
 		if(ShouldLoad) { Load(SaveFileName); }
+	}
+
+	public override void _PhysicsProcess(double delta) {
+		Player.Update(delta, KeyInput);
 	}
 
 	public static void Save(string fileName) {
