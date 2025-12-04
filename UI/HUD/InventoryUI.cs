@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection.Metadata;
-using Godot; 
+using Godot;
 
 public partial class InventoryUI: Control {
 	private Player player = null!;
@@ -26,7 +26,7 @@ public partial class InventoryUI: Control {
 			GD.PrintErr("InventoryUI SetUpInventoryUI: Player is null.");
 			return;
 		}
-		PlayerInventory = player.PlayerInventory;
+		PlayerInventory = player.Inventory;
 		GridContainer = GetNode<Control>("Background/GridBackground/GridContainer");
 		if(InvSlotTemplate == null) {
 			InvSlotTemplate = GD.Load<PackedScene>("res://UI/Inventory/InvSlotUITemplate.tscn");
@@ -160,7 +160,7 @@ public partial class InventoryUI: Control {
 			HeldItemSlotUI.UpdateSlotUI(HeldItemSlot);
 		}
 	}
-	
+
 	public void HandlePlaceItemSlotOnSameItem(int slotIndex) {
 		if (HeldItemSlot == null) return;
 		Item targetItem = PlayerInventory.GetItem(PlayerInventory.GetRow(slotIndex), PlayerInventory.GetColumn(slotIndex));
@@ -228,7 +228,7 @@ public partial class InventoryUI: Control {
 			GD.PrintErr("InventoryUI SetUpInventoryUI: Player is null.");
 			return;
 		}
-		PlayerInventory = player.PlayerInventory;
+		PlayerInventory = player.Inventory;
 		for(int i = 0; i < InventorySlots; i++) {
 			InvSlotUIs[i].UpdateSlotUI(PlayerInventory.ItemSlots[i]);
 		}

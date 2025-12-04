@@ -4,16 +4,15 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://cm10xah5abr1q"
 path.s3tc="res://.godot/imported/red apple.png-e4d632307fe5dd05d6b378234d4ca65b.s3tc.ctex"
-path.etc2="res://.godot/imported/red apple.png-e4d632307fe5dd05d6b378234d4ca65b.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc", "etc2_astc"],
+"imported_formats": ["s3tc_bptc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://Assets/scrimsy fruit icons/color/red/red apple.png"
-dest_files=["res://.godot/imported/red apple.png-e4d632307fe5dd05d6b378234d4ca65b.s3tc.ctex", "res://.godot/imported/red apple.png-e4d632307fe5dd05d6b378234d4ca65b.etc2.ctex"]
+dest_files=["res://.godot/imported/red apple.png-e4d632307fe5dd05d6b378234d4ca65b.s3tc.ctex"]
 
 [params]
 

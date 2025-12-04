@@ -6,19 +6,20 @@ using Godot;
 using SaveSystem;
 
 public sealed partial class Player : CharacterBody3D, ISaveable<PlayerData> {
+	// Configuration
 	[Export] private int InitalHealth = 100;
 	[Export] private float SprintMultiplier = 3.0f;
 	[Export] private float CrouchMultiplier = 0.5f;
-	
-	// Inventory's last row is hotbar
-	public Inventory PlayerInventory = null!;
+
+	// Inventories
+	public readonly Inventory Inventory = new Inventory(3, 5);
+	public readonly Inventory Hotbar = new Inventory(1, 5);
 
 	// Components
-	private KeyInput KeyInput = null!;
-	private Health Health = null!;
-	private Movement Movement = null!;
-	private Item3DIconPickup Item3DIconPickupComponent = null!;
-
+	public readonly KeyInput KeyInput;
+	public readonly Health Health;
+	public readonly Movement Movement;
+	public readonly Item3DIconPickup PickupComponent;
 
 	// State Machine
 	public enum State { Idle, Walking, Sprinting, Crouching, Falling }
@@ -31,13 +32,15 @@ public sealed partial class Player : CharacterBody3D, ISaveable<PlayerData> {
 		remove => StateMachine.OnStateChanged -= value;
 	}
 
-	public override void _Ready() {
+	public Player() {
 		KeyInput = new KeyInput();
 		Movement = new Movement(this);
 		Health = new Health(InitalHealth);
-		PlayerInventory = new Inventory(4, 5);
-		Item3DIconPickupComponent = new Item3DIconPickup();
-		AddChild(Item3DIconPickupComponent);
+		PickupComponent = new Item3DIconPickup();
+	}
+
+	public override void _Ready() {
+		AddChild(PickupComponent);
 
 		this.AddScene(Scenes.HUD);
 	}
@@ -67,11 +70,6 @@ public sealed partial class Player : CharacterBody3D, ISaveable<PlayerData> {
 		UpdateMovementState();
 	}
 
-	public void AddCamera(CameraRig camera) {
-		KeyInput.Camera = camera;
-		camera.Target = this;
-	}
-
 	private void UpdateMovementState() {
 		if(!IsOnFloor()) { StateMachine.TransitionTo(State.Falling); }
 		else if(!KeyInput.IsMoving) { StateMachine.TransitionTo(State.Idle); }
@@ -92,13 +90,13 @@ public sealed partial class Player : CharacterBody3D, ISaveable<PlayerData> {
 	public PlayerData Serialize() => new PlayerData {
 		Health = Health.Serialize(),
 		Movement = Movement.Serialize(),
-		Inventory = PlayerInventory.Serialize()
+		Inventory = Inventory.Serialize()
 	};
 
 	public void Deserialize(in PlayerData data) {
 		Health.Deserialize(data.Health);
 		Movement.Deserialize(data.Movement);
-		PlayerInventory.Deserialize(data.Inventory);
+		Inventory.Deserialize(data.Inventory);
 	}
 }
 

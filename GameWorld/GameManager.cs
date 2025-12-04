@@ -12,53 +12,28 @@ public sealed partial class GameManager : Node {
 
 	public static bool ShouldLoad = true;
 
+	private void SpawnTestItem(string path, Vector3 position) {
+		Item item = GD.Load<Item>(path);
+		Item3DIcon item3DIcon = new Item3DIcon();
+		item3DIcon.Item = item;
+		item3DIcon.SpawnItem3D(position);
+		AddChild(item3DIcon);
+	}
+
 	public override void _Ready() {
 		CameraRig = this.AddScene<CameraRig>(Scenes.Camera);
 		Player = this.AddScene<Player>(Scenes.Player);
 
-		Player.AddCamera(CameraRig);
+		CameraRig.Target = Player;
+		Player.KeyInput.Camera = CameraRig;
 
-		Item item1 = GD.Load<Item>("res://Item/ItemDataBase/Food/AppleRed.tres");
-		Item3DIcon item3DIcon1 = new Item3DIcon();
-		item3DIcon1.Item = item1;
-		item3DIcon1.SpawnItem3D(new Vector3(0, 5, 5));
-		AddChild(item3DIcon1);
-	
-		Item item2 = GD.Load<Item>("res://Item/ItemDataBase/Food/AppleYellow.tres");
-		Item3DIcon item3DIcon2 = new Item3DIcon();
-		item3DIcon2.Item = item2;
-		item3DIcon2.SpawnItem3D(new Vector3(0, 5, 6));
-		AddChild(item3DIcon2);
-
-		Item item3 = GD.Load<Item>("res://Item/ItemDataBase/Food/AppleGreen.tres");
-		Item3DIcon item3DIcon3 = new Item3DIcon();
-		item3DIcon3.Item = item3;
-		item3DIcon3.SpawnItem3D(new Vector3(0, 5, 7));
-		AddChild(item3DIcon3);
-
-		Item item4 = GD.Load<Item>("res://Item/ItemDataBase/Food/BananaYellow.tres");
-		Item3DIcon item3DIcon4 = new Item3DIcon();
-		item3DIcon4.Item = item4;
-		item3DIcon4.SpawnItem3D(new Vector3(0, 5, 8));
-		AddChild(item3DIcon4);
-
-		Item item5 = GD.Load<Item>("res://Item/ItemDataBase/Food/BananaGreen.tres");
-		Item3DIcon item3DIcon5 = new Item3DIcon();
-		item3DIcon5.Item = item5;
-		item3DIcon5.SpawnItem3D(new Vector3(0, 5, 9));
-		AddChild(item3DIcon5);
-
-		Item item6 = GD.Load<Item>("res://Item/ItemDataBase/Food/StrawberryGreen.tres");
-		Item3DIcon item3DIcon6 = new Item3DIcon();
-		item3DIcon6.Item = item6;
-		item3DIcon6.SpawnItem3D(new Vector3(0, 5, 10));
-		AddChild(item3DIcon6);
-
-		Item item7 = GD.Load<Item>("res://Item/ItemDataBase/Food/StrawberryRed.tres");
-		Item3DIcon item3DIcon7 = new Item3DIcon();
-		item3DIcon7.Item = item7;
-		item3DIcon7.SpawnItem3D(new Vector3(0, 5, 11));
-		AddChild(item3DIcon7);
+		SpawnTestItem(Items.AppleRed, new Vector3(0, 5, 5));
+		SpawnTestItem(Items.AppleYellow, new Vector3(0, 5, 6));
+		SpawnTestItem(Items.AppleGreen, new Vector3(0, 5, 7));
+		SpawnTestItem(Items.BananaYellow, new Vector3(0, 5, 8));
+		SpawnTestItem(Items.BananaGreen, new Vector3(0, 5, 9));
+		SpawnTestItem(Items.StrawberryGreen, new Vector3(0, 5, 10));
+		SpawnTestItem(Items.StrawberryRed, new Vector3(0, 5, 11));
 
 		if(ShouldLoad) { Load(SaveFileName); }
 	}
