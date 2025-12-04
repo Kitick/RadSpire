@@ -16,6 +16,7 @@ namespace MultiplayerPanels {
 
 		//Component Reference
 		public static Label hostText = null!;
+		public static LineEdit inputPassword = null!;
 
 		// Events
 		public event Action? OnMenuClosed;
@@ -39,13 +40,14 @@ namespace MultiplayerPanels {
 		//Get Components
 		private void GetComponents() {
 			hostText = GetNode<Label>(LABEL_HOST_TEXT);
+			inputPassword = GetNode<LineEdit>(INPUT_PASSWORD_TEXT);
 		}
 
 		// Set Callbacks
 		private void SetCallbacks() {
 			GetNode<CheckBox>(PASSWORD_CHECKBOX).Toggled += OnPasswordCheckboxToggled;
-			GetNode<LineEdit>(INPUT_GAME_NAME_TEXT).TextChanged += OnInputGameNameTextChanged;
-			GetNode<LineEdit>(INPUT_GAME_NAME_TEXT).TextSubmitted += OnInputGameNameTextSubmitted;
+			inputPassword.TextChanged += OnInputGameNameTextChanged;
+			inputPassword.TextSubmitted += OnInputGameNameTextSubmitted;
 			GetNode<LineEdit>(INPUT_PASSWORD_TEXT).TextChanged += OnInputPasswordTextChanged;
 			GetNode<LineEdit>(INPUT_PASSWORD_TEXT).TextSubmitted += OnInputPasswordTextSubmitted;
 			GetNode<Button>(CANCEL_BUTTON).Pressed += OnCancelButtonPressed;
@@ -63,9 +65,13 @@ namespace MultiplayerPanels {
 			GD.Print($"Host Button Pressed");
 		}
 
-		private void OnPasswordCheckboxToggled(bool check) {
-			// Implementation Here
-			GD.Print($"Password Checkbox Toggled: {check}");
+		private void OnPasswordCheckboxToggled(bool check) {	
+			if(check == true) {
+				inputPassword.Show();
+			}
+			else if(check == false) {
+				inputPassword.Hide();
+			}
 		}
 
 		private void OnInputGameNameTextChanged(string newtext) {
