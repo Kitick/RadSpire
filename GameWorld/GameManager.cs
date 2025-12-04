@@ -1,4 +1,3 @@
-using System;
 using Camera;
 using Components;
 using Core;
@@ -8,17 +7,25 @@ using SaveSystem;
 public sealed partial class GameManager : Node {
 	public static GameManager Instance { get; private set; } = null!;
 
+	public static readonly bool Debug = true;
+
 	public bool InGame => GetTree().CurrentScene.SceneFilePath == Scenes.GameScene;
 
-	public Player Player { get; private set; } = null!;
+	public Player LocalPlayer { get; private set; } = null!;
+
 	public CameraRig CameraRig { get; private set; } = null!;
 
-	private readonly KeyInput KeyInput = new KeyInput();
+	private readonly KeyInput KeyInput = new();
 
 	public override void _Ready() {
 		Instance = this;
 
+		InitializeNetwork();
 		GetComponents();
+	}
+
+	public override void _ExitTree() {
+		CleanupNetwork();
 	}
 
 	public override void _PhysicsProcess(double delta) {
@@ -27,14 +34,20 @@ public sealed partial class GameManager : Node {
 		float dt = (float) delta;
 
 		KeyInput.Update(CameraRig);
-		Player.Update(dt, KeyInput);
+		LocalPlayer.Update(dt, KeyInput);
+		// NetworkSync handles broadcasting automatically via Movement.OnStateChanged
 	}
 
 	private void GetComponents() {
 		CameraRig = this.AddScene<CameraRig>(Scenes.Camera);
-		Player = this.AddScene<Player>(Scenes.Player);
+		LocalPlayer = this.AddScene<Player>(Scenes.Player);
+		LocalPlayer.Name = $"Player_{LocalPeerId}";
 
-		CameraRig.Target = Player;
+		CameraRig.Target = LocalPlayer;
+	}
+
+	private static void Log(string message) {
+		if(Debug) { GD.Print($"[GameManager] {message}"); }
 	}
 
 	private void SpawnTestItem(string path, Vector3 position) {
@@ -63,7 +76,7 @@ public sealed partial class GameManager : Node {
 		}
 
 		var data = new GameState {
-			Player = Player.Serialize(),
+			Player = LocalPlayer.Serialize(),
 			CameraRig = CameraRig.Serialize(),
 		};
 
@@ -84,7 +97,7 @@ public sealed partial class GameManager : Node {
 
 		var data = SaveService.Load<GameState>(fileName);
 
-		Player.Deserialize(data.Player);
+		LocalPlayer.Deserialize(data.Player);
 		CameraRig.Deserialize(data.CameraRig);
 
 		return true;
