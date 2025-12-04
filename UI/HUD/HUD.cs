@@ -107,7 +107,7 @@ public sealed partial class HUD : Control {
 	}
 
 	public static void SaveGame() {
-		GameManager.Save("autosave");
+		GameManager.Instance.Save("autosave");
 	}
 
 	public void QuitGame() {

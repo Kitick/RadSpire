@@ -58,8 +58,9 @@ buses/default_bus_layout="uid://cpvwo1bhm4q26"
 
 [autoload]
 
-InputSystem="*res://Systems/InputSystem.cs"
 SimpleGrass="*res://addons/simplegrasstextured/singleton.tscn"
+InputSystem="*res://Systems/InputSystem.cs"
+GameManager="*res://GameWorld/GameManager.cs"
 
 [display]
 

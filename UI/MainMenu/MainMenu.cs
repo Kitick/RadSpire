@@ -143,9 +143,8 @@ public partial class MainMenu : Control {
 
 	// Pop-up panel buttons handler for Singleplayer
 	private void OnContinueButtonPressed() {
-		GD.Print("Continue Game Button was pressed!");
-		GameManager.ShouldLoad = true;
-		LoadGameScene();
+		GameManager.Instance.Load("autosave");
+		GameManager.Instance.StartGame();
 	}
 
 	private void OnLoadSavedButtonPressed() {
@@ -156,8 +155,7 @@ public partial class MainMenu : Control {
 	}
 
 	private void OnStartNewButtonPressed() {
-		GameManager.ShouldLoad = false;
-		LoadGameScene();
+		GameManager.Instance.StartGame();
 	}
 
 	// Pop-up panel buttons handler for Multiplayer
@@ -175,10 +173,4 @@ public partial class MainMenu : Control {
 		var join = this.AddScene<JoinPanel>(Scenes.JoinPanel);
 		join.OpenMenu();
 	}
-
-	// Load a new game scene
-	private void LoadGameScene() {
-		GetTree().ChangeSceneToFile(Scenes.GameScene);
-	}
-
 }

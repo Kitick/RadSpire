@@ -1,35 +1,50 @@
 using System;
-using Components;
 using Camera;
+using Components;
 using Core;
 using Godot;
 using SaveSystem;
 
 public sealed partial class GameManager : Node {
-	private static Player Player = null!;
-	private static CameraRig CameraRig = null!;
+	public static GameManager Instance { get; private set; } = null!;
 
-	private static KeyInput KeyInput => new KeyInput();
+	public bool InGame => GetTree().CurrentScene.SceneFilePath == Scenes.GameScene;
 
-	[Export] private string SaveFileName = "autosave";
+	public Player Player { get; private set; } = null!;
+	public CameraRig CameraRig { get; private set; } = null!;
 
-	public static bool ShouldLoad = true;
-
-	private void SpawnTestItem(string path, Vector3 position) {
-		Item item = GD.Load<Item>(path);
-		Item3DIcon item3DIcon = new Item3DIcon();
-		item3DIcon.Item = item;
-		item3DIcon.SpawnItem3D(position);
-		AddChild(item3DIcon);
-	}
+	private readonly KeyInput KeyInput = new KeyInput();
 
 	public override void _Ready() {
+		Instance = this;
+
+		GetComponents();
+	}
+
+	public override void _PhysicsProcess(double delta) {
+		if(!InGame) { return; }
+
+		Player.Update(delta, KeyInput);
+	}
+
+	private void GetComponents() {
 		CameraRig = this.AddScene<CameraRig>(Scenes.Camera);
 		Player = this.AddScene<Player>(Scenes.Player);
 
 		CameraRig.Target = Player;
 		KeyInput.Camera = CameraRig;
+	}
 
+	private void SpawnTestItem(string path, Vector3 position) {
+		Item item = GD.Load<Item>(path);
+		Item3DIcon item3DIcon = new Item3DIcon();
+		item3DIcon.Item = item;
+		item3DIcon.Name = item.Name + "3DIcon";
+		item3DIcon.SpawnItem3D(position);
+		AddChild(item3DIcon);
+	}
+
+	private void SpawnTestItems() {
 		SpawnTestItem(Items.AppleRed, new Vector3(0, 5, 5));
 		SpawnTestItem(Items.AppleYellow, new Vector3(0, 5, 6));
 		SpawnTestItem(Items.AppleGreen, new Vector3(0, 5, 7));
@@ -37,33 +52,49 @@ public sealed partial class GameManager : Node {
 		SpawnTestItem(Items.BananaGreen, new Vector3(0, 5, 9));
 		SpawnTestItem(Items.StrawberryGreen, new Vector3(0, 5, 10));
 		SpawnTestItem(Items.StrawberryRed, new Vector3(0, 5, 11));
-
-		if(ShouldLoad) { Load(SaveFileName); }
 	}
 
-	public override void _PhysicsProcess(double delta) {
-		Player.Update(delta, KeyInput);
-	}
+	public bool Save(string fileName) {
+		if(!InGame) {
+			GD.PrintErr("Cannot save game when not in a game");
+			return false;
+		}
 
-	public static void Save(string fileName) {
 		var data = new GameState {
 			Player = Player.Serialize(),
 			CameraRig = CameraRig.Serialize(),
 		};
 
 		SaveService.Save(fileName, data);
+		return true;
 	}
 
-	public static bool Load(string fileName) {
-		if(SaveService.Exists(fileName)) {
-			var data = SaveService.Load<GameState>(fileName);
-
-			Player.Deserialize(data.Player);
-			CameraRig.Deserialize(data.CameraRig);
-
-			return true;
+	public bool Load(string fileName) {
+		if(!InGame) {
+			GD.PrintErr("Cannot load game when not in a game");
+			return false;
 		}
-		return false;
+
+		if(!SaveService.Exists(fileName)) {
+			GD.PrintErr($"Save file '{fileName}' does not exist");
+			return false;
+		}
+
+		var data = SaveService.Load<GameState>(fileName);
+
+		Player.Deserialize(data.Player);
+		CameraRig.Deserialize(data.CameraRig);
+
+		return true;
+	}
+
+	public void StartGame() {
+		GetTree().ChangeSceneToFile(Scenes.GameScene);
+		SpawnTestItems();
+	}
+
+	public void QuitGame() {
+		GetTree().Quit();
 	}
 }
 
