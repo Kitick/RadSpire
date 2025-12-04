@@ -1,0 +1,41 @@
+[gd_scene load_steps=2 format=3 uid="uid://cknyx8qv60d2t"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_23yn0"]
+bg_color = Color(1, 1, 1, 0.09803922)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[node name="Item3DIconPickupPrompt" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="GlassPanel" type="Panel" parent="."]
+z_index = 1
+layout_mode = 0
+offset_right = 350.0
+offset_bottom = 50.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_23yn0")
+
+[node name="TextureRect" type="TextureRect" parent="GlassPanel"]
+z_index = 2
+layout_mode = 0
+offset_left = 19.0
+offset_top = 4.0
+offset_right = 61.0
+offset_bottom = 46.0
+
+[node name="Label" type="Label" parent="GlassPanel"]
+z_index = 2
+layout_mode = 0
+offset_left = 67.0
+offset_top = 6.0
+offset_right = 330.0
+offset_bottom = 44.0
+theme_override_font_sizes/font_size = 25
+vertical_alignment = 1

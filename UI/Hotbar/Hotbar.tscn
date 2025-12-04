@@ -69,6 +69,14 @@ offset_right = -5.0
 offset_bottom = -5.0
 expand_mode = 1
 
+[node name="ItemCountLabel" type="Label" parent="Background/GridBackground/HotbarSlots/Slot1"]
+layout_mode = 0
+offset_left = 0.9375
+offset_top = 39.8475
+offset_right = 55.9375
+offset_bottom = 62.8475
+horizontal_alignment = 2
+
 [node name="Slot2" type="Panel" parent="Background/GridBackground/HotbarSlots"]
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
@@ -86,6 +94,14 @@ offset_top = 5.0
 offset_right = -5.0
 offset_bottom = -5.0
 expand_mode = 1
+
+[node name="ItemCountLabel" type="Label" parent="Background/GridBackground/HotbarSlots/Slot2"]
+layout_mode = 0
+offset_left = 0.9375
+offset_top = 39.8475
+offset_right = 55.9375
+offset_bottom = 62.8475
+horizontal_alignment = 2
 
 [node name="Slot3" type="Panel" parent="Background/GridBackground/HotbarSlots"]
 custom_minimum_size = Vector2(50, 50)
@@ -105,6 +121,14 @@ offset_right = -5.0
 offset_bottom = -5.0
 expand_mode = 1
 
+[node name="ItemCountLabel" type="Label" parent="Background/GridBackground/HotbarSlots/Slot3"]
+layout_mode = 0
+offset_left = 0.9375
+offset_top = 39.8475
+offset_right = 55.9375
+offset_bottom = 62.8475
+horizontal_alignment = 2
+
 [node name="Slot4" type="Panel" parent="Background/GridBackground/HotbarSlots"]
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
@@ -123,6 +147,14 @@ offset_right = -5.0
 offset_bottom = -5.0
 expand_mode = 1
 
+[node name="ItemCountLabel" type="Label" parent="Background/GridBackground/HotbarSlots/Slot4"]
+layout_mode = 0
+offset_left = 0.9375
+offset_top = 39.8475
+offset_right = 55.9375
+offset_bottom = 62.8475
+horizontal_alignment = 2
+
 [node name="Slot5" type="Panel" parent="Background/GridBackground/HotbarSlots"]
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
@@ -140,3 +172,11 @@ offset_top = 5.0
 offset_right = -5.0
 offset_bottom = -5.0
 expand_mode = 1
+
+[node name="ItemCountLabel" type="Label" parent="Background/GridBackground/HotbarSlots/Slot5"]
+layout_mode = 0
+offset_left = 0.9375
+offset_top = 39.8475
+offset_right = 55.9375
+offset_bottom = 62.8475
+horizontal_alignment = 2

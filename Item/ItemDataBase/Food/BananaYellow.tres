@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="Item" load_steps=3 format=3 uid="uid://bevcybi5jsob5"]
+
+[ext_resource type="Script" uid="uid://3l5yftlfas15" path="res://Item/Item.cs" id="1_634a5"]
+[ext_resource type="Texture2D" uid="uid://dlw6napxej5pg" path="res://Assets/scrimsy fruit icons/color/green/green banana.png" id="1_sfa46"]
+
+[resource]
+script = ExtResource("1_634a5")
+Id = "BananaGreen"
+Name = "Green Banana"
+Description = "An unripened banana. I guess it got picked too early ..."
+MaxStackSize = 64
+IsConsumable = true
+IconTexture = ExtResource("1_sfa46")
+metadata/_custom_type_script = "uid://3l5yftlfas15"

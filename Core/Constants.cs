@@ -5,19 +5,21 @@ namespace Core {
 	}
 
 	public static class Scenes {
-		public const string PauseMenu = "res://UI/HUD/PauseMenu.tscn";
-		public const string HUD = "res://UI/HUD/HUD.tscn";
+		private const string UI = "res://UI";
+		private const string Character = "res://Character";
 
-		public const string MainMenu = "res://UI/MainMenu/MainMenu.tscn";
-		public const string SettingsMenu = "res://UI/SettingsMenu/SettingsMenu.tscn";
+		public const string PauseMenu = $"{UI}/HUD/PauseMenu.tscn";
+		public const string HUD = $"{UI}/HUD/HUD.tscn";
+
+		public const string MainMenu = $"{UI}/MainMenu/MainMenu.tscn";
+		public const string SettingsMenu = $"{UI}/SettingsMenu/SettingsMenu.tscn";
+		public const string LoadMenu = $"{UI}/LoadMenu/LoadMenu.tscn";
+		public const string HostPanel = $"{UI}/HostPanel/HostPanel.tscn";
+		public const string JoinPanel = $"{UI}/JoinPanel/JoinPanel.tscn";
 
 		public const string GameScene = "res://GameWorld/World.tscn";
-		public const string Player = "res://Character/Player/Player.tscn";
-
+		public const string Player = $"{Character}/Player/Player.tscn";
 		public const string Camera = "res://Camera/Camera.tscn";
-
-		public const string LoadMenu = "res://UI/LoadMenu/LoadMenu.tscn";
-		public const string HostPanel = "res://UI/HostPanel/HostPanel.tscn";
 	}
 
 	public static class Actions {
@@ -47,4 +49,20 @@ namespace Core {
 		public const string ZoomIn = "ZoomIn";
 		public const string ZoomOut = "ZoomOut";
 	}
+
+	public static class Items {
+		private const string Food = "res://Item/ItemDataBase/Food";
+
+		public const string AppleRed = $"{Food}/AppleRed.tres";
+		public const string AppleYellow = $"{Food}/AppleYellow.tres";
+		public const string AppleGreen = $"{Food}/AppleGreen.tres";
+		public const string BananaYellow = $"{Food}/BananaYellow.tres";
+		public const string BananaGreen = $"{Food}/BananaGreen.tres";
+		public const string StrawberryGreen = $"{Food}/StrawberryGreen.tres";
+		public const string StrawberryRed = $"{Food}/StrawberryRed.tres";
+	}
+
+	public static class Icons {
+
+    }
 }

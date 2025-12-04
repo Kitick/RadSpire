@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="Item" load_steps=3 format=3 uid="uid://dhx4gdrvb1a56"]
+
+[ext_resource type="Texture2D" uid="uid://cwuh4vb48fpcr" path="res://Assets/scrimsy fruit icons/color/yellow/yellow apple.png" id="1_m5abc"]
+[ext_resource type="Script" uid="uid://3l5yftlfas15" path="res://Item/Item.cs" id="2_8fbpk"]
+
+[resource]
+script = ExtResource("2_8fbpk")
+Id = "AppleYellow"
+Name = "Yellow Apple"
+Description = "A common yellow apple. Its a perfect  delicious fresh snack for a traveler."
+MaxStackSize = 64
+IsConsumable = true
+IconTexture = ExtResource("1_m5abc")
+metadata/_custom_type_script = "uid://3l5yftlfas15"

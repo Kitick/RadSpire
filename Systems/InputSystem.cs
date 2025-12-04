@@ -12,49 +12,58 @@ namespace InputSystem {
 	};
 
 	public sealed partial class InputSystem : Node {
+		public static InputSystem Instance { get; private set; } = null!;
+
 		public static readonly bool Debug = false;
 
-		public static readonly ActionEvent[] Actions = Enum.GetValues<ActionEvent>();
+		public readonly ActionEvent[] Actions = Enum.GetValues<ActionEvent>();
 
-		public static event Action<ActionEvent>? OnActionPressed;
-		public static event Action<ActionEvent>? OnActionReleased;
+		public event Action<ActionEvent>? OnActionPressed;
+		public event Action<ActionEvent>? OnActionReleased;
 
 		public override void _Ready() {
-			if(Debug) { GD.Print("InputSystem: Ready"); }
+			Instance = this;
 			ProcessMode = ProcessModeEnum.Always;
-		}
-
-		private static void CheckActionEvents(InputEvent input) {
-			foreach(var action in Actions) {
-				string name = action.ToString();
-
-				if(input.IsActionPressed(name)) {
-					if(Debug) { GD.Print($"InputSystem: Pressed {name}"); }
-					OnActionPressed?.Invoke(action);
-
-				}
-				else if(input.IsActionReleased(name)) {
-					if(Debug) { GD.Print($"InputSystem: Released {name}"); }
-					OnActionReleased?.Invoke(action);
-				}
-			}
+			Log("Ready");
 		}
 
 		public override void _Input(InputEvent input) {
 			if(input is InputEventMouseMotion mouse) {
-				if(Debug) { GD.Print($"InputSystem: Mouse moved {mouse.Relative}"); }
+				Log($"Mouse moved {mouse.Relative}");
 			}
 			else if(input is InputEventJoypadMotion joypad) {
-				if(Debug) { GD.Print($"InputSystem: Joypad moved {joypad.Axis} : {joypad.AxisValue}"); }
+				Log($"Joypad moved {joypad.Axis} : {joypad.AxisValue}");
 			}
 			else {
 				CheckActionEvents(input);
 			}
 		}
+
+		private static void Log(string message) {
+			if(Debug) {
+				GD.Print($"[InputSystem] {message}");
+			}
+		}
+
+		private void CheckActionEvents(InputEvent input) {
+			foreach(var action in Actions) {
+				string name = action.ToString();
+
+				if(input.IsActionPressed(name)) {
+					Log($"Pressed {name}");
+					OnActionPressed?.Invoke(action);
+
+				}
+				else if(input.IsActionReleased(name)) {
+					Log($"Released {name}");
+					OnActionReleased?.Invoke(action);
+				}
+			}
+		}
 	}
 
 	public static class InputSystemExtensions {
-		private static Action<ActionEvent> CreateHandler(ActionEvent keyEvent, Action callback) {
+		private static Action<ActionEvent> CreateHandler(this ActionEvent keyEvent, Action callback) {
 			return (action) => {
 				if(action == keyEvent) {
 					callback?.Invoke();
@@ -63,15 +72,23 @@ namespace InputSystem {
 		}
 
 		public static Action WhenPressed(this ActionEvent keyEvent, Action callback) {
-			Action<ActionEvent> handler = CreateHandler(keyEvent, callback);
-			InputSystem.OnActionPressed += handler;
-			return () => InputSystem.OnActionPressed -= handler;
+			Action<ActionEvent> handler = keyEvent.CreateHandler(callback);
+			InputSystem.Instance.OnActionPressed += handler;
+			return () => InputSystem.Instance.OnActionPressed -= handler;
 		}
 
 		public static Action WhenReleased(this ActionEvent keyEvent, Action callback) {
-			Action<ActionEvent> handler = CreateHandler(keyEvent, callback);
-			InputSystem.OnActionReleased += handler;
-			return () => InputSystem.OnActionReleased -= handler;
+			Action<ActionEvent> handler = keyEvent.CreateHandler(callback);
+			InputSystem.Instance.OnActionReleased += handler;
+			return () => InputSystem.Instance.OnActionReleased -= handler;
+		}
+
+		public static bool IsPressed(this ActionEvent keyEvent) {
+			return Input.IsActionPressed(keyEvent.ToString());
+		}
+
+		public static bool IsReleased(this ActionEvent keyEvent) {
+			return !IsPressed(keyEvent);
 		}
 	}
 }

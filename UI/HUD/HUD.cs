@@ -3,16 +3,16 @@ using Core;
 using Godot;
 using InputSystem;
 using Settings;
-using Host;
+using MultiplayerPanels;
 
 public sealed partial class HUD : Control {
-	public enum MenuState { Game, Paused, Settings, Host };
+	public enum MenuState { Game, Paused, Settings, Inventory, Host };
 
 	private readonly FiniteStateMachine<MenuState> StateMachine;
 	public MenuState State => StateMachine.State;
 
 	private PauseMenu PauseMenu = null!;
-	private Control Inventory = null!;
+	private InventoryUI Inventory = null!;
 	private Control QuestLog = null!;
 	private Hotbar Hotbar = null!;
 
@@ -25,9 +25,22 @@ public sealed partial class HUD : Control {
 	public bool IsPaused => GetTree().Paused;
 
 	private event Action? OnExit;
+	public Player Player = null!;
+	public bool InventoryOpen => Inventory.Visible;
 
 	public HUD() {
 		StateMachine = new(MenuState.Game, OnStateChanged);
+	}
+
+	public override void _EnterTree() {
+		base._EnterTree();
+		Player = GetParent<Player>();
+		if(Player == null) {
+			GD.PrintErr("HUD could not find Player node in parent.");
+		}
+		else {
+			GD.Print("HUD successfully found Player node in parent.");
+		}
 	}
 
 	public override void _Ready() {
@@ -36,6 +49,12 @@ public sealed partial class HUD : Control {
 		SetInputCallbacks();
 		GetComponents();
 		SetCallbacks();
+	}
+
+	public override void _Input(InputEvent @event) {
+		if(@event.IsActionPressed("OpenInventory")) {
+			ToggleInventory();
+		}
 	}
 
 	public override void _ExitTree() {
@@ -48,7 +67,7 @@ public sealed partial class HUD : Control {
 
 	private void GetComponents() {
 		PauseMenu = GetNode<PauseMenu>(PAUSE_MENU);
-		Inventory = GetNode<Control>(INVENTORY);
+		Inventory = GetNode<InventoryUI>(INVENTORY);
 		QuestLog = GetNode<Control>(QUESTLOG);
 		Hotbar = GetNode<Hotbar>(HOTBAR);
 	}
@@ -57,7 +76,7 @@ public sealed partial class HUD : Control {
 		GetNode<Button>(PAUSE_BUTTON).Pressed += () => StateMachine.TransitionTo(MenuState.Paused);
 
 		PauseMenu.ResumeButton.Pressed += TogglePause;
-		PauseMenu.SaveButton.Pressed += SaveGame;
+		PauseMenu.SaveButton.Pressed += () => GameManager.Instance.Save("autosave");
 		PauseMenu.HostButton.Pressed += () => StateMachine.TransitionTo(MenuState.Host);
 		PauseMenu.SettingsButton.Pressed += () => StateMachine.TransitionTo(MenuState.Settings);
 		PauseMenu.MainMenuButton.Pressed += QuitGame;
@@ -66,7 +85,7 @@ public sealed partial class HUD : Control {
 	private void OnStateChanged(MenuState from, MenuState to) {
 		GetTree().Paused = to != MenuState.Game;
 		PauseMenu.Visible = to == MenuState.Paused;
-		
+
 		if(to == MenuState.Host) { OpenHostPanel(); }
 		if(to == MenuState.Settings) { OpenSettings(); }
 	}
@@ -87,12 +106,20 @@ public sealed partial class HUD : Control {
 		StateMachine.TransitionTo(IsPaused ? MenuState.Game : MenuState.Paused);
 	}
 
-	public static void SaveGame() {
-		GameManager.Save("autosave");
-	}
-
 	public void QuitGame() {
 		GetTree().Paused = false;
 		GetTree().ChangeSceneToFile(Scenes.MainMenu);
+	}
+
+	public void ToggleInventory() {
+		if(!InventoryOpen) {
+			Inventory.Visible = true;
+			Hotbar.Visible = true;
+			StateMachine.TransitionTo(MenuState.Inventory);
+		}
+		else {
+			Inventory.Visible = false;
+			StateMachine.TransitionTo(MenuState.Game);
+		}
 	}
 }

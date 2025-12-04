@@ -1,8 +1,7 @@
-[gd_scene load_steps=41 format=4 uid="uid://cj70horwpl6yp"]
+[gd_scene load_steps=40 format=4 uid="uid://cj70horwpl6yp"]
 
 [ext_resource type="PackedScene" uid="uid://d3uhhyfgvghhc" path="res://Assets/Models/Medieval Village Pack/Structures/House_1.fbx" id="2_8bqr4"]
 [ext_resource type="PackedScene" uid="uid://deo7b22hrao1m" path="res://Assets/Models/Medieval Village Pack/Structures/Sawmill.fbx" id="2_re7ba"]
-[ext_resource type="Script" uid="uid://c8u56j53mc51o" path="res://GameWorld/GameManager.cs" id="3_m15j5"]
 [ext_resource type="Texture2D" uid="uid://cqfyw0m0lp0t2" path="res://Assets/Textures/Terrain/rocky_terrain_02_nor_gl_2k.png" id="3_re7ba"]
 [ext_resource type="Texture2D" uid="uid://cekryk6bo4kk6" path="res://Assets/Textures/Terrain/rocky_terrain_02_diff_2k.jpg" id="3_v7no4"]
 [ext_resource type="PackedScene" uid="uid://c4tefgbbadwsk" path="res://Assets/Models/Medieval Village Pack/Structures/Inn.fbx" id="3_xxpmp"]
@@ -163,9 +162,6 @@ sgt_tool_shape = {
 }
 metadata/_custom_type_script = "uid://2juaclm8gc1n"
 metadata/SimpleGrassTextured = "2.0.5"
-
-[node name="GameManager" type="Node" parent="."]
-script = ExtResource("3_m15j5")
 
 [node name="Buildings" type="Node3D" parent="."]
 

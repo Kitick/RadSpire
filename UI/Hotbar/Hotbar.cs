@@ -26,6 +26,8 @@ public sealed partial class Hotbar : Control {
 
 	private event Action? OnExit;
 
+	private Player Player = null!;
+
 	public override void _EnterTree() {
 		SetInputCallbacks();
 		RequestReady();
@@ -34,6 +36,19 @@ public sealed partial class Hotbar : Control {
 	public override void _Ready() {
 		GetComponents();
 		SelectedSlot = 0;
+
+		UpdateHotbarUI();
+	}
+
+	private void GetPlayer() {
+		Player = GetParent<HUD>().Player;
+		if(Player == null) {
+			GD.PrintErr("Hotbar could not find Player node in parent HUD.");
+			return;
+		}
+		GD.Print("Hotbar successfully found Player node in parent HUD.");
+
+		Player.Inventory.OnInventoryChanged += UpdateHotbarUI;
 	}
 
 	public override void _ExitTree() {
@@ -62,13 +77,57 @@ public sealed partial class Hotbar : Control {
 	}
 
 	private void SelectSlot(Panel slot) {
-		if(Debug) { GD.Print($"Hotbar: Selecting slot {HotbarSlots.IndexOf(slot)}"); }
+		if(Debug) {
+			GD.Print($"Hotbar: Selecting slot {HotbarSlots.IndexOf(slot)}");
+			GD.Print($"Hotbar: Selected item: {GetSelectedItem().Name}");
+		}
 
 		foreach(var other in HotbarSlots) {
 			bool selected = other == slot;
 
 			other.SelfModulate = selected ? SelectColor : NormalColor;
 			other.Scale = selected ? SelectedScale : Vector2.One;
+		}
+	}
+
+	public ItemSlot GetSelectedItemSlot() {
+		int index = SelectedSlot;
+		return Player.Inventory.GetItemSlot(Player.Inventory.MaxRows - 1, index);
+	}
+
+	public Item? GetSelectedItem() {
+		int index = SelectedSlot;
+		if(Player.Inventory.ItemSlots[index].IsEmpty()) { return null; }
+
+		return Player.Inventory.GetItem(Player.Inventory.MaxRows - 1, index);
+	}
+
+	public void UpdateHotbarUI() {
+		for(int i = 0; i < Player.Inventory.MaxColumns - 1; i++) {
+			ItemSlot itemSlot = Player.Inventory.GetItemSlot(Player.Inventory.MaxRows - 1, i);
+
+			var slotUI = GetNode<Control>($"Background/GridBackground/HotbarSlots/Slot{i + 1}");
+			var icon = slotUI.GetNode<TextureRect>("TextureRect");
+			var quantityLabel = slotUI.GetNode<Label>("ItemCountLabel");
+
+			if(!itemSlot.IsEmpty()) {
+				icon.Texture = itemSlot.Item.IconTexture;
+				icon.Visible = true;
+				if(itemSlot.Quantity > 1) {
+					quantityLabel.Text = itemSlot.Quantity.ToString();
+					quantityLabel.Visible = true;
+				}
+				else {
+					quantityLabel.Text = "";
+					quantityLabel.Visible = false;
+				}
+			}
+			else {
+				icon.Texture = null;
+				icon.Visible = false;
+				quantityLabel.Text = "";
+				quantityLabel.Visible = false;
+			}
 		}
 	}
 }
