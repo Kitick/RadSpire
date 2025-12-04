@@ -11,11 +11,36 @@ namespace LoadMenuScene {
 
         private const string SAVEFILE = "load";
 
+        private const string BACK_BUTTON = "BackButton";
+        private Button[] loadButtons = null!;
+        private Label[] infoLabels = null!;
+
         public override void _Ready() {
             ProcessMode = ProcessModeEnum.Always;
 
+            GetComponents();
+            SetCallbacks();
             SetInputCallbacks();
         }
+
+        private void GetComponents() {
+            loadButtons = new Button[5];
+            infoLabels = new Label[5];
+            
+            for(int i = 0; i < 5; i++) {
+                loadButtons[i] = GetNode<Button>($"VLoadContainer/Load{i + 1}");
+                infoLabels[i] = GetNode<Label>($"VLoadContainer/Load{i + 1}/InfoText{i + 1}");
+            }
+        }
+
+        private void SetCallbacks() {
+            GetNode<Button>(BACK_BUTTON).Pressed += OnBackButtonPressed;
+        }
+
+        private void OnBackButtonPressed() {
+            CloseMenu();
+        }
+
 
         public override void _ExitTree() {
             OnExit?.Invoke();

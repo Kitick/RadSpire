@@ -115,3 +115,12 @@ offset_right = 663.0
 offset_bottom = 84.0
 scale = Vector2(10, 10)
 text = "EMPTY"
+
+[node name="BackButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 64.0
+offset_top = 928.0
+offset_right = 109.0
+offset_bottom = 959.0
+scale = Vector2(3, 3)
+text = "Back"
