@@ -7,11 +7,15 @@ namespace MultiplayerPanels {
 
 		//Paths For Panel Attributes
 		private const string PANEL_AREA = "PanelArea";
-		private const string CANCEL_BUTTON = PANEL_AREA + "/OptionContainer/CancelButton";
-		private const string HOST_BUTTON = PANEL_AREA + "/OptionContainer/HostButton";
+		private const string LABEL_HOST_TEXT = PANEL_AREA + "/lblHostText";
 		private const string PASSWORD_CHECKBOX = PANEL_AREA + "/PasswordContainer/lblPassword/PasswordCheckbox";
 		private const string INPUT_GAME_NAME_TEXT = PANEL_AREA + "/GameNameContainer/InputGameName";
 		private const string INPUT_PASSWORD_TEXT = PANEL_AREA + "/PasswordContainer/InputPassword";
+		private const string CANCEL_BUTTON = PANEL_AREA + "/OptionContainer/CancelButton";
+		private const string HOST_BUTTON = PANEL_AREA + "/OptionContainer/HostButton";
+
+		//Component Reference
+		Label hostText = null!;
 
 		// Events
 		public event Action? OnMenuClosed;
@@ -21,8 +25,12 @@ namespace MultiplayerPanels {
 		public override void _Ready() {
 			ProcessMode = ProcessModeEnum.Always;
 
+			GetComponents();
+
 			SetCallbacks();
 			SetInputCallbacks();
+
+			UpdateHostText();
 		}
 
 		public override void _ExitTree() {
@@ -30,21 +38,28 @@ namespace MultiplayerPanels {
 			OnMenuClosed?.Invoke();
 		}
 
+		//Get Components
+		private void GetComponents() {
+			hostText = GetNode<Label>(LABEL_HOST_TEXT);
+		}
+
 		// Set Callbacks
 		private void SetCallbacks() {
-			GetNode<Button>(CANCEL_BUTTON).Pressed += OnCancelButtonPressed;
-			GetNode<Button>(HOST_BUTTON).Pressed += OnHostButtonPressed;
 			GetNode<CheckBox>(PASSWORD_CHECKBOX).Toggled += OnPasswordCheckboxToggled;
 			GetNode<LineEdit>(INPUT_GAME_NAME_TEXT).TextChanged += OnInputGameNameTextChanged;
 			GetNode<LineEdit>(INPUT_GAME_NAME_TEXT).TextSubmitted += OnInputGameNameTextSubmitted;
 			GetNode<LineEdit>(INPUT_PASSWORD_TEXT).TextChanged += OnInputPasswordTextChanged;
 			GetNode<LineEdit>(INPUT_PASSWORD_TEXT).TextSubmitted += OnInputPasswordTextSubmitted;
+			GetNode<Button>(CANCEL_BUTTON).Pressed += OnCancelButtonPressed;
+			GetNode<Button>(HOST_BUTTON).Pressed += OnHostButtonPressed;
 		}
 
 		// Callbacks
-		private void OnCancelButtonPressed() {
-			CloseMenu();
+		private void UpdateHostText() {
+			//Implementation Here
+			hostText.Text = $"Hello world!";
 		}
+		private void OnCancelButtonPressed() =>	CloseMenu();
 
 		private void OnHostButtonPressed() {
 			// Implementation Here

@@ -22,7 +22,7 @@ offset_right = -800.0
 offset_bottom = -444.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0, 0, 0, 0.5)
+color = Color(0, 0, 0, 0.75000006)
 
 [node name="lblHostText" type="Label" parent="PanelArea"]
 layout_mode = 0
@@ -31,7 +31,6 @@ offset_top = 14.0
 offset_right = 102.0
 offset_bottom = 37.0
 scale = Vector2(1.625, 1.625)
-text = "Host Game"
 
 [node name="GameNameContainer" type="VBoxContainer" parent="PanelArea"]
 layout_mode = 0

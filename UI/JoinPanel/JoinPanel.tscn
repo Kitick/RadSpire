@@ -22,7 +22,7 @@ offset_right = -400.0
 offset_bottom = -184.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0, 0, 0, 0.5)
+color = Color(0, 0, 0, 0.75000006)
 
 [node name="VWhiteLine" type="ColorRect" parent="PanelArea"]
 layout_mode = 0
