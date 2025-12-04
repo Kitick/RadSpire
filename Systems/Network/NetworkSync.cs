@@ -8,13 +8,18 @@ namespace Network {
 
 	public sealed partial class NetworkSync<T> : Node where T : struct, INetworkData {
 		private readonly INetworkable<T> SyncObject;
-		private readonly int OwnerPeerId;
 		private readonly TransferMode Mode;
+		private readonly int OwnerPeerId;
+
 		private bool HasPendingStateChange = false;
 
 		private static readonly JsonSerializerOptions NetJsonOptions = new();
 
 		public Func<T, T?>? Validator { get; set; }
+
+		private bool IsOwner => Server.Instance.IsOwner(OwnerPeerId);
+		private bool IsServer => Multiplayer.IsServer();
+		private string SerializeState() => JSON.Serialize(SyncObject.Serialize(), NetJsonOptions);
 
 		public NetworkSync(INetworkable<T> syncObject, int ownerPeerId, string syncId = "sync", TransferMode mode = TransferMode.Reliable) {
 			SyncObject = syncObject;
@@ -24,14 +29,14 @@ namespace Network {
 		}
 
 		public override void _Ready() {
-			if(Multiplayer.GetUniqueId() == OwnerPeerId) {
+			if(IsOwner) {
 				SyncObject.OnStateChanged += OnLocalStateChanged;
 
-				if(Multiplayer.IsServer()) {
+				if(IsServer) {
 					CallDeferred(nameof(BroadcastCurrentState));
 				}
 			}
-			else if(!Multiplayer.IsServer()) {
+			else if(!IsServer) {
 				CallDeferred(nameof(RequestCurrentState));
 			}
 		}
@@ -41,7 +46,7 @@ namespace Network {
 		}
 
 		public override void _Process(double delta) {
-			if(HasPendingStateChange && Multiplayer.GetUniqueId() == OwnerPeerId) {
+			if(HasPendingStateChange && IsOwner) {
 				HasPendingStateChange = false;
 				SendStateUpdate();
 			}
@@ -53,12 +58,11 @@ namespace Network {
 		}
 
 		private void SendStateUpdate() {
-			var data = SyncObject.Serialize();
-			var json = JSON.Serialize(data, NetJsonOptions);
+			var json = SerializeState();
 
 			GD.Print($"NetworkSync [{Name}]: Sending state update to host");
 
-			if(Multiplayer.IsServer()) {
+			if(IsServer) {
 				// We ARE the host, validate and broadcast directly
 				ProcessAndBroadcast(OwnerPeerId, json);
 			}
@@ -80,9 +84,9 @@ namespace Network {
 		private void SendToHostUnreliable(string json) => HandleSendToHost(json);
 
 		private void HandleSendToHost(string json) {
-			if(!Multiplayer.IsServer()) return;
+			if(!IsServer) return;
 
-			var actualSender = Multiplayer.GetRemoteSenderId();
+			var actualSender = Server.Instance.RemoteSenderId;
 			GD.Print($"NetworkSync [{Name}]: Host received update from peer {actualSender}");
 
 			// Verify the sender owns this sync object
@@ -137,19 +141,17 @@ namespace Network {
 
 		[Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = false, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
 		private void SendCurrentStateTo(int requesterId) {
-			if(!Multiplayer.IsServer()) return;
+			if(!IsServer) return;
 
-			var data = SyncObject.Serialize();
-			var json = JSON.Serialize(data, NetJsonOptions);
+			var json = SerializeState();
 			GD.Print($"NetworkSync [{Name}]: Sending current state to peer {requesterId}");
 			RpcId(requesterId, nameof(ReceiveFromHostReliable), json);
 		}
 
 		private void BroadcastCurrentState() {
-			if(!IsInsideTree() || !Multiplayer.IsServer()) return;
+			if(!IsInsideTree() || !IsServer) return;
 
-			var data = SyncObject.Serialize();
-			var json = JSON.Serialize(data, NetJsonOptions);
+			var json = SerializeState();
 			GD.Print($"NetworkSync [{Name}]: Broadcasting initial state to all clients");
 			Rpc(nameof(ReceiveFromHostReliable), json);
 		}

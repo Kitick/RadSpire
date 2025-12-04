@@ -19,9 +19,11 @@ namespace Network {
 
 		private ENetMultiplayerPeer? Peer;
 		public int PeerId => Multiplayer.GetUniqueId();
+		public int RemoteSenderId => Multiplayer.GetRemoteSenderId();
 
 		public bool IsNetworkConnected => Peer != null && Multiplayer.MultiplayerPeer != null;
 		public bool IsHost => IsNetworkConnected && Multiplayer.IsServer();
+		public bool IsOwner(int peerId) => PeerId == peerId;
 
 		public event Action? OnHostStarted;
 		public event Action? OnJoinedServer;

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Core;
 using Godot;
 using Network;
@@ -20,17 +21,13 @@ public partial class GameManager {
 
 	private void CleanupNetwork() {
 		UnsubscribeFromNetworkEvents();
-		CleanupPlayerSyncs();
+		RemoveAllPlayers();
+		CleanupLocalPlayerSync();
 	}
 
-	private void CleanupPlayerSyncs() {
+	private void CleanupLocalPlayerSync() {
 		LocalPlayerSync?.QueueFree();
 		LocalPlayerSync = null;
-
-		foreach(var sync in PlayerSyncs.Values) {
-			sync.QueueFree();
-		}
-		PlayerSyncs.Clear();
 	}
 
 	private void SubscribeToNetworkEvents() {
@@ -74,11 +71,8 @@ public partial class GameManager {
 
 	private void OnServerDisconnected() {
 		Log("Server disconnected, cleaning up remote players");
-		CleanupPlayerSyncs();
-		foreach(var (peerId, player) in RemotePlayers) {
-			player.QueueFree();
-		}
-		RemotePlayers.Clear();
+		RemoveAllPlayers();
+		CleanupLocalPlayerSync();
 	}
 
 	private void OnPeerConnected(int peerId) {
@@ -87,6 +81,10 @@ public partial class GameManager {
 
 	private void OnPeerDisconnected(int peerId) {
 		Log($"Peer disconnected: {peerId}");
+		RemovePlayer(peerId);
+	}
+
+	private void RemovePlayer(int peerId) {
 		if(PlayerSyncs.TryGetValue(peerId, out var sync)) {
 			sync.QueueFree();
 			PlayerSyncs.Remove(peerId);
@@ -94,6 +92,12 @@ public partial class GameManager {
 		if(RemotePlayers.TryGetValue(peerId, out var player)) {
 			player.QueueFree();
 			RemotePlayers.Remove(peerId);
+		}
+	}
+
+	private void RemoveAllPlayers() {
+		foreach(var peerId in RemotePlayers.Keys.ToList()) {
+			RemovePlayer(peerId);
 		}
 	}
 
@@ -118,14 +122,16 @@ public partial class GameManager {
 		if(isLocalPlayer || alreadySpawned) return;
 
 		Log($"Spawning remote player: {peerId}");
+		CreateNetworkedPlayer(peerId);
+	}
 
-		var remotePlayer = this.AddScene<Player>(Scenes.Player);
-		remotePlayer.Name = $"Player_{peerId}";
-		RemotePlayers[peerId] = remotePlayer;
+	private void CreateNetworkedPlayer(int peerId) {
+		var player = this.AddScene<Player>(Scenes.Player);
+		player.Name = $"Player_{peerId}";
+		RemotePlayers[peerId] = player;
 
-		// Create NetworkSync for the remote player's movement (they own it)
 		var sync = new NetworkSync<MovementData>(
-			remotePlayer.Movement,
+			player.Movement,
 			peerId,
 			$"player_{peerId}",
 			TransferMode.Unreliable
