@@ -24,7 +24,10 @@ public sealed partial class GameManager : Node {
 	public override void _PhysicsProcess(double delta) {
 		if(!InGame) { return; }
 
-		Player.Update(delta, KeyInput);
+		float dt = (float) delta;
+
+		KeyInput.Update(CameraRig);
+		Player.Update(dt, KeyInput);
 	}
 
 	private void GetComponents() {
@@ -32,7 +35,6 @@ public sealed partial class GameManager : Node {
 		Player = this.AddScene<Player>(Scenes.Player);
 
 		CameraRig.Target = Player;
-		KeyInput.Camera = CameraRig;
 	}
 
 	private void SpawnTestItem(string path, Vector3 position) {

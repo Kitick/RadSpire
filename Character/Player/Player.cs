@@ -43,24 +43,18 @@ public sealed partial class Player : CharacterBody3D, ISaveable<PlayerData> {
 		this.AddScene(Scenes.HUD);
 	}
 
-	public void Update(double delta, KeyInput keyInput) {
+	public void Update(float dt, KeyInput keyInput) {
 		if(Health.IsDead()) {
 			StateMachine.TransitionTo(State.Idle);
 			return;
 		}
-
-		float dt = (float) delta;
-
-		keyInput.Update();
 
 		float multiplier = GetMultiplier();
 
 		if(IsOnFloor()) {
 			Movement.Move(keyInput.HorizontalInput, multiplier);
 
-			if(keyInput.JumpPressed) {
-				Movement.Jump();
-			}
+			if(keyInput.JumpPressed) { Movement.Jump(); }
 		}
 
 		Movement.Update(dt);
