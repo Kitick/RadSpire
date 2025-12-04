@@ -6,13 +6,12 @@ using Network;
 using SaveSystem;
 
 public partial class GameManager {
-	private readonly Dictionary<int, Player> RemotePlayers = [];
-	private readonly Dictionary<int, NetworkSync<MovementData>> PlayerSyncs = [];
+	private readonly Dictionary<int, (Player Player, NetworkSync<MovementData> MovementSync, NetworkSync<HealthData> HealthSync)> RemotePlayers = [];
 
 	public int LocalPeerId => Server.PeerId;
 
 	private Server Server = null!;
-	private NetworkSync<MovementData>? LocalPlayerSync;
+	private (NetworkSync<MovementData> Movement, NetworkSync<HealthData> Health)? LocalPlayerSync;
 
 	private void InitializeNetwork() {
 		Server = Server.Instance;
@@ -26,7 +25,10 @@ public partial class GameManager {
 	}
 
 	private void CleanupLocalPlayerSync() {
-		LocalPlayerSync?.QueueFree();
+		if(LocalPlayerSync is var (movement, health)) {
+			movement.QueueFree();
+			health.QueueFree();
+		}
 		LocalPlayerSync = null;
 	}
 
@@ -49,13 +51,23 @@ public partial class GameManager {
 	private void CreateLocalPlayerSync() {
 		if(!Server.IsNetworkConnected) return;
 
-		LocalPlayerSync = new NetworkSync<MovementData>(
+		var movementSync = new NetworkSync<MovementData>(
 			LocalPlayer.Movement,
 			LocalPeerId,
-			$"player_{LocalPeerId}",
+			$"player_{LocalPeerId}_movement",
 			TransferMode.Unreliable
 		);
-		AddChild(LocalPlayerSync);
+		AddChild(movementSync);
+
+		var healthSync = new NetworkSync<HealthData>(
+			LocalPlayer.Health,
+			LocalPeerId,
+			$"player_{LocalPeerId}_health",
+			TransferMode.Reliable
+		);
+		AddChild(healthSync);
+
+		LocalPlayerSync = (movementSync, healthSync);
 	}
 
 	private void OnHostStarted() {
@@ -85,12 +97,10 @@ public partial class GameManager {
 	}
 
 	private void RemovePlayer(int peerId) {
-		if(PlayerSyncs.TryGetValue(peerId, out var sync)) {
-			sync.QueueFree();
-			PlayerSyncs.Remove(peerId);
-		}
-		if(RemotePlayers.TryGetValue(peerId, out var player)) {
-			player.QueueFree();
+		if(RemotePlayers.TryGetValue(peerId, out var remote)) {
+			remote.MovementSync.QueueFree();
+			remote.HealthSync.QueueFree();
+			remote.Player.QueueFree();
 			RemotePlayers.Remove(peerId);
 		}
 	}
@@ -128,15 +138,23 @@ public partial class GameManager {
 	private void CreateNetworkedPlayer(int peerId) {
 		var player = this.AddScene<Player>(Scenes.Player);
 		player.Name = $"Player_{peerId}";
-		RemotePlayers[peerId] = player;
 
-		var sync = new NetworkSync<MovementData>(
+		var movementSync = new NetworkSync<MovementData>(
 			player.Movement,
 			peerId,
-			$"player_{peerId}",
+			$"player_{peerId}_movement",
 			TransferMode.Unreliable
 		);
-		AddChild(sync);
-		PlayerSyncs[peerId] = sync;
+		AddChild(movementSync);
+
+		var healthSync = new NetworkSync<HealthData>(
+			player.Health,
+			peerId,
+			$"player_{peerId}_health",
+			TransferMode.Reliable
+		);
+		AddChild(healthSync);
+
+		RemotePlayers[peerId] = (player, movementSync, healthSync);
 	}
 }
