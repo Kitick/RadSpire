@@ -27,12 +27,12 @@ public sealed partial class Hotbar : Control, IInventoryUI {
 	private event Action? OnExit;
 
 	private Player Player = null!;
-	private Inventory PlayerHotbar = null!;
+	public Inventory Inventory { get; set; } = null!;
 	private List<InvSlotUI> HotbarSlotUIs = new List<InvSlotUI>();
 	private int NumHotbarSlots = 0;
 	private PackedScene? InvSlotTemplate = null!;
 	private Control? GridContainer = null!;
-	public event Action<int>? OnSlotClicked;
+	public event Action<string, int>? OnSlotClicked;
 	
 	public override void _EnterTree() {
 		SetInputCallbacks();
@@ -66,12 +66,12 @@ public sealed partial class Hotbar : Control, IInventoryUI {
 			GD.PrintErr("InventoryUI SetUpInventoryUI: Player is null.");
 			return;
 		}
-		PlayerHotbar = Player.Inventory;
+		Inventory = Player.Inventory;
 		GridContainer = GetNode<Control>("Background/GridBackground/HotbarSlots");
 		if(InvSlotTemplate == null) {
 			InvSlotTemplate = GD.Load<PackedScene>("res://UI/Inventory/InvSlotUITemplate.tscn");
 		}
-		NumHotbarSlots = PlayerHotbar.MaxSlotsRows * PlayerHotbar.MaxSlotsColumns;
+		NumHotbarSlots = Inventory.MaxSlotsRows * Inventory.MaxSlotsColumns;
 		for(int i = 0; i < NumHotbarSlots; i++) {
 			InvSlotUI slotInstance = InvSlotTemplate.Instantiate<InvSlotUI>();
 			slotInstance.SlotIndex = i;
@@ -82,7 +82,7 @@ public sealed partial class Hotbar : Control, IInventoryUI {
 	}
 
 	public void HandleOnSlotClicked(int slotIndex) {
-		
+		OnSlotClicked?.Invoke(Inventory.Name, slotIndex);
 	}
 
 	private void SetInputCallbacks() {
@@ -112,14 +112,14 @@ public sealed partial class Hotbar : Control, IInventoryUI {
 
 	public ItemSlot GetSelectedItemSlot() {
 		int index = SelectedSlot;
-		return PlayerHotbar.GetItemSlot(PlayerHotbar.GetRow(index), PlayerHotbar.GetColumn(index));
+		return Inventory.GetItemSlot(Inventory.GetRow(index), Inventory.GetColumn(index));
 	}
 
 	public Item? GetSelectedItem() {
 		int index = SelectedSlot;
-		if(PlayerHotbar.IsEmptySlot(PlayerHotbar.GetRow(index), PlayerHotbar.GetColumn(index))) { return null; }
+		if(Inventory.IsEmptySlot(Inventory.GetRow(index), Inventory.GetColumn(index))) { return null; }
 
-		return PlayerHotbar.GetItem(PlayerHotbar.GetRow(index), PlayerHotbar.GetColumn(index));
+		return Inventory.GetItem(Inventory.GetRow(index), Inventory.GetColumn(index));
 	}
 
 	public void UpdateInventoryUI(){
@@ -128,9 +128,9 @@ public sealed partial class Hotbar : Control, IInventoryUI {
 			GD.PrintErr("InventoryUI SetUpInventoryUI: Player is null.");
 			return;
 		}
-		PlayerHotbar = Player.Hotbar;
+		Inventory = Player.Hotbar;
 		for(int i = 0; i < NumHotbarSlots; i++) {
-			HotbarSlotUIs[i].UpdateSlotUI(PlayerHotbar.ItemSlots[i]);
+			HotbarSlotUIs[i].UpdateSlotUI(Inventory.ItemSlots[i]);
 		}
 	}
 }

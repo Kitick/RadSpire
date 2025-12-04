@@ -8,7 +8,7 @@ public partial class InventoryUIManager : Node {
     public bool HeldItemSlotExist => HeldItemSlotUI != null;
     public InvSlotUI? HeldItemSlotUI = null;
 
-    InventoryUIManager(InventoryManager inventoryManager) {
+    public InventoryUIManager(InventoryManager inventoryManager) {
         InventoryManager = inventoryManager;
     }
 
@@ -21,6 +21,11 @@ public partial class InventoryUIManager : Node {
 
     public override void _Process(double delta) {
         base._Process(delta);
+        if(HeldItemSlotExist) {
+            Vector2 mousePosition = GetViewport().GetMousePosition();
+            Vector2 slotSize = HeldItemSlotUI!.GetRect().Size;
+            HeldItemSlotUI!.Position = mousePosition - (slotSize / 2);
+        }
     }
 
     public void LoadTemplate() {
@@ -50,7 +55,7 @@ public partial class InventoryUIManager : Node {
         HeldItemSlotUI.AddThemeStyleboxOverride("panel", style);
         HeldItemSlotUI.UpdateSlotUI(itemSlotCopy);
     }
-    
+
     public void DestroyHeldItemSlotUI() {
         if(HeldItemSlotExist) {
             HeldItemSlotUI!.QueueFree();

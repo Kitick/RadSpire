@@ -4,17 +4,17 @@ using Godot;
 
 public partial class InventoryUI: Control, IInventoryUI {
 	private Player Player = null!;
-	private Inventory PlayerInventory = null!;
+	public Inventory Inventory { get; set; } = null!;
 	private List<InvSlotUI> InvSlotUIs = new List<InvSlotUI>();
 	private int InventorySlots = 0;
 	private PackedScene? InvSlotTemplate = null!;
 	private Control? GridContainer = null!;
-	public event Action<int>? OnSlotClicked;
+	public event Action<string, int>? OnSlotClicked;
 
 	public override void _Ready() {
 		base._Ready();
 		SetUpInventoryUI();
-		PlayerInventory.OnInventoryChanged += UpdateInventoryUI;
+		Inventory.OnInventoryChanged += UpdateInventoryUI;
 	}
 
 	public void SetUpInventoryUI() {
@@ -23,12 +23,12 @@ public partial class InventoryUI: Control, IInventoryUI {
 			GD.PrintErr("InventoryUI SetUpInventoryUI: Player is null.");
 			return;
 		}
-		PlayerInventory = Player.Inventory;
+		Inventory = Player.Inventory;
 		GridContainer = GetNode<Control>("Background/GridBackground/GridContainer");
 		if(InvSlotTemplate == null) {
 			InvSlotTemplate = GD.Load<PackedScene>("res://UI/Inventory/InvSlotUITemplate.tscn");
 		}
-		InventorySlots = PlayerInventory.MaxSlotsRows * PlayerInventory.MaxSlotsColumns;
+		InventorySlots = Inventory.MaxSlotsRows * Inventory.MaxSlotsColumns;
 		for(int i = 0; i < InventorySlots; i++) {
 			InvSlotUI slotInstance = InvSlotTemplate.Instantiate<InvSlotUI>();
 			slotInstance.SlotIndex = i;
@@ -40,7 +40,7 @@ public partial class InventoryUI: Control, IInventoryUI {
 	}
 
 	public void HandleOnSlotClicked(int slotIndex) {
-
+		OnSlotClicked?.Invoke(Inventory.Name, slotIndex);
 	}
 
 	public void UpdateInventoryUI(){
@@ -49,9 +49,9 @@ public partial class InventoryUI: Control, IInventoryUI {
 			GD.PrintErr("InventoryUI SetUpInventoryUI: Player is null.");
 			return;
 		}
-		PlayerInventory = Player.Inventory;
+		Inventory = Player.Inventory;
 		for(int i = 0; i < InventorySlots; i++) {
-			InvSlotUIs[i].UpdateSlotUI(PlayerInventory.ItemSlots[i]);
+			InvSlotUIs[i].UpdateSlotUI(Inventory.ItemSlots[i]);
 		}
 	}
 }
