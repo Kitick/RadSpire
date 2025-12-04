@@ -70,7 +70,8 @@ namespace Components {
 
         public void HandleOnBodyEnteredArea(Node3D node) {
             GD.Print("[Item3DIconPickup] Body entered interaction area.");
-            if(node.GetNode<Item3DIcon>("../..") is Item3DIcon item3DIcon) {
+            var item3DIcon = FindAncestorItem3DIcon(node);
+            if(item3DIcon != null) {
                 GD.Print("[Item3DIconPickup] Item3DIcon detected in interaction area.");
                 CreateItemIconPrompt(item3DIcon);
             }
@@ -78,10 +79,20 @@ namespace Components {
 
         public void HandleOnBodyExitedArea(Node3D node) {
             GD.Print("[Item3DIconPickup] Body exited interaction area.");
-            if(node.GetNode<Item3DIcon>("../..") is Item3DIcon item3DIcon) {
+            var item3DIcon = FindAncestorItem3DIcon(node);
+            if(item3DIcon != null) {
                 GD.Print("[Item3DIconPickup] Item3DIcon exited interaction area.");
                 RemoveItemIconPrompt(item3DIcon);
             }
+        }
+
+        private Item3DIcon? FindAncestorItem3DIcon(Node3D node) {
+            Node? current = node;
+            while(current != null) {
+                if(current is Item3DIcon ico) return ico;
+                current = current.GetParent();
+            }
+            return null;
         }
 
         public void CreatePickupScreen() {

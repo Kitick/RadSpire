@@ -23,8 +23,7 @@ public partial class InventoryUIManager : Node {
         base._Process(delta);
         if(HeldItemSlotExist) {
             Vector2 mousePosition = GetViewport().GetMousePosition();
-            Vector2 slotSize = HeldItemSlotUI!.GetRect().Size;
-            HeldItemSlotUI!.Position = mousePosition - (slotSize / 2);
+            HeldItemSlotUI!.Position = mousePosition;
         }
     }
 
