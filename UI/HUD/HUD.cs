@@ -7,6 +7,8 @@ using Network;
 using Settings;
 
 public sealed partial class HUD : Control {
+	private static readonly Logger Log = new(nameof(HUD), enabled: true);
+
 	public enum MenuState { Game, Paused, Settings, Inventory, Host };
 
 	private readonly FiniteStateMachine<MenuState> StateMachine;
@@ -41,10 +43,10 @@ public sealed partial class HUD : Control {
 		base._EnterTree();
 		Player = GetParent<Player>();
 		if(Player == null) {
-			GD.PrintErr("HUD could not find Player node in parent.");
+			Log.Error("HUD could not find Player node in parent.");
 		}
 		else {
-			GD.Print("HUD successfully found Player node in parent.");
+			Log.Info("HUD successfully found Player node in parent.");
 		}
 	}
 
@@ -63,7 +65,7 @@ public sealed partial class HUD : Control {
 	}
 
 	private void OnServerDisconnected() {
-		GD.Print("[HUD] Server disconnected, returning to main menu...");
+		Log.Info("Server disconnected, returning to main menu...");
 		QuitGame();
 	}
 
@@ -100,12 +102,12 @@ public sealed partial class HUD : Control {
 
 	private void OnHostButtonPressed() {
 		if(Server.Instance.IsNetworkConnected) {
-			GD.Print("[HUD] Disconnecting from network...");
+			Log.Info("Disconnecting from network...");
 			Server.Instance.Disconnect();
 			PauseMenu.UpdateHostButtonText();
 		}
 		else {
-			GD.Print("[HUD] Opening host panel...");
+			Log.Info("Opening host panel...");
 			StateMachine.TransitionTo(MenuState.Host);
 		}
 	}

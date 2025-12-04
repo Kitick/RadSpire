@@ -5,6 +5,7 @@ using Network;
 
 namespace MultiplayerPanels {
 	public partial class JoinPanel : Control {
+		private static readonly Logger Log = new(nameof(JoinPanel), enabled: true);
 
 		// Paths for Panel Attributes
 		private const string NO_PASSWORD_CHECKBOX = "PanelArea/NoPassword/NoPasswordCheckBox";
@@ -56,12 +57,12 @@ namespace MultiplayerPanels {
 		// CallBacks
 		private void OnNoPasswordCheckboxToggled(bool check) {
 			//Implementation Here
-			GD.Print($"No Password Toggled: {check}");
+			Log.Info($"No Password Toggled: {check}");
 		}
 
 		private void OnNotFullCheckboxToggled(bool check) {
 			//Implementation Here
-			GD.Print($"No Password Toggled: {check}");
+			Log.Info($"Not Full Toggled: {check}");
 		}
 		private void OnCancelButtonPressed() {
 			CloseMenu();
@@ -78,7 +79,7 @@ namespace MultiplayerPanels {
 		private void AttemptJoin() {
 			string address = inputIPAddress.Text.Trim();
 
-			if (string.IsNullOrWhiteSpace(address)) {
+			if(string.IsNullOrWhiteSpace(address)) {
 				UpdateStatus("Please enter an IP address");
 				return;
 			}
@@ -86,12 +87,12 @@ namespace MultiplayerPanels {
 			UpdateStatus("Connecting...");
 			Error result = Server.Instance.Join(address);
 
-			if (result != Error.Ok) {
-				GD.PrintErr($"[JoinPanel] Failed to join: {result}");
+			if(result != Error.Ok) {
+				Log.Error($"Failed to join: {result}");
 				UpdateStatus($"Failed to connect: {result}");
-			} else {
-				GD.Print($"[JoinPanel] Attempting to join {address}...");
-				// Success will be handled by Server.OnJoinedServer event in MainMenu/HUD
+			}
+			else {
+				Log.Info($"Attempting to join {address}...");
 			}
 		}
 
@@ -106,7 +107,5 @@ namespace MultiplayerPanels {
 		public void CloseMenu() {
 			QueueFree();
 		}
-
-
 	}
 }

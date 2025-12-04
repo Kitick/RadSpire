@@ -5,6 +5,7 @@ using Network;
 
 namespace MultiplayerPanels {
 	public sealed partial class HostPanel : Control {
+		private static readonly Logger Log = new(nameof(HostPanel), enabled: true);
 
 		//Paths For Panel Attributes
 		private const string PANEL_AREA = "PanelArea";
@@ -16,9 +17,9 @@ namespace MultiplayerPanels {
 		private const string HOST_BUTTON = PANEL_AREA + "/OptionContainer/HostButton";
 
 		//Component Reference
-		public static Label hostText = null!;
-		public static LineEdit inputGameName = null!;
-		public static LineEdit inputPassword = null!;
+		public Label HostText = null!;
+		public LineEdit InputGameName = null!;
+		public LineEdit InputPassword = null!;
 
 		// Events
 		public event Action? OnMenuClosed;
@@ -41,65 +42,62 @@ namespace MultiplayerPanels {
 
 		//Get Components
 		private void GetComponents() {
-			hostText = GetNode<Label>(LABEL_HOST_TEXT);
-			inputGameName = GetNode<LineEdit>(INPUT_GAME_NAME_TEXT);
-			inputPassword = GetNode<LineEdit>(INPUT_PASSWORD_TEXT);
+			HostText = GetNode<Label>(LABEL_HOST_TEXT);
+			InputGameName = GetNode<LineEdit>(INPUT_GAME_NAME_TEXT);
+			InputPassword = GetNode<LineEdit>(INPUT_PASSWORD_TEXT);
 		}
 
 		// Set Callbacks
 		private void SetCallbacks() {
 			GetNode<CheckBox>(PASSWORD_CHECKBOX).Toggled += OnPasswordCheckboxToggled;
-			inputGameName.TextChanged += OnInputGameNameTextChanged;
-			inputPassword.TextChanged += OnInputPasswordTextChanged;
-			inputGameName.Connect("text_submitted", Callable.From<string>(text => OnAnyTextSubmitted(INPUT_GAME_NAME_TEXT, text)));
-			inputPassword.Connect("text_submitted", Callable.From<string>(text => OnAnyTextSubmitted(INPUT_PASSWORD_TEXT, text)));
+			InputGameName.TextChanged += OnInputGameNameTextChanged;
+			InputPassword.TextChanged += OnInputPasswordTextChanged;
+			InputGameName.Connect("text_submitted", Callable.From<string>(text => OnAnyTextSubmitted(INPUT_GAME_NAME_TEXT, text)));
+			InputPassword.Connect("text_submitted", Callable.From<string>(text => OnAnyTextSubmitted(INPUT_PASSWORD_TEXT, text)));
 			GetNode<Button>(CANCEL_BUTTON).Pressed += OnCancelButtonPressed;
 			GetNode<Button>(HOST_BUTTON).Pressed += OnHostButtonPressed;
 		}
 
 		// Callbacks
 		public void UpdateHostText(string newText) {
-			hostText.Text = newText;
+			HostText.Text = newText;
 		}
 		private void OnCancelButtonPressed() =>	CloseMenu();
 
 		private void OnHostButtonPressed() {
 			Error result = Server.Instance.Host();
 			if (result == Error.Ok) {
-				GD.Print("[HostPanel] Successfully started hosting");
+				Log.Info("Successfully started hosting");
 				GameManager.Instance.StartGame();
 				CloseMenu();
 			} else {
-				GD.PrintErr($"[HostPanel] Failed to host: {result}");
+				Log.Error($"Failed to host: {result}");
 				UpdateHostText($"Failed to host: {result}");
 			}
 		}
 
 		private void OnPasswordCheckboxToggled(bool check) {
 			if(check == true) {
-				inputPassword.Show();
+				InputPassword.Show();
 			}
 			else if(check == false) {
-				inputPassword.Hide();
+				InputPassword.Hide();
 			}
 		}
-
-
-
 
 		// User Text Input
 		private void OnInputGameNameTextChanged(string newtext) {
 			// Implementation Here
-			GD.Print($"Game Name New Text: {newtext}");
+			Log.Info($"Game Name New Text: {newtext}");
 		}
 
 		private void OnInputPasswordTextChanged(string newtext) {
 			// Implementation Here
-			GD.Print($"Password New Text: {newtext}");
+			Log.Info($"Password New Text: {newtext}");
 		}
 
 		// User Text Submission
-		private void OnAnyTextSubmitted(string sourceName, string submittedText) {
+		private static void OnAnyTextSubmitted(string sourceName, string submittedText) {
 			if(sourceName == null) return;
 
 			if(sourceName == INPUT_GAME_NAME_TEXT) {
@@ -110,9 +108,6 @@ namespace MultiplayerPanels {
 				GD.Print($"Password Submitted: {submittedText}");
 			}
 		}
-
-
-
 
 		// Set Scene Input Callbacks
 		private void SetInputCallbacks() {
