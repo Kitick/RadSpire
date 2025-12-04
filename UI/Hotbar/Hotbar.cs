@@ -80,6 +80,10 @@ public sealed partial class Hotbar : Control {
 		}
 	}
 
+	public void HandleOnSlotClicked(int slotIndex) {
+		
+	}
+
 	private void SetInputCallbacks() {
 		OnExit += ActionEvent.Hotbar1.WhenPressed(() => SelectedSlot = 0);
 		OnExit += ActionEvent.Hotbar2.WhenPressed(() => SelectedSlot = 1);
