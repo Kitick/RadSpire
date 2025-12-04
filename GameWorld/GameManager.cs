@@ -7,6 +7,7 @@ using SaveSystem;
 public sealed partial class GameManager : Node {
 	private static Player Player = null!;
 	private static CameraRig CameraRig = null!;
+	private static Enemy Enemy = null!;
 
 	[Export] private string SaveFileName = "autosave";
 
@@ -23,6 +24,8 @@ public sealed partial class GameManager : Node {
 	public override void _Ready() {
 		CameraRig = this.AddScene<CameraRig>(Scenes.Camera);
 		Player = this.AddScene<Player>(Scenes.Player);
+		Enemy = this.AddScene<Enemy>(Scenes.Enemy);
+		
 
 		CameraRig.Target = Player;
 		Player.KeyInput.Camera = CameraRig;
@@ -41,6 +44,7 @@ public sealed partial class GameManager : Node {
 	public static void Save(string fileName) {
 		var data = new GameState {
 			Player = Player.Serialize(),
+			Enemy = Enemy.Serialize(),
 			CameraRig = CameraRig.Serialize(),
 		};
 
@@ -53,6 +57,7 @@ public sealed partial class GameManager : Node {
 
 			Player.Deserialize(data.Player);
 			CameraRig.Deserialize(data.CameraRig);
+			Enemy.Deserialize(data.Enemy);
 
 			return true;
 		}
@@ -64,5 +69,6 @@ namespace SaveSystem {
 	public readonly struct GameState : ISaveData {
 		public PlayerData Player { get; init; }
 		public CameraRigData CameraRig { get; init; }
+		public EnemyData Enemy  { get; init; }
 	}
 }

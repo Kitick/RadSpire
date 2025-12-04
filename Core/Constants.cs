@@ -19,6 +19,7 @@ namespace Core {
 
 		public const string GameScene = "res://GameWorld/World.tscn";
 		public const string Player = $"{Character}/Player/Player.tscn";
+		public const string Enemy = $"{Character}/Enemy/Enemy.tscn";
 		public const string Camera = "res://Camera/Camera.tscn";
 	}
 

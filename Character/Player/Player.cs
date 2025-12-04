@@ -8,7 +8,7 @@ using SaveSystem;
 public sealed partial class Player : CharacterBody3D, ISaveable<PlayerData> {
 	// Configuration
 	[Export] private int InitalHealth = 100;
-	[Export] private float SprintMultiplier = 3.0f;
+	[Export] private float SprintMultiplier = 2.25f;
 	[Export] private float CrouchMultiplier = 0.5f;
 
 	// Inventories
@@ -43,6 +43,8 @@ public sealed partial class Player : CharacterBody3D, ISaveable<PlayerData> {
 		AddChild(PickupComponent);
 
 		this.AddScene(Scenes.HUD);
+		
+		AddToGroup("Player");
 	}
 
 	public override void _PhysicsProcess(double delta) {
