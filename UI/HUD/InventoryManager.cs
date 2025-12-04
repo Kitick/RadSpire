@@ -13,6 +13,10 @@ public partial class InventoryManager : Node {
 
 	public override void _Ready() {
 		base._Ready();
+		// Ensure this node receives input events even when GUI controls are present
+		SetProcessInput(true);
+		SetProcessUnhandledInput(true);
+		GD.Print("InventoryManager: input processing enabled.");
 		LoadInventoryUIManager();
 	}
 	

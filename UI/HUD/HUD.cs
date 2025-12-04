@@ -67,9 +67,9 @@ public sealed partial class HUD : Control {
 
 	public void LoadScenes() {
 		var packed1 = GD.Load<PackedScene>("res://UI/MultiplayerPanels/HostPanel/HostPanel.tscn");
-        _hostPanel = packed1.Instantiate<HostPanel>();
+		_hostPanel = packed1.Instantiate<HostPanel>();
 		_hostPanel.Visible = false;
-        AddChild(_hostPanel);
+		AddChild(_hostPanel);
 	}
 
 	private void SetInputCallbacks() {
