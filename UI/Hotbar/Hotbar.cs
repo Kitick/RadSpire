@@ -92,19 +92,19 @@ public sealed partial class Hotbar : Control {
 
 	public ItemSlot GetSelectedItemSlot() {
 		int index = SelectedSlot;
-		return Player.Inventory.GetItemSlot(Player.Inventory.MaxSlotsRows - 1, index);
+		return Player.Inventory.GetItemSlot(Player.Inventory.MaxRows - 1, index);
 	}
 
 	public Item? GetSelectedItem() {
 		int index = SelectedSlot;
 		if(Player.Inventory.ItemSlots[index].IsEmpty()) { return null; }
 
-		return Player.Inventory.GetItem(Player.Inventory.MaxSlotsRows - 1, index);
+		return Player.Inventory.GetItem(Player.Inventory.MaxRows - 1, index);
 	}
 
 	public void UpdateHotbarUI() {
-		for(int i = 0; i < Player.Inventory.MaxSlotsColumns - 1; i++) {
-			ItemSlot itemSlot = Player.Inventory.GetItemSlot(Player.Inventory.MaxSlotsRows - 1, i);
+		for(int i = 0; i < Player.Inventory.MaxColumns - 1; i++) {
+			ItemSlot itemSlot = Player.Inventory.GetItemSlot(Player.Inventory.MaxRows - 1, i);
 
 			var slotUI = GetNode<Control>($"Background/GridBackground/HotbarSlots/Slot{i + 1}");
 			var icon = slotUI.GetNode<TextureRect>("TextureRect");
