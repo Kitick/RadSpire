@@ -45,8 +45,6 @@ public partial class MainMenu : Control {
 
 	private SettingsMenu Settings = null!;
 
-	private Network.Network Network => GetTree().GetRoot().GetNode<Network.Network>("Network");
-
 	// Main
 	public override void _Ready() {
 		GetComponents();
@@ -165,7 +163,7 @@ public partial class MainMenu : Control {
 
 	// Pop-up panel buttons handler for Multiplayer
 	private void OnHostNewButtonPressed() {
-		Network.Host();
+
 	}
 
 	private void OnHostSavedButtonPressed() {
