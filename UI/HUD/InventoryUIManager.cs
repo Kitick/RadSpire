@@ -2,18 +2,17 @@ using System;
 using System.Collections.Generic;
 using Godot;
 
-public partial class InventoryUIManager : Node {
+public partial class InventoryUIManager : Control {
     public InventoryManager InventoryManager = null!;
     public PackedScene? InvSlotTemplate = null!;
-    public bool HeldItemSlotExist => HeldItemSlotUI != null;
+    public bool HeldItemSlotExist = false;
     public InvSlotUI? HeldItemSlotUI = null;
-
-    public InventoryUIManager(InventoryManager inventoryManager) {
-        InventoryManager = inventoryManager;
-    }
 
     public override void _Ready() {
         base._Ready();
+        SetProcess(true);
+        InventoryManager = GetParent<InventoryUI>().GetParent<HUD>().Player.InventoryManager;
+        GD.Print("InventoryUIManager ready; processing enabled.");
         LoadTemplate();
         InventoryManager.StartMoveItemEvent += CreateHeldItemSlotUI;
         InventoryManager.EndMoveItemEvent += DestroyHeldItemSlotUI;
@@ -21,9 +20,12 @@ public partial class InventoryUIManager : Node {
 
     public override void _Process(double delta) {
         base._Process(delta);
+        GD.Print("InventoryUIManager._Process running; HeldItemSlotExist=" + HeldItemSlotExist);
         if(HeldItemSlotExist) {
             Vector2 mousePosition = GetViewport().GetMousePosition();
-            HeldItemSlotUI!.Position = mousePosition;
+            Vector2 half = new Vector2(16, 16);
+            HeldItemSlotUI!.GlobalPosition = mousePosition - half;
+            GD.Print("HeldItemSlotUI Position: " + HeldItemSlotUI.GlobalPosition);
         }
     }
 
@@ -34,12 +36,14 @@ public partial class InventoryUIManager : Node {
     }
 
     public void CreateHeldItemSlotUI(ItemSlot itemSlot) {
+        GD.Print("CreateHeldItemSlotUI called");
         ItemSlot itemSlotCopy = itemSlot.Copy();
         LoadTemplate();
         DestroyHeldItemSlotUI();
 
         HeldItemSlotUI = InvSlotTemplate.Instantiate<InvSlotUI>();
         AddChild(HeldItemSlotUI);
+        GD.Print("HeldItemSlotUI created; inside tree=" + HeldItemSlotUI.IsInsideTree() + ", parent=" + (HeldItemSlotUI.GetParent()?.Name ?? "<null>"));
 
         HeldItemSlotUI.MouseFilter = Control.MouseFilterEnum.Ignore;
         foreach(var child in HeldItemSlotUI.GetChildren()) {
@@ -53,12 +57,15 @@ public partial class InventoryUIManager : Node {
         style.BgColor = new Color(1, 1, 1, 0);
         HeldItemSlotUI.AddThemeStyleboxOverride("panel", style);
         HeldItemSlotUI.UpdateSlotUI(itemSlotCopy);
+        HeldItemSlotExist = true;
     }
 
     public void DestroyHeldItemSlotUI() {
         if(HeldItemSlotExist) {
+            GD.Print("DestroyHeldItemSlotUI called");
             HeldItemSlotUI!.QueueFree();
             HeldItemSlotUI = null;
+            HeldItemSlotExist = false;
         }
     }
 }

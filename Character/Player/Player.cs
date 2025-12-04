@@ -43,16 +43,18 @@ public sealed partial class Player : CharacterBody3D, ISaveable<PlayerData> {
 
 	public override void _Ready() {
 		AddChild(PickupComponent);
-		AddChild(InventoryManager);
 
 		this.AddScene(Scenes.HUD);
+		AddChild(InventoryManager);
 		AddInventoriesToInventoryManager();
 	}
 
 	public void AddInventoriesToInventoryManager() {
 		InventoryUI inventoryUI = GetNode<HUD>("HUD").GetNode<InventoryUI>("Inventory");
+		Inventory.Name = "Inventory";
 		InventoryManager.RegisterInventory(Inventory, inventoryUI);
 		Hotbar hotbarUI = GetNode<HUD>("HUD").GetNode<Hotbar>("Hotbar");
+		Hotbar.Name = "Hotbar";
 		InventoryManager.RegisterInventory(Hotbar, hotbarUI);
 	}
 
