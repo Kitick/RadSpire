@@ -15,7 +15,7 @@ namespace MultiplayerPanels {
 		private const string HOST_BUTTON = PANEL_AREA + "/OptionContainer/HostButton";
 
 		//Component Reference
-		Label hostText = null!;
+		public static Label hostText = null!;
 
 		// Events
 		public event Action? OnMenuClosed;
@@ -29,8 +29,6 @@ namespace MultiplayerPanels {
 
 			SetCallbacks();
 			SetInputCallbacks();
-
-			UpdateHostText();
 		}
 
 		public override void _ExitTree() {
@@ -55,9 +53,9 @@ namespace MultiplayerPanels {
 		}
 
 		// Callbacks
-		private void UpdateHostText() {
+		public void UpdateHostText(string newText) {
 			//Implementation Here
-			hostText.Text = $"Hello world!";
+			hostText.Text = newText;
 		}
 		private void OnCancelButtonPressed() =>	CloseMenu();
 
