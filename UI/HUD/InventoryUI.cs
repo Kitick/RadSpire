@@ -121,11 +121,15 @@ public partial class InventoryUI: Control {
 			}
 			GD.Print("Placing held item into empty slot index: " + slotIndex);
 			PlayerInventory.AddItem(HeldItemSlot, PlayerInventory.GetRow(slotIndex), PlayerInventory.GetColumn(slotIndex));
-			MouseHasItemSlot = false;
-			HeldItemSlotUI?.QueueFree();
-			HeldItemSlotUI = null;
-			HeldItemSlot = null;
+			RemoveHeldItemSlotUI();
 		}
+	}
+
+	public void RemoveHeldItemSlotUI(){
+		MouseHasItemSlot = false;
+		HeldItemSlotUI?.QueueFree();
+		HeldItemSlotUI = null;
+		HeldItemSlot = null;
 	}
 
 	public void HandlePlaceItemSlotOnNonEmptySlot(int slotIndex) {
@@ -166,10 +170,7 @@ public partial class InventoryUI: Control {
 			ItemSlot remainSlot = PlayerInventory.AddItem(HeldItemSlot, PlayerInventory.GetRow(slotIndex), PlayerInventory.GetColumn(slotIndex));
 			if(remainSlot.IsEmpty()) {
 				GD.Print("All held items placed into slot index: " + slotIndex);
-				MouseHasItemSlot = false;
-				HeldItemSlotUI?.QueueFree();
-				HeldItemSlotUI = null;
-				HeldItemSlot = null;
+				RemoveHeldItemSlotUI();
 			}
 			else {
 				GD.Print("Some held items remain after placing into slot index: " + slotIndex);
@@ -192,13 +193,32 @@ public partial class InventoryUI: Control {
 			HeldItemSlotUI.GlobalPosition = mousePos - half;
 		}
 	}
-	
-	public override void _UnhandledInput(InputEvent @event){
-		if (@event is InputEventMouseButton mouseButton && mouseButton.Pressed){
+
+	public override void _Input(InputEvent @event) {
+		if(@event is InputEventMouseButton mouseButton && mouseButton.Pressed) {
 			Vector2 clickPos = mouseButton.GlobalPosition;
-			if (MouseHasItemSlot && !GetGlobalRect().HasPoint(clickPos)){
-				//Drop item
+			if(MouseHasItemSlot && !GetGlobalRect().HasPoint(clickPos)) {
+				DropItem();
 			}
+		}
+	}
+	
+	public void DropItem() {
+		if(MouseHasItemSlot) {
+			GD.Print("Dropping held item into the world.");
+			if(HeldItemSlot == null) {
+				GD.Print("Error: HeldItemSlot is null in DropItem");
+				return;
+			}
+			Vector3 dropPosition = player.GlobalPosition + player.GlobalTransform.Basis.Z * 2 + Vector3.Up;
+			for(int i = 0; i < HeldItemSlot.Quantity; i++) {
+				Item3DIcon droppedItemIcon = new Item3DIcon();
+				droppedItemIcon.Item = HeldItemSlot.Item;
+				droppedItemIcon.SpawnItem3D(dropPosition);
+				player.GetParent().AddChild(droppedItemIcon);
+			}
+
+			RemoveHeldItemSlotUI();
 		}
 	}
 
