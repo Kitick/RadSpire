@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Godot;
 using InputSystem;
 
-public sealed partial class Hotbar : Control {
+public sealed partial class Hotbar : Control, IInventoryUI {
 	public static readonly bool Debug = false;
 
 	public int SelectedSlot {
@@ -32,6 +32,7 @@ public sealed partial class Hotbar : Control {
 	private int NumHotbarSlots = 0;
 	private PackedScene? InvSlotTemplate = null!;
 	private Control? GridContainer = null!;
+	public event Action<int>? OnSlotClicked;
 	
 	public override void _EnterTree() {
 		SetInputCallbacks();
@@ -39,9 +40,9 @@ public sealed partial class Hotbar : Control {
 	}
 
 	public override void _Ready() {
-		SetUpHotbarUI();
+		SetUpInventoryUI();
 
-		UpdateHotbarUI();
+		UpdateInventoryUI();
 	}
 
 	private void GetPlayer() {
@@ -52,14 +53,14 @@ public sealed partial class Hotbar : Control {
 		}
 		GD.Print("Hotbar successfully found Player node in parent HUD.");
 
-		Player.Inventory.OnInventoryChanged += UpdateHotbarUI;
+		Player.Inventory.OnInventoryChanged += UpdateInventoryUI;
 	}
 
 	public override void _ExitTree() {
 		OnExit?.Invoke();
 	}
 
-	private void SetUpHotbarUI() {
+	public void SetUpInventoryUI() {
 		Player = GetParent<HUD>().Player;
 		if(Player == null) {
 			GD.PrintErr("InventoryUI SetUpInventoryUI: Player is null.");
@@ -121,7 +122,7 @@ public sealed partial class Hotbar : Control {
 		return PlayerHotbar.GetItem(PlayerHotbar.GetRow(index), PlayerHotbar.GetColumn(index));
 	}
 
-	public void UpdateHotbarUI(){
+	public void UpdateInventoryUI(){
 		Player = GetParent<HUD>().Player;
 		if(Player == null) {
 			GD.PrintErr("InventoryUI SetUpInventoryUI: Player is null.");

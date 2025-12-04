@@ -2,18 +2,19 @@ using System;
 using System.Collections.Generic;
 using Godot;
 
-public partial class InventoryUI: Control {
+public partial class InventoryUI: Control, IInventoryUI {
 	private Player Player = null!;
 	private Inventory PlayerInventory = null!;
 	private List<InvSlotUI> InvSlotUIs = new List<InvSlotUI>();
 	private int InventorySlots = 0;
 	private PackedScene? InvSlotTemplate = null!;
 	private Control? GridContainer = null!;
+	public event Action<int>? OnSlotClicked;
 
 	public override void _Ready() {
 		base._Ready();
 		SetUpInventoryUI();
-		PlayerInventory.OnInventoryChanged += updateInventoryUI;
+		PlayerInventory.OnInventoryChanged += UpdateInventoryUI;
 	}
 
 	public void SetUpInventoryUI() {
@@ -35,14 +36,14 @@ public partial class InventoryUI: Control {
 			InvSlotUIs.Add(slotInstance);
 			GridContainer.AddChild(slotInstance);
 		}
-		updateInventoryUI();
+		UpdateInventoryUI();
 	}
 
 	public void HandleOnSlotClicked(int slotIndex) {
 
 	}
 
-	public void updateInventoryUI(){
+	public void UpdateInventoryUI(){
 		Player = GetParent<HUD>().Player;
 		if(Player == null) {
 			GD.PrintErr("InventoryUI SetUpInventoryUI: Player is null.");
