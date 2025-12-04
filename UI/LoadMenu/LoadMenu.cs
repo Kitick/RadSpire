@@ -30,7 +30,13 @@ namespace LoadMenuScene {
             for(int i = 0; i < 5; i++) {
                 loadButtons[i] = GetNode<Button>($"VLoadContainer/Load{i + 1}");
                 infoLabels[i] = GetNode<Label>($"VLoadContainer/Load{i + 1}/InfoText{i + 1}");
+
+                int slotIndex = i;
+                loadButtons[i].Pressed += () => OnLoadSlotPressed(slotIndex);
+                //Input for OnLoadSlotPresssed Here
             }
+
+            LoadSavedGames();
         }
 
         private void SetCallbacks() {
@@ -41,6 +47,13 @@ namespace LoadMenuScene {
             CloseMenu();
         }
 
+        private void LoadSavedGames() {
+            //Implementation Here
+        }
+
+        private void OnLoadSlotPressed(int index) {
+            //Implementation Here
+        }
 
         public override void _ExitTree() {
             OnExit?.Invoke();
