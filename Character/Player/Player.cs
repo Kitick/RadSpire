@@ -17,7 +17,6 @@ public sealed partial class Player : CharacterBody3D, ISaveable<PlayerData> {
 	public InventoryManager InventoryManager = null!;
 
 	// Components
-	public readonly KeyInput KeyInput;
 	public readonly Health Health;
 	public readonly Movement Movement;
 	public readonly Item3DIconPickup PickupComponent;
@@ -34,7 +33,6 @@ public sealed partial class Player : CharacterBody3D, ISaveable<PlayerData> {
 	}
 
 	public Player() {
-		KeyInput = new KeyInput();
 		Movement = new Movement(this);
 		Health = new Health(InitalHealth);
 		PickupComponent = new Item3DIconPickup();
@@ -58,36 +56,30 @@ public sealed partial class Player : CharacterBody3D, ISaveable<PlayerData> {
 		InventoryManager.RegisterInventory(Hotbar, hotbarUI);
 	}
 
-	public override void _PhysicsProcess(double delta) {
+	public void Update(float dt, KeyInput keyInput) {
 		if(Health.IsDead()) {
 			StateMachine.TransitionTo(State.Idle);
 			return;
 		}
 
-		float dt = (float) delta;
-
-		KeyInput.Update();
-
 		float multiplier = GetMultiplier();
 
 		if(IsOnFloor()) {
-			Movement.Move(KeyInput.HorizontalInput, multiplier);
+			Movement.Move(keyInput.HorizontalInput, multiplier);
 
-			if(KeyInput.JumpPressed) {
-				Movement.Jump();
-			}
+			if(keyInput.JumpPressed) { Movement.Jump(); }
 		}
 
 		Movement.Update(dt);
 
-		UpdateMovementState();
+		UpdateMovementState(keyInput);
 	}
 
-	private void UpdateMovementState() {
+	private void UpdateMovementState(KeyInput keyInput) {
 		if(!IsOnFloor()) { StateMachine.TransitionTo(State.Falling); }
-		else if(!KeyInput.IsMoving) { StateMachine.TransitionTo(State.Idle); }
-		else if(KeyInput.SprintHeld) { StateMachine.TransitionTo(State.Sprinting); }
-		else if(KeyInput.CrouchHeld) { StateMachine.TransitionTo(State.Crouching); }
+		else if(!keyInput.IsMoving) { StateMachine.TransitionTo(State.Idle); }
+		else if(keyInput.SprintHeld) { StateMachine.TransitionTo(State.Sprinting); }
+		else if(keyInput.CrouchHeld) { StateMachine.TransitionTo(State.Crouching); }
 		else { StateMachine.TransitionTo(State.Walking); }
 	}
 

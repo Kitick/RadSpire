@@ -1,10 +1,10 @@
 [gd_scene load_steps=8 format=3 uid="uid://dxvau62v0efr7"]
 
 [ext_resource type="Script" uid="uid://bee1n6ixna6g5" path="res://UI/HUD/HUD.cs" id="1_10ibt"]
-[ext_resource type="Script" uid="uid://bovlwauji4mth" path="res://UI/HUD/InventoryUI.cs" id="5_q8dl0"]
 [ext_resource type="Texture2D" uid="uid://bka8hfkmuqsgi" path="res://Assets/Images/Icons/pause.png" id="2_785o0"]
 [ext_resource type="PackedScene" uid="uid://etextx8i4ksr" path="res://UI/Hotbar/Hotbar.tscn" id="5_c358i"]
 [ext_resource type="PackedScene" uid="uid://crye0f0yw8xrb" path="res://UI/PauseMenu/PauseMenu.tscn" id="5_jmlhc"]
+[ext_resource type="Script" uid="uid://bovlwauji4mth" path="res://UI/HUD/InventoryUI.cs" id="5_q8dl0"]
 [ext_resource type="PackedScene" uid="uid://bffohbw4kmhwa" path="res://UI/Inventory/Inventory.tscn" id="6_785o0"]
 [ext_resource type="PackedScene" uid="uid://bjql4hi1q0ouh" path="res://UI/QuestLog/QuestLog.tscn" id="8_6ymr8"]
 

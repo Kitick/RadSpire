@@ -1,10 +1,13 @@
 using System;
 using Core;
 using Godot;
+using Network;
 using SaveSystem;
 
 namespace Components {
-	public sealed class Movement : ISaveable<MovementData> {
+	public sealed class Movement : ISaveable<MovementData>, INetworkable<MovementData> {
+		public event Action? OnStateChanged;
+
 		public float BaseSpeed = 3.0f;
 		public float RotationSpeed = 2.0f;
 		public float JumpSpeed = 4.5f;
@@ -21,6 +24,7 @@ namespace Components {
 
 			UpdateRotation(dt);
 			Body.MoveAndSlide();
+			OnStateChanged?.Invoke();
 		}
 
 		public void Move(Vector3 direction, float multiplier) {
@@ -67,7 +71,7 @@ namespace Components {
 }
 
 namespace SaveSystem {
-	public readonly struct MovementData : ISaveData {
+	public readonly struct MovementData : ISaveData, INetworkData {
 		public Vector3 Position { get; init; }
 		public Vector3 Velocity { get; init; }
 		public Vector3 Rotation { get; init; }

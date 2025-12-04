@@ -103,6 +103,7 @@ namespace Settings {
 			}
 		}
 
+		// Brightness
 		public float Brightness {
 			get => WorldEnv.Environment.AdjustmentBrightness;
 			set {
@@ -111,6 +112,7 @@ namespace Settings {
 			}
 		}
 
+		// FPS Cap
 		public static FPS FPS {
 			get => new FPS { Value = Engine.MaxFps };
 			set {

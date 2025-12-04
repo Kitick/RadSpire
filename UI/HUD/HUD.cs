@@ -22,6 +22,9 @@ public sealed partial class HUD : Control {
 	private const string QUESTLOG = "QuestLog";
 	private const string HOTBAR = "Hotbar";
 
+	//Load Scene Reference
+	private HostPanel _hostPanel;
+
 	public bool IsPaused => GetTree().Paused;
 
 	private event Action? OnExit;
@@ -46,8 +49,9 @@ public sealed partial class HUD : Control {
 	public override void _Ready() {
 		ProcessMode = ProcessModeEnum.Always;
 
-		SetInputCallbacks();
+		LoadScenes();
 		GetComponents();
+		SetInputCallbacks();
 		SetCallbacks();
 	}
 
@@ -59,6 +63,13 @@ public sealed partial class HUD : Control {
 
 	public override void _ExitTree() {
 		OnExit?.Invoke();
+	}
+
+	public void LoadScenes() {
+		var packed1 = GD.Load<PackedScene>("res://UI/MultiplayerPanels/HostPanel/HostPanel.tscn");
+        _hostPanel = packed1.Instantiate<HostPanel>();
+		_hostPanel.Visible = false;
+        AddChild(_hostPanel);
 	}
 
 	private void SetInputCallbacks() {
@@ -76,7 +87,7 @@ public sealed partial class HUD : Control {
 		GetNode<Button>(PAUSE_BUTTON).Pressed += () => StateMachine.TransitionTo(MenuState.Paused);
 
 		PauseMenu.ResumeButton.Pressed += TogglePause;
-		PauseMenu.SaveButton.Pressed += SaveGame;
+		PauseMenu.SaveButton.Pressed += () => GameManager.Instance.Save("autosave");
 		PauseMenu.HostButton.Pressed += () => StateMachine.TransitionTo(MenuState.Host);
 		PauseMenu.SettingsButton.Pressed += () => StateMachine.TransitionTo(MenuState.Settings);
 		PauseMenu.MainMenuButton.Pressed += QuitGame;
@@ -94,6 +105,8 @@ public sealed partial class HUD : Control {
 		var host = this.AddScene<HostPanel>(Scenes.HostPanel);
 		host.OnMenuClosed += () => StateMachine.TransitionTo(MenuState.Paused);
 		host.OpenMenu();
+
+		_hostPanel.UpdateHostText("Host Game");
 	}
 
 	private void OpenSettings() {
@@ -104,10 +117,6 @@ public sealed partial class HUD : Control {
 
 	private void TogglePause() {
 		StateMachine.TransitionTo(IsPaused ? MenuState.Game : MenuState.Paused);
-	}
-
-	public static void SaveGame() {
-		GameManager.Save("autosave");
 	}
 
 	public void QuitGame() {

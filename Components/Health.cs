@@ -1,8 +1,11 @@
 using System;
+using Network;
 using SaveSystem;
 
 namespace Components {
-	public sealed class Health : ISaveable<HealthData> {
+	public sealed class Health : ISaveable<HealthData>, INetworkable<HealthData> {
+		public event Action? OnStateChanged;
+
 		public int CurrentHealth {
 			get;
 			set {
@@ -10,6 +13,7 @@ namespace Components {
 				if(field == value) { return; }
 
 				OnHealthChanged?.Invoke(field, value);
+				OnStateChanged?.Invoke();
 
 				field = value;
 			}
@@ -18,8 +22,10 @@ namespace Components {
 		public int MaxHealth {
 			get;
 			set {
+				var oldValue = field;
 				field = Math.Max(1, value);
 				CurrentHealth = Math.Min(CurrentHealth, field);
+				if(oldValue != field) { OnStateChanged?.Invoke(); }
 			}
 		}
 
@@ -53,7 +59,7 @@ namespace Components {
 }
 
 namespace SaveSystem {
-	public readonly struct HealthData : ISaveData {
+	public readonly struct HealthData : ISaveData, INetworkData {
 		public int CurrentHealth { get; init; }
 		public int MaxHealth { get; init; }
 	}
