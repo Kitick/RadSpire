@@ -22,6 +22,9 @@ public sealed partial class HUD : Control {
 	private const string QUESTLOG = "QuestLog";
 	private const string HOTBAR = "Hotbar";
 
+	//Load Scene Reference
+	private HostPanel _hostPanel;
+
 	public bool IsPaused => GetTree().Paused;
 
 	private event Action? OnExit;
@@ -46,8 +49,9 @@ public sealed partial class HUD : Control {
 	public override void _Ready() {
 		ProcessMode = ProcessModeEnum.Always;
 
-		SetInputCallbacks();
+		LoadScenes();
 		GetComponents();
+		SetInputCallbacks();
 		SetCallbacks();
 	}
 
@@ -59,6 +63,13 @@ public sealed partial class HUD : Control {
 
 	public override void _ExitTree() {
 		OnExit?.Invoke();
+	}
+
+	public void LoadScenes() {
+		var packed1 = GD.Load<PackedScene>("res://UI/MultiplayerPanels/HostPanel/HostPanel.tscn");
+        _hostPanel = packed1.Instantiate<HostPanel>();
+		_hostPanel.Visible = false;
+        AddChild(_hostPanel);
 	}
 
 	private void SetInputCallbacks() {
@@ -94,6 +105,8 @@ public sealed partial class HUD : Control {
 		var host = this.AddScene<HostPanel>(Scenes.HostPanel);
 		host.OnMenuClosed += () => StateMachine.TransitionTo(MenuState.Paused);
 		host.OpenMenu();
+
+		_hostPanel.UpdateHostText("Host Game");
 	}
 
 	private void OpenSettings() {
