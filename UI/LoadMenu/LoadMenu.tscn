@@ -22,105 +22,73 @@ grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("1_668ho")
 
-[node name="SelectSavedGame" type="Label" parent="."]
-layout_mode = 0
-offset_left = 128.0
-offset_top = 64.0
-offset_right = 274.0
-offset_bottom = 87.0
-scale = Vector2(3, 3)
-text = "Select Saved Game"
+[node name="Panel" type="Control" parent="."]
+layout_mode = 1
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 100.0
+offset_top = -400.0
+offset_right = 500.0
+offset_bottom = 200.0
 
-[node name="VLoadContainer" type="VBoxContainer" parent="."]
-custom_minimum_size = Vector2(1750, 0)
-layout_mode = 0
-offset_left = 128.0
-offset_top = 128.0
-offset_right = 483.0
-offset_bottom = 1919.0
+[node name="Header" type="Label" parent="Panel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.1
+anchor_right = 1.0
+anchor_bottom = 0.2
+theme_override_font_sizes/font_size = 40
+text = "Select Saved Game"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SaveSlots" type="VBoxContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.2
+anchor_right = 4.0
+anchor_bottom = 1.0
 scale = Vector2(0.25, 0.25)
 theme_override_constants/separation = 5
 
-[node name="Load1" type="Button" parent="VLoadContainer"]
+[node name="Slot1" type="Button" parent="Panel/SaveSlots"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 128
+text = "Slot 1"
 icon = ExtResource("2_yf308")
-alignment = 0
 
-[node name="InfoText1" type="Label" parent="VLoadContainer/Load1"]
-layout_mode = 0
-offset_left = 610.0
-offset_top = 61.0
-offset_right = 663.0
-offset_bottom = 84.0
-scale = Vector2(10, 10)
-text = "EMPTY"
-
-[node name="Load2" type="Button" parent="VLoadContainer"]
+[node name="Slot2" type="Button" parent="Panel/SaveSlots"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 128
+text = "Slot 2"
 icon = ExtResource("2_yf308")
-alignment = 0
 
-[node name="InfoText2" type="Label" parent="VLoadContainer/Load2"]
-layout_mode = 0
-offset_left = 610.0
-offset_top = 61.0
-offset_right = 663.0
-offset_bottom = 84.0
-scale = Vector2(10, 10)
-text = "EMPTY"
-
-[node name="Load3" type="Button" parent="VLoadContainer"]
+[node name="Slot3" type="Button" parent="Panel/SaveSlots"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 128
+text = "Slot 3"
 icon = ExtResource("2_yf308")
-alignment = 0
 
-[node name="InfoText3" type="Label" parent="VLoadContainer/Load3"]
-layout_mode = 0
-offset_left = 610.0
-offset_top = 61.0
-offset_right = 663.0
-offset_bottom = 84.0
-scale = Vector2(10, 10)
-text = "EMPTY"
-
-[node name="Load4" type="Button" parent="VLoadContainer"]
+[node name="Slot4" type="Button" parent="Panel/SaveSlots"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 128
+text = "Slot 4"
 icon = ExtResource("2_yf308")
-alignment = 0
 
-[node name="InfoText4" type="Label" parent="VLoadContainer/Load4"]
-layout_mode = 0
-offset_left = 610.0
-offset_top = 61.0
-offset_right = 663.0
-offset_bottom = 84.0
-scale = Vector2(10, 10)
-text = "EMPTY"
-
-[node name="Load5" type="Button" parent="VLoadContainer"]
+[node name="Slot5" type="Button" parent="Panel/SaveSlots"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 128
+text = "Slot 5"
 icon = ExtResource("2_yf308")
-alignment = 0
-
-[node name="InfoText5" type="Label" parent="VLoadContainer/Load5"]
-layout_mode = 0
-offset_left = 610.0
-offset_top = 61.0
-offset_right = 663.0
-offset_bottom = 84.0
-scale = Vector2(10, 10)
-text = "EMPTY"
 
 [node name="BackButton" type="Button" parent="."]
-layout_mode = 0
-offset_left = 64.0
-offset_top = 928.0
-offset_right = 109.0
-offset_bottom = 959.0
-scale = Vector2(3, 3)
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 100.0
+offset_top = -175.0
+offset_right = 300.0
+offset_bottom = -100.0
+theme_override_font_sizes/font_size = 40
 text = "Back"

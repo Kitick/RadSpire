@@ -1,6 +1,7 @@
 using System;
 using Godot;
 using InputSystem;
+using SaveSystem;
 
 namespace LoadMenuScene {
 	public sealed partial class LoadMenu : Control {
@@ -8,48 +9,20 @@ namespace LoadMenuScene {
 		private event Action? OnExit;
 
 		private const string BACK_BUTTON = "BackButton";
-		private const string CONTAINER = "VLoadContainer";
+		private const string CONTAINER = "Panel/SaveSlots";
 
-		private Button[] loadButtons = null!;
-		private Label[] infoLabels = null!;
+		public static string SlotFile(int slot) => $"slot{slot}";
+
+		private const int SLOTS = 5;
+
+		private Button[] Buttons = new Button[SLOTS];
 
 		public override void _Ready() {
 			ProcessMode = ProcessModeEnum.Always;
 
+			SetInputCallbacks();
 			GetComponents();
 			SetCallbacks();
-			SetInputCallbacks();
-		}
-
-		private void GetComponents() {
-			loadButtons = new Button[5];
-			infoLabels = new Label[5];
-
-			for(int i = 0; i < 5; i++) {
-				loadButtons[i] = GetNode<Button>($"{CONTAINER}/Load{i + 1}");
-				infoLabels[i] = GetNode<Label>($"{CONTAINER}/Load{i + 1}/InfoText{i + 1}");
-
-				int slotIndex = i;
-				loadButtons[i].Pressed += () => OnLoadSlotPressed(slotIndex);
-			}
-
-			LoadSavedGames();
-		}
-
-		private void SetCallbacks() {
-			GetNode<Button>(BACK_BUTTON).Pressed += OnBackButtonPressed;
-		}
-
-		private void OnBackButtonPressed() {
-			CloseMenu();
-		}
-
-		private void LoadSavedGames() {
-			//Implementation Here
-		}
-
-		private void OnLoadSlotPressed(int index) {
-			//Implementation Here
 		}
 
 		public override void _ExitTree() {
@@ -62,12 +35,37 @@ namespace LoadMenuScene {
 			OnExit += ActionEvent.MenuExit.WhenPressed(CloseMenu);
 		}
 
+		private void GetComponents() {
+			for(int i = 0; i < SLOTS; i++) {
+				int slot = i + 1;
+
+				bool exists = SaveService.Exists(SlotFile(slot));
+
+				Buttons[i] = GetNode<Button>($"{CONTAINER}/Slot{slot}");
+
+				Buttons[i].Text = exists ? $"Slot {slot}" : "Empty";
+				Buttons[i].Pressed += () => OnLoadSlotPressed(slot);
+			}
+		}
+
+		private void SetCallbacks() {
+			GetNode<Button>(BACK_BUTTON).Pressed += OnBackButtonPressed;
+		}
+
+		private void OnBackButtonPressed() {
+			CloseMenu();
+		}
+
 		public void OpenMenu() {
 
 		}
 
 		private void CloseMenu() {
 			QueueFree();
+		}
+
+		private void OnLoadSlotPressed(int slot) {
+
 		}
 	}
 }
