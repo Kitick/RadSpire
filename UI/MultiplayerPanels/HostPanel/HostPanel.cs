@@ -76,6 +76,9 @@ namespace MultiplayerPanels {
 			}
 		}
 
+
+
+
 		// User Text Input
 		private void OnInputGameNameTextChanged(string newtext) {
 			// Implementation Here
@@ -99,6 +102,9 @@ namespace MultiplayerPanels {
 				GD.Print($"Password Submitted: {submittedText}");
 			}
 		}
+
+
+
 
 		// Set Scene Input Callbacks
 		private void SetInputCallbacks() {
