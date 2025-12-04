@@ -137,7 +137,9 @@ public partial class GameManager {
 
 	private void CreateNetworkedPlayer(int peerId) {
 		var player = this.AddScene<Player>(Scenes.Player);
+
 		player.Name = $"Player_{peerId}";
+		player.GlobalPosition = SpawnLocation;
 
 		var movementSync = new NetworkSync<MovementData>(
 			player.Movement,

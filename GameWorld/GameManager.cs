@@ -12,8 +12,9 @@ public sealed partial class GameManager : Node {
 	public bool InGame => GetTree().CurrentScene.SceneFilePath == Scenes.GameScene;
 
 	public Player LocalPlayer { get; private set; } = null!;
-
 	public CameraRig CameraRig { get; private set; } = null!;
+
+	private static readonly Vector3 SpawnLocation = new Vector3(0, 5, 0);
 
 	private readonly KeyInput KeyInput = new();
 
@@ -29,7 +30,7 @@ public sealed partial class GameManager : Node {
 	}
 
 	public override void _PhysicsProcess(double delta) {
-		if(!InGame) { return; }
+		if(!InGame || LocalPlayer == null || CameraRig == null) { return; }
 
 		float dt = (float) delta;
 
@@ -38,10 +39,12 @@ public sealed partial class GameManager : Node {
 	}
 
 	private void GetComponents() {
-		CameraRig = this.AddScene<CameraRig>(Scenes.Camera);
 		LocalPlayer = this.AddScene<Player>(Scenes.Player);
-		LocalPlayer.Name = $"Player_{LocalPeerId}";
 
+		LocalPlayer.Name = $"Player_{LocalPeerId}";
+		LocalPlayer.GlobalPosition = SpawnLocation;
+
+		CameraRig = this.AddScene<CameraRig>(Scenes.Camera);
 		CameraRig.Target = LocalPlayer;
 	}
 

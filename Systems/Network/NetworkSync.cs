@@ -68,18 +68,17 @@ namespace Network {
 			Log.Info($"{LogPrefix} Sending state update to host");
 
 			if(IsServer) {
-				// We ARE the host, validate and broadcast directly
 				ProcessAndBroadcast(OwnerPeerId, json);
+				return;
+			}
+
+			if(Mode == TransferMode.Unreliable) {
+				RpcId(1, nameof(SendToHostUnreliable), json);
 			}
 			else {
-				// Send to host for validation using appropriate transfer mode
-				if(Mode == TransferMode.Unreliable) {
-					RpcId(1, nameof(SendToHostUnreliable), json);
-				}
-				else {
-					RpcId(1, nameof(SendToHostReliable), json);
-				}
+				RpcId(1, nameof(SendToHostReliable), json);
 			}
+
 		}
 
 		[Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = false, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
@@ -94,7 +93,6 @@ namespace Network {
 			var actualSender = Server.Instance.RemoteSenderId;
 			Log.Info($"{LogPrefix} Host received update from peer {actualSender}");
 
-			// Verify the sender owns this sync object
 			if(actualSender != OwnerPeerId) {
 				Log.Error($"{LogPrefix} Peer {actualSender} tried to update object owned by {OwnerPeerId}");
 				return;
@@ -133,32 +131,33 @@ namespace Network {
 		private void ReceiveFromHostUnreliable(string json) => HandleReceiveFromHost(json);
 
 		private void HandleReceiveFromHost(string json) {
+			if(IsOwner) { return; }
+
 			Log.Info($"{LogPrefix} Received broadcast, applying to SyncObject");
 			var data = JSON.Deserialize<T>(json, NetJsonOptions);
 			SyncObject.Deserialize(data);
 		}
 
 		private void RequestCurrentState() {
-			if(!IsInsideTree()) return;
+			if(!IsInsideTree()) { return; }
+
 			Log.Info($"{LogPrefix} Requesting current state from host");
 			RpcId(1, nameof(SendCurrentStateTo), Multiplayer.GetUniqueId());
 		}
 
 		[Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = false, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
 		private void SendCurrentStateTo(int requesterId) {
-			if(!IsServer) return;
+			if(!IsServer) { return; }
 
-			var json = SerializeState();
 			Log.Info($"{LogPrefix} Sending current state to peer {requesterId}");
-			RpcId(requesterId, nameof(ReceiveFromHostReliable), json);
+			RpcId(requesterId, nameof(ReceiveFromHostReliable), SerializeState());
 		}
 
 		private void BroadcastCurrentState() {
-			if(!IsInsideTree() || !IsServer) return;
+			if(!IsInsideTree() || !IsServer) { return; }
 
-			var json = SerializeState();
 			Log.Info($"{LogPrefix} Broadcasting initial state to all clients");
-			Rpc(nameof(ReceiveFromHostReliable), json);
+			Rpc(nameof(ReceiveFromHostReliable), SerializeState());
 		}
 	}
 }
