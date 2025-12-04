@@ -7,7 +7,7 @@ using SaveSystem;
 public sealed partial class GameManager : Node {
 	public static GameManager Instance { get; private set; } = null!;
 
-	public static readonly bool Debug = true;
+	private static readonly Logger Log = new(nameof(GameManager), enabled: true);
 
 	public bool InGame => GetTree().CurrentScene.SceneFilePath == Scenes.GameScene;
 
@@ -45,13 +45,9 @@ public sealed partial class GameManager : Node {
 		CameraRig.Target = LocalPlayer;
 	}
 
-	private static void Log(string message) {
-		if(Debug) { GD.Print($"[GameManager] {message}"); }
-	}
-
 	public bool Save(string fileName) {
 		if(!InGame) {
-			GD.PrintErr("Cannot save game when not in a game");
+			Log.Error("Cannot save game when not in a game");
 			return false;
 		}
 
@@ -66,12 +62,12 @@ public sealed partial class GameManager : Node {
 
 	public bool Load(string fileName) {
 		if(!InGame) {
-			GD.PrintErr("Cannot load game when not in a game");
+			Log.Error("Cannot load game when not in a game");
 			return false;
 		}
 
 		if(!SaveService.Exists(fileName)) {
-			GD.PrintErr($"Save file '{fileName}' does not exist");
+			Log.Error($"Save file '{fileName}' does not exist");
 			return false;
 		}
 
