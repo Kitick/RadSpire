@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Godot;
 
-public partial class InventoryManager : Node3D {
+public partial class InventoryManager : Node {
 	public Dictionary<string, (Inventory, IInventoryUI)> Inventories = new Dictionary<string, (Inventory, IInventoryUI)>();
 	public InventoryUIManager InventoryUIManager = null!;
 	public PackedScene? InventoryUIManagerTemplate = null!;
@@ -182,6 +182,7 @@ public partial class InventoryManager : Node3D {
 	
 	public override void _Input(InputEvent @event) {
 		if(@event is InputEventMouseButton mouseButton && mouseButton.Pressed) {
+			GD.Print("InventoryManager detected mouse button press.");
 			if(MouseHasItemSlot) {
 				Vector2 clickPos = mouseButton.GlobalPosition;
 				if(ClickedOutsideInventory(clickPos)) {
@@ -194,6 +195,8 @@ public partial class InventoryManager : Node3D {
 
 	public bool ClickedOutsideInventory(Vector2 clickPosition) {
 		foreach(var inventory in Inventories.Keys) {
+			GD.Print("Checking inventory UI for click position against inventory: " + inventory);
+			GD.Print("Inventory UI global rect: " + GetInventoryUI(inventory).GetGlobalRect());
 			if(GetInventoryUI(inventory).GetGlobalRect().HasPoint(clickPosition)) {
 				return false;
 			}
