@@ -4,7 +4,7 @@ using Godot;
 public sealed partial class EnemyAnimator : Node3D {
 	public bool Debug = false;
 
-	public enum State { Idle, Walking, Sprinting, Crouching, Jumping, Falling, Landing }
+	public enum State { Idle, Walking, Sprinting, Crouching, Jumping, Falling, Landing, Die }
 
 	private const string IDLE = "Idle";
 	private const string WALKING = "Walking_B";
@@ -13,7 +13,7 @@ public sealed partial class EnemyAnimator : Node3D {
 	private const string JUMPING = "Jump_Start";
 	private const string FALLING = "Jump_Idle";
 	private const string LANDING = "Jump_Land";
-
+	private const string DIE = "Death_A";
 	private const string ANIMATION_PLAYER = "AnimationPlayer";
 
 	private Enemy Enemy = null!;
@@ -31,6 +31,7 @@ public sealed partial class EnemyAnimator : Node3D {
 				case State.Jumping: AnimationPlayer.Play(JUMPING); break;
 				case State.Falling: AnimationPlayer.Play(FALLING); break;
 				case State.Landing: AnimationPlayer.Play(LANDING); break;
+				case State.Die: AnimationPlayer.Play(DIE); break;
 			}
 		}
 	}

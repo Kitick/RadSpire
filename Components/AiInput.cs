@@ -15,7 +15,7 @@ namespace Components {
 		private readonly Node3D Self;
 		private readonly Node3D Target;
 
-		private readonly float SprintDistance = 7.0f;
+		private readonly float SprintDistance = 5.0f;
 		private readonly float StopDistance = 1.5f;
 		private readonly float DetectionRadius = 15.0f;
 

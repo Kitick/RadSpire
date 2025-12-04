@@ -21,6 +21,9 @@ public sealed partial class Player : CharacterBody3D, ISaveable<PlayerData> {
 	public readonly Movement Movement;
 	public readonly Item3DIconPickup PickupComponent;
 
+	private ProgressBar HealthBar = null!;
+	private PlayerAnimator Animator = null!;
+
 	// State Machine
 	public enum State { Idle, Walking, Sprinting, Crouching, Falling }
 
@@ -45,6 +48,16 @@ public sealed partial class Player : CharacterBody3D, ISaveable<PlayerData> {
 		this.AddScene(Scenes.HUD);
 		
 		AddToGroup("Player");
+		
+		HealthBar = GetNode<ProgressBar>("/root/World/GameManager/Player/HUD/HealthBar");
+		Animator =  GetNode<PlayerAnimator>("/root/World/GameManager/Player/Knight");
+
+		HealthBar.MaxValue = Health.MaxHealth;
+		HealthBar.Value = Health.CurrentHealth;
+	}
+	
+	private void HandleHealthChanged(int newValue) {
+		HealthBar.Value = newValue;
 	}
 
 	public override void _PhysicsProcess(double delta) {
@@ -73,6 +86,9 @@ public sealed partial class Player : CharacterBody3D, ISaveable<PlayerData> {
 	}
 
 	private void UpdateMovementState() {
+		if (KeyInput.AttackPressed) {
+			Animator.PlaySlash();
+		}
 		if(!IsOnFloor()) { StateMachine.TransitionTo(State.Falling); }
 		else if(!KeyInput.IsMoving) { StateMachine.TransitionTo(State.Idle); }
 		else if(KeyInput.SprintHeld) { StateMachine.TransitionTo(State.Sprinting); }

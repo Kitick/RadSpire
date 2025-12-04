@@ -51,10 +51,24 @@ public sealed partial class Enemy : CharacterBody3D, ISaveable<EnemyData> {
 		AiInput = new AiInput(this, player);
 		
 	}
+	
+	public void TakeDamage(int amount)
+	{
+		Health.CurrentHealth -= amount;
+		GD.Print($"Enemy HP: {Health.CurrentHealth}");
+
+		if (Health.IsDead())
+			Die();
+	}
+
+	private void Die()
+	{
+		QueueFree();
+	}
 
 	public override void _PhysicsProcess(double delta) {
 		if(Health.IsDead()) {
-			StateMachine.TransitionTo(State.Idle);
+			Die();
 			return;
 		}
 

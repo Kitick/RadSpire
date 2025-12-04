@@ -32,6 +32,7 @@ namespace Core {
 		public const string Jump = "Jump";
 		public const string Sprint = "Sprint";
 		public const string Crouch = "Crouch";
+		public const string Attack = "Attack";
 
 		public const string MenuBack = "MenuBack";
 		public const string MenuExit = "MenuExit";
