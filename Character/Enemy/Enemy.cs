@@ -7,7 +7,7 @@ using SaveSystem;
 public sealed partial class Enemy : CharacterBody3D, IDamageable, ISaveable<EnemyData> {
 	private static readonly Logger Log = new(nameof(Enemy), enabled: true);
 
-	[Export] private int InitalHealth = 100;
+	[Export] private int InitalHealth = 30;
 	[Export] private float SprintMultiplier = 1.15f;
 	[Export] private float CrouchMultiplier = 0.5f;
 	[Export] public Node3D Player = null!;
@@ -44,7 +44,7 @@ public sealed partial class Enemy : CharacterBody3D, IDamageable, ISaveable<Enem
 			player = players[0] as Node3D;
 		}
 
-		Animator = GetNode<EnemyAnimator>("/root/GameManager/Enemy/Barbarian");
+		Animator = GetNode<EnemyAnimator>("Barbarian");
 
 		if(player == null) {
 			Log.Warn("Enemy could not find any node in group 'player'. AI will not move.");
@@ -52,7 +52,6 @@ public sealed partial class Enemy : CharacterBody3D, IDamageable, ISaveable<Enem
 		}
 
 		AiInput = new AiInput(this, player);
-
 	}
 
 	public void TakeDamage(int amount) {

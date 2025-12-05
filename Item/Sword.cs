@@ -5,7 +5,7 @@ public partial class Sword : Area3D {
 	
 	private Node3D Owner = null!;
 
-	public int Damage = 20;
+	public int Damage = 10;
 
 	public override void _Ready() {
 		Owner = GetOwner<Node3D>(); 

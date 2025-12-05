@@ -51,7 +51,6 @@ public sealed partial class GameManager : Node {
 
 		LocalPlayer.Name = $"Player_{LocalPeerId}";
 		LocalPlayer.GlobalPosition = PlayerSpawnLocation;
-		Enemy!.GlobalPosition = EnemySpawnLocation;
 
 		CameraRig = this.AddScene<CameraRig>(Scenes.Camera);
 		CameraRig.Target = LocalPlayer;
