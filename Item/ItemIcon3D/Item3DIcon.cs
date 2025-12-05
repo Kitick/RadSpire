@@ -10,6 +10,7 @@ public partial class Item3DIcon : Node3D {
 	[Export] public Item? Item { get; set; }
 	[Export] public PackedScene? Item3DSceneTemplate { get; set; }
 	private Node3D? CurrentItem3DScene;
+	[Export] public float ScaleFactor { get; set; } = 1.0f;
 
 	public override void _Ready() {
 		if(Item3DSceneTemplate == null) {
@@ -59,7 +60,7 @@ public partial class Item3DIcon : Node3D {
 		// Generate mesh + material
 		spriteMesh.Call("update_sprite_mesh");
 
-		float targetSize = 0.7f;
+		float targetSize = 0.7f * ScaleFactor;
 
 		MeshInstance3D meshInstance = spriteMesh as MeshInstance3D;
 		if (meshInstance != null && meshInstance.Mesh != null) {

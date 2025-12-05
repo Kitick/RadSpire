@@ -150,7 +150,7 @@ public sealed partial class GameManager : Node {
 		CameraRig = null;
 	}
 
-	private void SpawnTestItem(string path, Vector3 position) {
+	private void SpawnTestItem(string path, Vector3 position, float scaleFactor = 1.0f) {
 		Item? item = GD.Load<Item>(path);
 		if(item == null) {
 			Log.Error($"Failed to load item at path: {path}");
@@ -160,6 +160,7 @@ public sealed partial class GameManager : Node {
 		item3DIcon.Item = item;
 		item3DIcon.Name = item.Name + "3DIcon";
 		AddChild(item3DIcon);
+		item3DIcon.ScaleFactor = scaleFactor;
 		item3DIcon.SpawnItem3D(position);
 	}
 
@@ -171,6 +172,7 @@ public sealed partial class GameManager : Node {
 		SpawnTestItem(Items.BananaGreen, new Vector3(0, 5, 9));
 		SpawnTestItem(Items.StrawberryGreen, new Vector3(0, 5, 10));
 		SpawnTestItem(Items.StrawberryRed, new Vector3(0, 5, 11));
+		SpawnTestItem(Items.StrawberryRed, new Vector3(40, 5, 20), 3.0f);
 	}
 }
 
