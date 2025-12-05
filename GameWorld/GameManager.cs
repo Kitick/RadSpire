@@ -184,6 +184,7 @@ public sealed partial class GameManager : Node {
 	}
 
 	public void ReturnToMainMenu() {
+		QuickSave();
 		CleanupGame();
 		GetTree().Paused = false;
 		GetTree().ChangeSceneToFile(Scenes.MainMenu);
