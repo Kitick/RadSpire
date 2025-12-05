@@ -90,6 +90,18 @@ public partial class Item : Resource, ISaveable<ItemData> {
         return Id == other.Id;
     }
 
+    public Item Copy() {
+        Item copy = new Item();
+        copy.Id = Id;
+        copy.Name = Name;
+        copy.Description = Description;
+        copy.MaxStackSize = MaxStackSize;
+        copy.IsConsumable = IsConsumable;
+        copy.IconTexture = IconTexture;
+        copy.components = new Dictionary<ItemComponentType, IItemComponent>(components);
+        return copy;
+    }
+
     public ItemData Serialize() => new ItemData {
         Id = Id,
         Name = Name,

@@ -2,13 +2,14 @@
 
 using Core;
 using Godot;
+using Network;
 using SaveSystem;
 using Settings;
 using MultiplayerPanels;
 using LoadMenuScene;
 
 public partial class MainMenu : Control {
-	public static readonly bool Debug = false;
+	private static readonly Logger Log = new(nameof(MainMenu), enabled: false);
 
 	enum MenuState { Normal, SinglePopup, MultiPopup }
 
@@ -42,10 +43,47 @@ public partial class MainMenu : Control {
 	private Control SingleplayerButtonPanel = null!;
 	private Control MultiplayerButtonPanel = null!;
 
+	private SettingsMenu Settings = null!;
+	//Load Scene Reference
+	private HostPanel HostPanel = null!;
+
 	// Main
 	public override void _Ready() {
+		LoadScenes();
 		GetComponents();
 		SetCallbacks();
+		SubscribeToNetworkEvents();
+	}
+
+	public override void _ExitTree() {
+		UnsubscribeFromNetworkEvents();
+	}
+
+	private void SubscribeToNetworkEvents() {
+		Server.Instance.OnJoinedServer += OnJoinedServer;
+		Server.Instance.OnHostStarted += OnHostStarted;
+	}
+
+	private void UnsubscribeFromNetworkEvents() {
+		Server.Instance.OnJoinedServer -= OnJoinedServer;
+		Server.Instance.OnHostStarted -= OnHostStarted;
+	}
+
+	private void OnJoinedServer() {
+		Log.Info("Successfully joined server, starting game...");
+		GameManager.Instance.StartGame();
+	}
+
+	private void OnHostStarted() {
+		Log.Info("Host started successfully");
+	}
+
+	//Load Scenes
+	public void LoadScenes() {
+		var packed1 = GD.Load<PackedScene>("res://UI/MultiplayerPanels/HostPanel/HostPanel.tscn");
+        HostPanel = packed1.Instantiate<HostPanel>();
+		HostPanel.Visible = false;
+        AddChild(HostPanel);
 	}
 
 	// Components
@@ -90,7 +128,7 @@ public partial class MainMenu : Control {
 	}
 
 	private void SetState(MenuState state) {
-		if(Debug) { GD.Print($"MainMenu: Setting Menu State to {state}"); }
+		Log.Info($"Setting Menu State to {state}");
 
 		SingleplayerButtonPanel.Visible = state == MenuState.SinglePopup;
 		MultiplayerButtonPanel.Visible = state == MenuState.MultiPopup;
@@ -143,32 +181,28 @@ public partial class MainMenu : Control {
 
 	// Pop-up panel buttons handler for Singleplayer
 	private void OnContinueButtonPressed() {
-		GD.Print("Continue Game Button was pressed!");
-		GameManager.ShouldLoad = true;
-		LoadGameScene();
+		GameManager.Instance.StartGame();
+		GameManager.Instance.Load("autosave");
 	}
 
 	private void OnLoadSavedButtonPressed() {
-		var saves = SaveService.ListSaves();
-
-		GD.Print("Available Saves:");
-		foreach(var save in saves) { GD.Print(save); }
+		this.AddScene<LoadMenu>(Scenes.LoadMenu).OpenMenu();
 	}
 
 	private void OnStartNewButtonPressed() {
-		GameManager.ShouldLoad = false;
-		LoadGameScene();
+		GameManager.Instance.StartGame();
 	}
 
 	// Pop-up panel buttons handler for Multiplayer
 	private void OnHostNewButtonPressed() {
 		var host = this.AddScene<HostPanel>(Scenes.HostPanel);
 		host.OpenMenu();
+
+		HostPanel.UpdateHostText("Host New Game");
 	}
 
 	private void OnHostSavedButtonPressed() {
-		var loadMenu = this.AddScene<LoadMenu>(Scenes.LoadMenu);
-		loadMenu.OpenMenu();
+
 	}
 
 	private void OnJoinGameButtonPressed() {
@@ -180,5 +214,4 @@ public partial class MainMenu : Control {
 	private void LoadGameScene() {
 		GetTree().ChangeSceneToFile(Scenes.GameScene);
 	}
-
 }

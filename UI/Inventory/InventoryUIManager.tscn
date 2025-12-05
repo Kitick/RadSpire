@@ -1,0 +1,15 @@
+[gd_scene load_steps=2 format=3 uid="uid://qut40glt0jkl"]
+
+[ext_resource type="Script" uid="uid://djwmb4dkdprhv" path="res://UI/HUD/InventoryUIManager.cs" id="1_rbxjh"]
+
+[node name="InventoryUIManager" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -1920.0
+offset_bottom = -1080.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_rbxjh")

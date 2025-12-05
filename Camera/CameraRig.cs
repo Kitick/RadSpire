@@ -92,8 +92,11 @@ namespace Camera {
 		public float Heading { get; set => field = (value + 360) % 360; }
 		public float Pitch { get; set => field = Math.Clamp(value, -89, 89); }
 
-		public readonly float RadHDG => Mathf.DegToRad(Heading);
-		public readonly float RadPIT => Mathf.DegToRad(Pitch);
+		private readonly float RadHDG => Mathf.DegToRad(Heading);
+		private readonly float RadPIT => Mathf.DegToRad(Pitch);
+
+		public readonly Vector2 AlignVector(Vector2 direction) => direction.Rotated(-RadHDG);
+		public readonly Vector3 AlignVector(Vector3 direction) => direction.Rotated(Vector3.Up, RadHDG);
 
 		public readonly Vector3 CalcPosition(Node3D space) {
 			Vector3 direction = Extensions.ToPolar(RadHDG, RadPIT);

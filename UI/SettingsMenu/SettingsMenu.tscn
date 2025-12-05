@@ -20,14 +20,14 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_dv3nc")
 
-[node name="ColorRect" type="ColorRect" parent="."]
+[node name="PanelArea" type="ColorRect" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.1, 0.1, 0.1, 0.8)
+color = Color(0, 0, 0, 0.5)
 
 [node name="Top_Panel" type="HBoxContainer" parent="."]
 layout_mode = 1
@@ -65,7 +65,6 @@ layout_mode = 2
 text = "Accessibility"
 
 [node name="General_Panel" type="VBoxContainer" parent="."]
-visible = false
 layout_mode = 1
 anchors_preset = 14
 anchor_top = 0.5
@@ -120,6 +119,7 @@ size_flags_horizontal = 0
 text = "Reset Settings"
 
 [node name="Display_Panel" type="VBoxContainer" parent="."]
+visible = false
 layout_mode = 1
 anchors_preset = 14
 anchor_top = 0.5

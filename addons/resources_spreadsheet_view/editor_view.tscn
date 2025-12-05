@@ -566,7 +566,7 @@ min_size = Vector2i(600, 400)
 
 [node name="SelectionActions" parent="Control" instance=ExtResource("23_m53sx")]
 visible = false
-layout_mode = 2
+layout_mode = 0
 offset_left = -506.0
 offset_top = 65.0
 offset_right = -426.0

@@ -114,6 +114,16 @@ public class ItemSlot : ISaveable<ItemSlotData> {
         return Item.SameItem(other.Item);
     }
 
+    public ItemSlot Copy() {
+        ItemSlot copy = new ItemSlot();
+        if(Item == null) {
+            return copy;
+        }
+        copy.Item = Item.Copy();
+        copy.Quantity = Quantity;
+        return copy;
+    }
+
     public ItemSlotData Serialize() {
         return new ItemSlotData {
             Item = Item?.Serialize(),
