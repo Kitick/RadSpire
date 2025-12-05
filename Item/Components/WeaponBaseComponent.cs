@@ -3,7 +3,7 @@ using SaveSystem;
 
 namespace Components {
     public class WeaponBase : IItemComponent, ISaveable<WeaponBaseData> {
-        public float BaseAttack { get; set; } = 10;
+        public int BaseAttack { get; set; } = 10;
         public float AttackSpeed { get; set; } = 1;
         public float Range { get; set; } = 1;
         public float Knockback { get; set; } = 0;
@@ -31,7 +31,7 @@ namespace Components {
 
 namespace SaveSystem {
     public readonly struct WeaponBaseData : ISaveData {
-        public float BaseAttack { get; init; }
+        public int BaseAttack { get; init; }
         public float AttackSpeed { get; init; }
         public float Range { get; init; }
         public float Knockback { get; init; }
