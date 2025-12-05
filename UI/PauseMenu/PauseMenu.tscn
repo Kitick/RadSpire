@@ -11,50 +11,64 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource("1_1f24j")
 
-[node name="Background" type="ColorRect" parent="."]
+[node name="PanelArea" type="ColorRect" parent="."]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_right = 48.0
+offset_bottom = 100.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.41960785, 0.2784314, 0.23921569, 0.45882353)
 
-[node name="Label" type="RichTextLabel" parent="Background"]
+[node name="Label" type="RichTextLabel" parent="PanelArea"]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
 anchor_bottom = 0.2
+theme_override_font_sizes/normal_font_size = 32
 text = "PAUSED"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Buttons" type="VBoxContainer" parent="Background"]
+[node name="Buttons" type="VBoxContainer" parent="PanelArea"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.1
-anchor_top = 0.2
-anchor_right = 0.9
-anchor_bottom = 1.0
-theme_override_constants/separation = 15
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -99.5
+offset_top = -120.0
+offset_right = 99.5
+offset_bottom = 152.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 10
 alignment = 1
 
-[node name="Resume" type="Button" parent="Background/Buttons"]
+[node name="Resume" type="Button" parent="PanelArea/Buttons"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 32
 text = "RESUME"
 
-[node name="Save" type="Button" parent="Background/Buttons"]
+[node name="Save" type="Button" parent="PanelArea/Buttons"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 32
 text = "SAVE"
 
-[node name="Host" type="Button" parent="Background/Buttons"]
+[node name="Host" type="Button" parent="PanelArea/Buttons"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 32
 text = "HOST"
 
-[node name="Settings" type="Button" parent="Background/Buttons"]
+[node name="Settings" type="Button" parent="PanelArea/Buttons"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 32
 text = "SETTINGS"
 
-[node name="Main_Menu" type="Button" parent="Background/Buttons"]
+[node name="Main_Menu" type="Button" parent="PanelArea/Buttons"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 32
 text = "MAIN MENU"
