@@ -175,11 +175,13 @@ public sealed partial class GameManager : Node {
 		}
 
 		SpawnLocalPlayer();
-		SpawnTestItems();
 
 		if(PendingLoadFile != null) {
 			ApplyLoadedState(PendingLoadFile);
 			PendingLoadFile = null;
+		}
+		else {
+			SpawnTestItems();
 		}
 	}
 
