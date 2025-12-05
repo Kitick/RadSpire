@@ -71,6 +71,7 @@ theme_override_font_sizes/font_size = 40
 text = "Accessibility"
 
 [node name="General_Panel" type="VBoxContainer" parent="."]
+visible = false
 layout_mode = 1
 anchors_preset = 14
 anchor_top = 0.5
@@ -116,7 +117,7 @@ anchor_right = 1.0
 anchor_bottom = 0.5
 offset_left = 100.0
 offset_top = -16.0
-offset_right = 254.0
+offset_right = 325.0
 offset_bottom = 16.0
 max_value = 1.0
 step = 0.01
@@ -221,7 +222,7 @@ anchor_right = 1.0
 anchor_bottom = 0.5
 offset_left = 100.0
 offset_top = -16.5
-offset_right = 254.0
+offset_right = 325.0
 offset_bottom = 16.0
 max_value = 2.0
 step = 0.01
@@ -275,7 +276,7 @@ anchor_right = 1.0
 anchor_bottom = 0.5
 offset_left = 31.0
 offset_top = -16.0
-offset_right = 254.0
+offset_right = 256.0
 offset_bottom = 16.0
 
 [node name="Music_Volume" type="Label" parent="Sound_Panel"]
@@ -292,7 +293,7 @@ anchor_right = 1.0
 anchor_bottom = 0.5
 offset_left = 31.0
 offset_top = -16.0
-offset_right = 254.0
+offset_right = 256.0
 offset_bottom = 16.0
 
 [node name="SFX_Volume" type="Label" parent="Sound_Panel"]
@@ -309,7 +310,7 @@ anchor_right = 1.0
 anchor_bottom = 0.5
 offset_left = 31.0
 offset_top = -16.0
-offset_right = 254.0
+offset_right = 256.0
 offset_bottom = 16.0
 
 [node name="Mute_All" type="Label" parent="Sound_Panel"]
@@ -347,54 +348,75 @@ offset_bottom = 16.0
 theme_override_font_sizes/font_size = 20
 
 [node name="Controller_Panel" type="VBoxContainer" parent="."]
-visible = false
 layout_mode = 1
 anchors_preset = 14
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
-offset_left = 64.0
-offset_top = -412.0
-offset_right = -1600.0
-offset_bottom = -296.0
+offset_left = 58.0
+offset_top = -444.0
+offset_right = -1594.0
+offset_bottom = -256.0
 grow_horizontal = 2
 grow_vertical = 2
-scale = Vector2(2, 2)
+theme_override_constants/separation = 0
 script = ExtResource("5_jh1wv")
 
 [node name="Enable_Controller" type="Label" parent="Controller_Panel"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 32
 text = "Enable Controller"
 
 [node name="CheckBox" type="CheckBox" parent="Controller_Panel/Enable_Controller"]
-layout_mode = 0
-offset_left = 160.0
-offset_right = 184.0
-offset_bottom = 24.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = 6.0
+offset_top = -16.0
+offset_bottom = 16.0
+scale = Vector2(1.25, 1.25)
 
 [node name="Vibration" type="Label" parent="Controller_Panel"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 32
 text = "Vibration"
 
 [node name="CheckBox" type="CheckBox" parent="Controller_Panel/Vibration"]
-layout_mode = 0
-offset_left = 160.0
-offset_right = 184.0
-offset_bottom = 24.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = 6.0
+offset_top = -16.0
+offset_bottom = 16.0
+scale = Vector2(1.25, 1.25)
 
 [node name="Deadzone" type="Label" parent="Controller_Panel"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 32
 text = "Deadzone"
 
 [node name="HSlider" type="HSlider" parent="Controller_Panel/Deadzone"]
-layout_mode = 0
-offset_left = 160.0
-offset_right = 320.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = 6.0
+offset_top = -16.0
+offset_right = 231.0
 offset_bottom = 16.0
 
 [node name="Remap_Buttons" type="Button" parent="Controller_Panel"]
 layout_mode = 2
 size_flags_horizontal = 0
+theme_override_font_sizes/font_size = 32
 text = "Remap Buttons"
 
 [node name="MK_Panel" type="VBoxContainer" parent="."]
