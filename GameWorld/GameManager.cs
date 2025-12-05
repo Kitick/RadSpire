@@ -94,6 +94,10 @@ public sealed partial class GameManager : Node {
 		CleanupGame();
 		GetTree().Paused = false;
 		GetTree().ChangeSceneToFile(Scenes.GameScene);
+		CallDeferred(nameof(OnGameSceneLoaded));
+	}
+
+	private void OnGameSceneLoaded() {
 		SpawnLocalPlayer();
 		SpawnTestItems();
 	}
@@ -109,19 +113,27 @@ public sealed partial class GameManager : Node {
 		GetTree().Quit();
 	}
 
+	private static void CleanupObject(Node? obj) {
+		if(IsInstanceValid(obj)) { obj.QueueFree(); }
+	}
+
 	private void CleanupGame() {
-		LocalPlayer?.QueueFree();
+		CleanupObject(LocalPlayer);
 		LocalPlayer = null;
 
-		Enemy?.QueueFree();
+		CleanupObject(Enemy);
 		Enemy = null;
 
-		CameraRig?.QueueFree();
+		CleanupObject(CameraRig);
 		CameraRig = null;
 	}
 
 	private void SpawnTestItem(string path, Vector3 position) {
-		Item item = GD.Load<Item>(path);
+		Item? item = GD.Load<Item>(path);
+		if(item == null) {
+			Log.Error($"Failed to load item at path: {path}");
+			return;
+		}
 		Item3DIcon item3DIcon = new Item3DIcon();
 		item3DIcon.Item = item;
 		item3DIcon.Name = item.Name + "3DIcon";
