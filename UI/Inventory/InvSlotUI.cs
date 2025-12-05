@@ -39,7 +39,7 @@ public partial class InvSlotUI : Panel {
 
 	public override void _GuiInput(InputEvent @event) {
 		if(@event is InputEventMouseButton mouseEvent) {
-			if(mouseEvent.ButtonIndex == MouseButton.Left && mouseEvent.Pressed) {
+			if(mouseEvent.ButtonIndex == MouseButton.Left) {
 				if(SlotIndex == -1) {
 					Log.Error("SlotIndex is -1, cannot handle click.");
 					return;
