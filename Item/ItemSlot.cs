@@ -59,7 +59,7 @@ public class ItemSlot : ISaveable<ItemSlotData> {
         returnItemStack = combineItemSlot(returnItemStack);
         return returnItemStack;
     }
-    
+
     public ItemSlot combineItemSlot(ItemSlot other) {
         ItemSlot returnItemStack = other;
         if(IsEmpty()) {
@@ -132,14 +132,14 @@ public class ItemSlot : ISaveable<ItemSlotData> {
     }
 
     public void Deserialize(in ItemSlotData data) {
-        if(data.Item is null) {
+        if(data.Item is null || string.IsNullOrEmpty(data.Item.Value.ResourcePath)) {
             Item = null;
+            Quantity = 0;
             return;
         }
-        else {
-            Item = new Item();
-            Item.Deserialize(data.Item.Value);
-        }
+
+        // Load the item directly from resource path
+        Item = Item.LoadFromData(data.Item.Value);
         Quantity = data.Quantity;
     }
 }

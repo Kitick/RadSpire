@@ -11,9 +11,9 @@ public sealed partial class GameManager : Node {
 
 	public bool InGame => GetTree().CurrentScene?.SceneFilePath == Scenes.GameScene;
 
-	public Player LocalPlayer { get; private set; } = null!;
-	public CameraRig CameraRig { get; private set; } = null!;
-	public Enemy Enemy { get; private set; } = null!;
+	public Player? LocalPlayer;
+	public CameraRig? CameraRig;
+	public Enemy? Enemy;
 
 	private static readonly Vector3 SpawnLocation = new Vector3(0, 5, 0);
 
@@ -34,8 +34,8 @@ public sealed partial class GameManager : Node {
 
 		float dt = (float) delta;
 
-		KeyInput.Update(CameraRig);
-		LocalPlayer.Update(dt, KeyInput);
+		KeyInput.Update(CameraRig!);
+		LocalPlayer!.Update(dt, KeyInput);
 	}
 
 	private void SpawnLocalPlayer() {
@@ -56,9 +56,9 @@ public sealed partial class GameManager : Node {
 		}
 
 		var data = new GameState {
-			Player = LocalPlayer.Serialize(),
-			Enemy = Enemy.Serialize(),
-			CameraRig = CameraRig.Serialize(),
+			Player = LocalPlayer!.Serialize(),
+			Enemy = Enemy!.Serialize(),
+			CameraRig = CameraRig!.Serialize(),
 		};
 
 		SaveService.Save(fileName, data);
@@ -78,21 +78,41 @@ public sealed partial class GameManager : Node {
 
 		var data = SaveService.Load<GameState>(fileName);
 
-		LocalPlayer.Deserialize(data.Player);
-		Enemy.Deserialize(data.Enemy);
-		CameraRig.Deserialize(data.CameraRig);
+		LocalPlayer!.Deserialize(data.Player);
+		Enemy!.Deserialize(data.Enemy);
+		CameraRig!.Deserialize(data.CameraRig);
 
 		return true;
 	}
 
 	public void StartGame() {
+		CleanupGame();
+		GetTree().Paused = false;
 		GetTree().ChangeSceneToFile(Scenes.GameScene);
 		SpawnLocalPlayer();
 		SpawnTestItems();
 	}
 
-	public void QuitGame() {
+	public void ReturnToMainMenu() {
+		CleanupGame();
+		GetTree().Paused = false;
+		GetTree().ChangeSceneToFile(Scenes.MainMenu);
+	}
+
+	public void ExitApplication() {
+		CleanupGame();
 		GetTree().Quit();
+	}
+
+	private void CleanupGame() {
+		LocalPlayer?.QueueFree();
+		LocalPlayer = null;
+
+		Enemy?.QueueFree();
+		Enemy = null;
+
+		CameraRig?.QueueFree();
+		CameraRig = null;
 	}
 
 	private void SpawnTestItem(string path, Vector3 position) {
@@ -100,8 +120,8 @@ public sealed partial class GameManager : Node {
 		Item3DIcon item3DIcon = new Item3DIcon();
 		item3DIcon.Item = item;
 		item3DIcon.Name = item.Name + "3DIcon";
-		item3DIcon.SpawnItem3D(position);
 		AddChild(item3DIcon);
+		item3DIcon.SpawnItem3D(position);
 	}
 
 	private void SpawnTestItems() {

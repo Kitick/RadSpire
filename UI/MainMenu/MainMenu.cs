@@ -153,7 +153,7 @@ public partial class MainMenu : Control {
 	}
 
 	private void OnQuitButtonPressed() {
-		GetTree().Quit();
+		GameManager.Instance.ExitApplication();
 	}
 
 	// Unhover Pop-Up Logic

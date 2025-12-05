@@ -55,7 +55,7 @@ public partial class Item : Resource, ISaveable<ItemData> {
     public bool IsStackable => MaxStackSize > 1;
     [Export] public bool IsConsumable { get; set; } = false;
     [Export] public Texture2D IconTexture { get; set; } = null!;
-    
+
     //Components
     public enum ItemComponentType {
         WeaponBase,
@@ -103,50 +103,33 @@ public partial class Item : Resource, ISaveable<ItemData> {
     }
 
     public ItemData Serialize() => new ItemData {
-        Id = Id,
-        Name = Name,
-        Description = Description,
-        MaxStackSize = MaxStackSize,
-        IsConsumable = IsConsumable,
-        IconTexture = IconTexture,
-        ComponentsData = SerializeComponents(),
+        ResourcePath = ResourcePath,
     };
 
-    public Dictionary<ItemComponentType, IItemComponent> SerializeComponents(){
-        Dictionary<ItemComponentType, IItemComponent> serializedComponents = new();
-        foreach(var component in components) {
-            serializedComponents.Add(component.Key, component.Value);
-        }
-        return serializedComponents;
-    }
-
     public void Deserialize(in ItemData data) {
-        Id = data.Id;
-        Name = data.Name;
-        Description = data.Description;
-        MaxStackSize = data.MaxStackSize;
-        IsConsumable = data.IsConsumable;
-        IconTexture = data.IconTexture;
-        components = DeserializeComponents(data);
+        // Load the item from its resource path and copy properties
+        if(string.IsNullOrEmpty(data.ResourcePath)) return;
+
+        var loaded = GD.Load<Item>(data.ResourcePath);
+        if(loaded == null) return;
+
+        Id = loaded.Id;
+        Name = loaded.Name;
+        Description = loaded.Description;
+        MaxStackSize = loaded.MaxStackSize;
+        IsConsumable = loaded.IsConsumable;
+        IconTexture = loaded.IconTexture;
+        components = new Dictionary<ItemComponentType, IItemComponent>(loaded.components);
     }
 
-    public Dictionary<ItemComponentType, IItemComponent> DeserializeComponents(in ItemData data){
-        Dictionary<ItemComponentType, IItemComponent> deserializedComponents = new();
-        foreach(var component in data.ComponentsData) {
-            deserializedComponents.Add(component.Key, component.Value);
-        }
-        return deserializedComponents;
+    public static Item? LoadFromData(in ItemData data) {
+        if(string.IsNullOrEmpty(data.ResourcePath)) return null;
+        return GD.Load<Item>(data.ResourcePath);
     }
 }
 
 namespace SaveSystem {
     public readonly record struct ItemData : ISaveData {
-        public string Id { get; init; }
-        public string Name { get; init; }
-        public string Description { get; init; }
-        public int MaxStackSize { get; init; }
-        public bool IsConsumable { get; init; }
-        public Texture2D IconTexture { get; init; }
-        public Dictionary<Item.ItemComponentType, IItemComponent> ComponentsData { get; init; }
+        public string ResourcePath { get; init; }
     }
 }

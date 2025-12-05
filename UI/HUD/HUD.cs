@@ -145,8 +145,7 @@ public sealed partial class HUD : Control {
 	}
 
 	public void QuitGame() {
-		GetTree().Paused = false;
-		GetTree().ChangeSceneToFile(Scenes.MainMenu);
+		GameManager.Instance.ReturnToMainMenu();
 	}
 
 	public void ToggleInventory() {
