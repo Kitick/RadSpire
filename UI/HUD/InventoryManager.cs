@@ -41,6 +41,7 @@ public partial class InventoryManager : Node {
 		}
 		Inventories.Add(inventory.Name, (inventory, uiControl));
 		uiControl.OnSlotClicked += HandleOnSlotClicked;
+		uiControl.OnSlotUnclicked += HandleOnSlotUnclicked;
 		Log.Info($"Registered inventory: {inventory.Name}");
 	}
 
@@ -68,12 +69,17 @@ public partial class InventoryManager : Node {
 	}
 
 	public void HandleOnSlotClicked(string inventoryName, int slotIndex) {
-		if (MouseHasItemSlot) {
+		if(MouseHasItemSlot) {
 			HandlePlaceItemSlot(inventoryName, slotIndex);
-		} else {
+		}
+		else {
 			HandlePickupItemSlot(inventoryName, slotIndex);
 		}
 	}
+	
+	public void HandleOnSlotUnclicked(string inventoryName, int slotIndex) {
+        
+    }
 
 	public void HandlePickupItemSlot(string inventoryName, int slotIndex) {
 		if(!MouseHasItemSlot) {

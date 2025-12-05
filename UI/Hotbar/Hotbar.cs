@@ -41,6 +41,7 @@ public sealed partial class Hotbar : Control, IInventoryUI {
 	private PackedScene? InvSlotTemplate = null!;
 	private Control? GridContainer = null!;
 	public event Action<string, int>? OnSlotClicked;
+	public event Action<string, int>? OnSlotUnclicked;
 	
 	public override void _EnterTree() {
 		SetInputCallbacks();
@@ -86,6 +87,7 @@ public sealed partial class Hotbar : Control, IInventoryUI {
 			InvSlotUI slotInstance = InvSlotTemplate.Instantiate<InvSlotUI>();
 			slotInstance.SlotIndex = i;
 			slotInstance.OnSlotClicked += HandleOnSlotClicked;
+			slotInstance.OnSlotUnclicked += HandleOnSlotUnclicked;
 			HotbarSlotUIs.Add(slotInstance);
 			HotbarSlots.Add(slotInstance);
 			GridContainer.AddChild(slotInstance);
@@ -94,6 +96,10 @@ public sealed partial class Hotbar : Control, IInventoryUI {
 
 	public void HandleOnSlotClicked(int slotIndex) {
 		OnSlotClicked?.Invoke(Inventory.Name, slotIndex);
+	}
+
+	public void HandleOnSlotUnclicked(int slotIndex) {
+		OnSlotUnclicked?.Invoke(Inventory.Name, slotIndex);
 	}
 
 	private void SetInputCallbacks() {

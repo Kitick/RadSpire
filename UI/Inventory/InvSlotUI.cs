@@ -8,6 +8,8 @@ public partial class InvSlotUI : Panel {
 	[Export] public TextureRect IconTextureRect { get; set; } = null!;
 	[Export] public Label ItemCountLabel { get; set; } = null!;
 	public event Action<int>? OnSlotClicked;
+	public event Action<int>? OnSlotUnclicked;
+
 	public override void _Ready() {
 		base._Ready();
 		IconTextureRect = GetNode<TextureRect>("TextureRect");
@@ -44,6 +46,10 @@ public partial class InvSlotUI : Panel {
 				}
 				OnSlotClicked?.Invoke(SlotIndex);
 				Log.Info($"Slot {SlotIndex} clicked.");
+			}
+			if(mouseEvent.ButtonIndex == MouseButton.Left && !mouseEvent.Pressed) {
+				Log.Info($"Slot {SlotIndex} mouse left released.");
+				OnSlotUnclicked?.Invoke(SlotIndex);
 			}
 		}
 	}

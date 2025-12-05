@@ -7,5 +7,6 @@ public partial interface IInventoryUI {
     Rect2 GetGlobalRect();
     void SetUpInventoryUI();
     public event Action<string, int>? OnSlotClicked;
+    public event Action<string, int>? OnSlotUnclicked;
     void UpdateInventoryUI();
 }
