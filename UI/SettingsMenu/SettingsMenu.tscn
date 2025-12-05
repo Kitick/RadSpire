@@ -34,34 +34,40 @@ layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -560.0
-offset_right = -6.0
-offset_bottom = 40.0
+offset_left = -520.0
+offset_right = 516.0
+offset_bottom = 53.0
 grow_horizontal = 2
-scale = Vector2(2, 2)
+theme_override_constants/separation = 8
 
 [node name="General_Button" type="Button" parent="Top_Panel"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 40
 text = "General"
 
 [node name="Display_Button" type="Button" parent="Top_Panel"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 40
 text = "Display"
 
 [node name="Sound_Button" type="Button" parent="Top_Panel"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 40
 text = "Sound"
 
 [node name="Controller_Button" type="Button" parent="Top_Panel"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 40
 text = "Controller"
 
 [node name="MK_Button" type="Button" parent="Top_Panel"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 40
 text = "Mouse & Keyboard"
 
 [node name="Accessibility_Button" type="Button" parent="Top_Panel"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 40
 text = "Accessibility"
 
 [node name="General_Panel" type="VBoxContainer" parent="."]
@@ -71,52 +77,67 @@ anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
 offset_left = 64.0
-offset_top = -412.0
-offset_right = -1600.0
-offset_bottom = -296.0
+offset_top = -444.0
+offset_right = -1688.0
+offset_bottom = -309.0
 grow_horizontal = 2
 grow_vertical = 2
-scale = Vector2(2, 2)
+theme_override_constants/separation = 0
 script = ExtResource("2_n8tfj")
 
 [node name="Language" type="Label" parent="General_Panel"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 32
 text = "Language"
 
 [node name="OptionButton" type="OptionButton" parent="General_Panel/Language"]
 layout_mode = 1
-anchors_preset = 1
+anchors_preset = -1
 anchor_left = 1.0
+anchor_top = 0.5
 anchor_right = 1.0
-offset_left = -96.0
-offset_right = -64.0
-offset_bottom = 20.0
-grow_horizontal = 0
+anchor_bottom = 0.5
+offset_left = 100.0
+offset_top = -16.0
+offset_bottom = 16.0
+theme_override_font_sizes/font_size = 20
 
 [node name="UI_Scale" type="Label" parent="General_Panel"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 32
 text = "UI Scale"
 
 [node name="HSlider" type="HSlider" parent="General_Panel/UI_Scale"]
-layout_mode = 0
-offset_left = 160.0
-offset_right = 320.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = 100.0
+offset_top = -16.0
+offset_right = 325.0
 offset_bottom = 16.0
+max_value = 1.0
+step = 0.01
+value = 0.5
 
 [node name="Theme" type="Label" parent="General_Panel"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 32
 text = "Theme"
 
 [node name="OptionButton" type="OptionButton" parent="General_Panel/Theme"]
-layout_mode = 0
-offset_left = 160.0
-offset_right = 192.0
-offset_bottom = 20.0
-
-[node name="Reset" type="Button" parent="General_Panel"]
-layout_mode = 2
-size_flags_horizontal = 0
-text = "Reset Settings"
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = 100.0
+offset_top = -16.0
+offset_bottom = 16.0
+theme_override_font_sizes/font_size = 20
 
 [node name="Display_Panel" type="VBoxContainer" parent="."]
 visible = false
@@ -126,52 +147,81 @@ anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
 offset_left = 64.0
-offset_top = -412.0
-offset_right = -1600.0
-offset_bottom = -277.0
+offset_top = -444.0
+offset_right = -1688.0
+offset_bottom = -219.0
 grow_horizontal = 2
 grow_vertical = 2
-scale = Vector2(2, 2)
+theme_override_constants/separation = 0
 script = ExtResource("3_qn140")
 
 [node name="Resolution" type="Label" parent="Display_Panel"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 32
 text = "Resolution"
 
 [node name="OptionButton" type="OptionButton" parent="Display_Panel/Resolution"]
-layout_mode = 0
-offset_left = 160.0
-offset_right = 192.0
-offset_bottom = 20.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = 100.0
+offset_top = -15.9850025
+offset_right = 150.0
+offset_bottom = 16.015
+theme_override_font_sizes/font_size = 20
 
 [node name="Fullscreen" type="Label" parent="Display_Panel"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 32
 text = "Fullscreen"
 
 [node name="CheckBox" type="CheckBox" parent="Display_Panel/Fullscreen"]
-layout_mode = 0
-offset_left = 160.0
-offset_right = 184.0
-offset_bottom = 24.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = 99.99997
+offset_top = -24.0
+offset_bottom = 8.0
+scale = Vector2(1.5, 1.5)
 
 [node name="VSync" type="Label" parent="Display_Panel"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 32
 text = "VSync"
 
 [node name="CheckBox" type="CheckBox" parent="Display_Panel/VSync"]
-layout_mode = 0
-offset_left = 160.0
-offset_right = 184.0
-offset_bottom = 24.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = 99.99997
+offset_top = -24.0
+offset_bottom = 8.0
+scale = Vector2(1.5, 1.5)
 
 [node name="Brightness" type="Label" parent="Display_Panel"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 32
 text = "Brightness"
 
 [node name="HSlider" type="HSlider" parent="Display_Panel/Brightness"]
-layout_mode = 0
-offset_left = 160.0
-offset_right = 320.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = 100.0
+offset_top = -16.5
+offset_right = 325.0
 offset_bottom = 16.0
 max_value = 2.0
 step = 0.01
@@ -179,13 +229,21 @@ value = 1.0
 
 [node name="FPS_Cap" type="Label" parent="Display_Panel"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 32
 text = "FPS Cap"
 
 [node name="OptionButton" type="OptionButton" parent="Display_Panel/FPS_Cap"]
-layout_mode = 0
-offset_left = 160.0
-offset_right = 192.0
-offset_bottom = 20.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = 100.0
+offset_top = -16.0
+offset_right = 150.0
+offset_bottom = 16.0
+theme_override_font_sizes/font_size = 20
 
 [node name="Sound_Panel" type="VBoxContainer" parent="."]
 visible = false
@@ -195,63 +253,98 @@ anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
 offset_left = 64.0
-offset_top = -411.0
-offset_right = -1600.0
-offset_bottom = -276.0
+offset_top = -444.0
+offset_right = -1622.0
+offset_bottom = -219.0
 grow_horizontal = 2
 grow_vertical = 2
-scale = Vector2(2, 2)
+theme_override_constants/separation = 0
 script = ExtResource("4_jxq57")
 
 [node name="Master_Volume" type="Label" parent="Sound_Panel"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 32
 text = "Master Volume"
 
 [node name="HSlider" type="HSlider" parent="Sound_Panel/Master_Volume"]
-layout_mode = 0
-offset_left = 160.0
-offset_right = 320.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = 31.0
+offset_top = -16.0
+offset_right = 256.0
 offset_bottom = 16.0
 
 [node name="Music_Volume" type="Label" parent="Sound_Panel"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 32
 text = "Music Volume"
 
 [node name="HSlider" type="HSlider" parent="Sound_Panel/Music_Volume"]
-layout_mode = 0
-offset_left = 160.0
-offset_right = 320.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = 31.0
+offset_top = -16.0
+offset_right = 256.0
 offset_bottom = 16.0
 
 [node name="SFX_Volume" type="Label" parent="Sound_Panel"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 32
 text = "SFX Volume"
 
 [node name="HSlider" type="HSlider" parent="Sound_Panel/SFX_Volume"]
-layout_mode = 0
-offset_left = 160.0
-offset_right = 320.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = 31.0
+offset_top = -16.0
+offset_right = 256.0
 offset_bottom = 16.0
 
 [node name="Mute_All" type="Label" parent="Sound_Panel"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 32
 text = "Mute All"
 
 [node name="CheckBox" type="CheckBox" parent="Sound_Panel/Mute_All"]
-layout_mode = 0
-offset_left = 160.0
-offset_right = 184.0
-offset_bottom = 24.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = 31.0
+offset_top = -24.0
+offset_bottom = 8.0
+scale = Vector2(1.5, 1.5)
 
 [node name="Output_Device" type="Label" parent="Sound_Panel"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 32
 text = "Output Device"
 
 [node name="OptionButton" type="OptionButton" parent="Sound_Panel/Output_Device"]
-layout_mode = 0
-offset_left = 160.0
-offset_right = 192.0
-offset_bottom = 20.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = 31.0
+offset_top = -16.0
+offset_bottom = 16.0
+theme_override_font_sizes/font_size = 20
 
 [node name="Controller_Panel" type="VBoxContainer" parent="."]
 visible = false
@@ -260,48 +353,70 @@ anchors_preset = 14
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
-offset_left = 64.0
-offset_top = -412.0
-offset_right = -1600.0
-offset_bottom = -296.0
+offset_left = 58.0
+offset_top = -444.0
+offset_right = -1594.0
+offset_bottom = -256.0
 grow_horizontal = 2
 grow_vertical = 2
-scale = Vector2(2, 2)
+theme_override_constants/separation = 0
 script = ExtResource("5_jh1wv")
 
 [node name="Enable_Controller" type="Label" parent="Controller_Panel"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 32
 text = "Enable Controller"
 
 [node name="CheckBox" type="CheckBox" parent="Controller_Panel/Enable_Controller"]
-layout_mode = 0
-offset_left = 160.0
-offset_right = 184.0
-offset_bottom = 24.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = 6.0
+offset_top = -24.0
+offset_bottom = 8.0
+scale = Vector2(1.5, 1.5)
 
 [node name="Vibration" type="Label" parent="Controller_Panel"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 32
 text = "Vibration"
 
 [node name="CheckBox" type="CheckBox" parent="Controller_Panel/Vibration"]
-layout_mode = 0
-offset_left = 160.0
-offset_right = 184.0
-offset_bottom = 24.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = 6.0
+offset_top = -24.0
+offset_bottom = 8.0
+scale = Vector2(1.5, 1.5)
 
 [node name="Deadzone" type="Label" parent="Controller_Panel"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 32
 text = "Deadzone"
 
 [node name="HSlider" type="HSlider" parent="Controller_Panel/Deadzone"]
-layout_mode = 0
-offset_left = 160.0
-offset_right = 320.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = 6.0
+offset_top = -16.0
+offset_right = 231.0
 offset_bottom = 16.0
 
 [node name="Remap_Buttons" type="Button" parent="Controller_Panel"]
 layout_mode = 2
 size_flags_horizontal = 0
+theme_override_font_sizes/font_size = 32
 text = "Remap Buttons"
 
 [node name="MK_Panel" type="VBoxContainer" parent="."]
@@ -312,47 +427,70 @@ anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
 offset_left = 64.0
-offset_top = -412.0
-offset_right = -1600.0
-offset_bottom = -296.0
+offset_top = -444.0
+offset_right = -1588.0
+offset_bottom = -256.0
 grow_horizontal = 2
 grow_vertical = 2
-scale = Vector2(2, 2)
+theme_override_constants/separation = 0
 script = ExtResource("6_uv3og")
 
 [node name="Mouse_Sense" type="Label" parent="MK_Panel"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 32
 text = "Mouse Sense"
 
 [node name="HSlider" type="HSlider" parent="MK_Panel/Mouse_Sense"]
-layout_mode = 0
-offset_left = 160.0
-offset_right = 168.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = 6.0
+offset_top = -16.0
+offset_right = 231.0
 offset_bottom = 16.0
 
 [node name="Invert_Y-Axis" type="Label" parent="MK_Panel"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 32
 text = "Invert Y-Axis"
 
 [node name="CheckBox" type="CheckBox" parent="MK_Panel/Invert_Y-Axis"]
-layout_mode = 0
-offset_left = 160.0
-offset_right = 184.0
-offset_bottom = 24.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = 6.0
+offset_top = -24.0
+offset_bottom = 8.0
+scale = Vector2(1.5, 1.5)
 
 [node name="Enable_Raw_Input" type="Label" parent="MK_Panel"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 32
 text = "Enable Raw Input"
 
 [node name="CheckBox" type="CheckBox" parent="MK_Panel/Enable_Raw_Input"]
-layout_mode = 0
-offset_left = 160.0
-offset_right = 184.0
-offset_bottom = 24.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = 6.0
+offset_top = -24.0
+offset_right = 24.0
+offset_bottom = 8.0
+scale = Vector2(1.5, 1.5)
 
 [node name="Remap_Keys" type="Button" parent="MK_Panel"]
 layout_mode = 2
 size_flags_horizontal = 0
+theme_override_font_sizes/font_size = 32
 text = "Remap Keys"
 
 [node name="Accessibility_Panel" type="VBoxContainer" parent="."]
@@ -363,63 +501,117 @@ anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
 offset_left = 64.0
-offset_top = -412.0
+offset_top = -444.0
 offset_right = -1600.0
-offset_bottom = -277.0
+offset_bottom = -219.0
 grow_horizontal = 2
 grow_vertical = 2
-scale = Vector2(2, 2)
+theme_override_constants/separation = 0
 script = ExtResource("7_2kpqc")
 
 [node name="Subtitles" type="Label" parent="Accessibility_Panel"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 32
 text = "Subtitles"
 
 [node name="CheckBox" type="CheckBox" parent="Accessibility_Panel/Subtitles"]
-layout_mode = 0
-offset_left = 160.0
-offset_right = 184.0
-offset_bottom = 24.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = 12.0
+offset_top = -24.0
+offset_bottom = 8.0
+scale = Vector2(1.5, 1.5)
 
 [node name="Subtitle_Size" type="Label" parent="Accessibility_Panel"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 32
 text = "Subtitle Size"
 
 [node name="HSlider" type="HSlider" parent="Accessibility_Panel/Subtitle_Size"]
-layout_mode = 0
-offset_left = 160.0
-offset_right = 320.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = 12.0
+offset_top = -16.0
+offset_right = 237.0
 offset_bottom = 16.0
 
 [node name="Colorblind_Mode" type="Label" parent="Accessibility_Panel"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 32
 text = "Colorblind Mode"
 
 [node name="OptionButton" type="OptionButton" parent="Accessibility_Panel/Colorblind_Mode"]
-layout_mode = 0
-offset_left = 160.0
-offset_right = 192.0
-offset_bottom = 20.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = 12.0
+offset_top = -16.0
+offset_bottom = 16.0
 
 [node name="Text-to-Speech" type="Label" parent="Accessibility_Panel"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 32
 text = "Text to Speech"
 
 [node name="CheckBox" type="CheckBox" parent="Accessibility_Panel/Text-to-Speech"]
-layout_mode = 0
-offset_left = 160.0
-offset_right = 184.0
-offset_bottom = 24.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = 12.0
+offset_top = -24.0
+offset_bottom = 8.0
+scale = Vector2(1.5, 1.5)
 
 [node name="High_Contrast_UI" type="Label" parent="Accessibility_Panel"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 32
 text = "High Contrast UI"
 
 [node name="CheckBox" type="CheckBox" parent="Accessibility_Panel/High_Contrast_UI"]
-layout_mode = 0
-offset_left = 160.0
-offset_right = 184.0
-offset_bottom = 24.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = 12.0
+offset_top = -24.0
+offset_bottom = 8.0
+scale = Vector2(1.5, 1.5)
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_w7gfg")
+
+[node name="ResetSettingsButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 1576.0
+offset_top = 960.0
+offset_right = 1856.0
+offset_bottom = 1023.0
+size_flags_horizontal = 0
+theme_override_font_sizes/font_size = 40
+text = "Reset Settings"
+
+[node name="BackButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 64.0
+offset_top = 960.0
+offset_right = 181.0
+offset_bottom = 991.0
+size_flags_horizontal = 0
+theme_override_font_sizes/font_size = 40
+text = "Back"
