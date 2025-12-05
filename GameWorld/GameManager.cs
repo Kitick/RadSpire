@@ -22,7 +22,6 @@ public sealed partial class GameManager : Node {
 		Instance = this;
 
 		InitializeNetwork();
-		GetComponents();
 	}
 
 	public override void _ExitTree() {
@@ -38,7 +37,7 @@ public sealed partial class GameManager : Node {
 		LocalPlayer.Update(dt, KeyInput);
 	}
 
-	private void GetComponents() {
+	private void SpawnLocalPlayer() {
 		LocalPlayer = this.AddScene<Player>(Scenes.Player);
 
 		LocalPlayer.Name = $"Player_{LocalPeerId}";
@@ -84,6 +83,7 @@ public sealed partial class GameManager : Node {
 
 	public void StartGame() {
 		GetTree().ChangeSceneToFile(Scenes.GameScene);
+		SpawnLocalPlayer();
 		SpawnTestItems();
 	}
 
