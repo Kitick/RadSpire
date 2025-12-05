@@ -12,8 +12,8 @@ namespace Components {
 
 		public bool IsMoving => HorizontalInput.Length() >= Numbers.EPSILON;
 
-		private readonly Node3D Self;
-		private readonly Node3D Target;
+		private  Node3D Self;
+		private  Node3D Target;
 
 		private readonly float SprintDistance = 5.0f;
 		private readonly float StopDistance = 1.5f;
@@ -23,6 +23,11 @@ namespace Components {
 			Self = self;
 			Target = target;
 			PickNewWanderAction();
+		}
+		
+		public void SetTarget(Node3D target)
+		{
+			Target = target;
 		}
 
 		public Vector3 GetLocation() {

@@ -70,6 +70,20 @@ public sealed partial class Enemy : CharacterBody3D, IDamageable, ISaveable<Enem
 
 	public override void _PhysicsProcess(double delta) {
 		float dt = (float) delta;
+		
+		if (Player == null || !GodotObject.IsInstanceValid(Player))
+		{
+			var players = GetTree().GetNodesInGroup("Player");
+			if (players.Count == 0)
+			{
+				// No player currently in the scene → do nothing this frame
+				// This prevents ObjectDisposedException
+				return;
+			}
+
+			Player = players[0] as Node3D;
+			AiInput?.SetTarget(Player); 
+		}
 
 		AiInput.Update();
 
