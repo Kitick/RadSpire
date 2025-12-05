@@ -20,8 +20,12 @@ namespace Camera {
 				HandleMouseMotion(mouseMotion);
 			}
 			else {
-				HandlePan(input.IsActionPressed(Actions.CameraPan));
-				HandleRotate(input.IsActionPressed(Actions.CameraRotate));
+				if(input.IsAction(Actions.CameraPan)) {
+					HandlePan(input.IsPressed());
+				}
+				if(input.IsAction(Actions.CameraRotate)) {
+					HandleRotate(input.IsPressed());
+				}
 				HandleZoom(input);
 			}
 		}
