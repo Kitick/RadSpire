@@ -36,8 +36,8 @@ namespace Components {
         }
 
         public override void _UnhandledInput(InputEvent @event) {
-            if(@event.IsActionPressed("PickupItem")) {
-                GD.Print("[Item3DIconPickup] PickupItem action pressed.");
+            if(@event.IsActionPressed("Interact")) {
+                GD.Print("[Item3DIconPickup] Interact action pressed.");
                 if(ItemsInRange.Count == 0) {
                     GD.Print("[Item3DIconPickup] No items in range to pick up.");
                     return;

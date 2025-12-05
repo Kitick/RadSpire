@@ -84,7 +84,7 @@ public sealed partial class GameManager : Node {
 
 	public void StartGame() {
 		GetTree().ChangeSceneToFile(Scenes.GameScene);
-		//SpawnTestItems();
+		SpawnTestItems();
 	}
 
 	public void QuitGame() {
