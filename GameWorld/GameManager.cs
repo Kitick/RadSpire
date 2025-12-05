@@ -9,7 +9,7 @@ public sealed partial class GameManager : Node {
 
 	private static readonly Logger Log = new(nameof(GameManager), enabled: true);
 
-	public bool InGame => GetTree().CurrentScene.SceneFilePath == Scenes.GameScene;
+	public bool InGame => GetTree().CurrentScene?.SceneFilePath == Scenes.GameScene;
 
 	public Player LocalPlayer { get; private set; } = null!;
 	public CameraRig CameraRig { get; private set; } = null!;
