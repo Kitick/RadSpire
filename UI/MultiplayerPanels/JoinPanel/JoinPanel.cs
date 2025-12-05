@@ -51,7 +51,6 @@ namespace MultiplayerPanels {
 		}
 
 		private void SetInputCallbacks() {
-			OnExit += ActionEvent.MenuBack.WhenPressed(CloseMenu);
 			OnExit += ActionEvent.MenuExit.WhenPressed(CloseMenu);
 		}
 

@@ -115,7 +115,6 @@ namespace MultiplayerPanels {
 
 		// Set Scene Input Callbacks
 		private void SetInputCallbacks() {
-			OnExit += ActionEvent.MenuBack.WhenPressed(CloseMenu);
 			OnExit += ActionEvent.MenuExit.WhenPressed(CloseMenu);
 		}
 
