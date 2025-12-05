@@ -12,7 +12,6 @@ namespace Settings {
 		private const string REMAP_BUTTONS = "Remap_Buttons";
 
 		public override void _Ready() {
-			
 			SetCallbacks();
 		}
 
@@ -38,7 +37,7 @@ namespace Settings {
 		}
 
 		private void OnRemapButtonsPressed(){
-			
+			//Implementation Here
 		}
 
 		//ISaveable Implementation Goes Here

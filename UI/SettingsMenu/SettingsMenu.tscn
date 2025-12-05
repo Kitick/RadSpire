@@ -186,9 +186,9 @@ anchor_left = 1.0
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
-offset_left = 100.0
-offset_top = -16.0
-offset_bottom = 16.0
+offset_left = 99.99997
+offset_top = -24.0
+offset_bottom = 8.0
 scale = Vector2(1.25, 1.25)
 
 [node name="VSync" type="Label" parent="Display_Panel"]
@@ -203,9 +203,9 @@ anchor_left = 1.0
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
-offset_left = 100.0
-offset_top = -16.0
-offset_bottom = 16.0
+offset_left = 99.99997
+offset_top = -24.0
+offset_bottom = 8.0
 scale = Vector2(1.25, 1.25)
 
 [node name="Brightness" type="Label" parent="Display_Panel"]
@@ -326,8 +326,8 @@ anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
 offset_left = 31.0
-offset_top = -16.0
-offset_bottom = 16.0
+offset_top = -24.0
+offset_bottom = 8.0
 scale = Vector2(1.25, 1.25)
 
 [node name="Output_Device" type="Label" parent="Sound_Panel"]
@@ -348,6 +348,7 @@ offset_bottom = 16.0
 theme_override_font_sizes/font_size = 20
 
 [node name="Controller_Panel" type="VBoxContainer" parent="."]
+visible = false
 layout_mode = 1
 anchors_preset = 14
 anchor_top = 0.5
@@ -375,8 +376,8 @@ anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
 offset_left = 6.0
-offset_top = -16.0
-offset_bottom = 16.0
+offset_top = -24.0
+offset_bottom = 8.0
 scale = Vector2(1.25, 1.25)
 
 [node name="Vibration" type="Label" parent="Controller_Panel"]
@@ -392,8 +393,8 @@ anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
 offset_left = 6.0
-offset_top = -16.0
-offset_bottom = 16.0
+offset_top = -24.0
+offset_bottom = 8.0
 scale = Vector2(1.25, 1.25)
 
 [node name="Deadzone" type="Label" parent="Controller_Panel"]
@@ -420,54 +421,76 @@ theme_override_font_sizes/font_size = 32
 text = "Remap Buttons"
 
 [node name="MK_Panel" type="VBoxContainer" parent="."]
-visible = false
 layout_mode = 1
 anchors_preset = 14
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
 offset_left = 64.0
-offset_top = -412.0
-offset_right = -1600.0
-offset_bottom = -296.0
+offset_top = -444.0
+offset_right = -1588.0
+offset_bottom = -256.0
 grow_horizontal = 2
 grow_vertical = 2
-scale = Vector2(2, 2)
+theme_override_constants/separation = 0
 script = ExtResource("6_uv3og")
 
 [node name="Mouse_Sense" type="Label" parent="MK_Panel"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 32
 text = "Mouse Sense"
 
 [node name="HSlider" type="HSlider" parent="MK_Panel/Mouse_Sense"]
-layout_mode = 0
-offset_left = 160.0
-offset_right = 168.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = 6.0
+offset_top = -16.0
+offset_right = 231.0
 offset_bottom = 16.0
 
 [node name="Invert_Y-Axis" type="Label" parent="MK_Panel"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 32
 text = "Invert Y-Axis"
 
 [node name="CheckBox" type="CheckBox" parent="MK_Panel/Invert_Y-Axis"]
-layout_mode = 0
-offset_left = 160.0
-offset_right = 184.0
-offset_bottom = 24.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = 6.0
+offset_top = -24.0
+offset_bottom = 8.0
+scale = Vector2(1.5, 1.5)
 
 [node name="Enable_Raw_Input" type="Label" parent="MK_Panel"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 32
 text = "Enable Raw Input"
 
 [node name="CheckBox" type="CheckBox" parent="MK_Panel/Enable_Raw_Input"]
-layout_mode = 0
-offset_left = 160.0
-offset_right = 184.0
-offset_bottom = 24.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = 6.0
+offset_top = -24.0
+offset_right = 24.0
+offset_bottom = 8.0
+scale = Vector2(1.5, 1.5)
 
 [node name="Remap_Keys" type="Button" parent="MK_Panel"]
 layout_mode = 2
 size_flags_horizontal = 0
+theme_override_font_sizes/font_size = 32
 text = "Remap Keys"
 
 [node name="Accessibility_Panel" type="VBoxContainer" parent="."]

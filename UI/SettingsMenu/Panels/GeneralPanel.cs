@@ -5,6 +5,7 @@ using SaveSystem;
 
 namespace Settings {
 	public sealed partial class GeneralPanel : VBoxContainer {
+		
 		// Node Paths
 		private const string LANGUAGE = "Language/OptionButton";
 		private const string UI_SCALE = "UI_Scale/HSlider";
