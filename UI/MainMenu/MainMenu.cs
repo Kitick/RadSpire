@@ -45,21 +45,45 @@ public partial class MainMenu : Control {
 
 	private SettingsMenu Settings = null!;
 	//Load Scene Reference
-	private HostPanel _hostPanel;
+	private HostPanel HostPanel = null!;
 
 	// Main
 	public override void _Ready() {
 		LoadScenes();
 		GetComponents();
 		SetCallbacks();
+		SubscribeToNetworkEvents();
+	}
+
+	public override void _ExitTree() {
+		UnsubscribeFromNetworkEvents();
+	}
+
+	private void SubscribeToNetworkEvents() {
+		Server.Instance.OnJoinedServer += OnJoinedServer;
+		Server.Instance.OnHostStarted += OnHostStarted;
+	}
+
+	private void UnsubscribeFromNetworkEvents() {
+		Server.Instance.OnJoinedServer -= OnJoinedServer;
+		Server.Instance.OnHostStarted -= OnHostStarted;
+	}
+
+	private void OnJoinedServer() {
+		GD.Print("[MainMenu] Successfully joined server, starting game...");
+		GameManager.Instance.StartGame();
+	}
+
+	private void OnHostStarted() {
+		GD.Print("[MainMenu] Host started successfully");
 	}
 
 	//Load Scenes
 	public void LoadScenes() {
 		var packed1 = GD.Load<PackedScene>("res://UI/MultiplayerPanels/HostPanel/HostPanel.tscn");
-        _hostPanel = packed1.Instantiate<HostPanel>();
-		_hostPanel.Visible = false;
-        AddChild(_hostPanel);
+        HostPanel = packed1.Instantiate<HostPanel>();
+		HostPanel.Visible = false;
+        AddChild(HostPanel);
 	}
 
 	// Components
@@ -162,6 +186,9 @@ public partial class MainMenu : Control {
 	}
 
 	private void OnLoadSavedButtonPressed() {
+		var loadMenu = this.AddScene<LoadMenu>(Scenes.LoadMenu);
+		loadMenu.OpenMenu();
+
 		var saves = SaveService.ListSaves();
 
 		GD.Print("Available Saves:");
@@ -177,7 +204,7 @@ public partial class MainMenu : Control {
 		var host = this.AddScene<HostPanel>(Scenes.HostPanel);
 		host.OpenMenu();
 
-		_hostPanel.UpdateHostText("Host New Game");
+		HostPanel.UpdateHostText("Host New Game");
 	}
 
 	private void OnHostSavedButtonPressed() {

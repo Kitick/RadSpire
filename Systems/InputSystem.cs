@@ -5,7 +5,7 @@ namespace InputSystem {
 	// Name must match action name
 	public enum ActionEvent {
 		MoveForward, MoveBack, MoveLeft, MoveRight,
-		Jump, Sprint, Crouch,
+		Jump, Sprint, Crouch, Interact, Inventory,
 		MenuBack, MenuExit,
 		Hotbar1, Hotbar2, Hotbar3, Hotbar4, Hotbar5,
 		HotbarNext, HotbarPrev,

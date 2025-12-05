@@ -7,9 +7,13 @@ namespace Network {
 	public enum TransferMode { Reliable, Unreliable }
 
 	public sealed partial class NetworkSync<T> : Node where T : struct, INetworkData {
+		private static readonly Logger Log = new(nameof(NetworkSync<T>), enabled: true);
+
 		private readonly INetworkable<T> SyncObject;
 		private readonly TransferMode Mode;
 		private readonly int OwnerPeerId;
+
+		private string LogPrefix => $"{{Peer {OwnerPeerId}}}:";
 
 		private bool HasPendingStateChange = false;
 
@@ -46,6 +50,7 @@ namespace Network {
 		}
 
 		public override void _Process(double delta) {
+			if(!Server.Instance.IsNetworkConnected) { return; }
 			if(HasPendingStateChange && IsOwner) {
 				HasPendingStateChange = false;
 				SendStateUpdate();
@@ -53,28 +58,27 @@ namespace Network {
 		}
 
 		private void OnLocalStateChanged() {
-			if(!IsInsideTree()) return;
+			if(!IsInsideTree()) { return; }
 			HasPendingStateChange = true;
 		}
 
 		private void SendStateUpdate() {
 			var json = SerializeState();
 
-			GD.Print($"NetworkSync [{Name}]: Sending state update to host");
+			Log.Info($"{LogPrefix} Sending state update to host");
 
 			if(IsServer) {
-				// We ARE the host, validate and broadcast directly
 				ProcessAndBroadcast(OwnerPeerId, json);
+				return;
+			}
+
+			if(Mode == TransferMode.Unreliable) {
+				RpcId(1, nameof(SendToHostUnreliable), json);
 			}
 			else {
-				// Send to host for validation using appropriate transfer mode
-				if(Mode == TransferMode.Unreliable) {
-					RpcId(1, nameof(SendToHostUnreliable), json);
-				}
-				else {
-					RpcId(1, nameof(SendToHostReliable), json);
-				}
+				RpcId(1, nameof(SendToHostReliable), json);
 			}
+
 		}
 
 		[Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = false, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
@@ -87,11 +91,10 @@ namespace Network {
 			if(!IsServer) return;
 
 			var actualSender = Server.Instance.RemoteSenderId;
-			GD.Print($"NetworkSync [{Name}]: Host received update from peer {actualSender}");
+			Log.Info($"{LogPrefix} Host received update from peer {actualSender}");
 
-			// Verify the sender owns this sync object
 			if(actualSender != OwnerPeerId) {
-				GD.PrintErr($"NetworkSync [{Name}]: Peer {actualSender} tried to update object owned by {OwnerPeerId}");
+				Log.Error($"{LogPrefix} Peer {actualSender} tried to update object owned by {OwnerPeerId}");
 				return;
 			}
 
@@ -104,14 +107,14 @@ namespace Network {
 			if(Validator != null) {
 				var validated = Validator(data);
 				if(validated == null) {
-					GD.Print($"NetworkSync [{Name}]: Rejected update from peer {senderPeerId}");
+					Log.Warn($"{LogPrefix} Rejected update from peer {senderPeerId}");
 					return;
 				}
 				data = validated.Value;
 				json = JSON.Serialize(data, NetJsonOptions);
 			}
 
-			GD.Print($"NetworkSync [{Name}]: Host broadcasting to all clients");
+			Log.Info($"{LogPrefix} Host broadcasting to all clients");
 
 			if(Mode == TransferMode.Unreliable) {
 				Rpc(nameof(ReceiveFromHostUnreliable), json);
@@ -128,32 +131,33 @@ namespace Network {
 		private void ReceiveFromHostUnreliable(string json) => HandleReceiveFromHost(json);
 
 		private void HandleReceiveFromHost(string json) {
-			GD.Print($"NetworkSync [{Name}]: Received broadcast, applying to SyncObject");
+			if(IsOwner) { return; }
+
+			Log.Info($"{LogPrefix} Received broadcast, applying to SyncObject");
 			var data = JSON.Deserialize<T>(json, NetJsonOptions);
 			SyncObject.Deserialize(data);
 		}
 
 		private void RequestCurrentState() {
-			if(!IsInsideTree()) return;
-			GD.Print($"NetworkSync [{Name}]: Requesting current state from host");
+			if(!IsInsideTree()) { return; }
+
+			Log.Info($"{LogPrefix} Requesting current state from host");
 			RpcId(1, nameof(SendCurrentStateTo), Multiplayer.GetUniqueId());
 		}
 
 		[Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = false, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
 		private void SendCurrentStateTo(int requesterId) {
-			if(!IsServer) return;
+			if(!IsServer) { return; }
 
-			var json = SerializeState();
-			GD.Print($"NetworkSync [{Name}]: Sending current state to peer {requesterId}");
-			RpcId(requesterId, nameof(ReceiveFromHostReliable), json);
+			Log.Info($"{LogPrefix} Sending current state to peer {requesterId}");
+			RpcId(requesterId, nameof(ReceiveFromHostReliable), SerializeState());
 		}
 
 		private void BroadcastCurrentState() {
-			if(!IsInsideTree() || !IsServer) return;
+			if(!IsInsideTree() || !IsServer) { return; }
 
-			var json = SerializeState();
-			GD.Print($"NetworkSync [{Name}]: Broadcasting initial state to all clients");
-			Rpc(nameof(ReceiveFromHostReliable), json);
+			Log.Info($"{LogPrefix} Broadcasting initial state to all clients");
+			Rpc(nameof(ReceiveFromHostReliable), SerializeState());
 		}
 	}
 }

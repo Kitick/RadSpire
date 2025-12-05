@@ -1,67 +1,71 @@
-using Godot;
 using System;
-using System.Collections.Generic;
+using Godot;
 using InputSystem;
 using SaveSystem;
 
 namespace LoadMenuScene {
-    public sealed partial class LoadMenu : Control, ISaveable<LoadMenuData> {
-        public event Action? OnMenuClosed;
-        private event Action? OnExit;
+	public sealed partial class LoadMenu : Control {
+		public event Action? OnMenuClosed;
+		private event Action? OnExit;
 
-        private const string SAVEFILE = "load";
+		private const string BACK_BUTTON = "BackButton";
+		private const string CONTAINER = "Panel/SaveSlots";
 
-        public override void _Ready() {
-            ProcessMode = ProcessModeEnum.Always;
+		public static string SlotFile(int slot) => $"slot{slot}";
 
-            SetInputCallbacks();
-        }
+		private const int SLOTS = 5;
 
-        public override void _ExitTree() {
-            OnExit?.Invoke();
-            OnMenuClosed?.Invoke();
-        }
+		private Button[] Buttons = new Button[SLOTS];
 
-        private void SetInputCallbacks() {
-            OnExit += ActionEvent.MenuBack.WhenPressed(CloseMenu);
-            OnExit += ActionEvent.MenuExit.WhenPressed(CloseMenu);
-        }
-       public void OpenMenu() {
-            LoadData();
-        }
+		public override void _Ready() {
+			ProcessMode = ProcessModeEnum.Always;
 
-        private void CloseMenu() {
-            SaveData();
-            QueueFree();
-        }
-
-        private void SaveData() {
-            SaveService.Save(SAVEFILE, Serialize());
-        }
-
-        private void LoadData() {
-            if(SaveService.Exists(SAVEFILE)) {
-                var data = SaveService. Load<LoadMenuData>(SAVEFILE);
-                Deserialize(data);
-            }
-        }
-
-        private ISaveable<T> CastISaveable<T>(ISaveable<T> saveable) where T : ISaveData {
-			return saveable;
+			SetInputCallbacks();
+			GetComponents();
+			SetCallbacks();
 		}
 
-        public LoadMenuData Serialize() => new LoadMenuData {
-            
-        };
+		public override void _ExitTree() {
+			OnExit?.Invoke();
+			OnMenuClosed?.Invoke();
+		}
 
-        public void Deserialize(in LoadMenuData data) {
-            
-        }
-    }
-}
+		private void SetInputCallbacks() {
+			OnExit += ActionEvent.MenuBack.WhenPressed(CloseMenu);
+			OnExit += ActionEvent.MenuExit.WhenPressed(CloseMenu);
+		}
 
-namespace SaveSystem {
-    public readonly record struct LoadMenuData : ISaveData {
-        
-    }
+		private void GetComponents() {
+			for(int i = 0; i < SLOTS; i++) {
+				int slot = i + 1;
+
+				bool exists = SaveService.Exists(SlotFile(slot));
+
+				Buttons[i] = GetNode<Button>($"{CONTAINER}/Slot{slot}");
+
+				Buttons[i].Text = exists ? $"Slot {slot}" : "Empty";
+				Buttons[i].Pressed += () => OnLoadSlotPressed(slot);
+			}
+		}
+
+		private void SetCallbacks() {
+			GetNode<Button>(BACK_BUTTON).Pressed += OnBackButtonPressed;
+		}
+
+		private void OnBackButtonPressed() {
+			CloseMenu();
+		}
+
+		public void OpenMenu() {
+
+		}
+
+		private void CloseMenu() {
+			QueueFree();
+		}
+
+		private void OnLoadSlotPressed(int slot) {
+
+		}
+	}
 }

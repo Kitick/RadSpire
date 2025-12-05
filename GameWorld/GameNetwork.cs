@@ -71,28 +71,28 @@ public partial class GameManager {
 	}
 
 	private void OnHostStarted() {
-		Log($"Host started, local peer ID: {LocalPeerId}");
+		Log.Info($"Host started, local peer ID: {LocalPeerId}");
 		CreateLocalPlayerSync();
 	}
 
 	private void OnJoinedServer() {
-		Log($"Joined server, local peer ID: {LocalPeerId}");
+		Log.Info($"Joined server, local peer ID: {LocalPeerId}");
 		CreateLocalPlayerSync();
 		RpcId(1, nameof(NotifyHostOfNewPlayer), LocalPeerId);
 	}
 
 	private void OnServerDisconnected() {
-		Log("Server disconnected, cleaning up remote players");
+		Log.Info("Server disconnected, cleaning up remote players");
 		RemoveAllPlayers();
 		CleanupLocalPlayerSync();
 	}
 
 	private void OnPeerConnected(int peerId) {
-		Log($"Peer connected: {peerId}");
+		Log.Info($"Peer connected: {peerId}");
 	}
 
 	private void OnPeerDisconnected(int peerId) {
-		Log($"Peer disconnected: {peerId}");
+		Log.Info($"Peer disconnected: {peerId}");
 		RemovePlayer(peerId);
 	}
 
@@ -115,7 +115,7 @@ public partial class GameManager {
 	private void NotifyHostOfNewPlayer(int newPeerId) {
 		if(!Multiplayer.IsServer()) return;
 
-		Log($"Host notified of new player: {newPeerId}");
+		Log.Info($"Host notified of new player: {newPeerId}");
 
 		Rpc(nameof(SpawnRemotePlayer), newPeerId);
 
@@ -131,13 +131,15 @@ public partial class GameManager {
 		bool alreadySpawned = RemotePlayers.ContainsKey(peerId);
 		if(isLocalPlayer || alreadySpawned) return;
 
-		Log($"Spawning remote player: {peerId}");
+		Log.Info($"Spawning remote player: {peerId}");
 		CreateNetworkedPlayer(peerId);
 	}
 
 	private void CreateNetworkedPlayer(int peerId) {
 		var player = this.AddScene<Player>(Scenes.Player);
+
 		player.Name = $"Player_{peerId}";
+		player.GlobalPosition = SpawnLocation;
 
 		var movementSync = new NetworkSync<MovementData>(
 			player.Movement,

@@ -7,13 +7,14 @@ using SaveSystem;
 public sealed partial class GameManager : Node {
 	public static GameManager Instance { get; private set; } = null!;
 
-	public static readonly bool Debug = true;
+	private static readonly Logger Log = new(nameof(GameManager), enabled: true);
 
 	public bool InGame => GetTree().CurrentScene.SceneFilePath == Scenes.GameScene;
 
 	public Player LocalPlayer { get; private set; } = null!;
-
 	public CameraRig CameraRig { get; private set; } = null!;
+
+	private static readonly Vector3 SpawnLocation = new Vector3(0, 5, 0);
 
 	private readonly KeyInput KeyInput = new();
 
@@ -29,25 +30,65 @@ public sealed partial class GameManager : Node {
 	}
 
 	public override void _PhysicsProcess(double delta) {
-		if(!InGame) { return; }
+		if(!InGame || LocalPlayer == null || CameraRig == null) { return; }
 
 		float dt = (float) delta;
 
 		KeyInput.Update(CameraRig);
 		LocalPlayer.Update(dt, KeyInput);
-		// NetworkSync handles broadcasting automatically via Movement.OnStateChanged
 	}
 
 	private void GetComponents() {
-		CameraRig = this.AddScene<CameraRig>(Scenes.Camera);
 		LocalPlayer = this.AddScene<Player>(Scenes.Player);
-		LocalPlayer.Name = $"Player_{LocalPeerId}";
 
+		LocalPlayer.Name = $"Player_{LocalPeerId}";
+		LocalPlayer.GlobalPosition = SpawnLocation;
+
+		CameraRig = this.AddScene<CameraRig>(Scenes.Camera);
 		CameraRig.Target = LocalPlayer;
 	}
 
-	private static void Log(string message) {
-		if(Debug) { GD.Print($"[GameManager] {message}"); }
+	public bool Save(string fileName) {
+		if(!InGame) {
+			Log.Error("Cannot save game when not in a game");
+			return false;
+		}
+
+		var data = new GameState {
+			Player = LocalPlayer.Serialize(),
+			CameraRig = CameraRig.Serialize(),
+		};
+
+		SaveService.Save(fileName, data);
+		return true;
+	}
+
+	public bool Load(string fileName) {
+		if(!InGame) {
+			Log.Error("Cannot load game when not in a game");
+			return false;
+		}
+
+		if(!SaveService.Exists(fileName)) {
+			Log.Error($"Save file '{fileName}' does not exist");
+			return false;
+		}
+
+		var data = SaveService.Load<GameState>(fileName);
+
+		LocalPlayer.Deserialize(data.Player);
+		CameraRig.Deserialize(data.CameraRig);
+
+		return true;
+	}
+
+	public void StartGame() {
+		GetTree().ChangeSceneToFile(Scenes.GameScene);
+		//SpawnTestItems();
+	}
+
+	public void QuitGame() {
+		GetTree().Quit();
 	}
 
 	private void SpawnTestItem(string path, Vector3 position) {
@@ -67,49 +108,6 @@ public sealed partial class GameManager : Node {
 		SpawnTestItem(Items.BananaGreen, new Vector3(0, 5, 9));
 		SpawnTestItem(Items.StrawberryGreen, new Vector3(0, 5, 10));
 		SpawnTestItem(Items.StrawberryRed, new Vector3(0, 5, 11));
-	}
-
-	public bool Save(string fileName) {
-		if(!InGame) {
-			GD.PrintErr("Cannot save game when not in a game");
-			return false;
-		}
-
-		var data = new GameState {
-			Player = LocalPlayer.Serialize(),
-			CameraRig = CameraRig.Serialize(),
-		};
-
-		SaveService.Save(fileName, data);
-		return true;
-	}
-
-	public bool Load(string fileName) {
-		if(!InGame) {
-			GD.PrintErr("Cannot load game when not in a game");
-			return false;
-		}
-
-		if(!SaveService.Exists(fileName)) {
-			GD.PrintErr($"Save file '{fileName}' does not exist");
-			return false;
-		}
-
-		var data = SaveService.Load<GameState>(fileName);
-
-		LocalPlayer.Deserialize(data.Player);
-		CameraRig.Deserialize(data.CameraRig);
-
-		return true;
-	}
-
-	public void StartGame() {
-		GetTree().ChangeSceneToFile(Scenes.GameScene);
-		SpawnTestItems();
-	}
-
-	public void QuitGame() {
-		GetTree().Quit();
 	}
 }
 

@@ -25,10 +25,10 @@ texture = ExtResource("2_vpabl")
 [node name="Title_Card" type="TextureRect" parent="."]
 layout_mode = 1
 anchors_preset = -1
-offset_left = 40.0
-offset_top = 60.0
-offset_right = 1657.0
-offset_bottom = 1084.0
+offset_left = 44.0
+offset_top = 105.0
+offset_right = 2180.6665
+offset_bottom = 955.0
 scale = Vector2(0.3, 0.3)
 texture = ExtResource("3_ectev")
 
@@ -37,14 +37,14 @@ layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.5
 anchor_bottom = 0.5
-offset_left = 110.0
-offset_top = -158.00006
-offset_right = 270.0
-offset_bottom = 12.999939
-scale = Vector2(2, 1.904)
+offset_left = 207.0
+offset_top = -174.0
+offset_right = 539.0
+offset_bottom = 132.00006
 
 [node name="Singleplayer_Button" type="Button" parent="Main_Button_Panel"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 40
 text = "Singleplayer"
 
 [node name="Singleplayer_Popup" type="VBoxContainer" parent="Main_Button_Panel/Singleplayer_Button"]
@@ -56,28 +56,31 @@ anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
 offset_left = 5.0
-offset_top = -10.0
-offset_right = 140.0
-offset_bottom = 91.0
-scale = Vector2(0.75, 0.75)
+offset_top = -25.0
+offset_right = 202.0
+offset_bottom = 105.0
 
 [node name="Continue_Button" type="Button" parent="Main_Button_Panel/Singleplayer_Button/Singleplayer_Popup"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 30
 text = "> Continue"
 alignment = 0
 
 [node name="Load_Saved_Button" type="Button" parent="Main_Button_Panel/Singleplayer_Button/Singleplayer_Popup"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 30
 text = "> Load Saved"
 alignment = 0
 
 [node name="Start_New_Button" type="Button" parent="Main_Button_Panel/Singleplayer_Button/Singleplayer_Popup"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 30
 text = "> Start New"
 alignment = 0
 
 [node name="Multiplayer_Button" type="Button" parent="Main_Button_Panel"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 40
 text = "Multiplayer"
 
 [node name="Multiplayer_Popup" type="VBoxContainer" parent="Main_Button_Panel/Multiplayer_Button"]
@@ -89,33 +92,38 @@ anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
 offset_left = 5.0
-offset_top = -10.0
+offset_top = -25.0
 offset_right = 140.0
-scale = Vector2(0.75, 0.75)
 
 [node name="Host_New_Button" type="Button" parent="Main_Button_Panel/Multiplayer_Button/Multiplayer_Popup"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 30
 text = "> Host New"
 alignment = 0
 
 [node name="Host_Saved_Button" type="Button" parent="Main_Button_Panel/Multiplayer_Button/Multiplayer_Popup"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 30
 text = "> Host Saved"
 alignment = 0
 
 [node name="Join_Game_Button" type="Button" parent="Main_Button_Panel/Multiplayer_Button/Multiplayer_Popup"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 30
 text = "> Join"
 alignment = 0
 
 [node name="Settings_Button" type="Button" parent="Main_Button_Panel"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 40
 text = "Settings"
 
 [node name="Extras_Button" type="Button" parent="Main_Button_Panel"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 40
 text = "Extras"
 
 [node name="Quit_Button" type="Button" parent="Main_Button_Panel"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 40
 text = "Quit"

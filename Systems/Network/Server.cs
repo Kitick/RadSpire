@@ -12,7 +12,7 @@ namespace Network {
 	public sealed partial class Server : Node {
 		public static Server Instance { get; private set; } = null!;
 
-		public static readonly bool Debug = true;
+		private static readonly Logger Log = new(nameof(Server), enabled: true);
 
 		private const int Port = 8080;
 		private const int MaxPlayers = 10;
@@ -46,43 +46,39 @@ namespace Network {
 			};
 		}
 
-		private static void Log(string message) {
-			if(Debug) { GD.Print($"[Network] {message}"); }
-		}
-
 		public Error Host() {
-			Log("Starting server");
+			Log.Info("Starting server");
 
 			Peer = new ENetMultiplayerPeer();
 
 			Error result = Peer.CreateServer(Port, MaxPlayers);
 
 			if(result != Error.Ok) {
-				GD.PrintErr($"Failed to start server: {result}");
+				Log.Error($"Failed to start server: {result}");
 				return result;
 			}
 
 			Multiplayer.MultiplayerPeer = Peer;
 
-			Log($"Server started (Peer ID: {PeerId})");
+			Log.Info($"Server started (Peer ID: {PeerId})");
 			OnHostStarted?.Invoke();
 
 			return result;
 		}
 
 		public Error Join(string address) {
-			Log($"Joining server at {address}:{Port}");
+			Log.Info($"Joining server at {address}:{Port}");
 
 			Peer = new ENetMultiplayerPeer();
 			Error result = Peer.CreateClient(address, Port);
 
 			if(result != Error.Ok) {
-				GD.PrintErr($"[Network] Failed to join server: {result}");
+				Log.Error($"Failed to join server: {result}");
 				return result;
 			}
 
 			Multiplayer.MultiplayerPeer = Peer;
-			Log("Attempting to join server...");
+			Log.Info("Attempting to join server...");
 
 			return result;
 		}
@@ -90,7 +86,7 @@ namespace Network {
 		public void Disconnect() {
 			if(Peer == null) { return; }
 
-			Log("Disconnecting");
+			Log.Info("Disconnecting");
 			Peer.Close();
 			Peer = null;
 			Multiplayer.MultiplayerPeer = null;

@@ -2,10 +2,13 @@ using System;
 using Core;
 using Godot;
 using InputSystem;
-using Settings;
 using MultiplayerPanels;
+using Network;
+using Settings;
 
 public sealed partial class HUD : Control {
+	private static readonly Logger Log = new(nameof(HUD), enabled: true);
+
 	public enum MenuState { Game, Paused, Settings, Inventory, Host };
 
 	private readonly FiniteStateMachine<MenuState> StateMachine;
@@ -23,7 +26,8 @@ public sealed partial class HUD : Control {
 	private const string HOTBAR = "Hotbar";
 
 	//Load Scene Reference
-	private HostPanel _hostPanel;
+
+	private HostPanel HostPanel = null!;
 
 	public bool IsPaused => GetTree().Paused;
 
@@ -39,10 +43,10 @@ public sealed partial class HUD : Control {
 		base._EnterTree();
 		Player = GetParent<Player>();
 		if(Player == null) {
-			GD.PrintErr("HUD could not find Player node in parent.");
+			Log.Error("HUD could not find Player node in parent.");
 		}
 		else {
-			GD.Print("HUD successfully found Player node in parent.");
+			Log.Info("HUD successfully found Player node in parent.");
 		}
 	}
 
@@ -55,25 +59,26 @@ public sealed partial class HUD : Control {
 		SetCallbacks();
 	}
 
-	public override void _Input(InputEvent @event) {
-		if(@event.IsActionPressed("OpenInventory")) {
-			ToggleInventory();
-		}
-	}
-
 	public override void _ExitTree() {
 		OnExit?.Invoke();
+		Server.Instance.OnServerDisconnected -= OnServerDisconnected;
+	}
+
+	private void OnServerDisconnected() {
+		Log.Info("Server disconnected, returning to main menu...");
+		QuitGame();
 	}
 
 	public void LoadScenes() {
 		var packed1 = GD.Load<PackedScene>("res://UI/MultiplayerPanels/HostPanel/HostPanel.tscn");
-		_hostPanel = packed1.Instantiate<HostPanel>();
-		_hostPanel.Visible = false;
-		AddChild(_hostPanel);
+		HostPanel = packed1.Instantiate<HostPanel>();
+		HostPanel.Visible = false;
+		AddChild(HostPanel);
 	}
 
 	private void SetInputCallbacks() {
 		OnExit += ActionEvent.MenuExit.WhenPressed(TogglePause);
+		OnExit += ActionEvent.Inventory.WhenPressed(ToggleInventory);
 	}
 
 	private void GetComponents() {
@@ -88,14 +93,34 @@ public sealed partial class HUD : Control {
 
 		PauseMenu.ResumeButton.Pressed += TogglePause;
 		PauseMenu.SaveButton.Pressed += () => GameManager.Instance.Save("autosave");
-		PauseMenu.HostButton.Pressed += () => StateMachine.TransitionTo(MenuState.Host);
+		PauseMenu.HostButton.Pressed += OnHostButtonPressed;
 		PauseMenu.SettingsButton.Pressed += () => StateMachine.TransitionTo(MenuState.Settings);
 		PauseMenu.MainMenuButton.Pressed += QuitGame;
+
+		Server.Instance.OnServerDisconnected += OnServerDisconnected;
+	}
+
+	private void OnHostButtonPressed() {
+		if(Server.Instance.IsNetworkConnected) {
+			Log.Info("Disconnecting from network...");
+			Server.Instance.Disconnect();
+			PauseMenu.UpdateHostButtonText();
+		}
+		else {
+			Log.Info("Opening host panel...");
+			StateMachine.TransitionTo(MenuState.Host);
+		}
 	}
 
 	private void OnStateChanged(MenuState from, MenuState to) {
 		GetTree().Paused = to != MenuState.Game;
-		PauseMenu.Visible = to == MenuState.Paused;
+
+		if(to == MenuState.Paused) {
+			PauseMenu.OpenMenu();
+		}
+		else {
+			PauseMenu.CloseMenu();
+		}
 
 		if(to == MenuState.Host) { OpenHostPanel(); }
 		if(to == MenuState.Settings) { OpenSettings(); }
@@ -106,7 +131,7 @@ public sealed partial class HUD : Control {
 		host.OnMenuClosed += () => StateMachine.TransitionTo(MenuState.Paused);
 		host.OpenMenu();
 
-		_hostPanel.UpdateHostText("Host Game");
+		HostPanel.UpdateHostText("Host Game");
 	}
 
 	private void OpenSettings() {

@@ -6,21 +6,22 @@ namespace Core {
 
 	public static class Scenes {
 		private const string UI = "res://UI";
+		private const string HUDDIR = $"{UI}/HUD";
+		private const string MultiplayerPanels = $"{UI}/MultiplayerPanels";
 		private const string Character = "res://Character";
 
-		public const string PauseMenu = $"{UI}/HUD/PauseMenu.tscn";
-		public const string HUD = $"{UI}/HUD/HUD.tscn";
+		public const string PauseMenu = $"{HUDDIR}/PauseMenu.tscn";
+		public const string HUD = $"{HUDDIR}/HUD.tscn";
 
 		public const string MainMenu = $"{UI}/MainMenu/MainMenu.tscn";
 		public const string SettingsMenu = $"{UI}/SettingsMenu/SettingsMenu.tscn";
 		public const string LoadMenu = $"{UI}/LoadMenu/LoadMenu.tscn";
-		public const string HostPanel = $"{UI}/HostPanel/HostPanel.tscn";
-		public const string JoinPanel = $"{UI}/JoinPanel/JoinPanel.tscn";
+		public const string HostPanel = $"{MultiplayerPanels}/HostPanel/HostPanel.tscn";
+		public const string JoinPanel = $"{MultiplayerPanels}/JoinPanel/JoinPanel.tscn";
 
 		public const string GameScene = "res://GameWorld/World.tscn";
-		public const string Player = $"{Character}/Player/Player.tscn";
 		public const string Camera = "res://Camera/Camera.tscn";
-
+		public const string Player = $"{Character}/Player/Player.tscn";
 	}
 
 	public static class Actions {
@@ -32,6 +33,8 @@ namespace Core {
 		public const string Jump = "Jump";
 		public const string Sprint = "Sprint";
 		public const string Crouch = "Crouch";
+		public const string Interact = "Interact";
+		public const string Inventory = "Inventory";
 
 		public const string MenuBack = "MenuBack";
 		public const string MenuExit = "MenuExit";
