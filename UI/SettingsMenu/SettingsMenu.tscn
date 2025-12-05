@@ -31,10 +31,11 @@ color = Color(0, 0, 0, 0.5)
 
 [node name="Top_Panel" type="HBoxContainer" parent="."]
 layout_mode = 1
-anchors_preset = 5
+anchors_preset = -1
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -520.0
+offset_top = 16.0
 offset_right = 516.0
 offset_bottom = 53.0
 grow_horizontal = 2

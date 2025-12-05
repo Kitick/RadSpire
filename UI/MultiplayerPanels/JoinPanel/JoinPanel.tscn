@@ -36,7 +36,7 @@ offset_left = 32.0
 offset_top = 16.0
 offset_right = 111.0
 offset_bottom = 39.0
-scale = Vector2(2.5, 2.5)
+theme_override_font_sizes/font_size = 48
 text = "Join Game"
 
 [node name="NoPassword" type="Label" parent="PanelArea"]
@@ -45,15 +45,19 @@ offset_left = 80.0
 offset_top = 128.0
 offset_right = 181.0
 offset_bottom = 151.0
-scale = Vector2(2.5, 2.5)
+theme_override_font_sizes/font_size = 40
 text = "No Password"
 
 [node name="NoPasswordCheckBox" type="CheckBox" parent="PanelArea/NoPassword"]
-layout_mode = 0
-offset_left = -25.0
-offset_top = -3.0
-offset_right = 104.0
-offset_bottom = 28.0
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = -48.0
+offset_top = -32.0
+offset_right = -24.0
+grow_horizontal = 0
+scale = Vector2(2, 2)
 
 [node name="NotFull" type="Label" parent="PanelArea"]
 layout_mode = 0
@@ -61,15 +65,18 @@ offset_left = 80.0
 offset_top = 192.0
 offset_right = 181.0
 offset_bottom = 215.0
-scale = Vector2(2.5, 2.5)
+theme_override_font_sizes/font_size = 40
 text = "Not Full"
 
 [node name="NotFullCheckBox" type="CheckBox" parent="PanelArea/NotFull"]
-layout_mode = 0
-offset_left = -25.0
-offset_top = -3.0
-offset_right = 64.0
-offset_bottom = 28.0
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = -48.0
+offset_top = -32.0
+offset_right = -24.0
+scale = Vector2(2, 2)
 
 [node name="VLineEditContainer" type="VBoxContainer" parent="PanelArea"]
 layout_mode = 0
@@ -100,7 +107,7 @@ offset_left = 32.0
 offset_top = 672.0
 offset_right = 92.0
 offset_bottom = 703.0
-scale = Vector2(2.5, 2.5)
+theme_override_font_sizes/font_size = 48
 text = "Cancel"
 
 [node name="JoinButton" type="Button" parent="PanelArea"]
@@ -109,5 +116,5 @@ offset_left = 938.0
 offset_top = 672.0
 offset_right = 998.0
 offset_bottom = 703.0
-scale = Vector2(2.5, 2.5)
+theme_override_font_sizes/font_size = 48
 text = "JOIN"

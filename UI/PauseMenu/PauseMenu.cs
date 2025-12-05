@@ -8,7 +8,7 @@ public sealed partial class PauseMenu : Control {
 	public Button HostButton = null!;
 	public Button MainMenuButton = null!;
 
-	private const string BUTTONS = "Background/Buttons";
+	private const string BUTTONS = "PanelArea/Buttons";
 
 	private const string RESUME_BUTTON = $"{BUTTONS}/Resume";
 	private const string SETTINGS_BUTTON = $"{BUTTONS}/Settings";
