@@ -1,8 +1,10 @@
 using System;
 using SaveSystem;
+using Godot;
 
 namespace Components {
-    public class Crafting : IItemComponent, ISaveable<CraftingData> {
+    [GlobalClass]
+    public partial class Crafting : Resource, IItemComponent, ISaveable<CraftingData> {
         public Inventory CraftingRecipe {
             get;
             set;

@@ -56,36 +56,24 @@ public partial class Item : Resource, ISaveable<ItemData> {
     [Export] public bool IsConsumable { get; set; } = false;
     [Export] public Texture2D IconTexture { get; set; } = null!;
 
-    //Components
-    public enum ItemComponentType {
-        WeaponBase,
-        Defense,
-        Durability,
-        Crafting,
-    }
-    public Dictionary<ItemComponentType, IItemComponent> components = new();
+    [Export] public Godot.Collections.Array<Resource> ComponentResources { get; set; } = new();
+    public List<IItemComponent> Components = new();
 
-    public void addComponent(ItemComponentType type, IItemComponent component) {
-        if(components.ContainsKey(type)) {
-            components[type] = component;
+    public void BuildComponents() {
+        Components.Clear();
+        if(ComponentResources == null){
             return;
         }
-        components.Add(type, component);
-    }
-
-    public void removeComponent(ItemComponentType type) {
-        if(components.ContainsKey(type)) {
-            components.Remove(type);
+        foreach(var resource in ComponentResources) {
+            if(resource is IItemComponent comp){
+                Components.Add(comp);
+            }
         }
-    }
-
-    public bool HasComponent(ItemComponentType type) {
-        return components.ContainsKey(type);
     }
 
     public bool OnUse(CharacterBody3D user) {
         bool success = false;
-        foreach(var component in components.Values) {
+        foreach(var component in Components) {
             if(component is IUsable usable) {
                 success |= usable.OnUse(user);
             }
@@ -95,7 +83,7 @@ public partial class Item : Resource, ISaveable<ItemData> {
 
     public bool OnConsume(CharacterBody3D consumer) {
         bool success = false;
-        foreach(var component in components.Values) {
+        foreach(var component in Components) {
             if(component is IConsumable consumable) {
                 success |= consumable.OnConsume(consumer);
             }
@@ -104,7 +92,7 @@ public partial class Item : Resource, ISaveable<ItemData> {
     }
 
     public void OnEquip(CharacterBody3D equipper) {
-        foreach(var component in components.Values) {
+        foreach(var component in Components) {
             if(component is IEquipable equipable) {
                 equipable.OnEquip(equipper);
             }
@@ -112,11 +100,51 @@ public partial class Item : Resource, ISaveable<ItemData> {
     }
 
     public void OnUnequip(CharacterBody3D unequipper) {
-        foreach(var component in components.Values) {
+        foreach(var component in Components) {
             if(component is IEquipable equipable) {
                 equipable.OnUnequip(unequipper);
             }
         }
+    }
+
+    public bool AddComponent(IItemComponent component) {
+        if(component == null) {
+            return false;
+        }
+        if(!(component is IItemComponent comp)){
+            return false;
+        }
+        foreach(var resource in ComponentResources) {
+            if(ReferenceEquals(resource, component)){
+                return false;
+            }
+        }
+        ComponentResources.Add((Resource)component);
+        Components.Add(component);
+        return true;
+    }
+
+    public bool RemoveComponent(IItemComponent component) {
+        if(component == null){
+            return false;
+        }
+        foreach(IItemComponent comp in Components) {
+            if(ReferenceEquals(comp, component)){
+                ComponentResources.Remove((Resource)comp);
+                Components.Remove(component);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public bool HasComponent(IItemComponent component) {
+        foreach(IItemComponent comp in Components) {
+            if(ReferenceEquals(comp, component)){
+                return true;
+            }
+        }
+        return false;
     }
 
     public bool SameItem(Item other) {
@@ -134,7 +162,8 @@ public partial class Item : Resource, ISaveable<ItemData> {
         copy.MaxStackSize = MaxStackSize;
         copy.IsConsumable = IsConsumable;
         copy.IconTexture = IconTexture;
-        copy.components = new Dictionary<ItemComponentType, IItemComponent>(components);
+        copy.ComponentResources = new Godot.Collections.Array<Resource>(ComponentResources);
+        copy.BuildComponents();
         return copy;
     }
 
@@ -155,7 +184,8 @@ public partial class Item : Resource, ISaveable<ItemData> {
         MaxStackSize = loaded.MaxStackSize;
         IsConsumable = loaded.IsConsumable;
         IconTexture = loaded.IconTexture;
-        components = new Dictionary<ItemComponentType, IItemComponent>(loaded.components);
+        ComponentResources = new Godot.Collections.Array<Resource>(loaded.ComponentResources);
+        BuildComponents();
     }
 
     public static Item? LoadFromData(in ItemData data) {

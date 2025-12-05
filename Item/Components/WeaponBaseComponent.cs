@@ -1,14 +1,16 @@
 using System;
 using SaveSystem;
+using Godot;
 
 namespace Components {
-    public class WeaponBase : IItemComponent, ISaveable<WeaponBaseData> {
-        public int BaseAttack { get; set; } = 10;
-        public float AttackSpeed { get; set; } = 1;
-        public float Range { get; set; } = 1;
-        public float Knockback { get; set; } = 0;
-        public float CriticalChance { get; set; } = 0;
-        public float CriticalMultiplier { get; set; } = 1;
+    [GlobalClass]
+    public partial class WeaponBase : Resource, IItemComponent, ISaveable<WeaponBaseData> {
+        [Export] public int BaseAttack { get; set; } = 10;
+        [Export] public float AttackSpeed { get; set; } = 1;
+        [Export] public float Range { get; set; } = 1;
+        [Export] public float Knockback { get; set; } = 0;
+        [Export] public float CriticalChance { get; set; } = 0;
+        [Export] public float CriticalMultiplier { get; set; } = 1;
         public WeaponBaseData Serialize() => new WeaponBaseData {
             BaseAttack = BaseAttack,
             AttackSpeed = AttackSpeed,

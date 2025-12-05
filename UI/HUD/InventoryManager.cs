@@ -270,6 +270,7 @@ public partial class InventoryManager : Node {
 	}
 	
 	public void HandleConsumeItem() {
+		Log.Info("Handling consume item action.");
 		Hotbar hotbar = null!;
 		Inventory hotbarInventory = null!;
 		foreach(string inventoryName in Inventories.Keys) {

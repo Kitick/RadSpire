@@ -1,10 +1,12 @@
 using System;
 using SaveSystem;
+using Godot;
 
 namespace Components {
-    public class Defense : IItemComponent, ISaveable<DefenseData> {
-        public float DefenseVal { get; set; } = 0;
-        public float KnockbackResist { get; set; } = 0;
+    [GlobalClass]
+    public partial class Defense : Resource, IItemComponent, ISaveable<DefenseData> {
+        [Export] public float DefenseVal { get; set; } = 0;
+        [Export] public float KnockbackResist { get; set; } = 0;
 
         public DefenseData Serialize() => new DefenseData {
             DefenseVal = DefenseVal,

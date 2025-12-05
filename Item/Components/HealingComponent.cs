@@ -3,8 +3,11 @@ using SaveSystem;
 using Godot;
 
 namespace Components {
-    public class Healing : IItemComponent, IConsumable, ISaveable<HealingData> {
-        public int HealAmount { get; set; }
+    [GlobalClass]
+    public partial class Healing : Resource, IItemComponent, IConsumable, ISaveable<HealingData> {
+        private static readonly Logger Log = new(nameof(Healing), enabled: true);
+
+        [Export] public int HealAmount { get; set; } = 10;
 
         public bool CanConsume(CharacterBody3D consumer) {
             if(consumer is Player) {
@@ -16,6 +19,7 @@ namespace Components {
             if(CanConsume(consumer)) {
                 Player player = (Player) consumer;
                 player.Health.CurrentHealth += Mathf.Clamp(HealAmount, 0, player.Health.MaxHealth - player.Health.CurrentHealth);
+                Log.Info($"Consumed healing item. Healed for {HealAmount} points.");
                 return true;
             }
             return false;
