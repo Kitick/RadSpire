@@ -79,7 +79,7 @@ public sealed partial class GameManager : Node {
 		var data = SaveService.Load<GameState>(fileName);
 
 		LocalPlayer.Deserialize(data.Player);
-		Enemy = Enemy.Deserialize(data.Enemy);
+		Enemy.Deserialize(data.Enemy);
 		CameraRig.Deserialize(data.CameraRig);
 
 		return true;
