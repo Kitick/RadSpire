@@ -36,12 +36,12 @@ public sealed partial class GameManager : Node {
 	}
 
 	public override void _PhysicsProcess(double delta) {
-		if(!InGame) { return; }
+		if(!InGame || !IsInstanceValid(LocalPlayer) || !IsInstanceValid(CameraRig)) { return; }
 
 		float dt = (float) delta;
 
-		KeyInput.Update(CameraRig!);
-		LocalPlayer!.Update(dt, KeyInput);
+		KeyInput.Update(CameraRig);
+		LocalPlayer.Update(dt, KeyInput);
 
 		UpdateTimer();
 	}
@@ -51,7 +51,6 @@ public sealed partial class GameManager : Node {
 
 		LocalPlayer.Name = $"Player_{LocalPeerId}";
 		LocalPlayer.GlobalPosition = PlayerSpawnLocation;
-		Enemy!.GlobalPosition = EnemySpawnLocation;
 
 		CameraRig = this.AddScene<CameraRig>(Scenes.Camera);
 		CameraRig.Target = LocalPlayer;
