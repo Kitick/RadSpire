@@ -200,6 +200,9 @@ public partial class InventoryManager : Node {
 		if(@event.IsActionPressed("DropItem")) {
 			HandleItemDropWithKeyboard();
 		}
+		if(@event.IsActionPressed("Consume")) {
+			HandleConsumeItem();
+		}
 	}
 
 	public bool ClickedOutsideInventory(Vector2 clickPosition) {
@@ -240,7 +243,7 @@ public partial class InventoryManager : Node {
 		droppedItemIcon.SpawnItem3D(dropPosition);
 		GetParent<Player>().GetParent().AddChild(droppedItemIcon);
 	}
-	
+
 	public void HandleItemDropWithKeyboard() {
 		Hotbar hotbar = null!;
 		Inventory hotbarInventory = null!;
@@ -265,4 +268,29 @@ public partial class InventoryManager : Node {
 		hotbarInventory.RemoveItem(hotbar.Inventory.GetRow(selectedIndex), hotbar.Inventory.GetColumn(selectedIndex), 1);
 		DropItem(selectedSlot.Item!);
 	}
+	
+	public void HandleConsumeItem() {
+		Hotbar hotbar = null!;
+		Inventory hotbarInventory = null!;
+		foreach(string inventoryName in Inventories.Keys) {
+			if(GetInventoryUI(inventoryName) is Hotbar currentHotbar) {
+				hotbar = currentHotbar;
+				hotbarInventory = GetInventory(inventoryName);
+				break;
+			}
+		}
+		if(hotbar == null) {
+			Log.Error("No Hotbar inventory found for dropping item.");
+			return;
+		}
+		ItemSlot selectedSlot = hotbar.GetSelectedItemSlot();
+		if(selectedSlot.IsEmpty()) {
+			Log.Info("No item in selected hotbar slot to drop.");
+			return;
+		}
+		int selectedIndex = hotbar.SelectedSlot;
+		if(selectedSlot.Item!.OnConsume(GetParent<Player>())) {
+			hotbarInventory.RemoveItem(hotbar.Inventory.GetRow(selectedIndex), hotbar.Inventory.GetColumn(selectedIndex), 1);
+		}
+    } 
 }
