@@ -5,7 +5,7 @@ using InputSystem;
 
 public sealed partial class Hotbar : Control, IInventoryUI {
 
-	private static readonly Logger Log = new(nameof(Hotbar), enabled: false);
+	private static readonly Logger Log = new(nameof(Hotbar), enabled: true);
 
 	public static readonly bool Debug = false;
 

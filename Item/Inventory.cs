@@ -86,12 +86,12 @@ public sealed partial class Inventory : ISaveable<InventoryData> {
 	public Item GetItem(int row, int column) {
 		int index = GetIndex(row, column);
 		if(index == -1) {
-			return null;
+			return null!;
 		}
 		if(ItemSlots[index].IsEmpty()) {
 			return new Item();
 		}
-		return ItemSlots[index].Item;
+		return ItemSlots[index].Item!;
 	}
 
 	public int GetEmptySlotIndex() {
@@ -202,13 +202,13 @@ public sealed partial class Inventory : ISaveable<InventoryData> {
 		if(item.IsEmpty()) {
 			return false;
 		}
-		int quantityInInventory = GetTotalQuantity(item.Item);
+		int quantityInInventory = GetTotalQuantity(item.Item!);
 		if(quantityInInventory < item.Quantity) {
 			return false;
 		}
 		int quantityToRemove = item.Quantity;
 		while(quantityToRemove > 0) {
-			int index = GetItemIndex(item.Item);
+			int index = GetItemIndex(item.Item!);
 			if(index == -1) {
 				break;
 			}

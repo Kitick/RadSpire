@@ -4,7 +4,7 @@ using Godot;
 
 public partial class InventoryUI: Control, IInventoryUI {
 
-	private static readonly Logger Log = new(nameof(InventoryUI), enabled: false);
+	private static readonly Logger Log = new(nameof(InventoryUI), enabled: true);
 	private Player Player = null!;
 	private bool MouseHasItemSlot = false;
 	public Inventory Inventory { get; set; } = null!;
@@ -79,7 +79,7 @@ public partial class InventoryUI: Control, IInventoryUI {
 	}
 
 	public override void _Input(InputEvent @event) {
-		if(@event is InputEventMouseButton mouseButton && mouseButton.Pressed) {
+		if(@event is InputEventMouseButton mouseButton && !mouseButton.Pressed) {
 			Vector2 clickPos = mouseButton.GlobalPosition;
 			if(MouseHasItemSlot) {
 				// Use InventoryManager to determine whether click is outside all inventory UIs

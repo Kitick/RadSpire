@@ -69,17 +69,16 @@ public partial class InventoryManager : Node {
 	}
 
 	public void HandleOnSlotClicked(string inventoryName, int slotIndex) {
-		if(MouseHasItemSlot) {
-			HandlePlaceItemSlot(inventoryName, slotIndex);
-		}
-		else {
+		if(!MouseHasItemSlot) {
 			HandlePickupItemSlot(inventoryName, slotIndex);
 		}
 	}
 	
 	public void HandleOnSlotUnclicked(string inventoryName, int slotIndex) {
-        
-    }
+		if(MouseHasItemSlot) {
+			HandlePlaceItemSlot(inventoryName, slotIndex);
+		}   
+	}
 
 	public void HandlePickupItemSlot(string inventoryName, int slotIndex) {
 		if(!MouseHasItemSlot) {

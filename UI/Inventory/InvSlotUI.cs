@@ -2,7 +2,7 @@ using Godot;
 using System;
 
 public partial class InvSlotUI : Panel {
-	private static readonly Logger Log = new(nameof(InvSlotUI), enabled: false);
+	private static readonly Logger Log = new(nameof(InvSlotUI), enabled: true);
 
 	[Export] public int SlotIndex { get; set; } = -1;
 	[Export] public TextureRect IconTextureRect { get; set; } = null!;
