@@ -4,4 +4,6 @@
 
 [resource]
 script = ExtResource("1_rtq4i")
+MaxStackSize = 64
+IsConsumable = true
 metadata/_custom_type_script = "uid://3l5yftlfas15"

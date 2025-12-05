@@ -293,5 +293,5 @@ public partial class InventoryManager : Node {
 		if(selectedSlot.Item!.OnConsume(GetParent<Player>())) {
 			hotbarInventory.RemoveItem(hotbar.Inventory.GetRow(selectedIndex), hotbar.Inventory.GetColumn(selectedIndex), 1);
 		}
-    } 
+	} 
 }
