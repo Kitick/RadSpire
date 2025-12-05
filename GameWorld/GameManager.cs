@@ -15,8 +15,10 @@ public sealed partial class GameManager : Node {
 	public CameraRig? CameraRig;
 	public Enemy? Enemy;
 
-	private static readonly Vector3 PlayerSpawnLocation = new Vector3(0, 5, 0);
-	private static readonly Vector3 EnemySpawnLocation = new Vector3(5, 5, 5);
+	private const int SpawnHeight = 5;
+	private const int SpawnRadius = 50;
+
+	private static readonly Vector3 PlayerSpawnLocation = new Vector3(0, SpawnHeight, 0);
 
 	private readonly KeyInput KeyInput = new();
 
@@ -123,7 +125,6 @@ public sealed partial class GameManager : Node {
 
 		var data = new GameState {
 			Player = LocalPlayer.Serialize(),
-			Enemy = IsInstanceValid(Enemy) ? Enemy.Serialize() : null,
 			CameraRig = CameraRig.Serialize(),
 		};
 
@@ -144,15 +145,6 @@ public sealed partial class GameManager : Node {
 
 		LocalPlayer!.Deserialize(data.Player);
 		CameraRig!.Deserialize(data.CameraRig);
-
-		if(data.Enemy != null && IsInstanceValid(Enemy)) {
-			Enemy.Deserialize(data.Enemy.Value);
-		}
-		else if(data.Enemy == null && IsInstanceValid(Enemy)) {
-			// Enemy was dead when saved, remove current enemy
-			Enemy.QueueFree();
-			Enemy = null;
-		}
 
 		Log.Info($"Game loaded from '{fileName}'");
 		return true;
@@ -256,15 +248,23 @@ public sealed partial class GameManager : Node {
 		item3DIcon.SpawnItem3D(position);
 	}
 
+	private static Vector3 RandomLocation() {
+		return new Vector3(
+			GD.RandRange(-SpawnRadius, SpawnRadius),
+			SpawnHeight,
+			GD.RandRange(-SpawnRadius, SpawnRadius)
+		);
+	}
+
 	private void SpawnTestItems() {
-		SpawnTestItem(Items.AppleRed, new Vector3(0, 5, 5));
-		SpawnTestItem(Items.AppleYellow, new Vector3(0, 5, 6));
-		SpawnTestItem(Items.AppleGreen, new Vector3(0, 5, 7));
-		SpawnTestItem(Items.BananaYellow, new Vector3(0, 5, 8));
-		SpawnTestItem(Items.BananaGreen, new Vector3(0, 5, 9));
-		SpawnTestItem(Items.StrawberryGreen, new Vector3(0, 5, 10));
-		SpawnTestItem(Items.StrawberryRed, new Vector3(0, 5, 11));
-		SpawnTestItem(Items.StrawberryRed, new Vector3(40, 5, 20), 3.0f);
+		SpawnTestItem(Items.AppleRed, RandomLocation());
+		SpawnTestItem(Items.AppleYellow, RandomLocation());
+		SpawnTestItem(Items.AppleGreen, RandomLocation());
+		SpawnTestItem(Items.BananaYellow, RandomLocation());
+		SpawnTestItem(Items.BananaGreen, RandomLocation());
+		SpawnTestItem(Items.StrawberryGreen, RandomLocation());
+		SpawnTestItem(Items.StrawberryRed, RandomLocation());
+		SpawnTestItem(Items.StrawberryRed, new Vector3(40, SpawnHeight, 20), 3);
 	}
 }
 
@@ -272,6 +272,5 @@ namespace SaveSystem {
 	public readonly struct GameState : ISaveData {
 		public PlayerData Player { get; init; }
 		public CameraRigData CameraRig { get; init; }
-		public EnemyData? Enemy { get; init; }
 	}
 }
