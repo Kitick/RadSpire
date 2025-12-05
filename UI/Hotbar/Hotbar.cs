@@ -14,13 +14,13 @@ public sealed partial class Hotbar : Control, IInventoryUI {
 		set {
 			if(HotbarSlots.Count == 0) {
 				field = 0;
+				return;
 			}
-			else{
-				value += HotbarSlots.Count;
-				value %= HotbarSlots.Count;
-				field = value;
-			}
-			SelectSlot(HotbarSlots[value]);
+			int idx = value;
+			idx += HotbarSlots.Count;
+			idx %= HotbarSlots.Count;
+			field = idx;
+			SelectSlot(HotbarSlots[idx]);
 		}
 	}
 
@@ -91,6 +91,9 @@ public sealed partial class Hotbar : Control, IInventoryUI {
 			HotbarSlotUIs.Add(slotInstance);
 			HotbarSlots.Add(slotInstance);
 			GridContainer.AddChild(slotInstance);
+		}
+		if(NumHotbarSlots > 0) {
+			SelectedSlot = 0;
 		}
 	}
 

@@ -59,12 +59,16 @@ public partial class Item : Resource, ISaveable<ItemData> {
     [Export] public Godot.Collections.Array<Resource> ComponentResources { get; set; } = new();
     public List<IItemComponent> Components = new();
 
+    public Item() {
+        BuildComponents();
+    }
+
     public void BuildComponents() {
         Components.Clear();
         if(ComponentResources == null){
             return;
         }
-        foreach(Resource resource in ComponentResources) {
+        foreach(var resource in ComponentResources) {
             if(resource is IItemComponent comp){
                 IItemComponent componentInstance = GD.Load<IItemComponent>(resource.ResourcePath);
                 Components.Add(componentInstance);
