@@ -21,7 +21,7 @@ public partial class InventoryManager : Node {
 		SetProcessUnhandledInput(true);
 		LoadInventoryUIManager();
 	}
-	
+
 	public void LoadInventoryUIManager() {
 		if(InventoryUIManagerTemplate == null) {
 			InventoryUIManagerTemplate = GD.Load<PackedScene>("res://UI/Inventory/InventoryUIManager.tscn");
@@ -95,7 +95,7 @@ public partial class InventoryManager : Node {
 			GetInventory(inventoryName).RemoveItem(GetInventory(inventoryName).GetRow(slotIndex), GetInventory(inventoryName).GetColumn(slotIndex));
 		}
 	}
-	
+
 	public bool IsItemSlotEmpty(string inventoryName, int slotIndex) {
 		return GetInventory(inventoryName).IsEmptySlot(GetInventory(inventoryName).GetRow(slotIndex), GetInventory(inventoryName).GetColumn(slotIndex));
 	}
@@ -137,7 +137,7 @@ public partial class InventoryManager : Node {
 			HeldItemSlot = null;
 		}
 	}
-	
+
 	public void HandlePlaceItemSlotOnNonEmptySlot(string inventoryName, int slotIndex) {
 		if(!IsItemSlotEmpty(inventoryName, slotIndex)) {
 			if(HeldItemSlot == null) {
@@ -186,7 +186,7 @@ public partial class InventoryManager : Node {
 			}
 		}
 	}
-	
+
 	public override void _Input(InputEvent @event) {
 		if(@event is InputEventMouseButton mouseButton && !mouseButton.Pressed) {
 			if(MouseHasItemSlot) {
@@ -240,8 +240,8 @@ public partial class InventoryManager : Node {
 		Vector3 dropPosition = GetParent<Player>().GlobalPosition + GetParent<Player>().GlobalTransform.Basis.Z * 2 + Vector3.Up;
 		Item3DIcon droppedItemIcon = new Item3DIcon();
 		droppedItemIcon.Item = item;
-		droppedItemIcon.SpawnItem3D(dropPosition);
 		GetParent<Player>().GetParent().AddChild(droppedItemIcon);
+		droppedItemIcon.SpawnItem3D(dropPosition);
 	}
 
 	public void HandleItemDropWithKeyboard() {
@@ -268,7 +268,7 @@ public partial class InventoryManager : Node {
 		hotbarInventory.RemoveItem(hotbar.Inventory.GetRow(selectedIndex), hotbar.Inventory.GetColumn(selectedIndex), 1);
 		DropItem(selectedSlot.Item!);
 	}
-	
+
 	public void HandleConsumeItem() {
 		Log.Info("Handling consume item action.");
 		Hotbar hotbar = null!;
@@ -294,5 +294,5 @@ public partial class InventoryManager : Node {
 		if(selectedSlot.Item!.OnConsume(GetParent<Player>())) {
 			hotbarInventory.RemoveItem(hotbar.Inventory.GetRow(selectedIndex), hotbar.Inventory.GetColumn(selectedIndex), 1);
 		}
-	} 
+	}
 }

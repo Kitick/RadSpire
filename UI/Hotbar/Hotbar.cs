@@ -42,7 +42,7 @@ public sealed partial class Hotbar : Control, IInventoryUI {
 	private Control? GridContainer = null!;
 	public event Action<string, int>? OnSlotPressed;
 	public event Action<string, int>? OnSlotReleased;
-	
+
 	public override void _EnterTree() {
 		SetInputCallbacks();
 		RequestReady();
@@ -151,7 +151,8 @@ public sealed partial class Hotbar : Control, IInventoryUI {
 			return;
 		}
 		Inventory = Player.Hotbar;
-		for(int i = 0; i < NumHotbarSlots; i++) {
+		int slotsToUpdate = Math.Min(NumHotbarSlots, Inventory.ItemSlots.Length);
+		for(int i = 0; i < slotsToUpdate; i++) {
 			HotbarSlotUIs[i].UpdateSlotUI(Inventory.ItemSlots[i]);
 		}
 	}
