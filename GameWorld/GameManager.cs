@@ -55,6 +55,11 @@ public sealed partial class GameManager : Node {
 			return false;
 		}
 
+		if(!IsInstanceValid(LocalPlayer) || !IsInstanceValid(Enemy) || !IsInstanceValid(CameraRig)) {
+			Log.Error("Cannot save game: game objects are not valid");
+			return false;
+		}
+
 		var data = new GameState {
 			Player = LocalPlayer!.Serialize(),
 			Enemy = Enemy!.Serialize(),
