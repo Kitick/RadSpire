@@ -7,8 +7,8 @@ public partial class InvSlotUI : Panel {
 	[Export] public int SlotIndex { get; set; } = -1;
 	[Export] public TextureRect IconTextureRect { get; set; } = null!;
 	[Export] public Label ItemCountLabel { get; set; } = null!;
-	public event Action<int>? OnSlotClicked;
-	public event Action<int>? OnSlotUnclicked;
+	public event Action<int>? OnSlotPressed;
+	public event Action<int>? OnSlotReleased;
 
 	public override void _Ready() {
 		base._Ready();
@@ -45,12 +45,12 @@ public partial class InvSlotUI : Panel {
 					return;
 				}
 				if(mouseEvent.Pressed) {
-					OnSlotClicked?.Invoke(SlotIndex);
-					Log.Info($"Slot {SlotIndex} clicked.");
+					OnSlotPressed?.Invoke(SlotIndex);
+					Log.Info($"Slot {SlotIndex} pressed.");
 				}
 				else {
-	   				Log.Info($"Slot {SlotIndex} mouse left released.");
-					OnSlotUnclicked?.Invoke(SlotIndex);             
+					Log.Info($"Slot {SlotIndex} released.");
+					OnSlotReleased?.Invoke(SlotIndex);
 				}
 			}
 		}

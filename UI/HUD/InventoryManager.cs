@@ -4,7 +4,7 @@ using System.Reflection.Metadata;
 using Godot;
 
 public partial class InventoryManager : Node {
-	private static readonly Logger Log = new(nameof(InventoryManager), enabled: false);
+	private static readonly Logger Log = new(nameof(InventoryManager), enabled: true);
 
 	public Dictionary<string, (Inventory, IInventoryUI)> Inventories = new Dictionary<string, (Inventory, IInventoryUI)>();
 	public InventoryUIManager InventoryUIManager = null!;
@@ -40,8 +40,8 @@ public partial class InventoryManager : Node {
 			return;
 		}
 		Inventories.Add(inventory.Name, (inventory, uiControl));
-		uiControl.OnSlotClicked += HandleOnSlotClicked;
-		uiControl.OnSlotUnclicked += HandleOnSlotUnclicked;
+		uiControl.OnSlotPressed += HandleOnSlotPressed;
+		uiControl.OnSlotReleased += HandleOnSlotReleased;
 		Log.Info($"Registered inventory: {inventory.Name}");
 	}
 
@@ -68,16 +68,18 @@ public partial class InventoryManager : Node {
 		return null!;
 	}
 
-	public void HandleOnSlotClicked(string inventoryName, int slotIndex) {
+	public void HandleOnSlotPressed(string inventoryName, int slotIndex) {
 		if(!MouseHasItemSlot) {
+			Log.Info($"InventoryManager: Slot {slotIndex} pressed in inventory {inventoryName}.");
 			HandlePickupItemSlot(inventoryName, slotIndex);
 		}
 	}
-	
-	public void HandleOnSlotUnclicked(string inventoryName, int slotIndex) {
+
+	public void HandleOnSlotReleased(string inventoryName, int slotIndex) {
 		if(MouseHasItemSlot) {
+			Log.Info($"InventoryManager: Slot {slotIndex} released in inventory {inventoryName}.");
 			HandlePlaceItemSlot(inventoryName, slotIndex);
-		}   
+		}
 	}
 
 	public void HandlePickupItemSlot(string inventoryName, int slotIndex) {

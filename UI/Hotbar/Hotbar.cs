@@ -40,8 +40,8 @@ public sealed partial class Hotbar : Control, IInventoryUI {
 	private int NumHotbarSlots = 0;
 	private PackedScene? InvSlotTemplate = null!;
 	private Control? GridContainer = null!;
-	public event Action<string, int>? OnSlotClicked;
-	public event Action<string, int>? OnSlotUnclicked;
+	public event Action<string, int>? OnSlotPressed;
+	public event Action<string, int>? OnSlotReleased;
 	
 	public override void _EnterTree() {
 		SetInputCallbacks();
@@ -86,20 +86,22 @@ public sealed partial class Hotbar : Control, IInventoryUI {
 		for(int i = 0; i < NumHotbarSlots; i++) {
 			InvSlotUI slotInstance = InvSlotTemplate.Instantiate<InvSlotUI>();
 			slotInstance.SlotIndex = i;
-			slotInstance.OnSlotClicked += HandleOnSlotClicked;
-			slotInstance.OnSlotUnclicked += HandleOnSlotUnclicked;
+			slotInstance.OnSlotPressed += HandleOnSlotPressed;
+			slotInstance.OnSlotReleased += HandleOnSlotReleased;
 			HotbarSlotUIs.Add(slotInstance);
 			HotbarSlots.Add(slotInstance);
 			GridContainer.AddChild(slotInstance);
 		}
 	}
 
-	public void HandleOnSlotClicked(int slotIndex) {
-		OnSlotClicked?.Invoke(Inventory.Name, slotIndex);
+	public void HandleOnSlotPressed(int slotIndex) {
+		Log.Info($"Hotbar: Slot {slotIndex} pressed.");
+		OnSlotPressed?.Invoke(Inventory.Name, slotIndex);
 	}
 
-	public void HandleOnSlotUnclicked(int slotIndex) {
-		OnSlotUnclicked?.Invoke(Inventory.Name, slotIndex);
+	public void HandleOnSlotReleased(int slotIndex) {
+		Log.Info($"Hotbar: Slot {slotIndex} released.");
+		OnSlotReleased?.Invoke(Inventory.Name, slotIndex);
 	}
 
 	private void SetInputCallbacks() {

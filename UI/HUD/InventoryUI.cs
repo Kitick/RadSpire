@@ -12,8 +12,8 @@ public partial class InventoryUI: Control, IInventoryUI {
 	private int InventorySlots = 0;
 	private PackedScene? InvSlotTemplate = null!;
 	private Control? GridContainer = null!;
-	public event Action<string, int>? OnSlotClicked;
-	public event Action<string, int>? OnSlotUnclicked;
+	public event Action<string, int>? OnSlotPressed;
+	public event Action<string, int>? OnSlotReleased;
 
 	public override void _Ready() {
 		base._Ready();
@@ -50,20 +50,22 @@ public partial class InventoryUI: Control, IInventoryUI {
 		for(int i = 0; i < InventorySlots; i++) {
 			InvSlotUI slotInstance = InvSlotTemplate.Instantiate<InvSlotUI>();
 			slotInstance.SlotIndex = i;
-			slotInstance.OnSlotClicked += HandleOnSlotClicked;
-			slotInstance.OnSlotUnclicked += HandleOnSlotUnclicked;
+			slotInstance.OnSlotPressed += HandleOnSlotPressed;
+			slotInstance.OnSlotReleased += HandleOnSlotReleased;
 			InvSlotUIs.Add(slotInstance);
 			GridContainer.AddChild(slotInstance);
 		}
 		UpdateInventoryUI();
 	}
 
-	public void HandleOnSlotClicked(int slotIndex) {
-		OnSlotClicked?.Invoke(Inventory.Name, slotIndex);
+	public void HandleOnSlotPressed(int slotIndex) {
+		Log.Info($"InventoryUI: Slot {slotIndex} pressed.");
+		OnSlotPressed?.Invoke(Inventory.Name, slotIndex);
 	}
 
-	public void HandleOnSlotUnclicked(int slotIndex) {
-		OnSlotUnclicked?.Invoke(Inventory.Name, slotIndex);
+	public void HandleOnSlotReleased(int slotIndex) {
+		Log.Info($"InventoryUI: Slot {slotIndex} released.");
+		OnSlotReleased?.Invoke(Inventory.Name, slotIndex);
 	}
 
 	public void UpdateInventoryUI(){
