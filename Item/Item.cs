@@ -83,6 +83,42 @@ public partial class Item : Resource, ISaveable<ItemData> {
         return components.ContainsKey(type);
     }
 
+    public bool OnUse(CharacterBody3D user) {
+        bool success = true;
+        foreach(var component in components.Values) {
+            if(component is IUsable usable) {
+                success &= usable.OnUse(user);
+            }
+        }
+        return success;
+    }
+
+    public bool OnConsume(CharacterBody3D consumer) {
+        bool success = true;
+        foreach(var component in components.Values) {
+            if(component is IConsumable consumable) {
+                success &= consumable.OnConsume(consumer);
+            }
+        }
+        return success;
+    }
+
+    public void OnEquip(CharacterBody3D equipper) {
+        foreach(var component in components.Values) {
+            if(component is IEquipable equipable) {
+                equipable.OnEquip(equipper);
+            }
+        }
+    }
+
+    public void OnUnequip(CharacterBody3D unequipper) {
+        foreach(var component in components.Values) {
+            if(component is IEquipable equipable) {
+                equipable.OnUnequip(unequipper);
+            }
+        }
+    }
+
     public bool SameItem(Item other) {
         if(other == null) {
             return false;
