@@ -15,7 +15,7 @@ namespace Core {
 
 		public const string MainMenu = $"{UI}/MainMenu/MainMenu.tscn";
 		public const string SettingsMenu = $"{UI}/SettingsMenu/SettingsMenu.tscn";
-		public const string SaveLoadMenu = $"{UI}/LoadMenu/LoadMenu.tscn";
+		public const string SaveLoadMenu = $"{UI}/LoadMenu/LoadSaveMenu.tscn";
 		public const string HostPanel = $"{MultiplayerPanels}/HostPanel/HostPanel.tscn";
 		public const string JoinPanel = $"{MultiplayerPanels}/JoinPanel/JoinPanel.tscn";
 

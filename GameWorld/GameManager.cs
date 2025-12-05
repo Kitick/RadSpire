@@ -100,10 +100,21 @@ public sealed partial class GameManager : Node {
 		CleanupGame();
 		GetTree().Paused = false;
 		GetTree().ChangeSceneToFile(Scenes.GameScene);
+		GetTree().TreeChanged += OnTreeChangedOnce;
+	}
+
+	private void OnTreeChangedOnce() {
+		GetTree().TreeChanged -= OnTreeChangedOnce;
 		CallDeferred(nameof(OnGameSceneLoaded));
 	}
 
 	private void OnGameSceneLoaded() {
+		if(!InGame) {
+			Log.Warn("OnGameSceneLoaded called but not in game scene yet, deferring...");
+			CallDeferred(nameof(OnGameSceneLoaded));
+			return;
+		}
+
 		SpawnLocalPlayer();
 		SpawnTestItems();
 

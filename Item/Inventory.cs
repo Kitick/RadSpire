@@ -238,6 +238,7 @@ public sealed partial class Inventory : ISaveable<InventoryData> {
 		MaxColumns = data.MaxSlotsColumns;
 		ItemSlots = new ItemSlot[MaxSlots];
 		for(int i = 0; i < ItemSlots.Length; i++) {
+			ItemSlots[i] = new ItemSlot();
 			ItemSlots[i].Deserialize(data.ItemSlots[i]);
 		}
 	}
