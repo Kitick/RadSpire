@@ -6,6 +6,7 @@ public partial class Sword : Area3D {
 	public int Damage = 20;
 
 	public override void _Ready() {
+		Monitoring = false;
 		BodyEntered += OnBodyEntered;
 	}
 

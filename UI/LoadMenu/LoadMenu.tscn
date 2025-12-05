@@ -31,6 +31,7 @@ offset_left = 100.0
 offset_top = -400.0
 offset_right = 500.0
 offset_bottom = 200.0
+grow_vertical = 2
 
 [node name="Header" type="Label" parent="Panel"]
 layout_mode = 1
