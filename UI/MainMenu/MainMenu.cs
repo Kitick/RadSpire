@@ -3,6 +3,7 @@
 using Core;
 using Godot;
 using Network;
+using SaveSystem;
 using Settings;
 using MultiplayerPanels;
 
@@ -38,6 +39,7 @@ public partial class MainMenu : Control {
 	// Component references
 	private Button SingleplayerButton = null!;
 	private Button MultiplayerButton = null!;
+	private Button ContinueButton = null!;
 	private Control SingleplayerButtonPanel = null!;
 	private Control MultiplayerButtonPanel = null!;
 
@@ -89,10 +91,14 @@ public partial class MainMenu : Control {
 		// Singleplayer Components
 		SingleplayerButton = GetNode<Button>(SINGLEPLAYER_BUTTON);
 		SingleplayerButtonPanel = GetNode<Control>(SINGLEPLAYER_POPUP);
+		ContinueButton = GetNode<Button>(CONTINUE_BUTTON);
 
 		// Multiplayer Components
 		MultiplayerButton = GetNode<Button>(MULTIPLAYER_BUTTON);
 		MultiplayerButtonPanel = GetNode<Control>(MULTIPLAYER_POPUP);
+
+		// Update continue button state based on autosave existence
+		UpdateContinueButtonState();
 	}
 
 	// Callbacks
@@ -115,7 +121,7 @@ public partial class MainMenu : Control {
 		MultiplayerButtonPanel.MouseExited += HidePopup;
 
 		// Popup buttons for Singleplayer
-		GetNode<Button>(CONTINUE_BUTTON).Pressed += OnContinueButtonPressed;
+		ContinueButton.Pressed += OnContinueButtonPressed;
 		GetNode<Button>(LOAD_SAVED_BUTTON).Pressed += OnLoadSavedButtonPressed;
 		GetNode<Button>(START_NEW_BUTTON).Pressed += OnStartNewButtonPressed;
 
@@ -175,6 +181,11 @@ public partial class MainMenu : Control {
 				SetState(MenuState.Normal);
 			}
 		};
+	}
+
+	private void UpdateContinueButtonState() {
+		bool hasAutosave = SaveService.Exists(Constants.AutosaveFile);
+		ContinueButton.Disabled = !hasAutosave;
 	}
 
 	// Pop-up panel buttons handler for Singleplayer

@@ -2,21 +2,21 @@ using Godot;
 
 public partial class Sword : Area3D {
 	private static readonly Logger Log = new(nameof(Sword), enabled: true);
-	
-	private Node3D Owner = null!;
+
+	private Node3D WeaponOwner = null!;
 
 	public int Damage = 10;
 
 	public override void _Ready() {
-		Owner = GetOwner<Node3D>(); 
+		WeaponOwner = GetOwner<Node3D>();
 		Monitoring = false;
 		BodyEntered += OnBodyEntered;
 	}
 
 	private void OnBodyEntered(Node3D body) {
-		if (body == Owner)
+		if (body == WeaponOwner)
 			return;
-		
+
 		if (body is IDamageable damageable)
 		{
 			damageable.TakeDamage(Damage);
