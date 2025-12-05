@@ -11,7 +11,7 @@ const TextEditingUtilsClass := preload("res://addons/resources_spreadsheet_view/
 const TablesPluginSettingsClass := preload("res://addons/resources_spreadsheet_view/settings_grid.gd")
 
 @onready var editor_view := $"../.."
-@onready var selection := $"../../SelectionManager"
+@onready var selection := get_node_or_null("../../SelectionManager")
 
 @onready var editbox_node := $"Control/ColorRect/Popup"
 @onready var editbox_label : Label = editbox_node.get_node("Panel/VBoxContainer/Label")
