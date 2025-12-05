@@ -9,8 +9,9 @@ namespace Components {
 
 		public bool SprintHeld { get; private set; }
 		public bool CrouchHeld { get; private set; }
-
 		public bool JumpPressed { get; private set; }
+		public bool AttackPressed { get; private set; }
+		
 
 		public bool IsMoving => HorizontalInput.Length() >= Numbers.EPSILON;
 
@@ -19,6 +20,7 @@ namespace Components {
 			JumpPressed = Input.IsActionJustPressed(Actions.Jump);
 			SprintHeld = Input.IsActionPressed(Actions.Sprint);
 			CrouchHeld = Input.IsActionPressed(Actions.Crouch);
+			AttackPressed = Input.IsActionPressed(Actions.Attack);
 		}
 
 		private static Vector3 GetHorizontalMovement(CameraRig camera) {

@@ -8,7 +8,7 @@ using SaveSystem;
 public sealed partial class Player : CharacterBody3D, ISaveable<PlayerData> {
 	// Configuration
 	[Export] private int InitalHealth = 100;
-	[Export] private float SprintMultiplier = 3.0f;
+	[Export] private float SprintMultiplier = 2.25f;
 	[Export] private float CrouchMultiplier = 0.5f;
 
 	// Inventories
@@ -20,6 +20,9 @@ public sealed partial class Player : CharacterBody3D, ISaveable<PlayerData> {
 	public readonly Health Health;
 	public readonly Movement Movement;
 	public readonly Item3DIconPickup PickupComponent;
+
+	private ProgressBar HealthBar = null!;
+	private PlayerAnimator Animator = null!;
 
 	// State Machine
 	public enum State { Idle, Walking, Sprinting, Crouching, Falling }
@@ -45,6 +48,18 @@ public sealed partial class Player : CharacterBody3D, ISaveable<PlayerData> {
 		this.AddScene(Scenes.HUD);
 		AddChild(InventoryManager);
 		AddInventoriesToInventoryManager();
+
+		AddToGroup("Player");
+
+		HealthBar = GetNode<ProgressBar>("/root/GameManager/Player/HUD/HealthBar");
+		Animator =  GetNode<PlayerAnimator>("/root/GameManager/Player/Knight");
+
+		HealthBar.MaxValue = Health.MaxHealth;
+		HealthBar.Value = Health.CurrentHealth;
+	}
+
+	private void HandleHealthChanged(int newValue) {
+		HealthBar.Value = newValue;
 	}
 
 	public void AddInventoriesToInventoryManager() {
@@ -76,6 +91,10 @@ public sealed partial class Player : CharacterBody3D, ISaveable<PlayerData> {
 	}
 
 	private void UpdateMovementState(KeyInput keyInput) {
+		if (keyInput.AttackPressed) {
+			Animator.PlaySlash();
+		}
+		
 		if(!IsOnFloor()) { StateMachine.TransitionTo(State.Falling); }
 		else if(!keyInput.IsMoving) { StateMachine.TransitionTo(State.Idle); }
 		else if(keyInput.SprintHeld) { StateMachine.TransitionTo(State.Sprinting); }

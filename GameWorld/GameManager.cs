@@ -9,10 +9,11 @@ public sealed partial class GameManager : Node {
 
 	private static readonly Logger Log = new(nameof(GameManager), enabled: true);
 
-	public bool InGame => GetTree().CurrentScene.SceneFilePath == Scenes.GameScene;
+	public bool InGame => GetTree().CurrentScene?.SceneFilePath == Scenes.GameScene;
 
 	public Player LocalPlayer { get; private set; } = null!;
 	public CameraRig CameraRig { get; private set; } = null!;
+	public Enemy Enemy { get; private set; } = null!;
 
 	private static readonly Vector3 SpawnLocation = new Vector3(0, 5, 0);
 
@@ -29,7 +30,7 @@ public sealed partial class GameManager : Node {
 	}
 
 	public override void _PhysicsProcess(double delta) {
-		if(!InGame || LocalPlayer == null || CameraRig == null) { return; }
+		if(!InGame) { return; }
 
 		float dt = (float) delta;
 
@@ -39,6 +40,7 @@ public sealed partial class GameManager : Node {
 
 	private void SpawnLocalPlayer() {
 		LocalPlayer = this.AddScene<Player>(Scenes.Player);
+		Enemy = this.AddScene<Enemy>(Scenes.Enemy);
 
 		LocalPlayer.Name = $"Player_{LocalPeerId}";
 		LocalPlayer.GlobalPosition = SpawnLocation;
@@ -55,6 +57,7 @@ public sealed partial class GameManager : Node {
 
 		var data = new GameState {
 			Player = LocalPlayer.Serialize(),
+			Enemy = Enemy.Serialize(),
 			CameraRig = CameraRig.Serialize(),
 		};
 
@@ -76,6 +79,7 @@ public sealed partial class GameManager : Node {
 		var data = SaveService.Load<GameState>(fileName);
 
 		LocalPlayer.Deserialize(data.Player);
+		Enemy.Deserialize(data.Enemy);
 		CameraRig.Deserialize(data.CameraRig);
 
 		return true;
@@ -115,5 +119,6 @@ namespace SaveSystem {
 	public readonly struct GameState : ISaveData {
 		public PlayerData Player { get; init; }
 		public CameraRigData CameraRig { get; init; }
+		public EnemyData Enemy { get; init; }
 	}
 }
