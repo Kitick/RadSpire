@@ -48,7 +48,6 @@ public sealed partial class PlayerAnimator : Node3D {
 		Player.OnStateChange += OnPlayerMovement;
 
 		AnimationPlayer = GetNode<AnimationPlayer>(ANIMATION_PLAYER);
-		HitBox = GetNode<WeaponHitbox>("/root/GameManager/Player/Knight/Rig/Skeleton3D/handslot_r/1H_Sword/WeaponHitbox");
 	}
 
 	private void SetupAnimations() {
@@ -72,7 +71,6 @@ public sealed partial class PlayerAnimator : Node3D {
 		}
 		else if (name == SLASH) {
 			IsAttacking = false;
-			HitBox?.Deactivate();
 			SyncAnimation();
 		}
 	}
@@ -83,7 +81,6 @@ public sealed partial class PlayerAnimator : Node3D {
 			return;
 
 		IsAttacking = true;
-		HitBox?.Activate();
 		AnimationPlayer.Play(SLASH);
 	}
 

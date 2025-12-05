@@ -51,8 +51,8 @@ public sealed partial class Player : CharacterBody3D, ISaveable<PlayerData> {
 
 		AddToGroup("Player");
 
-		HealthBar = GetNode<ProgressBar>("/root/World/GameManager/Player/HUD/HealthBar");
-		Animator =  GetNode<PlayerAnimator>("/root/World/GameManager/Player/Knight");
+		HealthBar = GetNode<ProgressBar>("/root/GameManager/Player/HUD/HealthBar");
+		Animator =  GetNode<PlayerAnimator>("/root/GameManager/Player/Knight");
 
 		HealthBar.MaxValue = Health.MaxHealth;
 		HealthBar.Value = Health.CurrentHealth;
@@ -91,6 +91,10 @@ public sealed partial class Player : CharacterBody3D, ISaveable<PlayerData> {
 	}
 
 	private void UpdateMovementState(KeyInput keyInput) {
+		if (keyInput.AttackPressed) {
+			Animator.PlaySlash();
+		}
+		
 		if(!IsOnFloor()) { StateMachine.TransitionTo(State.Falling); }
 		else if(!keyInput.IsMoving) { StateMachine.TransitionTo(State.Idle); }
 		else if(keyInput.SprintHeld) { StateMachine.TransitionTo(State.Sprinting); }
