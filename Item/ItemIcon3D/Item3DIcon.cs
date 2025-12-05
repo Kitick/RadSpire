@@ -59,22 +59,51 @@ public partial class Item3DIcon : Node3D {
 		// Generate mesh + material
 		spriteMesh.Call("update_sprite_mesh");
 
+		float targetSize = 0.7f;
+
+		MeshInstance3D meshInstance = spriteMesh as MeshInstance3D;
+		if (meshInstance != null && meshInstance.Mesh != null) {
+			Aabb bounds = meshInstance.Mesh.GetAabb();
+			Vector3 size = bounds.Size;
+
+			float largestAxis = Mathf.Max(size.X, Mathf.Max(size.Y, size.Z));
+
+			if (largestAxis > 0.001f) {
+				float scaleFactor = targetSize / largestAxis;
+
+				meshInstance.Scale = new Vector3(scaleFactor, scaleFactor, scaleFactor);
+			}
+		}
+
+
 		Log.Info("Item 3D mesh generated successfully.");
 
-		// --- FIND COLLISIONSHAPE3D ---
+		// --- Collision ---
 		CollisionShape3D collisionShape = CurrentItem3DScene.GetNodeOrNull<CollisionShape3D>("RigidBody3D/CollisionShape3D");
-		if(collisionShape == null) {
+		if (collisionShape == null) {
 			Log.Error("CollisionShape3D not found in template.");
 			return;
 		}
+
 		BoxShape3D boxShape = new BoxShape3D();
-		boxShape.Size = new Vector3(0.5f, 0.5f, 0.1f);
+
+		Aabb rawBounds = meshInstance.Mesh.GetAabb();
+		Vector3 rawSize = rawBounds.Size;
+
+		Vector3 scaledSize = new(
+			rawSize.X * meshInstance.Scale.X,
+			rawSize.Y * meshInstance.Scale.Y,
+			rawSize.Z * meshInstance.Scale.Z
+		);
+
+		if (scaledSize.Z < 0.05f)
+			scaledSize.Z = 0.05f;
+
+		boxShape.Size = scaledSize;
 		collisionShape.Shape = boxShape;
-		collisionShape.Position = Vector3.Zero;
-		RigidBody3D rigidBody = CurrentItem3DScene.GetNodeOrNull<RigidBody3D>("RigidBody3D");
-		rigidBody.Mass = 0.5f;
-		rigidBody.Position = Vector3.Zero;
-		Log.Info("Collision shape updated to match generated mesh.");
+
+		collisionShape.Position = rawBounds.GetCenter() * meshInstance.Scale;
+
 	}
 
 }
