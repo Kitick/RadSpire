@@ -42,7 +42,7 @@ public sealed partial class GameManager : Node {
 
 		KeyInput.Update(CameraRig!);
 		LocalPlayer!.Update(dt, KeyInput);
-		
+
 		UpdateTimer();
 	}
 
@@ -51,15 +51,14 @@ public sealed partial class GameManager : Node {
 
 		LocalPlayer.Name = $"Player_{LocalPeerId}";
 		LocalPlayer.GlobalPosition = PlayerSpawnLocation;
-		Enemy.GlobalPosition = EnemySpawnLocation;
+		Enemy!.GlobalPosition = EnemySpawnLocation;
 
 		CameraRig = this.AddScene<CameraRig>(Scenes.Camera);
 		CameraRig.Target = LocalPlayer;
 
 	}
 
-	private void UpdateTimer()
-	{
+	private void UpdateTimer() {
 		SpawnTimer -= 0.015f;
 
 		if(SpawnTimer <= 0.0f && EnemyCount < 5) {
@@ -71,16 +70,15 @@ public sealed partial class GameManager : Node {
 			EnemyCount += 1;
 		}
 	}
-	
-	private Vector3 GetRandomEnemySpawn()
-	{
-		var pos = LocalPlayer.GlobalPosition;
+
+	private Vector3 GetRandomEnemySpawn() {
+		var pos = LocalPlayer!.GlobalPosition;
 		return pos + new Vector3(
-			(float)GD.RandRange(-10f, 10f),
+			(float) GD.RandRange(-10f, 10f),
 			0.25f,
-			(float)GD.RandRange(-10f, 10f)
+			(float) GD.RandRange(-10f, 10f)
 		);
-		
+
 	}
 
 	public void DecrementEnemyCount() {
