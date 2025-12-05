@@ -51,7 +51,7 @@ public sealed partial class GameManager : Node {
 		CameraRig.Target = LocalPlayer;
 	}
 
-	public bool Save(string fileName) {
+	public bool SaveGame(string fileName) {
 		if(!InGame) {
 			Log.Error("Cannot save game when not in a game");
 			return false;
@@ -69,15 +69,13 @@ public sealed partial class GameManager : Node {
 		};
 
 		SaveService.Save(fileName, data);
+		Log.Info($"Game saved to '{fileName}'");
 		return true;
 	}
 
-	public bool Load(string fileName) {
-		if(!InGame) {
-			Log.Error("Cannot load game when not in a game");
-			return false;
-		}
+	public bool QuickSave() => SaveGame(Constants.AutosaveFile);
 
+	private bool ApplyLoadedState(string fileName) {
 		if(!SaveService.Exists(fileName)) {
 			Log.Error($"Save file '{fileName}' does not exist");
 			return false;
@@ -97,16 +95,34 @@ public sealed partial class GameManager : Node {
 			Enemy = null;
 		}
 
+		Log.Info($"Game loaded from '{fileName}'");
 		return true;
 	}
 
 	private string? PendingLoadFile;
 
-	public void LoadDeferred(string fileName) {
-		PendingLoadFile = fileName;
+	public void StartNewGame() {
+		Log.Info("Starting new game");
+		PendingLoadFile = null;
+		TransitionToGame();
 	}
 
-	public void StartGame() {
+	public void ContinueGame() {
+		Log.Info("Continuing game from autosave");
+		LoadGame(Constants.AutosaveFile);
+	}
+
+	public void LoadGame(string fileName) {
+		if(!SaveService.Exists(fileName)) {
+			Log.Error($"Cannot load game: save file '{fileName}' does not exist");
+			return;
+		}
+		Log.Info($"Loading game from '{fileName}'");
+		PendingLoadFile = fileName;
+		TransitionToGame();
+	}
+
+	private void TransitionToGame() {
 		CleanupGame();
 		GetTree().Paused = false;
 		GetTree().ChangeSceneToFile(Scenes.GameScene);
@@ -129,7 +145,7 @@ public sealed partial class GameManager : Node {
 		SpawnTestItems();
 
 		if(PendingLoadFile != null) {
-			Load(PendingLoadFile);
+			ApplyLoadedState(PendingLoadFile);
 			PendingLoadFile = null;
 		}
 	}

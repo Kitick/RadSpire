@@ -69,7 +69,7 @@ public partial class MainMenu : Control {
 
 	private void OnJoinedServer() {
 		Log.Info("Successfully joined server, starting game...");
-		GameManager.Instance.StartGame();
+		GameManager.Instance.StartNewGame();
 	}
 
 	private void OnHostStarted() {
@@ -179,8 +179,7 @@ public partial class MainMenu : Control {
 
 	// Pop-up panel buttons handler for Singleplayer
 	private void OnContinueButtonPressed() {
-		GameManager.Instance.StartGame();
-		GameManager.Instance.Load("autosave");
+		GameManager.Instance.ContinueGame();
 	}
 
 	private void OnLoadSavedButtonPressed() {
@@ -190,7 +189,7 @@ public partial class MainMenu : Control {
 	}
 
 	private void OnStartNewButtonPressed() {
-		GameManager.Instance.StartGame();
+		GameManager.Instance.StartNewGame();
 	}
 
 	// Pop-up panel buttons handler for Multiplayer
