@@ -4,11 +4,11 @@ using Core;
 using Godot;
 using SaveSystem;
 
-public sealed partial class Enemy : CharacterBody3D, ISaveable<EnemyData> {
+public sealed partial class Enemy : CharacterBody3D, IDamageable, ISaveable<EnemyData> {
 	private static readonly Logger Log = new(nameof(Enemy), enabled: true);
 
 	[Export] private int InitalHealth = 100;
-	[Export] private float SprintMultiplier = 1.5f;
+	[Export] private float SprintMultiplier = 1.15f;
 	[Export] private float CrouchMultiplier = 0.5f;
 	[Export] public Node3D Player = null!;
 
@@ -65,6 +65,7 @@ public sealed partial class Enemy : CharacterBody3D, ISaveable<EnemyData> {
 	}
 
 	public void Die() {
+		GameManager.Instance.DecrementEnemyCount();
 		QueueFree();
 	}
 
@@ -85,6 +86,10 @@ public sealed partial class Enemy : CharacterBody3D, ISaveable<EnemyData> {
 	}
 
 	private void UpdateMovementState() {
+		if(AiInput.GetLocation().Length() <= 2.0f) {
+			Animator.PlayChop();
+		}
+
 		if(!IsOnFloor()) { StateMachine.TransitionTo(State.Falling); }
 		else if(!AiInput.IsMoving) { StateMachine.TransitionTo(State.Idle); }
 		else if(AiInput.SprintHeld) { StateMachine.TransitionTo(State.Sprinting); }

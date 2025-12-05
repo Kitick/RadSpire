@@ -13,12 +13,14 @@ public sealed partial class EnemyAnimator : Node3D {
 	private const string JUMPING = "Jump_Start";
 	private const string FALLING = "Jump_Idle";
 	private const string LANDING = "Jump_Land";
+	private const string CHOP = "1H_Melee_Attack_Chop";
 	private const string DIE = "Death_A";
 	private const string ANIMATION_PLAYER = "AnimationPlayer";
 
 	private Enemy Enemy = null!;
 	private AnimationPlayer AnimationPlayer = null!;
 	private bool IsDying;
+	private bool IsAttacking;
 	public State CurrentAnimation {
 		get;
 		private set {
@@ -31,7 +33,6 @@ public sealed partial class EnemyAnimator : Node3D {
 				case State.Jumping: AnimationPlayer.Play(JUMPING); break;
 				case State.Falling: AnimationPlayer.Play(FALLING); break;
 				case State.Landing: AnimationPlayer.Play(LANDING); break;
-				case State.Die: AnimationPlayer.Play(DIE); break;
 			}
 		}
 	}
@@ -71,12 +72,27 @@ public sealed partial class EnemyAnimator : Node3D {
 			GetParent<Enemy>().Die();
 			SyncAnimation();
 		}
+		else if (name == CHOP) {
+			IsAttacking = false;
+			SyncAnimation();
+		}
+	}
+	
+	public void PlayChop()
+	{
+		if (IsAttacking)
+			return;
+
+		IsAttacking = true;
+		AnimationPlayer.Play(CHOP);
 	}
 
 	public void SyncAnimation() {
 		if(Debug){ GD.Print($"Syncing animation to: {Enemy.CurrentState}"); }
 		
 		if (IsDying)
+			return;
+		if (IsAttacking)
 			return;
 
 		CurrentAnimation = Enemy.CurrentState switch {
@@ -97,6 +113,9 @@ public sealed partial class EnemyAnimator : Node3D {
 
 	private void OnEnemyMovement(Enemy.State from, Enemy.State to) {
 		if(Debug){ GD.Print($"Enemy State change: {from} -> {to}"); }
+		
+		if (IsAttacking)
+			return;
 		
 		if (IsDying)
 			return;
