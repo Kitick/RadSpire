@@ -6,10 +6,12 @@ namespace Components {
     }
 
     public interface IUsable{
+        public bool CanUse(CharacterBody3D user);
         public bool OnUse(CharacterBody3D user);
     }
 
     public interface IConsumable {
+        public bool CanConsume(CharacterBody3D consumer);
         public bool OnConsume(CharacterBody3D consumer);
     }
 

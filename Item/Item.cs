@@ -84,20 +84,20 @@ public partial class Item : Resource, ISaveable<ItemData> {
     }
 
     public bool OnUse(CharacterBody3D user) {
-        bool success = true;
+        bool success = false;
         foreach(var component in components.Values) {
             if(component is IUsable usable) {
-                success &= usable.OnUse(user);
+                success |= usable.OnUse(user);
             }
         }
         return success;
     }
 
     public bool OnConsume(CharacterBody3D consumer) {
-        bool success = true;
+        bool success = false;
         foreach(var component in components.Values) {
             if(component is IConsumable consumable) {
-                success &= consumable.OnConsume(consumer);
+                success |= consumable.OnConsume(consumer);
             }
         }
         return success;
