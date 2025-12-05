@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection.Metadata;
 using Godot;
 
 public partial class InventoryManager : Node {
@@ -9,7 +10,7 @@ public partial class InventoryManager : Node {
 	public InventoryUIManager InventoryUIManager = null!;
 	public PackedScene? InventoryUIManagerTemplate = null!;
 	private bool MouseHasItemSlot = false;
-	private ItemSlot? HeldItemSlot = null;
+	public ItemSlot? HeldItemSlot = null;
 	public event Action<ItemSlot>? StartMoveItemEvent;
 	public event Action? EndMoveItemEvent;
 
@@ -185,9 +186,12 @@ public partial class InventoryManager : Node {
 				Vector2 clickPos = mouseButton.GlobalPosition;
 				if(ClickedOutsideInventory(clickPos)) {
 					Log.Info("Clicked outside inventory, dropping held item.");
-					DropItem();
+					DropItemOutside();
 				}
 			}
+		}
+		if(@event.IsActionPressed("DropItem")) {
+			HandleItemDropWithKeyboard();
 		}
 	}
 
@@ -200,24 +204,58 @@ public partial class InventoryManager : Node {
 		}
 		return true;
 	}
-	
-	public void DropItem() {
+
+	public void DropItemOutside() {
 		if(MouseHasItemSlot) {
 			Log.Info("Dropping held item into the world.");
 			if(HeldItemSlot == null) {
 				Log.Error("HeldItemSlot is null in DropItem");
 				return;
 			}
-			Vector3 dropPosition = GetParent<Player>().GlobalPosition + GetParent<Player>().GlobalTransform.Basis.Z * 2 + Vector3.Up;
-			for(int i = 0; i < HeldItemSlot.Quantity; i++) {
-				Item3DIcon droppedItemIcon = new Item3DIcon();
-				droppedItemIcon.Item = HeldItemSlot.Item;
-				droppedItemIcon.SpawnItem3D(dropPosition);
-				GetParent<Player>().GetParent().AddChild(droppedItemIcon);
-			}
+			DropItemSlot(HeldItemSlot);
 			EndMoveItemEvent?.Invoke();
 			MouseHasItemSlot = false;
 			HeldItemSlot = null;
 		}
+	}
+
+	public void DropItemSlot(ItemSlot itemSlot) {
+		for(int i = 0; i < itemSlot.Quantity; i++) {
+			DropItem(itemSlot.Item);
+			itemSlot.Quantity--;
+		}
+	}
+
+	public void DropItem(Item item) {
+		Vector3 dropPosition = GetParent<Player>().GlobalPosition + GetParent<Player>().GlobalTransform.Basis.Z * 2 + Vector3.Up;
+		Item3DIcon droppedItemIcon = new Item3DIcon();
+		droppedItemIcon.Item = item;
+		droppedItemIcon.SpawnItem3D(dropPosition);
+		GetParent<Player>().GetParent().AddChild(droppedItemIcon);
+	}
+	
+	public void HandleItemDropWithKeyboard() {
+		Hotbar hotbar = null!;
+		Inventory hotbarInventory = null!;
+		foreach(string inventoryName in Inventories.Keys) {
+			if(GetInventoryUI(inventoryName) is Hotbar currentHotbar) {
+				hotbar = currentHotbar;
+				hotbarInventory = GetInventory(inventoryName);
+				break;
+			}
+		}
+		if(hotbar == null) {
+			Log.Error("No Hotbar inventory found for dropping item.");
+			return;
+		}
+		ItemSlot selectedSlot = hotbar.GetSelectedItemSlot();
+		if(selectedSlot.IsEmpty()) {
+			Log.Info("No item in selected hotbar slot to drop.");
+			return;
+		}
+		int selectedIndex = hotbar.SelectedSlot;
+		Log.Info("Dropping item from hotbar slot index: " + selectedIndex);
+		hotbarInventory.RemoveItem(hotbar.Inventory.GetRow(selectedIndex), hotbar.Inventory.GetColumn(selectedIndex), 1);
+		DropItem(selectedSlot.Item);
 	}
 }

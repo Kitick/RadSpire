@@ -79,7 +79,7 @@ public partial class InventoryUI: Control, IInventoryUI {
 				// Use InventoryManager to determine whether click is outside all inventory UIs
 				if(Player != null && Player.InventoryManager != null) {
 					if(Player.InventoryManager.ClickedOutsideInventory(clickPos)) {
-						Player.InventoryManager.DropItem();
+						Player.InventoryManager.DropItemOutside();
 					}
 				}
 			}
