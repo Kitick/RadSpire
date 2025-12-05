@@ -18,7 +18,7 @@ public sealed partial class EnemyAnimator : Node3D {
 
 	private Enemy Enemy = null!;
 	private AnimationPlayer AnimationPlayer = null!;
-
+	private bool IsDying;
 	public State CurrentAnimation {
 		get;
 		private set {
@@ -67,10 +67,17 @@ public sealed partial class EnemyAnimator : Node3D {
 		if(name == JUMPING || name == LANDING) {
 			SyncAnimation();
 		}
+		else if (name == DIE) {
+			GetParent<Enemy>().Die();
+			SyncAnimation();
+		}
 	}
 
 	public void SyncAnimation() {
 		if(Debug){ GD.Print($"Syncing animation to: {Enemy.CurrentState}"); }
+		
+		if (IsDying)
+			return;
 
 		CurrentAnimation = Enemy.CurrentState switch {
 			Enemy.State.Idle => State.Idle,
@@ -81,9 +88,18 @@ public sealed partial class EnemyAnimator : Node3D {
 			_ => CurrentAnimation,
 		};
 	}
+	
+	public void PlayDie()
+	{
+		IsDying = true;
+		AnimationPlayer.Play(DIE);
+	}
 
 	private void OnEnemyMovement(Enemy.State from, Enemy.State to) {
 		if(Debug){ GD.Print($"Enemy State change: {from} -> {to}"); }
+		
+		if (IsDying)
+			return;
 
 		bool jumped = from != Enemy.State.Falling && to == Enemy.State.Falling;
 		bool landed = from == Enemy.State.Falling && to != Enemy.State.Falling;

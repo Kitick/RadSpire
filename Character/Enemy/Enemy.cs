@@ -15,6 +15,7 @@ public sealed partial class Enemy : CharacterBody3D, ISaveable<EnemyData> {
 	private Health Health = null!;
 	private Movement Movement = null!;
 	private AiInput AiInput = null!;
+	private EnemyAnimator Animator = null!;
 
 
 	// State Machine
@@ -43,6 +44,8 @@ public sealed partial class Enemy : CharacterBody3D, ISaveable<EnemyData> {
 			player = players[0] as Node3D;
 		}
 		
+		Animator =  GetNode<EnemyAnimator>("/root/GameManager/Enemy/Barbarian");
+		
 		if (player == null) {
 			GD.PushWarning("Enemy could not find any node in group 'player'. AI will not move.");
 			return;
@@ -56,21 +59,18 @@ public sealed partial class Enemy : CharacterBody3D, ISaveable<EnemyData> {
 	{
 		Health.CurrentHealth -= amount;
 		GD.Print($"Enemy HP: {Health.CurrentHealth}");
-
-		if (Health.IsDead())
-			Die();
+		
+		if (Health.IsDead()) {
+			Animator.PlayDie();
+		}
 	}
 
-	private void Die()
+	public void Die()
 	{
 		QueueFree();
 	}
 
 	public override void _PhysicsProcess(double delta) {
-		if(Health.IsDead()) {
-			Die();
-			return;
-		}
 
 		float dt = (float) delta;
 		
