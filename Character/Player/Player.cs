@@ -90,7 +90,7 @@ public sealed partial class Player : CharacterBody3D, ISaveable<PlayerData> {
 		UpdateMovementState(keyInput);
 	}
 
-	private void UpdateMovementState() {
+	private void UpdateMovementState(KeyInput keyInput) {
 		if(!IsOnFloor()) { StateMachine.TransitionTo(State.Falling); }
 		else if(!keyInput.IsMoving) { StateMachine.TransitionTo(State.Idle); }
 		else if(keyInput.SprintHeld) { StateMachine.TransitionTo(State.Sprinting); }
