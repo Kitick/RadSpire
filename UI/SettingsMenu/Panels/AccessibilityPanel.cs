@@ -1,5 +1,7 @@
+using System.Diagnostics;
 using System;
 using Godot;
+using SaveSystem;
 
 namespace Settings {
 	public sealed partial class AccessibilityPanel : VBoxContainer {
@@ -8,8 +10,8 @@ namespace Settings {
 		private const string SUBTITLES = "Subtitles/CheckBox";
 		private const string SUBTITLES_SIZE = "Subtitle_Size/HSlider";
 		private const string COLORBLIND_MODE = "Colorblind_Mode/OptionButton";
-		private const string TEXT_TO_SPEECH = "Colorblind_Mode/OptionButton";
-		private const string HIGH_CONTRAST_UI = "Colorblind_Mode/OptionButton";
+		private const string TEXT_TO_SPEECH = "Text-to-Speech/CheckBox";
+		private const string HIGH_CONTRAST_UI = "High_Contrast_UI/CheckBox";
 
 		public override void _Ready() {
 			SetCallbacks();

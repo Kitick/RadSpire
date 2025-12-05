@@ -5,6 +5,7 @@ using SaveSystem;
 
 namespace Settings {
 	public sealed partial class ControllerPanel : VBoxContainer{
+		
 		// Node Paths 
 		private const string ENABLE_CONTROLLER = "Enable_Controller/CheckBox";
 		private const string VIBRATION = "Vibration/CheckBox";
