@@ -92,7 +92,7 @@ public sealed partial class HUD : Control {
 		GetNode<Button>(PAUSE_BUTTON).Pressed += () => StateMachine.TransitionTo(MenuState.Paused);
 
 		PauseMenu.ResumeButton.Pressed += TogglePause;
-		PauseMenu.SaveButton.Pressed += () => GameManager.Instance.Save("autosave");
+		PauseMenu.SaveButton.Pressed += OpenSaveMenu;
 		PauseMenu.HostButton.Pressed += OnHostButtonPressed;
 		PauseMenu.SettingsButton.Pressed += () => StateMachine.TransitionTo(MenuState.Settings);
 		PauseMenu.MainMenuButton.Pressed += QuitGame;
@@ -138,6 +138,13 @@ public sealed partial class HUD : Control {
 		var settings = this.AddScene<SettingsMenu>(Scenes.SettingsMenu);
 		settings.OnMenuClosed += () => StateMachine.TransitionTo(MenuState.Paused);
 		settings.OpenMenu();
+	}
+
+	private void OpenSaveMenu() {
+		var saveLoad = this.AddScene<SaveLoadMenu>(Scenes.SaveLoadMenu);
+		saveLoad.Mode = SaveLoadMode.Save;
+		saveLoad.OnMenuClosed += () => StateMachine.TransitionTo(MenuState.Paused);
+		saveLoad.OpenMenu();
 	}
 
 	private void TogglePause() {

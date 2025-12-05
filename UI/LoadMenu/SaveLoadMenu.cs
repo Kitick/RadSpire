@@ -3,69 +3,113 @@ using Godot;
 using InputSystem;
 using SaveSystem;
 
-namespace LoadMenuScene {
-	public sealed partial class LoadMenu : Control {
-		public event Action? OnMenuClosed;
-		private event Action? OnExit;
+public enum SaveLoadMode { Save, Load }
 
-		private const string BACK_BUTTON = "BackButton";
-		private const string CONTAINER = "Panel/SaveSlots";
+public sealed partial class SaveLoadMenu : Control {
+	private static readonly Logger Log = new(nameof(SaveLoadMenu), enabled: true);
 
-		public static string SlotFile(int slot) => $"slot{slot}";
+	public event Action? OnMenuClosed;
+	private event Action? OnExit;
 
-		private const int SLOTS = 5;
+	private const string BACK_BUTTON = "BackButton";
+	private const string CONTAINER = "Panel/SaveSlots";
+	private const string TITLE_LABEL = "Panel/Title";
 
-		private Button[] Buttons = new Button[SLOTS];
+	public static string SlotFile(int slot) => $"slot{slot}";
 
-		public override void _Ready() {
-			ProcessMode = ProcessModeEnum.Always;
+	private const int SLOTS = 5;
 
-			SetInputCallbacks();
-			GetComponents();
-			SetCallbacks();
+	private Button[] Buttons = new Button[SLOTS];
+	private Label? TitleLabel;
+
+	public SaveLoadMode Mode { get; set; } = SaveLoadMode.Load;
+
+	public override void _Ready() {
+		ProcessMode = ProcessModeEnum.Always;
+
+		SetInputCallbacks();
+		GetComponents();
+		SetCallbacks();
+		UpdateTitle();
+	}
+
+	public override void _ExitTree() {
+		OnExit?.Invoke();
+		OnMenuClosed?.Invoke();
+	}
+
+	private void SetInputCallbacks() {
+		OnExit += ActionEvent.MenuBack.WhenPressed(CloseMenu);
+		OnExit += ActionEvent.MenuExit.WhenPressed(CloseMenu);
+	}
+
+	private void GetComponents() {
+		TitleLabel = GetNodeOrNull<Label>(TITLE_LABEL);
+
+		for(int i = 0; i < SLOTS; i++) {
+			int slot = i + 1;
+			Buttons[i] = GetNode<Button>($"{CONTAINER}/Slot{slot}");
+			Buttons[i].Pressed += () => OnSlotPressed(slot);
 		}
 
-		public override void _ExitTree() {
-			OnExit?.Invoke();
-			OnMenuClosed?.Invoke();
+		RefreshSlotDisplay();
+	}
+
+	private void RefreshSlotDisplay() {
+		for(int i = 0; i < SLOTS; i++) {
+			int slot = i + 1;
+			bool exists = SaveService.Exists(SlotFile(slot));
+			Buttons[i].Text = exists ? $"Slot {slot}" : "Empty";
 		}
+	}
 
-		private void SetInputCallbacks() {
-			OnExit += ActionEvent.MenuBack.WhenPressed(CloseMenu);
-			OnExit += ActionEvent.MenuExit.WhenPressed(CloseMenu);
+	private void UpdateTitle() {
+		if(TitleLabel != null) {
+			TitleLabel.Text = Mode == SaveLoadMode.Save ? "Save Game" : "Load Game";
 		}
+	}
 
-		private void GetComponents() {
-			for(int i = 0; i < SLOTS; i++) {
-				int slot = i + 1;
+	private void SetCallbacks() {
+		GetNode<Button>(BACK_BUTTON).Pressed += OnBackButtonPressed;
+	}
 
-				bool exists = SaveService.Exists(SlotFile(slot));
+	private void OnBackButtonPressed() {
+		CloseMenu();
+	}
 
-				Buttons[i] = GetNode<Button>($"{CONTAINER}/Slot{slot}");
+	public void OpenMenu() {
+		UpdateTitle();
+		RefreshSlotDisplay();
+	}
 
-				Buttons[i].Text = exists ? $"Slot {slot}" : "Empty";
-				Buttons[i].Pressed += () => OnLoadSlotPressed(slot);
+	private void CloseMenu() {
+		QueueFree();
+	}
+
+	private void OnSlotPressed(int slot) {
+		string fileName = SlotFile(slot);
+
+		if(Mode == SaveLoadMode.Save) {
+			Log.Info($"Saving game to {fileName}");
+			if(GameManager.Instance.Save(fileName)) {
+				Log.Info($"Game saved to {fileName}");
+				RefreshSlotDisplay();
+				CloseMenu();
+			}
+			else {
+				Log.Error($"Failed to save game to {fileName}");
 			}
 		}
+		else { // Load mode
+			if(!SaveService.Exists(fileName)) {
+				Log.Warn($"No save file exists at {fileName}");
+				return;
+			}
 
-		private void SetCallbacks() {
-			GetNode<Button>(BACK_BUTTON).Pressed += OnBackButtonPressed;
-		}
-
-		private void OnBackButtonPressed() {
+			Log.Info($"Loading game from {fileName}");
+			GameManager.Instance.StartGame();
+			GameManager.Instance.LoadDeferred(fileName);
 			CloseMenu();
-		}
-
-		public void OpenMenu() {
-
-		}
-
-		private void CloseMenu() {
-			QueueFree();
-		}
-
-		private void OnLoadSlotPressed(int slot) {
-
 		}
 	}
 }

@@ -90,6 +90,12 @@ public sealed partial class GameManager : Node {
 		return true;
 	}
 
+	private string? PendingLoadFile;
+
+	public void LoadDeferred(string fileName) {
+		PendingLoadFile = fileName;
+	}
+
 	public void StartGame() {
 		CleanupGame();
 		GetTree().Paused = false;
@@ -100,6 +106,11 @@ public sealed partial class GameManager : Node {
 	private void OnGameSceneLoaded() {
 		SpawnLocalPlayer();
 		SpawnTestItems();
+
+		if(PendingLoadFile != null) {
+			Load(PendingLoadFile);
+			PendingLoadFile = null;
+		}
 	}
 
 	public void ReturnToMainMenu() {

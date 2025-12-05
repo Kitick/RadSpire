@@ -3,10 +3,8 @@
 using Core;
 using Godot;
 using Network;
-using SaveSystem;
 using Settings;
 using MultiplayerPanels;
-using LoadMenuScene;
 
 public partial class MainMenu : Control {
 	private static readonly Logger Log = new(nameof(MainMenu), enabled: true);
@@ -186,7 +184,9 @@ public partial class MainMenu : Control {
 	}
 
 	private void OnLoadSavedButtonPressed() {
-		this.AddScene<LoadMenu>(Scenes.LoadMenu).OpenMenu();
+		var saveLoad = this.AddScene<SaveLoadMenu>(Scenes.SaveLoadMenu);
+		saveLoad.Mode = SaveLoadMode.Load;
+		saveLoad.OpenMenu();
 	}
 
 	private void OnStartNewButtonPressed() {
