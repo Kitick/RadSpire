@@ -8,6 +8,9 @@ using System.Linq;
 
 namespace Components {
     public partial class Item3DIconPickup : Node3D {
+
+        private static readonly Logger Log = new(nameof(Item3DIconPickup), enabled: false);
+
         public Player Player = null!;
         public Inventory PlayerInventory = null!;
         public Inventory PlayerHotbar = null!;
@@ -24,7 +27,7 @@ namespace Components {
             PlayerHotbar = Player.Hotbar;
             PlayerInteractionArea = Player.GetNode<InteractionArea>("InteractionArea");
             if(PlayerInteractionArea == null) {
-                GD.PrintErr("[Item3DIconPickup] _Ready: Player InteractionArea not found.");
+                Log.Error("Player InteractionArea not found.");
                 return;
             }
             PlayerInteractionArea.OnBodyEnteredArea += HandleOnBodyEnteredArea;
@@ -39,13 +42,13 @@ namespace Components {
 
         public override void _UnhandledInput(InputEvent @event) {
             if(@event.IsActionPressed("Interact")) {
-                GD.Print("[Item3DIconPickup] Interact action pressed.");
+                Log.Info("Interact action pressed.");
                 if(ItemsInRange.Count == 0) {
-                    GD.Print("[Item3DIconPickup] No items in range to pick up.");
+                    Log.Info("No items in range to pick up.");
                     return;
                 }
                 else {
-                    GD.Print("[Item3DIconPickup] Items in range detected, attempting to pick up.");
+                    Log.Info("Items in range detected, attempting to pick up.");
                     PickupItem();
                 }
             }
@@ -56,50 +59,50 @@ namespace Components {
             PlayerInventory = Player.Inventory;
             PlayerHotbar = Player.Hotbar;
             if(ItemsInRange.Count == 0) {
-                GD.Print("[Item3DIconPickup] No item icons in range to pick up.");
+                Log.Info("No item icons in range to pick up.");
                 return;
             }
             Item3DIcon itemIcon3D = ItemsInRange.Keys.First();
             if(itemIcon3D.Item == null) {
-                GD.PrintErr("[Item3DIconPickup] PickupItem: Item is null.");
+                Log.Error("PickupItem: Item is null.");
                 return;
             }
-            GD.Print($"[Item3DIconPickup] Picking up item: {itemIcon3D.Item.Name}");
+            Log.Info($"Picking up item: {itemIcon3D.Item.Name}");
             if(PlayerHotbar.AddItem(itemIcon3D.Item)) {
-                GD.Print("[Item3DIconPickup] Item added to Hotbar.");
+                Log.Info("Item added to Hotbar.");
                 RemoveItemIconPrompt(itemIcon3D);
                 itemIcon3D.QueueFree();
-                GD.Print("[Item3DIconPickup] Item picked up and removed from the world.");
+                Log.Info("Item picked up and removed from the world.");
                 return;
             }
             else if(PlayerInventory.AddItem(itemIcon3D.Item)) {
-                GD.Print("[Item3DIconPickup] Item added to Inventory.");
+                Log.Info("Item added to Inventory.");
                 RemoveItemIconPrompt(itemIcon3D);
                 itemIcon3D.QueueFree();
-                GD.Print("[Item3DIconPickup] Item picked up and removed from the world.");
+                Log.Info("Item picked up and removed from the world.");
                 return;
             }
             else {
-                GD.Print("[Item3DIconPickup] Inventory and Hotbar full, cannot pick up item.");
+                Log.Info("Inventory and Hotbar full, cannot pick up item.");
                 return;
             }
 
         }
 
         public void HandleOnBodyEnteredArea(Node3D node) {
-            GD.Print("[Item3DIconPickup] Body entered interaction area.");
+            Log.Info("Body entered interaction area.");
             var item3DIcon = FindAncestorItem3DIcon(node);
             if(item3DIcon != null) {
-                GD.Print("[Item3DIconPickup] Item3DIcon detected in interaction area.");
+                Log.Info("Item3DIcon detected in interaction area.");
                 CreateItemIconPrompt(item3DIcon);
             }
         }
 
         public void HandleOnBodyExitedArea(Node3D node) {
-            GD.Print("[Item3DIconPickup] Body exited interaction area.");
+            Log.Info("Body exited interaction area.");
             var item3DIcon = FindAncestorItem3DIcon(node);
             if(item3DIcon != null) {
-                GD.Print("[Item3DIconPickup] Item3DIcon exited interaction area.");
+                Log.Info("Item3DIcon exited interaction area.");
                 RemoveItemIconPrompt(item3DIcon);
             }
         }
@@ -114,38 +117,38 @@ namespace Components {
         }
 
         public void CreatePickupScreen() {
-            GD.Print("[Item3DIconPickup] Creating pickup screen.");
+            Log.Info("Creating pickup screen.");
             RemovePickupScreen();
             Item3DIconPickupScreenInstance = Item3DIconPickupScreenTemplate.Instantiate<Control>();
             if(Item3DIconPickupScreenInstance == null) {
-                GD.PrintErr("[Item3DIconPickup] CreatePickupScreen: Failed to instantiate pickup screen.");
+                Log.Error("CreatePickupScreen: Failed to instantiate pickup screen.");
                 return;
             }
-            GD.Print("[Item3DIconPickup] Pickup screen created successfully.");
+            Log.Info("Pickup screen created successfully.");
             AddChild(Item3DIconPickupScreenInstance);
         }
 
         public void RemovePickupScreen() {
-            GD.Print("[Item3DIconPickup] Removing pickup screen.");
+            Log.Info("Removing pickup screen.");
             if(Item3DIconPickupScreenInstance != null) {
                 Item3DIconPickupScreenInstance.QueueFree();
                 Item3DIconPickupScreenInstance = null;
-                GD.Print("[Item3DIconPickup] Pickup screen removed successfully.");
+                Log.Info("Pickup screen removed successfully.");
             }
         }
 
         public void CreateItemIconPrompt(Item3DIcon item3DIcon) {
             if(item3DIcon.Item == null) {
-                GD.PrintErr("[Item3DIconPickup] CreateItemIconPrompt called but Item is null.");
+                Log.Error("CreateItemIconPrompt called but Item is null.");
                 return;
             }
-            GD.Print("[Item3DIconPickup] Creating item icon prompt.");
+            Log.Info("Creating item icon prompt.");
             Control promptInstance = Item3DIconPromptTemplate.Instantiate<Control>();
             if(promptInstance == null) {
-                GD.PrintErr("[Item3DIconPickup] CreateItemIconPrompt: Failed to instantiate prompt.");
+                Log.Error("CreateItemIconPrompt: Failed to instantiate prompt.");
                 return;
             }
-            GD.Print("[Item3DIconPickup] Item icon prompt created successfully.");
+            Log.Info("Item icon prompt created successfully.");
             promptInstance.GetNode<Label>("GlassPanel/Label").Text = $"{item3DIcon.Item?.Name}";
             promptInstance.GetNode<TextureRect>("GlassPanel/TextureRect").Texture = item3DIcon.Item.IconTexture;
             if(Item3DIconPickupScreenInstance == null) {
@@ -157,10 +160,10 @@ namespace Components {
 
         public void RemoveItemIconPrompt(Item3DIcon item3DIcon) {
             if(item3DIcon.Item == null) {
-                GD.PrintErr("[Item3DIconPickup] RemoveItemIconPrompt called but Item is null.");
+                Log.Error("RemoveItemIconPrompt called but Item is null.");
                 return;
             }
-            GD.Print("[Item3DIconPickup] Removing item icon prompt.");
+            Log.Info("Removing item icon prompt.");
             if(ItemsInRange.ContainsKey(item3DIcon)) {
                 Item3DIconPickupScreenInstance.GetNode<VBoxContainer>("ScrollContainer/PromptContainer").RemoveChild(ItemsInRange[item3DIcon]);
                 ItemsInRange[item3DIcon].QueueFree();

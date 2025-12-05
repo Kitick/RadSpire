@@ -2,6 +2,8 @@ using Godot;
 using System;
 
 public partial class InvSlotUI : Panel {
+	private static readonly Logger Log = new(nameof(InvSlotUI), enabled: false);
+
 	[Export] public int SlotIndex { get; set; } = -1;
 	[Export] public TextureRect IconTextureRect { get; set; } = null!;
 	[Export] public Label ItemCountLabel { get; set; } = null!;
@@ -37,11 +39,11 @@ public partial class InvSlotUI : Panel {
 		if(@event is InputEventMouseButton mouseEvent) {
 			if(mouseEvent.ButtonIndex == MouseButton.Left && mouseEvent.Pressed) {
 				if(SlotIndex == -1) {
-					GD.PrintErr("[InvSlotUI] SlotIndex is -1, cannot handle click.");
+					Log.Error("SlotIndex is -1, cannot handle click.");
 					return;
 				}
 				OnSlotClicked?.Invoke(SlotIndex);
-				GD.Print($"[InvSlotUI] Slot {SlotIndex} clicked.");
+				Log.Info($"Slot {SlotIndex} clicked.");
 			}
 		}
 	}

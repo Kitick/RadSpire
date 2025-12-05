@@ -4,6 +4,9 @@ using Components;
 
 namespace Components {
 	public partial class InteractionArea : Area3D {
+
+		private static readonly Logger Log = new(nameof(InteractionArea), enabled: false);
+
 		public event Action<Node3D>? OnBodyEnteredArea;
 		public event Action<Node3D>? OnBodyExitedArea;
 
@@ -14,12 +17,12 @@ namespace Components {
 		}
 
 		private void HandleBodyEntered(Node3D body) {
-			GD.Print("[InteractionArea] Body entered interaction area.");
+			Log.Info("Body entered interaction area.");
 			OnBodyEnteredArea?.Invoke(body);
 		}
 
 		private void HandleBodyExited(Node3D body) {
-			GD.Print("[InteractionArea] Body exited interaction area.");
+			Log.Info("Body exited interaction area.");
 			OnBodyExitedArea?.Invoke(body);
 		}
 	}

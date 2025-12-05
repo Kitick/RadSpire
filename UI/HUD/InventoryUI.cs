@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using Godot;
 
 public partial class InventoryUI: Control, IInventoryUI {
+
+	private static readonly Logger Log = new(nameof(InventoryUI), enabled: false);
 	private Player Player = null!;
 	private bool MouseHasItemSlot = false;
 	public Inventory Inventory { get; set; } = null!;
@@ -26,7 +28,7 @@ public partial class InventoryUI: Control, IInventoryUI {
 	public void SetUpInventoryUI() {
 		Player = GetParent<HUD>().Player;
 		if(Player == null) {
-			GD.PrintErr("InventoryUI SetUpInventoryUI: Player is null.");
+			Log.Error("InventoryUI SetUpInventoryUI: Player is null.");
 			return;
 		}
 		Inventory = Player.Inventory;
@@ -61,7 +63,7 @@ public partial class InventoryUI: Control, IInventoryUI {
 	public void UpdateInventoryUI(){
 		Player = GetParent<HUD>().Player;
 		if(Player == null) {
-			GD.PrintErr("InventoryUI SetUpInventoryUI: Player is null.");
+			Log.Error("InventoryUI SetUpInventoryUI: Player is null.");
 			return;
 		}
 		Inventory = Player.Inventory;

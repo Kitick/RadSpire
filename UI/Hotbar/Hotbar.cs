@@ -4,6 +4,9 @@ using Godot;
 using InputSystem;
 
 public sealed partial class Hotbar : Control, IInventoryUI {
+
+	private static readonly Logger Log = new(nameof(Hotbar), enabled: false);
+
 	public static readonly bool Debug = false;
 
 	public int SelectedSlot {
@@ -55,10 +58,10 @@ public sealed partial class Hotbar : Control, IInventoryUI {
 		Player = GetParent<HUD>().Player;
 		Inventory = Player.Hotbar;
 		if(Player == null) {
-			GD.PrintErr("Hotbar could not find Player node in parent HUD.");
+			Log.Error("Hotbar could not find Player node in parent HUD.");
 			return;
 		}
-		GD.Print("Hotbar successfully found Player node in parent HUD.");
+		Log.Info("Hotbar successfully found Player node in parent HUD.");
 
 		Inventory.OnInventoryChanged += UpdateInventoryUI;
 	}
@@ -70,7 +73,7 @@ public sealed partial class Hotbar : Control, IInventoryUI {
 	public void SetUpInventoryUI() {
 		Player = GetParent<HUD>().Player;
 		if(Player == null) {
-			GD.PrintErr("InventoryUI SetUpInventoryUI: Player is null.");
+			Log.Error("InventoryUI SetUpInventoryUI: Player is null.");
 			return;
 		}
 		Inventory = Player.Hotbar;
@@ -106,8 +109,8 @@ public sealed partial class Hotbar : Control, IInventoryUI {
 
 	private void SelectSlot(Panel slot) {
 		if(Debug) {
-			GD.Print($"Hotbar: Selecting slot {HotbarSlots.IndexOf(slot)}");
-			GD.Print($"Hotbar: Selected item: {GetSelectedItem().Name}");
+			Log.Info($"Hotbar: Selecting slot {HotbarSlots.IndexOf(slot)}");
+			Log.Info($"Hotbar: Selected item: {GetSelectedItem().Name}");
 		}
 
 		foreach(var other in HotbarSlots) {
@@ -133,7 +136,7 @@ public sealed partial class Hotbar : Control, IInventoryUI {
 	public void UpdateInventoryUI(){
 		Player = GetParent<HUD>().Player;
 		if(Player == null) {
-			GD.PrintErr("InventoryUI SetUpInventoryUI: Player is null.");
+			Log.Error("InventoryUI SetUpInventoryUI: Player is null.");
 			return;
 		}
 		Inventory = Player.Hotbar;
