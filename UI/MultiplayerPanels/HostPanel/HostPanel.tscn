@@ -30,7 +30,7 @@ offset_left = 16.0
 offset_top = 14.0
 offset_right = 102.0
 offset_bottom = 37.0
-scale = Vector2(1.625, 1.625)
+theme_override_font_sizes/font_size = 32
 
 [node name="GameNameContainer" type="VBoxContainer" parent="PanelArea"]
 layout_mode = 0
@@ -86,12 +86,13 @@ offset_left = 51.0
 offset_top = 288.0
 offset_right = 176.0
 offset_bottom = 328.0
-scale = Vector2(1.75, 1.75)
 
 [node name="CancelButton" type="Button" parent="PanelArea/OptionContainer"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 32
 text = "Cancel"
 
 [node name="HostButton" type="Button" parent="PanelArea/OptionContainer"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 32
 text = "  Host  "
