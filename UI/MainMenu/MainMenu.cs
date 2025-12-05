@@ -9,7 +9,7 @@ using MultiplayerPanels;
 using LoadMenuScene;
 
 public partial class MainMenu : Control {
-	public static readonly bool Debug = false;
+	private static readonly Logger Log = new(nameof(MainMenu), enabled: false);
 
 	enum MenuState { Normal, SinglePopup, MultiPopup }
 
@@ -70,12 +70,12 @@ public partial class MainMenu : Control {
 	}
 
 	private void OnJoinedServer() {
-		GD.Print("[MainMenu] Successfully joined server, starting game...");
+		Log.Info("Successfully joined server, starting game...");
 		GameManager.Instance.StartGame();
 	}
 
 	private void OnHostStarted() {
-		GD.Print("[MainMenu] Host started successfully");
+		Log.Info("Host started successfully");
 	}
 
 	//Load Scenes
@@ -128,7 +128,7 @@ public partial class MainMenu : Control {
 	}
 
 	private void SetState(MenuState state) {
-		if(Debug) { GD.Print($"MainMenu: Setting Menu State to {state}"); }
+		Log.Info($"Setting Menu State to {state}");
 
 		SingleplayerButtonPanel.Visible = state == MenuState.SinglePopup;
 		MultiplayerButtonPanel.Visible = state == MenuState.MultiPopup;
@@ -181,18 +181,12 @@ public partial class MainMenu : Control {
 
 	// Pop-up panel buttons handler for Singleplayer
 	private void OnContinueButtonPressed() {
-		GameManager.Instance.Load("autosave");
 		GameManager.Instance.StartGame();
+		GameManager.Instance.Load("autosave");
 	}
 
 	private void OnLoadSavedButtonPressed() {
-		var loadMenu = this.AddScene<LoadMenu>(Scenes.LoadMenu);
-		loadMenu.OpenMenu();
-
-		var saves = SaveService.ListSaves();
-
-		GD.Print("Available Saves:");
-		foreach(var save in saves) { GD.Print(save); }
+		this.AddScene<LoadMenu>(Scenes.LoadMenu).OpenMenu();
 	}
 
 	private void OnStartNewButtonPressed() {

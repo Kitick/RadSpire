@@ -6,6 +6,8 @@ using SaveSystem;
 
 namespace Settings {
 	public sealed partial class SettingsMenu : Control, ISaveable<SettingsData> {
+		private static readonly Logger Log = new(nameof(SettingsMenu), enabled: false);
+
 		private const string SAVEFILE = "settings";
 
 		private const string GENERAL = "General";
@@ -87,12 +89,17 @@ namespace Settings {
 
 		private void SaveData() {
 			SaveService.Save(SAVEFILE, Serialize());
+			Log.Info("Settings saved");
 		}
 
 		private void LoadData() {
 			if(SaveService.Exists(SAVEFILE)) {
 				var data = SaveService.Load<SettingsData>(SAVEFILE);
 				Deserialize(data);
+				Log.Info("Settings loaded");
+			}
+			else {
+				Log.Info("No settings file found, using defaults");
 			}
 		}
 

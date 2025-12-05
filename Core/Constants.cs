@@ -20,8 +20,9 @@ namespace Core {
 		public const string JoinPanel = $"{MultiplayerPanels}/JoinPanel/JoinPanel.tscn";
 
 		public const string GameScene = "res://GameWorld/World.tscn";
-		public const string Camera = "res://Camera/Camera.tscn";
 		public const string Player = $"{Character}/Player/Player.tscn";
+		public const string Enemy = $"{Character}/Enemy/Enemy.tscn";
+		public const string Camera = "res://Camera/Camera.tscn";
 	}
 
 	public static class Actions {
@@ -33,6 +34,7 @@ namespace Core {
 		public const string Jump = "Jump";
 		public const string Sprint = "Sprint";
 		public const string Crouch = "Crouch";
+		public const string Attack = "Attack";
 		public const string Interact = "Interact";
 		public const string Inventory = "Inventory";
 
@@ -68,5 +70,5 @@ namespace Core {
 
 	public static class Icons {
 
-    }
+	}
 }

@@ -7,7 +7,7 @@ using Network;
 using Settings;
 
 public sealed partial class HUD : Control {
-	private static readonly Logger Log = new(nameof(HUD), enabled: true);
+	private static readonly Logger Log = new(nameof(HUD), enabled: false);
 
 	public enum MenuState { Game, Paused, Settings, Inventory, Host };
 

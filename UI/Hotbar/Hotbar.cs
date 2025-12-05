@@ -4,6 +4,9 @@ using Godot;
 using InputSystem;
 
 public sealed partial class Hotbar : Control, IInventoryUI {
+
+	private static readonly Logger Log = new(nameof(Hotbar), enabled: true);
+
 	public static readonly bool Debug = false;
 
 	public int SelectedSlot {
@@ -37,7 +40,8 @@ public sealed partial class Hotbar : Control, IInventoryUI {
 	private int NumHotbarSlots = 0;
 	private PackedScene? InvSlotTemplate = null!;
 	private Control? GridContainer = null!;
-	public event Action<string, int>? OnSlotClicked;
+	public event Action<string, int>? OnSlotPressed;
+	public event Action<string, int>? OnSlotReleased;
 	
 	public override void _EnterTree() {
 		SetInputCallbacks();
@@ -55,10 +59,10 @@ public sealed partial class Hotbar : Control, IInventoryUI {
 		Player = GetParent<HUD>().Player;
 		Inventory = Player.Hotbar;
 		if(Player == null) {
-			GD.PrintErr("Hotbar could not find Player node in parent HUD.");
+			Log.Error("Hotbar could not find Player node in parent HUD.");
 			return;
 		}
-		GD.Print("Hotbar successfully found Player node in parent HUD.");
+		Log.Info("Hotbar successfully found Player node in parent HUD.");
 
 		Inventory.OnInventoryChanged += UpdateInventoryUI;
 	}
@@ -70,7 +74,7 @@ public sealed partial class Hotbar : Control, IInventoryUI {
 	public void SetUpInventoryUI() {
 		Player = GetParent<HUD>().Player;
 		if(Player == null) {
-			GD.PrintErr("InventoryUI SetUpInventoryUI: Player is null.");
+			Log.Error("InventoryUI SetUpInventoryUI: Player is null.");
 			return;
 		}
 		Inventory = Player.Hotbar;
@@ -82,15 +86,22 @@ public sealed partial class Hotbar : Control, IInventoryUI {
 		for(int i = 0; i < NumHotbarSlots; i++) {
 			InvSlotUI slotInstance = InvSlotTemplate.Instantiate<InvSlotUI>();
 			slotInstance.SlotIndex = i;
-			slotInstance.OnSlotClicked += HandleOnSlotClicked;
+			slotInstance.OnSlotPressed += HandleOnSlotPressed;
+			slotInstance.OnSlotReleased += HandleOnSlotReleased;
 			HotbarSlotUIs.Add(slotInstance);
 			HotbarSlots.Add(slotInstance);
 			GridContainer.AddChild(slotInstance);
 		}
 	}
 
-	public void HandleOnSlotClicked(int slotIndex) {
-		OnSlotClicked?.Invoke(Inventory.Name, slotIndex);
+	public void HandleOnSlotPressed(int slotIndex) {
+		Log.Info($"Hotbar: Slot {slotIndex} pressed.");
+		OnSlotPressed?.Invoke(Inventory.Name, slotIndex);
+	}
+
+	public void HandleOnSlotReleased(int slotIndex) {
+		Log.Info($"Hotbar: Slot {slotIndex} released.");
+		OnSlotReleased?.Invoke(Inventory.Name, slotIndex);
 	}
 
 	private void SetInputCallbacks() {
@@ -106,8 +117,8 @@ public sealed partial class Hotbar : Control, IInventoryUI {
 
 	private void SelectSlot(Panel slot) {
 		if(Debug) {
-			GD.Print($"Hotbar: Selecting slot {HotbarSlots.IndexOf(slot)}");
-			GD.Print($"Hotbar: Selected item: {GetSelectedItem().Name}");
+			Log.Info($"Hotbar: Selecting slot {HotbarSlots.IndexOf(slot)}");
+			Log.Info($"Hotbar: Selected item: {GetSelectedItem()!.Name}");
 		}
 
 		foreach(var other in HotbarSlots) {
@@ -133,7 +144,7 @@ public sealed partial class Hotbar : Control, IInventoryUI {
 	public void UpdateInventoryUI(){
 		Player = GetParent<HUD>().Player;
 		if(Player == null) {
-			GD.PrintErr("InventoryUI SetUpInventoryUI: Player is null.");
+			Log.Error("InventoryUI SetUpInventoryUI: Player is null.");
 			return;
 		}
 		Inventory = Player.Hotbar;

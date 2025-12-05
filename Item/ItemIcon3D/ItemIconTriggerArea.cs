@@ -5,8 +5,11 @@ using SaveSystem;
 using Godot;
 
 public partial class ItemIconTriggerArea : Area3D {
-	public event Action<Item3DIcon> OnPlayerEnteredItemIconRange;
-	public event Action<Item3DIcon> OnPlayerExitedItemIconRange;
+
+	private static readonly Logger Log = new(nameof(ItemIconTriggerArea), enabled: false);
+
+	public event Action<Item3DIcon>? OnPlayerEnteredItemIconRange;
+	public event Action<Item3DIcon>? OnPlayerExitedItemIconRange;
 
 	public Item3DIcon item3DIcon = null!;
 
@@ -20,14 +23,14 @@ public partial class ItemIconTriggerArea : Area3D {
 	private void HandleBodyEntered(Node3D body) {
 		if (body is Player) {
 			OnPlayerEnteredItemIconRange?.Invoke(item3DIcon);
-			GD.Print("Player entered item icon trigger area.");
+			Log.Info("Player entered item icon trigger area.");
 		}
 	}
 
 	private void HandleBodyExited(Node3D body) {
 		if (body is Player) {
 			OnPlayerExitedItemIconRange?.Invoke(item3DIcon);
-			GD.Print("Player exited item icon trigger area.");
+			Log.Info("Player exited item icon trigger area.");
 		}
 	}
 }

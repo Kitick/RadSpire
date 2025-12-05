@@ -68,7 +68,7 @@ public class ItemSlot : ISaveable<ItemSlotData> {
             returnItemStack.Quantity = 0;
             return returnItemStack;
         }
-        if(SameItem(other) && Item.IsStackable) {
+        if(SameItem(other) && Item!.IsStackable) {
             int space = Item.MaxStackSize - Quantity;
             if(space <= 0) {
                 return returnItemStack;
@@ -104,14 +104,14 @@ public class ItemSlot : ISaveable<ItemSlotData> {
         if(IsEmpty()) {
             return false;
         }
-        return Item.SameItem(item);
+        return Item!.SameItem(item);
     }
 
     public bool SameItem(ItemSlot other) {
         if(IsEmpty() || other.IsEmpty()) {
             return false;
         }
-        return Item.SameItem(other.Item);
+        return Item!.SameItem(other.Item!);
     }
 
     public ItemSlot Copy() {

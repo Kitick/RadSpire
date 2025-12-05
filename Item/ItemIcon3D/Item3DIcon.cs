@@ -5,6 +5,9 @@ using SaveSystem;
 using Godot;
 
 public partial class Item3DIcon : Node3D {
+
+    private static readonly Logger Log = new(nameof(Item3DIcon), enabled: false);
+
     [Export] public Item? Item { get; set; }
     [Export] public PackedScene? Item3DSceneTemplate { get; set; }
     private Node3D? CurrentItem3DScene;
@@ -14,7 +17,7 @@ public partial class Item3DIcon : Node3D {
             Item3DSceneTemplate = GD.Load<PackedScene>("res://Item/ItemIcon3D/ItemIcon3DTemplete.tscn");
         }
         if(Item3DSceneTemplate == null) {
-            GD.PrintErr("Item3DIcon _Ready: Failed to load fallback Item3DSceneTemplate.");
+            Log.Error("Item3DIcon _Ready: Failed to load fallback Item3DSceneTemplate.");
         }
     }
 
@@ -22,13 +25,13 @@ public partial class Item3DIcon : Node3D {
     {
         if (Item == null)
         {
-            GD.PrintErr("Item3DIcon.SpawnItem3D called but Item is null.");
+            Log.Error("Item3DIcon.SpawnItem3D called but Item is null.");
             return;
         }
 
         if (Item.IconTexture == null)
         {
-            GD.Print("Item has no IconTexture; skipping 3D icon spawn.");
+            Log.Info("Item has no IconTexture; skipping 3D icon spawn.");
             return;
         }
 
@@ -52,7 +55,7 @@ public partial class Item3DIcon : Node3D {
 
         if (spriteMesh == null)
         {
-            GD.PrintErr("Spawned scene missing 'SpriteMeshInstance' node.");
+            Log.Error("Spawned scene missing 'SpriteMeshInstance' node.");
             return;
         }
 
@@ -62,13 +65,13 @@ public partial class Item3DIcon : Node3D {
         // Generate mesh + material
         spriteMesh.Call("update_sprite_mesh");
 
-        GD.Print("Item 3D mesh generated successfully.");
+        Log.Info("Item 3D mesh generated successfully.");
 
         // --- FIND COLLISIONSHAPE3D ---
         CollisionShape3D collisionShape = CurrentItem3DScene.GetNodeOrNull<CollisionShape3D>("RigidBody3D/CollisionShape3D");
         if (collisionShape == null)
         {
-            GD.PrintErr("CollisionShape3D not found in template.");
+            Log.Error("CollisionShape3D not found in template.");
             return;
         }
         BoxShape3D boxShape = new BoxShape3D();
@@ -78,7 +81,7 @@ public partial class Item3DIcon : Node3D {
         RigidBody3D rigidBody = CurrentItem3DScene.GetNodeOrNull<RigidBody3D>("RigidBody3D");
         rigidBody.Mass = 0.5f;
         rigidBody.Position = Vector3.Zero;
-        GD.Print("Collision shape updated to match generated mesh.");
+        Log.Info("Collision shape updated to match generated mesh.");
     }
 
 }

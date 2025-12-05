@@ -13,11 +13,14 @@ public sealed partial class PlayerAnimator : Node3D {
 	private const string JUMPING = "Jump_Start";
 	private const string FALLING = "Jump_Idle";
 	private const string LANDING = "Jump_Land";
-
+	private const string SLASH = "1H_Melee_Attack_Slice_Diagonal";
 	private const string ANIMATION_PLAYER = "AnimationPlayer";
 
 	private Player Player = null!;
 	private AnimationPlayer AnimationPlayer = null!;
+	private WeaponHitbox? HitBox;
+
+	private bool IsAttacking;
 
 	public State CurrentAnimation {
 		get;
@@ -66,10 +69,26 @@ public sealed partial class PlayerAnimator : Node3D {
 		if(name == JUMPING || name == LANDING) {
 			SyncAnimation();
 		}
+		else if (name == SLASH) {
+			IsAttacking = false;
+			SyncAnimation();
+		}
+	}
+	
+	public void PlaySlash()
+	{
+		if (IsAttacking)
+			return;
+
+		IsAttacking = true;
+		AnimationPlayer.Play(SLASH);
 	}
 
 	public void SyncAnimation() {
 		if(Debug){ GD.Print($"Syncing animation to: {Player.CurrentState}"); }
+		
+		if (IsAttacking)
+			return;
 
 		CurrentAnimation = Player.CurrentState switch {
 			Player.State.Idle => State.Idle,
@@ -83,6 +102,9 @@ public sealed partial class PlayerAnimator : Node3D {
 
 	private void OnPlayerMovement(Player.State from, Player.State to) {
 		if(Debug){ GD.Print($"Player State change: {from} -> {to}"); }
+		
+		if (IsAttacking)
+			return;
 
 		bool jumped = from != Player.State.Falling && to == Player.State.Falling;
 		bool landed = from == Player.State.Falling && to != Player.State.Falling;

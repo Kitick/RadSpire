@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Godot;
 
 public partial class InventoryUIManager : Control {
+	private static readonly Logger Log = new(nameof(InventoryUIManager), enabled: false);
     public InventoryManager InventoryManager = null!;
     public PackedScene? InvSlotTemplate = null!;
     public bool HeldItemSlotExist = false;
@@ -12,7 +13,6 @@ public partial class InventoryUIManager : Control {
         base._Ready();
         SetProcess(true);
         InventoryManager = GetParent<InventoryUI>().GetParent<HUD>().Player.InventoryManager;
-        GD.Print("InventoryUIManager ready; processing enabled.");
         LoadTemplate();
         InventoryManager.StartMoveItemEvent += CreateHeldItemSlotUI;
         InventoryManager.EndMoveItemEvent += DestroyHeldItemSlotUI;
@@ -34,14 +34,13 @@ public partial class InventoryUIManager : Control {
     }
 
     public void CreateHeldItemSlotUI(ItemSlot itemSlot) {
-        GD.Print("CreateHeldItemSlotUI called");
+        Log.Info("CreateHeldItemSlotUI called");
         ItemSlot itemSlotCopy = itemSlot.Copy();
         LoadTemplate();
         DestroyHeldItemSlotUI();
 
-        HeldItemSlotUI = InvSlotTemplate.Instantiate<InvSlotUI>();
+        HeldItemSlotUI = InvSlotTemplate!.Instantiate<InvSlotUI>();
         AddChild(HeldItemSlotUI);
-        GD.Print("HeldItemSlotUI created; inside tree=" + HeldItemSlotUI.IsInsideTree() + ", parent=" + (HeldItemSlotUI.GetParent()?.Name ?? "<null>"));
 
         HeldItemSlotUI.MouseFilter = Control.MouseFilterEnum.Ignore;
         foreach(var child in HeldItemSlotUI.GetChildren()) {
@@ -60,7 +59,7 @@ public partial class InventoryUIManager : Control {
 
     public void DestroyHeldItemSlotUI() {
         if(HeldItemSlotExist) {
-            GD.Print("DestroyHeldItemSlotUI called");
+            Log.Info("DestroyHeldItemSlotUI called");
             HeldItemSlotUI!.QueueFree();
             HeldItemSlotUI = null;
             HeldItemSlotExist = false;

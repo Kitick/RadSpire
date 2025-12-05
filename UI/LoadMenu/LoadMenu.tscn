@@ -24,6 +24,7 @@ texture = ExtResource("1_668ho")
 
 [node name="Panel" type="Control" parent="."]
 layout_mode = 1
+anchors_preset = 4
 anchor_top = 0.5
 anchor_bottom = 0.5
 offset_left = 100.0
