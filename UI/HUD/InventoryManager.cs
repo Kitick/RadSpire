@@ -230,10 +230,11 @@ public partial class InventoryManager : Node {
 	}
 
 	public void DropItemSlot(ItemSlot itemSlot) {
-		for(int i = 0; i < itemSlot.Quantity; i++) {
+		int quantity = itemSlot.Quantity;
+		for(int i = 0; i < quantity; i++) {
 			DropItem(itemSlot.Item!);
-			itemSlot.Quantity--;
 		}
+		itemSlot.Quantity = 0;
 	}
 
 	public void DropItem(Item item) {
