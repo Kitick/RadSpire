@@ -30,7 +30,7 @@ public sealed partial class GameManager : Node {
 	}
 
 	public override void _PhysicsProcess(double delta) {
-		if(!InGame || LocalPlayer == null || CameraRig == null) { return; }
+		if(!InGame) { return; }
 
 		float dt = (float) delta;
 
