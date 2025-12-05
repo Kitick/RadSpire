@@ -19,6 +19,9 @@ namespace Settings {
 		private const string TOBUTTON = "_Button";
 		private readonly string[] Tabs = [GENERAL, DISPLAY, SOUND, CONTROLLER, MK, ACCESSIBILITY];
 
+		private const string BACK_BUTTON = "BackButton";
+		private const string RESET_SETTINGS_BUTTON = "ResetSettingsButton";
+
 		private readonly Dictionary<string, (VBoxContainer panel, Button button)> Nodes = [];
 
 		public event Action? OnMenuClosed;
@@ -28,6 +31,7 @@ namespace Settings {
 			ProcessMode = ProcessModeEnum.Always;
 
 			GetComponents();
+			SetCallbacks();
 			SetInputCallbacks();
 		}
 
@@ -51,6 +55,19 @@ namespace Settings {
 				Nodes[path] = (panel, button);
 				button.Pressed += () => SwitchToPanel(panel);
 			}
+		}
+
+		private void SetCallbacks() {
+			GetNode<Button>(BACK_BUTTON).Pressed += OnBackButtonPressed;
+			GetNode<Button>(RESET_SETTINGS_BUTTON).Pressed += OnResetSettingsButtonPressed;
+		}
+
+		private void OnBackButtonPressed() {
+			CloseMenu();
+		}
+
+		private void OnResetSettingsButtonPressed() {
+			//Implementation Here should make it so what ever panel is open it can be reset
 		}
 
 		private void SwitchToPanel(VBoxContainer target) {

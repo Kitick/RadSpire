@@ -34,34 +34,40 @@ layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -560.0
-offset_right = -6.0
-offset_bottom = 40.0
+offset_left = -520.0
+offset_right = 516.0
+offset_bottom = 53.0
 grow_horizontal = 2
-scale = Vector2(2, 2)
+theme_override_constants/separation = 8
 
 [node name="General_Button" type="Button" parent="Top_Panel"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 40
 text = "General"
 
 [node name="Display_Button" type="Button" parent="Top_Panel"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 40
 text = "Display"
 
 [node name="Sound_Button" type="Button" parent="Top_Panel"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 40
 text = "Sound"
 
 [node name="Controller_Button" type="Button" parent="Top_Panel"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 40
 text = "Controller"
 
 [node name="MK_Button" type="Button" parent="Top_Panel"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 40
 text = "Mouse & Keyboard"
 
 [node name="Accessibility_Button" type="Button" parent="Top_Panel"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 40
 text = "Accessibility"
 
 [node name="General_Panel" type="VBoxContainer" parent="."]
@@ -76,11 +82,11 @@ offset_right = -1600.0
 offset_bottom = -296.0
 grow_horizontal = 2
 grow_vertical = 2
-scale = Vector2(2, 2)
 script = ExtResource("2_n8tfj")
 
 [node name="Language" type="Label" parent="General_Panel"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 40
 text = "Language"
 
 [node name="OptionButton" type="OptionButton" parent="General_Panel/Language"]
@@ -88,35 +94,38 @@ layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -96.0
-offset_right = -64.0
-offset_bottom = 20.0
+offset_left = 64.0
+offset_top = 12.0
+offset_right = 96.0
+offset_bottom = 32.0
 grow_horizontal = 0
+scale = Vector2(2, 2)
 
 [node name="UI_Scale" type="Label" parent="General_Panel"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 40
 text = "UI Scale"
 
 [node name="HSlider" type="HSlider" parent="General_Panel/UI_Scale"]
 layout_mode = 0
-offset_left = 160.0
-offset_right = 320.0
-offset_bottom = 16.0
+offset_left = 320.0
+offset_top = 17.0
+offset_right = 480.0
+offset_bottom = 33.0
+scale = Vector2(2, 2)
 
 [node name="Theme" type="Label" parent="General_Panel"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 40
 text = "Theme"
 
 [node name="OptionButton" type="OptionButton" parent="General_Panel/Theme"]
 layout_mode = 0
-offset_left = 160.0
-offset_right = 192.0
-offset_bottom = 20.0
-
-[node name="Reset" type="Button" parent="General_Panel"]
-layout_mode = 2
-size_flags_horizontal = 0
-text = "Reset Settings"
+offset_left = 320.0
+offset_top = 14.0
+offset_right = 352.0
+offset_bottom = 34.0
+scale = Vector2(2, 2)
 
 [node name="Display_Panel" type="VBoxContainer" parent="."]
 visible = false
@@ -423,3 +432,23 @@ offset_bottom = 24.0
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_w7gfg")
+
+[node name="ResetSettingsButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 1576.0
+offset_top = 960.0
+offset_right = 1856.0
+offset_bottom = 1023.0
+size_flags_horizontal = 0
+theme_override_font_sizes/font_size = 40
+text = "Reset Settings"
+
+[node name="BackButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 64.0
+offset_top = 960.0
+offset_right = 181.0
+offset_bottom = 991.0
+size_flags_horizontal = 0
+theme_override_font_sizes/font_size = 40
+text = "Back"
