@@ -56,11 +56,12 @@ namespace Camera {
 		}
 
 		private void FollowTarget(float dt) {
-			if(Target == null) { return; }
+			if(!IsInstanceValid(Target)) { return; }
 			Pose.Ground = Pose.Ground.SmoothLerp(Target.GlobalPosition, FollowSpeed, dt);
 		}
 
 		private bool TargetHasMoved() {
+			if(!IsInstanceValid(Target)) { return false; }
 			if(Target is not CharacterBody3D body) { return false; }
 
 			float targetSpeed = body.Velocity.Length();
