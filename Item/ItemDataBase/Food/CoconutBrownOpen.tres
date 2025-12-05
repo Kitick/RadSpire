@@ -1,12 +1,16 @@
-[gd_resource type="Resource" script_class="Item" load_steps=2 format=3 uid="uid://ccl45twf7obeu"]
+[gd_resource type="Resource" script_class="Item" load_steps=4 format=3 uid="uid://ccl45twf7obeu"]
 
+[ext_resource type="Resource" uid="uid://b08lbebkh6ytl" path="res://Item/ItemDataBase/Food/Leve3FoodHeal.tres" id="1_c5fmb"]
 [ext_resource type="Script" uid="uid://3l5yftlfas15" path="res://Item/Item.cs" id="1_o5o6t"]
+[ext_resource type="Texture2D" uid="uid://7x4q56bvy1ab" path="res://Assets/scrimsy fruit icons/color/brown/brown coconut 2.png" id="2_xanxq"]
 
 [resource]
 script = ExtResource("1_o5o6t")
-Id = ""
-Name = ""
-Description = ""
+Id = "CoconutBrownOpen"
+Name = "Opened Brown Coconut"
+Description = "A refreshing coconut drink."
 MaxStackSize = 64
 IsConsumable = true
+IconTexture = ExtResource("2_xanxq")
+ComponentResources = Array[Resource]([ExtResource("1_c5fmb")])
 metadata/_custom_type_script = "uid://3l5yftlfas15"
