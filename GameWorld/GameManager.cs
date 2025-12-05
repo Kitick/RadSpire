@@ -46,7 +46,7 @@ public sealed partial class GameManager : Node {
 		UpdateTimer();
 	}
 
-	private void SpawnLocalPlayer() {
+	public void SpawnLocalPlayer() {
 		LocalPlayer = this.AddScene<Player>(Scenes.Player);
 
 		LocalPlayer.Name = $"Player_{LocalPeerId}";

@@ -1,0 +1,47 @@
+[gd_scene load_steps=2 format=3 uid="uid://2mdnsh082j66"]
+
+[ext_resource type="Script" uid="uid://rn8pxohrw6oe" path="res://UI/RespawnMenu/RespawnMenu.cs" id="1_ixoqu"]
+
+[node name="RespawnMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -1676.0
+offset_bottom = -1017.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ixoqu")
+
+[node name="DeadBG" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 2.341
+anchor_bottom = 5.4300003
+offset_top = -3.0
+offset_right = -332.20404
+offset_bottom = -284.09003
+color = Color(0.41960785, 0.2784314, 0.23921569, 0.45882353)
+
+[node name="You Died" type="RichTextLabel" parent="DeadBG"]
+layout_mode = 0
+offset_left = 77.0
+offset_top = 1.0
+offset_right = 157.0
+offset_bottom = 26.0
+text = "YOU DIED"
+
+[node name="Buttons" type="HBoxContainer" parent="DeadBG"]
+layout_mode = 0
+offset_left = 29.0
+offset_top = 26.0
+offset_right = 207.0
+offset_bottom = 57.0
+
+[node name="Main_Menu" type="Button" parent="DeadBG/Buttons"]
+layout_mode = 2
+text = "Main Menu"
+
+[node name="Respawn" type="Button" parent="DeadBG/Buttons"]
+layout_mode = 2
+text = "Respawn"

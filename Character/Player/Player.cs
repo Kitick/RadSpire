@@ -115,7 +115,10 @@ public sealed partial class Player : CharacterBody3D, IDamageable, ISaveable<Pla
 	}
 
 	public void Die() {
-		QueueFree();
+		var hud = GetNode<HUD>("HUD");
+		hud.ShowRespawnMenu();
+		GD.Print("Respawn Showing");
+		//QueueFree();
 	}
 
 	private float GetMultiplier() {

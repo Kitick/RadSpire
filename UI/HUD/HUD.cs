@@ -9,7 +9,7 @@ using Settings;
 public sealed partial class HUD : Control {
 	private static readonly Logger Log = new(nameof(HUD), enabled: true);
 
-	public enum MenuState { Game, Paused, Settings, Inventory, Host };
+	public enum MenuState { Game, Paused, Settings, Inventory, Host, Death };
 
 	private readonly FiniteStateMachine<MenuState> StateMachine;
 	public MenuState State => StateMachine.State;
@@ -18,12 +18,14 @@ public sealed partial class HUD : Control {
 	private InventoryUI Inventory = null!;
 	private Control QuestLog = null!;
 	private Hotbar Hotbar = null!;
+	private RespawnMenu RespawnMenu = null!;
 
 	private const string PAUSE_BUTTON = "PauseButton";
 	private const string PAUSE_MENU = "PauseMenu";
 	private const string INVENTORY = "Inventory";
 	private const string QUESTLOG = "QuestLog";
 	private const string HOTBAR = "Hotbar";
+	private const string RESPAWN_MENU = "RespawnMenu";
 
 	//Load Scene Reference
 
@@ -86,6 +88,7 @@ public sealed partial class HUD : Control {
 		Inventory = GetNode<InventoryUI>(INVENTORY);
 		QuestLog = GetNode<Control>(QUESTLOG);
 		Hotbar = GetNode<Hotbar>(HOTBAR);
+		RespawnMenu = GetNode<RespawnMenu>(RESPAWN_MENU);
 	}
 
 	private void SetCallbacks() {
@@ -96,6 +99,9 @@ public sealed partial class HUD : Control {
 		PauseMenu.HostButton.Pressed += OnHostButtonPressed;
 		PauseMenu.SettingsButton.Pressed += () => StateMachine.TransitionTo(MenuState.Settings);
 		PauseMenu.MainMenuButton.Pressed += QuitGame;
+		
+		RespawnMenu.RespawnButton.Pressed += Respawn;
+		RespawnMenu.MainMenuButton.Pressed += QuitGame;
 
 		Server.Instance.OnServerDisconnected += OnServerDisconnected;
 	}
@@ -112,8 +118,20 @@ public sealed partial class HUD : Control {
 		}
 	}
 
+	private void Respawn() {
+		GetTree().Paused = false;          // unpause
+		Player.QueueFree();
+		GameManager.Instance.SpawnLocalPlayer();  
+		StateMachine.TransitionTo(MenuState.Game);
+	}
+	
+	public void ShowRespawnMenu()
+	{
+		StateMachine.TransitionTo(MenuState.Death);
+	}
+
 	private void OnStateChanged(MenuState from, MenuState to) {
-		GetTree().Paused = to != MenuState.Game;
+		GetTree().Paused = to != MenuState.Game && to != MenuState.Death;
 
 		if(to == MenuState.Paused) {
 			PauseMenu.OpenMenu();
@@ -124,6 +142,12 @@ public sealed partial class HUD : Control {
 
 		if(to == MenuState.Host) { OpenHostPanel(); }
 		if(to == MenuState.Settings) { OpenSettings(); }
+		
+		if (to == MenuState.Death) {
+			RespawnMenu.OpenMenu();
+		} else {
+			RespawnMenu.CloseMenu();
+		}
 	}
 
 	private void OpenHostPanel() {

@@ -91,6 +91,8 @@ public sealed partial class PlayerAnimator : Node3D {
 	
 	public void PlayDie()
 	{
+		if (IsDying)
+			return;
 		IsDying = true;
 		AnimationPlayer.Play(DIE);
 	}

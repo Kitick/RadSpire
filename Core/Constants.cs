@@ -15,6 +15,7 @@ namespace Core {
 		private const string Character = "res://Character";
 
 		public const string PauseMenu = $"{HUDDIR}/PauseMenu.tscn";
+		public const string RespawnMenu = $"{UI}/RespawnMenu/RespawnMenu.tscn";
 		public const string HUD = $"{HUDDIR}/HUD.tscn";
 
 		public const string MainMenu = $"{UI}/MainMenu/MainMenu.tscn";
