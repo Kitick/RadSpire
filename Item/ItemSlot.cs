@@ -4,7 +4,13 @@ using Core;
 using SaveSystem;
 
 public class ItemSlot : ISaveable<ItemSlotData> {
-	public Item? Item { get; set; }
+	public Item? Item { 
+		get;
+		set {
+			field = value;
+			Item?.BuildComponents();
+		} 
+	}
 
 	public int Quantity {
 		get;

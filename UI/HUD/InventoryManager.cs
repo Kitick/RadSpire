@@ -21,7 +21,7 @@ public partial class InventoryManager : Node {
 		SetProcessUnhandledInput(true);
 		LoadInventoryUIManager();
 	}
-	
+
 	public void LoadInventoryUIManager() {
 		if(InventoryUIManagerTemplate == null) {
 			InventoryUIManagerTemplate = GD.Load<PackedScene>("res://UI/Inventory/InventoryUIManager.tscn");
@@ -95,7 +95,7 @@ public partial class InventoryManager : Node {
 			GetInventory(inventoryName).RemoveItem(GetInventory(inventoryName).GetRow(slotIndex), GetInventory(inventoryName).GetColumn(slotIndex));
 		}
 	}
-	
+
 	public bool IsItemSlotEmpty(string inventoryName, int slotIndex) {
 		return GetInventory(inventoryName).IsEmptySlot(GetInventory(inventoryName).GetRow(slotIndex), GetInventory(inventoryName).GetColumn(slotIndex));
 	}
@@ -137,7 +137,7 @@ public partial class InventoryManager : Node {
 			HeldItemSlot = null;
 		}
 	}
-	
+
 	public void HandlePlaceItemSlotOnNonEmptySlot(string inventoryName, int slotIndex) {
 		if(!IsItemSlotEmpty(inventoryName, slotIndex)) {
 			if(HeldItemSlot == null) {
@@ -186,7 +186,7 @@ public partial class InventoryManager : Node {
 			}
 		}
 	}
-	
+
 	public override void _Input(InputEvent @event) {
 		if(@event is InputEventMouseButton mouseButton && !mouseButton.Pressed) {
 			if(MouseHasItemSlot) {
@@ -199,6 +199,9 @@ public partial class InventoryManager : Node {
 		}
 		if(@event.IsActionPressed("DropItem")) {
 			HandleItemDropWithKeyboard();
+		}
+		if(@event.IsActionPressed("Consume")) {
+			HandleConsumeItem();
 		}
 	}
 
@@ -227,20 +230,21 @@ public partial class InventoryManager : Node {
 	}
 
 	public void DropItemSlot(ItemSlot itemSlot) {
-		for(int i = 0; i < itemSlot.Quantity; i++) {
+		int quantity = itemSlot.Quantity;
+		for(int i = 0; i < quantity; i++) {
 			DropItem(itemSlot.Item!);
-			itemSlot.Quantity--;
 		}
+		itemSlot.Quantity = 0;
 	}
 
 	public void DropItem(Item item) {
 		Vector3 dropPosition = GetParent<Player>().GlobalPosition + GetParent<Player>().GlobalTransform.Basis.Z * 2 + Vector3.Up;
 		Item3DIcon droppedItemIcon = new Item3DIcon();
 		droppedItemIcon.Item = item;
-		droppedItemIcon.SpawnItem3D(dropPosition);
 		GetParent<Player>().GetParent().AddChild(droppedItemIcon);
+		droppedItemIcon.SpawnItem3D(dropPosition);
 	}
-	
+
 	public void HandleItemDropWithKeyboard() {
 		Hotbar hotbar = null!;
 		Inventory hotbarInventory = null!;
@@ -264,5 +268,32 @@ public partial class InventoryManager : Node {
 		Log.Info("Dropping item from hotbar slot index: " + selectedIndex);
 		hotbarInventory.RemoveItem(hotbar.Inventory.GetRow(selectedIndex), hotbar.Inventory.GetColumn(selectedIndex), 1);
 		DropItem(selectedSlot.Item!);
+	}
+
+	public void HandleConsumeItem() {
+		Log.Info("Handling consume item action.");
+		Hotbar hotbar = null!;
+		Inventory hotbarInventory = null!;
+		foreach(string inventoryName in Inventories.Keys) {
+			if(GetInventoryUI(inventoryName) is Hotbar currentHotbar) {
+				hotbar = currentHotbar;
+				hotbarInventory = GetInventory(inventoryName);
+				break;
+			}
+		}
+		if(hotbar == null) {
+			Log.Error("No Hotbar inventory found for consume item.");
+			return;
+		}
+		ItemSlot selectedSlot = hotbar.GetSelectedItemSlot();
+		if(selectedSlot.IsEmpty()) {
+			Log.Info("No item in selected hotbar slot to consume.");
+			return;
+		}
+		Log.Info("Consuming item from hotbar slot: " + hotbar.SelectedSlot);
+		int selectedIndex = hotbar.SelectedSlot;
+		if(selectedSlot.Item!.OnConsume(GetParent<Player>())) {
+			hotbarInventory.RemoveItem(hotbar.Inventory.GetRow(selectedIndex), hotbar.Inventory.GetColumn(selectedIndex), 1);
+		}
 	}
 }

@@ -1,6 +1,5 @@
 using System;
 using Components;
-using Core;
 using Godot;
 using SaveSystem;
 
@@ -70,19 +69,19 @@ public sealed partial class Enemy : CharacterBody3D, IDamageable, ISaveable<Enem
 
 	public override void _PhysicsProcess(double delta) {
 		float dt = (float) delta;
-		
-		if (Player == null || !GodotObject.IsInstanceValid(Player))
-		{
+
+		if(Player == null || !IsInstanceValid(Player)) {
 			var players = GetTree().GetNodesInGroup("Player");
-			if (players.Count == 0)
-			{
+			if(players.Count == 0) {
 				// No player currently in the scene → do nothing this frame
 				// This prevents ObjectDisposedException
 				return;
 			}
 
-			Player = players[0] as Node3D;
-			AiInput?.SetTarget(Player); 
+			if(players[0] is not Node3D player) { return; }
+
+			Player = player;
+			AiInput.SetTarget(Player);
 		}
 
 		AiInput.Update();

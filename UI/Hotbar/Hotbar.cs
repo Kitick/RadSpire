@@ -14,13 +14,13 @@ public sealed partial class Hotbar : Control, IInventoryUI {
 		set {
 			if(HotbarSlots.Count == 0) {
 				field = 0;
+				return;
 			}
-			else{
-				value += HotbarSlots.Count;
-				value %= HotbarSlots.Count;
-				field = value;
-			}
-			SelectSlot(HotbarSlots[value]);
+			int idx = value;
+			idx += HotbarSlots.Count;
+			idx %= HotbarSlots.Count;
+			field = idx;
+			SelectSlot(HotbarSlots[idx]);
 		}
 	}
 
@@ -42,7 +42,7 @@ public sealed partial class Hotbar : Control, IInventoryUI {
 	private Control? GridContainer = null!;
 	public event Action<string, int>? OnSlotPressed;
 	public event Action<string, int>? OnSlotReleased;
-	
+
 	public override void _EnterTree() {
 		SetInputCallbacks();
 		RequestReady();
@@ -91,6 +91,9 @@ public sealed partial class Hotbar : Control, IInventoryUI {
 			HotbarSlotUIs.Add(slotInstance);
 			HotbarSlots.Add(slotInstance);
 			GridContainer.AddChild(slotInstance);
+		}
+		if(NumHotbarSlots > 0) {
+			SelectedSlot = 0;
 		}
 	}
 
@@ -148,7 +151,8 @@ public sealed partial class Hotbar : Control, IInventoryUI {
 			return;
 		}
 		Inventory = Player.Hotbar;
-		for(int i = 0; i < NumHotbarSlots; i++) {
+		int slotsToUpdate = Math.Min(NumHotbarSlots, Inventory.ItemSlots.Length);
+		for(int i = 0; i < slotsToUpdate; i++) {
 			HotbarSlotUIs[i].UpdateSlotUI(Inventory.ItemSlots[i]);
 		}
 	}

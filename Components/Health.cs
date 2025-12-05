@@ -4,12 +4,15 @@ using SaveSystem;
 
 namespace Components {
 	public sealed class Health : ISaveable<HealthData>, INetworkable<HealthData> {
+		private static readonly Logger Log = new(nameof(Health), enabled: true);
+	
 		public event Action? OnStateChanged;
 
 		public int CurrentHealth {
 			get;
 			set {
 				value = Math.Clamp(value, 0, MaxHealth);
+				Log.Info($"Health changed from {field} to {value}.");
 				if(field == value) { return; }
 
 				OnHealthChanged?.Invoke(field, value);

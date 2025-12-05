@@ -1,9 +1,11 @@
 using System;
 using SaveSystem;
+using Godot;
 
 namespace Components {
-    public class Durability : IItemComponent, ISaveable<DurabilityData> {
-        public int CurrentDurability {
+    [GlobalClass]
+    public partial class Durability : Resource, IItemComponent, ISaveable<DurabilityData> {
+        [Export] public int CurrentDurability {
             get;
             set {
                 DurabilityChanged?.Invoke(CurrentDurability, value);
@@ -19,7 +21,7 @@ namespace Components {
         public event Action? DurabilityZeroed;
         public event Action<int, int>? DurabilityChanged;
 
-        public int MaxDurability {
+        [Export] public int MaxDurability {
             get;
             set {
                 DurabilityChanged?.Invoke(CurrentDurability, value);
