@@ -106,7 +106,7 @@ public partial class InventoryManager : Node {
 			Log.Error("Error: Original ItemSlot is null/empty");
 			return new ItemSlot();
 		}
-		Log.Info("Getting copy of ItemSlot: " + original.Item.Name + " x" + original.Quantity);
+		Log.Info("Getting copy of ItemSlot: " + original.Item!.Name + " x" + original.Quantity);
 		ItemSlot copy = new ItemSlot();
 		copy.Item = original.Item.Copy();
 		copy.Quantity = original.Quantity;
@@ -228,7 +228,7 @@ public partial class InventoryManager : Node {
 
 	public void DropItemSlot(ItemSlot itemSlot) {
 		for(int i = 0; i < itemSlot.Quantity; i++) {
-			DropItem(itemSlot.Item);
+			DropItem(itemSlot.Item!);
 			itemSlot.Quantity--;
 		}
 	}
@@ -263,6 +263,6 @@ public partial class InventoryManager : Node {
 		int selectedIndex = hotbar.SelectedSlot;
 		Log.Info("Dropping item from hotbar slot index: " + selectedIndex);
 		hotbarInventory.RemoveItem(hotbar.Inventory.GetRow(selectedIndex), hotbar.Inventory.GetColumn(selectedIndex), 1);
-		DropItem(selectedSlot.Item);
+		DropItem(selectedSlot.Item!);
 	}
 }

@@ -118,7 +118,7 @@ public sealed partial class Hotbar : Control, IInventoryUI {
 	private void SelectSlot(Panel slot) {
 		if(Debug) {
 			Log.Info($"Hotbar: Selecting slot {HotbarSlots.IndexOf(slot)}");
-			Log.Info($"Hotbar: Selected item: {GetSelectedItem().Name}");
+			Log.Info($"Hotbar: Selected item: {GetSelectedItem()!.Name}");
 		}
 
 		foreach(var other in HotbarSlots) {

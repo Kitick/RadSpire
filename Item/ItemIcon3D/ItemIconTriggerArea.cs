@@ -8,8 +8,8 @@ public partial class ItemIconTriggerArea : Area3D {
 
 	private static readonly Logger Log = new(nameof(ItemIconTriggerArea), enabled: false);
 
-	public event Action<Item3DIcon> OnPlayerEnteredItemIconRange;
-	public event Action<Item3DIcon> OnPlayerExitedItemIconRange;
+	public event Action<Item3DIcon>? OnPlayerEnteredItemIconRange;
+	public event Action<Item3DIcon>? OnPlayerExitedItemIconRange;
 
 	public Item3DIcon item3DIcon = null!;
 

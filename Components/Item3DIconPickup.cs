@@ -119,7 +119,7 @@ namespace Components {
         public void CreatePickupScreen() {
             Log.Info("Creating pickup screen.");
             RemovePickupScreen();
-            Item3DIconPickupScreenInstance = Item3DIconPickupScreenTemplate.Instantiate<Control>();
+            Item3DIconPickupScreenInstance = Item3DIconPickupScreenTemplate!.Instantiate<Control>();
             if(Item3DIconPickupScreenInstance == null) {
                 Log.Error("CreatePickupScreen: Failed to instantiate pickup screen.");
                 return;
@@ -143,18 +143,18 @@ namespace Components {
                 return;
             }
             Log.Info("Creating item icon prompt.");
-            Control promptInstance = Item3DIconPromptTemplate.Instantiate<Control>();
+            Control promptInstance = Item3DIconPromptTemplate!.Instantiate<Control>();
             if(promptInstance == null) {
                 Log.Error("CreateItemIconPrompt: Failed to instantiate prompt.");
                 return;
             }
             Log.Info("Item icon prompt created successfully.");
             promptInstance.GetNode<Label>("GlassPanel/Label").Text = $"{item3DIcon.Item?.Name}";
-            promptInstance.GetNode<TextureRect>("GlassPanel/TextureRect").Texture = item3DIcon.Item.IconTexture;
+            promptInstance.GetNode<TextureRect>("GlassPanel/TextureRect").Texture = item3DIcon.Item!.IconTexture;
             if(Item3DIconPickupScreenInstance == null) {
                 CreatePickupScreen();
             }
-            Item3DIconPickupScreenInstance.GetNode<VBoxContainer>("ScrollContainer/PromptContainer").AddChild(promptInstance);
+            Item3DIconPickupScreenInstance!.GetNode<VBoxContainer>("ScrollContainer/PromptContainer").AddChild(promptInstance);
             ItemsInRange.Add(item3DIcon, promptInstance);
         }
 
@@ -165,7 +165,7 @@ namespace Components {
             }
             Log.Info("Removing item icon prompt.");
             if(ItemsInRange.ContainsKey(item3DIcon)) {
-                Item3DIconPickupScreenInstance.GetNode<VBoxContainer>("ScrollContainer/PromptContainer").RemoveChild(ItemsInRange[item3DIcon]);
+                Item3DIconPickupScreenInstance!.GetNode<VBoxContainer>("ScrollContainer/PromptContainer").RemoveChild(ItemsInRange[item3DIcon]);
                 ItemsInRange[item3DIcon].QueueFree();
                 ItemsInRange.Remove(item3DIcon);
             }

@@ -18,7 +18,7 @@ public partial class InvSlotUI : Panel {
 
 	public void UpdateSlotUI(ItemSlot itemSlot) {
 		if(!itemSlot.IsEmpty()) {
-			IconTextureRect.Texture = itemSlot.Item.IconTexture;
+			IconTextureRect.Texture = itemSlot.Item!.IconTexture;
 			IconTextureRect.Visible = true;
 			if(itemSlot.Quantity > 1) {
 				ItemCountLabel.Text = itemSlot.Quantity.ToString();

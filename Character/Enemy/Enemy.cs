@@ -8,7 +8,7 @@ public sealed partial class Enemy : CharacterBody3D, ISaveable<EnemyData> {
 	[Export] private int InitalHealth = 100;
 	[Export] private float SprintMultiplier = 1.5f;
 	[Export] private float CrouchMultiplier = 0.5f;
-	[Export] public Node3D Player;
+	[Export] public Node3D Player = null!;
 	
 
 	// Components
@@ -30,7 +30,7 @@ public sealed partial class Enemy : CharacterBody3D, ISaveable<EnemyData> {
 	}
 
 	public Enemy() {
-		AiInput = new AiInput(this, Player);
+		AiInput = new AiInput(this, Player!);
 	}
 
 	public override void _Ready() {

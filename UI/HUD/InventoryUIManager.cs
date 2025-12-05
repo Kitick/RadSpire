@@ -39,7 +39,7 @@ public partial class InventoryUIManager : Control {
         LoadTemplate();
         DestroyHeldItemSlotUI();
 
-        HeldItemSlotUI = InvSlotTemplate.Instantiate<InvSlotUI>();
+        HeldItemSlotUI = InvSlotTemplate!.Instantiate<InvSlotUI>();
         AddChild(HeldItemSlotUI);
 
         HeldItemSlotUI.MouseFilter = Control.MouseFilterEnum.Ignore;
