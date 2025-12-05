@@ -168,7 +168,7 @@ public sealed partial class Inventory : ISaveable<InventoryData> {
 		}
 		ItemSlot itemSlot = new ItemSlot(item, 1);
 		ItemSlot remainingItem = AddItem(itemSlot);
-		return !remainingItem.IsEmpty();
+		return remainingItem.IsEmpty();
 	}
 
 	public bool RemoveItem(int row, int column) {

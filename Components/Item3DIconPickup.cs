@@ -10,6 +10,7 @@ namespace Components {
     public partial class Item3DIconPickup : Node3D {
         public Player Player = null!;
         public Inventory PlayerInventory = null!;
+        public Inventory PlayerHotbar = null!;
         public InteractionArea PlayerInteractionArea = null!;
         [Export] public PackedScene? Item3DIconPromptTemplate = null!;
         [Export] public PackedScene? Item3DIconPickupScreenTemplate = null!;
@@ -20,6 +21,7 @@ namespace Components {
             base._Ready();
             Player = GetParent<Player>();
             PlayerInventory = Player.Inventory;
+            PlayerHotbar = Player.Hotbar;
             PlayerInteractionArea = Player.GetNode<InteractionArea>("InteractionArea");
             if(PlayerInteractionArea == null) {
                 GD.PrintErr("[Item3DIconPickup] _Ready: Player InteractionArea not found.");
@@ -52,6 +54,7 @@ namespace Components {
         public void PickupItem() {
             Player = GetParent<Player>();
             PlayerInventory = Player.Inventory;
+            PlayerHotbar = Player.Hotbar;
             if(ItemsInRange.Count == 0) {
                 GD.Print("[Item3DIconPickup] No item icons in range to pick up.");
                 return;
@@ -62,10 +65,25 @@ namespace Components {
                 return;
             }
             GD.Print($"[Item3DIconPickup] Picking up item: {itemIcon3D.Item.Name}");
-            PlayerInventory.AddItem(itemIcon3D.Item);
-            RemoveItemIconPrompt(itemIcon3D);
-            itemIcon3D.QueueFree();
-            GD.Print("[Item3DIconPickup] Item picked up and removed from the world.");
+            if(PlayerHotbar.AddItem(itemIcon3D.Item)) {
+                GD.Print("[Item3DIconPickup] Item added to Hotbar.");
+                RemoveItemIconPrompt(itemIcon3D);
+                itemIcon3D.QueueFree();
+                GD.Print("[Item3DIconPickup] Item picked up and removed from the world.");
+                return;
+            }
+            else if(PlayerInventory.AddItem(itemIcon3D.Item)) {
+                GD.Print("[Item3DIconPickup] Item added to Inventory.");
+                RemoveItemIconPrompt(itemIcon3D);
+                itemIcon3D.QueueFree();
+                GD.Print("[Item3DIconPickup] Item picked up and removed from the world.");
+                return;
+            }
+            else {
+                GD.Print("[Item3DIconPickup] Inventory and Hotbar full, cannot pick up item.");
+                return;
+            }
+
         }
 
         public void HandleOnBodyEnteredArea(Node3D node) {
