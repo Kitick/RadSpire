@@ -186,7 +186,7 @@ public partial class InventoryManager : Node {
 	}
 	
 	public override void _Input(InputEvent @event) {
-		if(@event is InputEventMouseButton mouseButton && mouseButton.Pressed) {
+		if(@event is InputEventMouseButton mouseButton && !mouseButton.Pressed) {
 			if(MouseHasItemSlot) {
 				Vector2 clickPos = mouseButton.GlobalPosition;
 				if(ClickedOutsideInventory(clickPos)) {

@@ -44,12 +44,14 @@ public partial class InvSlotUI : Panel {
 					Log.Error("SlotIndex is -1, cannot handle click.");
 					return;
 				}
-				OnSlotClicked?.Invoke(SlotIndex);
-				Log.Info($"Slot {SlotIndex} clicked.");
-			}
-			if(mouseEvent.ButtonIndex == MouseButton.Left && !mouseEvent.Pressed) {
-				Log.Info($"Slot {SlotIndex} mouse left released.");
-				OnSlotUnclicked?.Invoke(SlotIndex);
+				if(mouseEvent.Pressed) {
+					OnSlotClicked?.Invoke(SlotIndex);
+					Log.Info($"Slot {SlotIndex} clicked.");
+				}
+				else {
+	   				Log.Info($"Slot {SlotIndex} mouse left released.");
+					OnSlotUnclicked?.Invoke(SlotIndex);             
+				}
 			}
 		}
 	}
