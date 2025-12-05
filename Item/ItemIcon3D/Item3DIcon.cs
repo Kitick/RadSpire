@@ -62,7 +62,7 @@ public partial class Item3DIcon : Node3D {
 
 		float targetSize = 0.7f * ScaleFactor;
 
-		MeshInstance3D meshInstance = spriteMesh as MeshInstance3D;
+		MeshInstance3D meshInstance = (spriteMesh as MeshInstance3D)!;
 		if (meshInstance != null && meshInstance.Mesh != null) {
 			Aabb bounds = meshInstance.Mesh.GetAabb();
 			Vector3 size = bounds.Size;
@@ -88,7 +88,7 @@ public partial class Item3DIcon : Node3D {
 
 		BoxShape3D boxShape = new BoxShape3D();
 
-		Aabb rawBounds = meshInstance.Mesh.GetAabb();
+		Aabb rawBounds = meshInstance!.Mesh!.GetAabb();
 		Vector3 rawSize = rawBounds.Size;
 
 		Vector3 scaledSize = new(

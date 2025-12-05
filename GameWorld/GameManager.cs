@@ -15,7 +15,8 @@ public sealed partial class GameManager : Node {
 	public CameraRig? CameraRig;
 	public Enemy? Enemy;
 
-	private static readonly Vector3 SpawnLocation = new Vector3(0, 5, 0);
+	private static readonly Vector3 PlayerSpawnLocation = new Vector3(0, 5, 0);
+	private static readonly Vector3 EnemySpawnLocation = new Vector3(5, 5, 5);
 
 	private readonly KeyInput KeyInput = new();
 
@@ -43,7 +44,8 @@ public sealed partial class GameManager : Node {
 		Enemy = this.AddScene<Enemy>(Scenes.Enemy);
 
 		LocalPlayer.Name = $"Player_{LocalPeerId}";
-		LocalPlayer.GlobalPosition = SpawnLocation;
+		LocalPlayer.GlobalPosition = PlayerSpawnLocation;
+		Enemy.GlobalPosition = EnemySpawnLocation;
 
 		CameraRig = this.AddScene<CameraRig>(Scenes.Camera);
 		CameraRig.Target = LocalPlayer;
@@ -55,15 +57,15 @@ public sealed partial class GameManager : Node {
 			return false;
 		}
 
-		if(!IsInstanceValid(LocalPlayer) || !IsInstanceValid(Enemy) || !IsInstanceValid(CameraRig)) {
+		if(!IsInstanceValid(LocalPlayer) || !IsInstanceValid(CameraRig)) {
 			Log.Error("Cannot save game: game objects are not valid");
 			return false;
 		}
 
 		var data = new GameState {
-			Player = LocalPlayer!.Serialize(),
-			Enemy = Enemy!.Serialize(),
-			CameraRig = CameraRig!.Serialize(),
+			Player = LocalPlayer.Serialize(),
+			Enemy = IsInstanceValid(Enemy) ? Enemy.Serialize() : null,
+			CameraRig = CameraRig.Serialize(),
 		};
 
 		SaveService.Save(fileName, data);
@@ -84,8 +86,16 @@ public sealed partial class GameManager : Node {
 		var data = SaveService.Load<GameState>(fileName);
 
 		LocalPlayer!.Deserialize(data.Player);
-		Enemy!.Deserialize(data.Enemy);
 		CameraRig!.Deserialize(data.CameraRig);
+
+		if(data.Enemy != null && IsInstanceValid(Enemy)) {
+			Enemy.Deserialize(data.Enemy.Value);
+		}
+		else if(data.Enemy == null && IsInstanceValid(Enemy)) {
+			// Enemy was dead when saved, remove current enemy
+			Enemy.QueueFree();
+			Enemy = null;
+		}
 
 		return true;
 	}
@@ -180,6 +190,6 @@ namespace SaveSystem {
 	public readonly struct GameState : ISaveData {
 		public PlayerData Player { get; init; }
 		public CameraRigData CameraRig { get; init; }
-		public EnemyData Enemy { get; init; }
+		public EnemyData? Enemy { get; init; }
 	}
 }
