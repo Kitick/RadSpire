@@ -92,7 +92,7 @@ public sealed partial class HUD : Control {
 	}
 
 	private void SetCallbacks() {
-		GetNode<Button>(PAUSE_BUTTON).Pressed += () => StateMachine.TransitionTo(MenuState.Paused);
+		GetNode<Button>(PAUSE_BUTTON).Pressed += TogglePause;
 
 		PauseMenu.ResumeButton.Pressed += TogglePause;
 		PauseMenu.SaveButton.Pressed += OpenSaveMenu;
@@ -126,29 +126,21 @@ public sealed partial class HUD : Control {
 		StateMachine.TransitionTo(MenuState.Game);
 	}
 
-	public void ShowRespawnMenu()
-	{
+	public void ShowRespawnMenu() {
 		StateMachine.TransitionTo(MenuState.Death);
 	}
 
 	private void OnStateChanged(MenuState from, MenuState to) {
 		GetTree().Paused = to != MenuState.Game && to != MenuState.Death;
 
-		if(to == MenuState.Paused) {
-			PauseMenu.OpenMenu();
-		}
-		else {
-			PauseMenu.CloseMenu();
-		}
+		if(to == MenuState.Paused) { PauseMenu.OpenMenu(); }
+		else { PauseMenu.CloseMenu(); }
+
+		if(to == MenuState.Death) { RespawnMenu.OpenMenu(); }
+		else { RespawnMenu.CloseMenu(); }
 
 		if(to == MenuState.Host) { OpenHostPanel(); }
 		if(to == MenuState.Settings) { OpenSettings(); }
-
-		if (to == MenuState.Death) {
-			RespawnMenu.OpenMenu();
-		} else {
-			RespawnMenu.CloseMenu();
-		}
 	}
 
 	private void OpenHostPanel() {
@@ -173,6 +165,7 @@ public sealed partial class HUD : Control {
 	}
 
 	private void TogglePause() {
+		if(State == MenuState.Death) { return; }
 		StateMachine.TransitionTo(IsPaused ? MenuState.Game : MenuState.Paused);
 	}
 
@@ -181,6 +174,8 @@ public sealed partial class HUD : Control {
 	}
 
 	public void ToggleInventory() {
+		// Don't allow inventory while dead
+		if(State == MenuState.Death) { return; }
 		if(!InventoryOpen) {
 			Inventory.Visible = true;
 			Hotbar.Visible = true;
