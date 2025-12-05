@@ -181,8 +181,8 @@ public partial class MainMenu : Control {
 
 	// Pop-up panel buttons handler for Singleplayer
 	private void OnContinueButtonPressed() {
-		GameManager.Instance.Load("autosave");
 		GameManager.Instance.StartGame();
+		GameManager.Instance.Load("autosave");
 	}
 
 	private void OnLoadSavedButtonPressed() {
