@@ -5,7 +5,8 @@ using Core;
 using Godot;
 using SaveSystem;
 
-public sealed partial class Player : CharacterBody3D, ISaveable<PlayerData> {
+public sealed partial class Player : CharacterBody3D, IDamageable, ISaveable<PlayerData> {
+	private static readonly Logger Log = new(nameof(Enemy), enabled: true);
 	// Configuration
 	[Export] private int InitalHealth = 100;
 	[Export] private float SprintMultiplier = 2.25f;
@@ -94,12 +95,27 @@ public sealed partial class Player : CharacterBody3D, ISaveable<PlayerData> {
 		if (keyInput.AttackPressed) {
 			Animator.PlaySlash();
 		}
-		
+
 		if(!IsOnFloor()) { StateMachine.TransitionTo(State.Falling); }
 		else if(!keyInput.IsMoving) { StateMachine.TransitionTo(State.Idle); }
 		else if(keyInput.SprintHeld) { StateMachine.TransitionTo(State.Sprinting); }
 		else if(keyInput.CrouchHeld) { StateMachine.TransitionTo(State.Crouching); }
 		else { StateMachine.TransitionTo(State.Walking); }
+	}
+
+	public void TakeDamage(int amount) {
+		Health.CurrentHealth -= amount;
+		Log.Info($"Player HP: {Health.CurrentHealth}");
+
+		HandleHealthChanged(Health.CurrentHealth);
+
+		if(Health.IsDead()) {
+			Animator.PlayDie();
+		}
+	}
+
+	public void Die() {
+		QueueFree();
 	}
 
 	private float GetMultiplier() {
@@ -114,13 +130,15 @@ public sealed partial class Player : CharacterBody3D, ISaveable<PlayerData> {
 	public PlayerData Serialize() => new PlayerData {
 		Health = Health.Serialize(),
 		Movement = Movement.Serialize(),
-		Inventory = Inventory.Serialize()
+		Inventory = Inventory.Serialize(),
+		Hotbar = Hotbar.Serialize(),
 	};
 
 	public void Deserialize(in PlayerData data) {
 		Health.Deserialize(data.Health);
 		Movement.Deserialize(data.Movement);
 		Inventory.Deserialize(data.Inventory);
+		Hotbar.Deserialize(data.Hotbar);
 	}
 }
 
@@ -129,5 +147,6 @@ namespace SaveSystem {
 		public HealthData Health { get; init; }
 		public MovementData Movement { get; init; }
 		public InventoryData Inventory { get; init; }
+		public InventoryData Hotbar { get; init; }
 	}
 }

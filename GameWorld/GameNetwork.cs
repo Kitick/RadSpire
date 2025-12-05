@@ -52,7 +52,7 @@ public partial class GameManager {
 		if(!Server.IsNetworkConnected) return;
 
 		var movementSync = new NetworkSync<MovementData>(
-			LocalPlayer.Movement,
+			LocalPlayer!.Movement,
 			LocalPeerId,
 			$"player_{LocalPeerId}_movement",
 			TransferMode.Unreliable
@@ -139,7 +139,7 @@ public partial class GameManager {
 		var player = this.AddScene<Player>(Scenes.Player);
 
 		player.Name = $"Player_{peerId}";
-		player.GlobalPosition = SpawnLocation;
+		player.GlobalPosition = PlayerSpawnLocation;
 
 		var movementSync = new NetworkSync<MovementData>(
 			player.Movement,

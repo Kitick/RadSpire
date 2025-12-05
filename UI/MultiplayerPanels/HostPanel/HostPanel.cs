@@ -71,7 +71,7 @@ namespace MultiplayerPanels {
 				Log.Info("Successfully started hosting");
 				// Only start a new game if not already in game
 				if(!GameManager.Instance.InGame) {
-					GameManager.Instance.StartGame();
+					GameManager.Instance.StartNewGame();
 				}
 				CloseMenu();
 			}

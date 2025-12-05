@@ -4,11 +4,11 @@ using Core;
 using Godot;
 using SaveSystem;
 
-public sealed partial class Enemy : CharacterBody3D, ISaveable<EnemyData> {
+public sealed partial class Enemy : CharacterBody3D, IDamageable, ISaveable<EnemyData> {
 	private static readonly Logger Log = new(nameof(Enemy), enabled: true);
 
-	[Export] private int InitalHealth = 100;
-	[Export] private float SprintMultiplier = 1.5f;
+	[Export] private int InitalHealth = 30;
+	[Export] private float SprintMultiplier = 1.15f;
 	[Export] private float CrouchMultiplier = 0.5f;
 	[Export] public Node3D Player = null!;
 
@@ -44,7 +44,7 @@ public sealed partial class Enemy : CharacterBody3D, ISaveable<EnemyData> {
 			player = players[0] as Node3D;
 		}
 
-		Animator = GetNode<EnemyAnimator>("/root/GameManager/Enemy/Barbarian");
+		Animator = GetNode<EnemyAnimator>("Barbarian");
 
 		if(player == null) {
 			Log.Warn("Enemy could not find any node in group 'player'. AI will not move.");
@@ -52,7 +52,6 @@ public sealed partial class Enemy : CharacterBody3D, ISaveable<EnemyData> {
 		}
 
 		AiInput = new AiInput(this, player);
-
 	}
 
 	public void TakeDamage(int amount) {
@@ -65,11 +64,26 @@ public sealed partial class Enemy : CharacterBody3D, ISaveable<EnemyData> {
 	}
 
 	public void Die() {
+		GameManager.Instance.DecrementEnemyCount();
 		QueueFree();
 	}
 
 	public override void _PhysicsProcess(double delta) {
 		float dt = (float) delta;
+		
+		if (Player == null || !GodotObject.IsInstanceValid(Player))
+		{
+			var players = GetTree().GetNodesInGroup("Player");
+			if (players.Count == 0)
+			{
+				// No player currently in the scene → do nothing this frame
+				// This prevents ObjectDisposedException
+				return;
+			}
+
+			Player = players[0] as Node3D;
+			AiInput?.SetTarget(Player); 
+		}
 
 		AiInput.Update();
 
@@ -85,6 +99,10 @@ public sealed partial class Enemy : CharacterBody3D, ISaveable<EnemyData> {
 	}
 
 	private void UpdateMovementState() {
+		if(AiInput.GetLocation().Length() <= 2.0f) {
+			Animator.PlayChop();
+		}
+
 		if(!IsOnFloor()) { StateMachine.TransitionTo(State.Falling); }
 		else if(!AiInput.IsMoving) { StateMachine.TransitionTo(State.Idle); }
 		else if(AiInput.SprintHeld) { StateMachine.TransitionTo(State.Sprinting); }

@@ -91,8 +91,7 @@ public sealed partial class SaveLoadMenu : Control {
 
 		if(Mode == SaveLoadMode.Save) {
 			Log.Info($"Saving game to {fileName}");
-			if(GameManager.Instance.Save(fileName)) {
-				Log.Info($"Game saved to {fileName}");
+			if(GameManager.Instance.SaveGame(fileName)) {
 				RefreshSlotDisplay();
 				CloseMenu();
 			}
@@ -106,9 +105,7 @@ public sealed partial class SaveLoadMenu : Control {
 				return;
 			}
 
-			Log.Info($"Loading game from {fileName}");
-			GameManager.Instance.StartGame();
-			GameManager.Instance.LoadDeferred(fileName);
+			GameManager.Instance.LoadGame(fileName);
 			CloseMenu();
 		}
 	}

@@ -12,8 +12,8 @@ namespace Components {
 
 		public bool IsMoving => HorizontalInput.Length() >= Numbers.EPSILON;
 
-		private readonly Node3D Self;
-		private readonly Node3D Target;
+		private  Node3D Self;
+		private  Node3D Target;
 
 		private readonly float SprintDistance = 5.0f;
 		private readonly float StopDistance = 1.5f;
@@ -25,6 +25,16 @@ namespace Components {
 			PickNewWanderAction();
 		}
 		
+		public void SetTarget(Node3D target)
+		{
+			Target = target;
+		}
+
+		public Vector3 GetLocation() {
+			if(!GodotObject.IsInstanceValid(Target)) { return Vector3.Zero; }
+			return	Target.GlobalPosition - Self.GlobalPosition;
+		}
+
 		private float WanderTimer = 0f;
 		private float WanderDuration = 2.0f; // how long to do each action
 		private Vector3 CurrentWanderDir = Vector3.Zero;
@@ -45,7 +55,7 @@ namespace Components {
 			// -------------------------
 			// 1. FIRST: see if player is close enough to chase
 			// -------------------------
-			if (Target != null) {
+			if (GodotObject.IsInstanceValid(Target)) {
 				Vector3 toTarget = Target.GlobalPosition - Self.GlobalPosition;
 				toTarget.Y = 0f;
 				float dist = toTarget.Length();
@@ -82,7 +92,7 @@ namespace Components {
 			CurrentWanderDir = WanderDirections[i];
 
 			// choose how long this action lasts
-			WanderDuration = (float)GD.RandRange(1.5f, 4.0f);
+			WanderDuration = (float)GD.RandRange(1.5f, 4.5f);
 			WanderTimer = WanderDuration;
 		}
 	}

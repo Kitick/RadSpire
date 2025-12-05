@@ -15,11 +15,17 @@ public sealed partial class GameManager : Node {
 	public CameraRig? CameraRig;
 	public Enemy? Enemy;
 
-	private static readonly Vector3 SpawnLocation = new Vector3(0, 5, 0);
+	private static readonly Vector3 PlayerSpawnLocation = new Vector3(0, 5, 0);
+	private static readonly Vector3 EnemySpawnLocation = new Vector3(5, 5, 5);
 
 	private readonly KeyInput KeyInput = new();
 
+	private float SpawnTimer = 5.0f;
+	private int EnemyCount;
+	private PackedScene EnemyScene = null!;
+
 	public override void _Ready() {
+		EnemyScene = GD.Load<PackedScene>("res://Character/Enemy/Enemy.tscn");
 		Instance = this;
 
 		InitializeNetwork();
@@ -30,52 +36,79 @@ public sealed partial class GameManager : Node {
 	}
 
 	public override void _PhysicsProcess(double delta) {
-		if(!InGame) { return; }
+		if(!InGame || !IsInstanceValid(LocalPlayer) || !IsInstanceValid(CameraRig)) { return; }
 
 		float dt = (float) delta;
 
-		KeyInput.Update(CameraRig!);
-		LocalPlayer!.Update(dt, KeyInput);
+		KeyInput.Update(CameraRig);
+		LocalPlayer.Update(dt, KeyInput);
+
+		UpdateTimer();
 	}
 
 	private void SpawnLocalPlayer() {
 		LocalPlayer = this.AddScene<Player>(Scenes.Player);
-		Enemy = this.AddScene<Enemy>(Scenes.Enemy);
 
 		LocalPlayer.Name = $"Player_{LocalPeerId}";
-		LocalPlayer.GlobalPosition = SpawnLocation;
+		LocalPlayer.GlobalPosition = PlayerSpawnLocation;
 
 		CameraRig = this.AddScene<CameraRig>(Scenes.Camera);
 		CameraRig.Target = LocalPlayer;
+
 	}
 
-	public bool Save(string fileName) {
+	private void UpdateTimer() {
+		SpawnTimer -= 0.015f;
+
+		if(SpawnTimer <= 0.0f && EnemyCount < 5) {
+			GD.Print("Spawned");
+			SpawnTimer = (float) GD.RandRange(1f, 6f);
+			Enemy = EnemyScene.Instantiate<Enemy>();
+			AddChild(Enemy);
+			Enemy.GlobalPosition = GetRandomEnemySpawn();
+			EnemyCount += 1;
+		}
+	}
+
+	private Vector3 GetRandomEnemySpawn() {
+		var pos = LocalPlayer!.GlobalPosition;
+		return pos + new Vector3(
+			(float) GD.RandRange(-10f, 10f),
+			0.25f,
+			(float) GD.RandRange(-10f, 10f)
+		);
+
+	}
+
+	public void DecrementEnemyCount() {
+		EnemyCount -= 1;
+	}
+
+	public bool SaveGame(string fileName) {
 		if(!InGame) {
 			Log.Error("Cannot save game when not in a game");
 			return false;
 		}
 
-		if(!IsInstanceValid(LocalPlayer) || !IsInstanceValid(Enemy) || !IsInstanceValid(CameraRig)) {
+		if(!IsInstanceValid(LocalPlayer) || !IsInstanceValid(CameraRig)) {
 			Log.Error("Cannot save game: game objects are not valid");
 			return false;
 		}
 
 		var data = new GameState {
-			Player = LocalPlayer!.Serialize(),
-			Enemy = Enemy!.Serialize(),
-			CameraRig = CameraRig!.Serialize(),
+			Player = LocalPlayer.Serialize(),
+			Enemy = IsInstanceValid(Enemy) ? Enemy.Serialize() : null,
+			CameraRig = CameraRig.Serialize(),
 		};
 
 		SaveService.Save(fileName, data);
+		Log.Info($"Game saved to '{fileName}'");
 		return true;
 	}
 
-	public bool Load(string fileName) {
-		if(!InGame) {
-			Log.Error("Cannot load game when not in a game");
-			return false;
-		}
+	public bool QuickSave() => SaveGame(Constants.AutosaveFile);
 
+	private bool ApplyLoadedState(string fileName) {
 		if(!SaveService.Exists(fileName)) {
 			Log.Error($"Save file '{fileName}' does not exist");
 			return false;
@@ -84,19 +117,45 @@ public sealed partial class GameManager : Node {
 		var data = SaveService.Load<GameState>(fileName);
 
 		LocalPlayer!.Deserialize(data.Player);
-		Enemy!.Deserialize(data.Enemy);
 		CameraRig!.Deserialize(data.CameraRig);
 
+		if(data.Enemy != null && IsInstanceValid(Enemy)) {
+			Enemy.Deserialize(data.Enemy.Value);
+		}
+		else if(data.Enemy == null && IsInstanceValid(Enemy)) {
+			// Enemy was dead when saved, remove current enemy
+			Enemy.QueueFree();
+			Enemy = null;
+		}
+
+		Log.Info($"Game loaded from '{fileName}'");
 		return true;
 	}
 
 	private string? PendingLoadFile;
 
-	public void LoadDeferred(string fileName) {
-		PendingLoadFile = fileName;
+	public void StartNewGame() {
+		Log.Info("Starting new game");
+		PendingLoadFile = null;
+		TransitionToGame();
 	}
 
-	public void StartGame() {
+	public void ContinueGame() {
+		Log.Info("Continuing game from autosave");
+		LoadGame(Constants.AutosaveFile);
+	}
+
+	public void LoadGame(string fileName) {
+		if(!SaveService.Exists(fileName)) {
+			Log.Error($"Cannot load game: save file '{fileName}' does not exist");
+			return;
+		}
+		Log.Info($"Loading game from '{fileName}'");
+		PendingLoadFile = fileName;
+		TransitionToGame();
+	}
+
+	private void TransitionToGame() {
 		CleanupGame();
 		GetTree().Paused = false;
 		GetTree().ChangeSceneToFile(Scenes.GameScene);
@@ -119,12 +178,13 @@ public sealed partial class GameManager : Node {
 		SpawnTestItems();
 
 		if(PendingLoadFile != null) {
-			Load(PendingLoadFile);
+			ApplyLoadedState(PendingLoadFile);
 			PendingLoadFile = null;
 		}
 	}
 
 	public void ReturnToMainMenu() {
+		QuickSave();
 		CleanupGame();
 		GetTree().Paused = false;
 		GetTree().ChangeSceneToFile(Scenes.MainMenu);
@@ -180,6 +240,6 @@ namespace SaveSystem {
 	public readonly struct GameState : ISaveData {
 		public PlayerData Player { get; init; }
 		public CameraRigData CameraRig { get; init; }
-		public EnemyData Enemy { get; init; }
+		public EnemyData? Enemy { get; init; }
 	}
 }
