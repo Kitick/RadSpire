@@ -26,6 +26,7 @@ namespace Components {
 		}
 
 		public Vector3 GetLocation() {
+			if(!GodotObject.IsInstanceValid(Target)) { return Vector3.Zero; }
 			return	Target.GlobalPosition - Self.GlobalPosition;
 		}
 
@@ -49,7 +50,7 @@ namespace Components {
 			// -------------------------
 			// 1. FIRST: see if player is close enough to chase
 			// -------------------------
-			if (Target != null) {
+			if (GodotObject.IsInstanceValid(Target)) {
 				Vector3 toTarget = Target.GlobalPosition - Self.GlobalPosition;
 				toTarget.Y = 0f;
 				float dist = toTarget.Length();
