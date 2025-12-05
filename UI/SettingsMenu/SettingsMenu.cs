@@ -6,7 +6,7 @@ using SaveSystem;
 
 namespace Settings {
 	public sealed partial class SettingsMenu : Control, ISaveable<SettingsData> {
-		private static readonly Logger Log = new(nameof(SettingsMenu), enabled: false);
+		private static readonly Logger Log = new(nameof(SettingsMenu), enabled: true);
 
 		private const string SAVEFILE = "settings";
 

@@ -5,18 +5,18 @@ using Godot;
 using SaveSystem;
 
 public sealed partial class Enemy : CharacterBody3D, ISaveable<EnemyData> {
+	private static readonly Logger Log = new(nameof(Enemy), enabled: true);
+
 	[Export] private int InitalHealth = 100;
 	[Export] private float SprintMultiplier = 1.5f;
 	[Export] private float CrouchMultiplier = 0.5f;
 	[Export] public Node3D Player = null!;
-	
 
 	// Components
 	private Health Health = null!;
 	private Movement Movement = null!;
 	private AiInput AiInput = null!;
 	private EnemyAnimator Animator = null!;
-
 
 	// State Machine
 	public enum State { Idle, Walking, Sprinting, Crouching, Falling }
@@ -38,46 +38,43 @@ public sealed partial class Enemy : CharacterBody3D, ISaveable<EnemyData> {
 		Health = new Health(InitalHealth);
 
 		Node3D? player = null;
-		
+
 		var players = GetTree().GetNodesInGroup("Player");
-		if (players.Count > 0) {
+		if(players.Count > 0) {
 			player = players[0] as Node3D;
 		}
-		
-		Animator =  GetNode<EnemyAnimator>("/root/GameManager/Enemy/Barbarian");
-		
-		if (player == null) {
-			GD.PushWarning("Enemy could not find any node in group 'player'. AI will not move.");
+
+		Animator = GetNode<EnemyAnimator>("/root/GameManager/Enemy/Barbarian");
+
+		if(player == null) {
+			Log.Warn("Enemy could not find any node in group 'player'. AI will not move.");
 			return;
 		}
 
 		AiInput = new AiInput(this, player);
-		
+
 	}
-	
-	public void TakeDamage(int amount)
-	{
+
+	public void TakeDamage(int amount) {
 		Health.CurrentHealth -= amount;
-		GD.Print($"Enemy HP: {Health.CurrentHealth}");
-		
-		if (Health.IsDead()) {
+		Log.Info($"Enemy HP: {Health.CurrentHealth}");
+
+		if(Health.IsDead()) {
 			Animator.PlayDie();
 		}
 	}
 
-	public void Die()
-	{
+	public void Die() {
 		QueueFree();
 	}
 
 	public override void _PhysicsProcess(double delta) {
-
 		float dt = (float) delta;
-		
+
 		AiInput.Update();
-		
+
 		float multiplier = GetMultiplier();
-		
+
 		if(IsOnFloor()) {
 			Movement.Move(AiInput.HorizontalInput, multiplier);
 		}

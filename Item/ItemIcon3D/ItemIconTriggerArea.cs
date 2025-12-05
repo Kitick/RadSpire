@@ -1,12 +1,8 @@
 using System;
-using Components;
-using Core;
-using SaveSystem;
 using Godot;
 
 public partial class ItemIconTriggerArea : Area3D {
-
-	private static readonly Logger Log = new(nameof(ItemIconTriggerArea), enabled: false);
+	private static readonly Logger Log = new(nameof(ItemIconTriggerArea), enabled: true);
 
 	public event Action<Item3DIcon>? OnPlayerEnteredItemIconRange;
 	public event Action<Item3DIcon>? OnPlayerExitedItemIconRange;
@@ -21,14 +17,14 @@ public partial class ItemIconTriggerArea : Area3D {
 	}
 
 	private void HandleBodyEntered(Node3D body) {
-		if (body is Player) {
+		if(body is Player) {
 			OnPlayerEnteredItemIconRange?.Invoke(item3DIcon);
 			Log.Info("Player entered item icon trigger area.");
 		}
 	}
 
 	private void HandleBodyExited(Node3D body) {
-		if (body is Player) {
+		if(body is Player) {
 			OnPlayerExitedItemIconRange?.Invoke(item3DIcon);
 			Log.Info("Player exited item icon trigger area.");
 		}

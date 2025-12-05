@@ -8,6 +8,8 @@ namespace Settings {
 	public enum AudioBus { Master, Music, SFX }
 
 	public sealed partial class SoundPanel : VBoxContainer, ISaveable<SoundSettings> {
+		private static readonly Logger Log = new(nameof(SoundPanel), enabled: true);
+
 		// Node Paths
 		private const string MASTER_SLIDER = "Master_Volume/HSlider";
 		private const string MUSIC_SLIDER = "Music_Volume/HSlider";
@@ -78,7 +80,7 @@ namespace Settings {
 
 			if(index == -1) { return false; }
 
-			GD.Print($"Switched to output device: {deviceName}");
+			Log.Info($"Switched to output device: {deviceName}");
 			AudioServer.OutputDevice = deviceName;
 
 			return true;
@@ -135,7 +137,7 @@ namespace Settings {
 			bus.SetVolume((int) Math.Round(volume));
 
 		public static void SetVolume(this AudioBus bus, int volume) {
-			GD.Print($"Set {bus.GetName()} volume to {volume}{(bus.IsMuted() ? " (muted)" : "")}");
+			// Log.Info($"Set {bus.GetName()} volume to {volume}{(bus.IsMuted() ? " (muted)" : "")}");
 			AudioServer.SetBusVolumeLinear(bus.GetIndex(), volume / 100f);
 		}
 
@@ -143,7 +145,7 @@ namespace Settings {
 			AudioServer.IsBusMute(bus.GetIndex());
 
 		public static void SetMuted(this AudioBus bus, bool isMuted) {
-			GD.Print($"{(isMuted ? "Muted" : "Unmuted")} {bus.GetName()} bus");
+			// Log.Info($"{(isMuted ? "Muted" : "Unmuted")} {bus.GetName()} bus");
 			AudioServer.SetBusMute(bus.GetIndex(), isMuted);
 		}
 	}

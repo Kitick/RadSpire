@@ -7,7 +7,7 @@ using Network;
 using Settings;
 
 public sealed partial class HUD : Control {
-	private static readonly Logger Log = new(nameof(HUD), enabled: false);
+	private static readonly Logger Log = new(nameof(HUD), enabled: true);
 
 	public enum MenuState { Game, Paused, Settings, Inventory, Host };
 
@@ -131,7 +131,7 @@ public sealed partial class HUD : Control {
 		host.OnMenuClosed += () => StateMachine.TransitionTo(MenuState.Paused);
 		host.OpenMenu();
 
-		HostPanel.UpdateHostText("Host Game");
+		host.UpdateHostText("Host Game");
 	}
 
 	private void OpenSettings() {

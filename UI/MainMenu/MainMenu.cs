@@ -9,7 +9,7 @@ using MultiplayerPanels;
 using LoadMenuScene;
 
 public partial class MainMenu : Control {
-	private static readonly Logger Log = new(nameof(MainMenu), enabled: false);
+	private static readonly Logger Log = new(nameof(MainMenu), enabled: true);
 
 	enum MenuState { Normal, SinglePopup, MultiPopup }
 

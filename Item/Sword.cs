@@ -1,19 +1,18 @@
 using Godot;
 
-public partial class Sword : Area3D
-{
+public partial class Sword : Area3D {
+	private static readonly Logger Log = new(nameof(Sword), enabled: true);
+
 	public int Damage = 20;
 
-	public override void _Ready()
-	{
+	public override void _Ready() {
 		BodyEntered += OnBodyEntered;
 	}
 
-	private void OnBodyEntered(Node3D body)
-	{
+	private void OnBodyEntered(Node3D body) {
 		if(body is Enemy enemy) {
 			enemy.TakeDamage(Damage);
-			GD.Print("Enemy took damage.");
+			Log.Info("Enemy took damage.");
 		}
 	}
 }

@@ -62,20 +62,24 @@ namespace MultiplayerPanels {
 		public void UpdateHostText(string newText) {
 			HostText.Text = newText;
 		}
-		private void OnCancelButtonPressed() =>	CloseMenu();
+
+		private void OnCancelButtonPressed() => CloseMenu();
 
 		private void OnHostButtonPressed() {
 			Error result = Server.Instance.Host();
-			if (result == Error.Ok) {
+			if(result == Error.Ok) {
 				Log.Info("Successfully started hosting");
-				GameManager.Instance.StartGame();
+				// Only start a new game if not already in game
+				if(!GameManager.Instance.InGame) {
+					GameManager.Instance.StartGame();
+				}
 				CloseMenu();
-			} else {
+			}
+			else {
 				Log.Error($"Failed to host: {result}");
 				UpdateHostText($"Failed to host: {result}");
 			}
 		}
-
 		private void OnPasswordCheckboxToggled(bool check) {
 			if(check == true) {
 				InputPassword.Show();
@@ -97,15 +101,15 @@ namespace MultiplayerPanels {
 		}
 
 		// User Text Submission
-		private static void OnAnyTextSubmitted(string sourceName, string submittedText) {
+		private void OnAnyTextSubmitted(string sourceName, string submittedText) {
 			if(sourceName == null) return;
 
 			if(sourceName == INPUT_GAME_NAME_TEXT) {
-				GD.Print($"Game Name Submitted: {submittedText}");
+				Log.Info($"Game Name Submitted: {submittedText}");
 			}
 
 			else if(sourceName == INPUT_PASSWORD_TEXT) {
-				GD.Print($"Password Submitted: {submittedText}");
+				Log.Info($"Password Submitted: {submittedText}");
 			}
 		}
 
@@ -116,7 +120,7 @@ namespace MultiplayerPanels {
 		}
 
 		//Scene Input Callbacks
-		public void OpenMenu(){}
+		public void OpenMenu() { }
 
 		public void CloseMenu() {
 			QueueFree();

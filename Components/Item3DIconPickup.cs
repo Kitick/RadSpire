@@ -1,15 +1,10 @@
-using System;
-using Components;
-using Core;
-using SaveSystem;
 using Godot;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Components {
     public partial class Item3DIconPickup : Node3D {
-
-        private static readonly Logger Log = new(nameof(Item3DIconPickup), enabled: false);
+        private static readonly Logger Log = new(nameof(Item3DIconPickup), enabled: true);
 
         public Player Player = null!;
         public Inventory PlayerInventory = null!;

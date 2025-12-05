@@ -1,11 +1,9 @@
-using Godot;
 using System;
-using Components;
+using Godot;
 
 namespace Components {
 	public partial class InteractionArea : Area3D {
-
-		private static readonly Logger Log = new(nameof(InteractionArea), enabled: false);
+		private static readonly Logger Log = new(nameof(InteractionArea), enabled: true);
 
 		public event Action<Node3D>? OnBodyEnteredArea;
 		public event Action<Node3D>? OnBodyExitedArea;
