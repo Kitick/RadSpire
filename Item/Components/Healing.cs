@@ -18,7 +18,7 @@ namespace Components {
         public bool OnConsume(CharacterBody3D consumer) {
             if(CanConsume(consumer)) {
                 Player player = (Player) consumer;
-                player.Health.CurrentHealth += Mathf.Clamp(HealAmount, 0, player.Health.MaxHealth - player.Health.CurrentHealth);
+                player.Health.CurrentHealth += HealAmount;
                 Log.Info($"Consumed healing item. Healed for {HealAmount} points.");
                 return true;
             }
