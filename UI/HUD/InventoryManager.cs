@@ -281,14 +281,15 @@ public partial class InventoryManager : Node {
 			}
 		}
 		if(hotbar == null) {
-			Log.Error("No Hotbar inventory found for dropping item.");
+			Log.Error("No Hotbar inventory found for consume item.");
 			return;
 		}
 		ItemSlot selectedSlot = hotbar.GetSelectedItemSlot();
 		if(selectedSlot.IsEmpty()) {
-			Log.Info("No item in selected hotbar slot to drop.");
+			Log.Info("No item in selected hotbar slot to consume.");
 			return;
 		}
+		Log.Info("Consuming item from hotbar slot: " + hotbar.SelectedSlot);
 		int selectedIndex = hotbar.SelectedSlot;
 		if(selectedSlot.Item!.OnConsume(GetParent<Player>())) {
 			hotbarInventory.RemoveItem(hotbar.Inventory.GetRow(selectedIndex), hotbar.Inventory.GetColumn(selectedIndex), 1);

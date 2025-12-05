@@ -64,16 +64,17 @@ public partial class Item : Resource, ISaveable<ItemData> {
         if(ComponentResources == null){
             return;
         }
-        foreach(var resource in ComponentResources) {
+        foreach(Resource resource in ComponentResources) {
             if(resource is IItemComponent comp){
-                Components.Add(comp);
+                IItemComponent componentInstance = GD.Load<IItemComponent>(resource.ResourcePath);
+                Components.Add(componentInstance);
             }
         }
     }
 
     public bool OnUse(CharacterBody3D user) {
         bool success = false;
-        foreach(var component in Components) {
+        foreach(IItemComponent component in Components) {
             if(component is IUsable usable) {
                 success |= usable.OnUse(user);
             }
@@ -83,8 +84,9 @@ public partial class Item : Resource, ISaveable<ItemData> {
 
     public bool OnConsume(CharacterBody3D consumer) {
         bool success = false;
-        foreach(var component in Components) {
+        foreach(IItemComponent component in Components) {
             if(component is IConsumable consumable) {
+                GD.Print("Consuming item with component: " + consumable.GetType().Name);
                 success |= consumable.OnConsume(consumer);
             }
         }
