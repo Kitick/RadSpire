@@ -99,7 +99,7 @@ public sealed partial class HUD : Control {
 		PauseMenu.HostButton.Pressed += OnHostButtonPressed;
 		PauseMenu.SettingsButton.Pressed += () => StateMachine.TransitionTo(MenuState.Settings);
 		PauseMenu.MainMenuButton.Pressed += QuitGame;
-		
+
 		RespawnMenu.RespawnButton.Pressed += Respawn;
 		RespawnMenu.MainMenuButton.Pressed += QuitGame;
 
@@ -119,12 +119,13 @@ public sealed partial class HUD : Control {
 	}
 
 	private void Respawn() {
-		GetTree().Paused = false;          // unpause
-		Player.QueueFree();
-		GameManager.Instance.SpawnLocalPlayer();  
+		GetTree().Paused = false;
+
+		Player = GameManager.Instance.RespawnPlayer();
+
 		StateMachine.TransitionTo(MenuState.Game);
 	}
-	
+
 	public void ShowRespawnMenu()
 	{
 		StateMachine.TransitionTo(MenuState.Death);
@@ -142,7 +143,7 @@ public sealed partial class HUD : Control {
 
 		if(to == MenuState.Host) { OpenHostPanel(); }
 		if(to == MenuState.Settings) { OpenSettings(); }
-		
+
 		if (to == MenuState.Death) {
 			RespawnMenu.OpenMenu();
 		} else {

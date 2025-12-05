@@ -46,15 +46,41 @@ public sealed partial class GameManager : Node {
 		UpdateTimer();
 	}
 
-	public void SpawnLocalPlayer() {
+	public Player SpawnLocalPlayer() {
 		LocalPlayer = this.AddScene<Player>(Scenes.Player);
 
 		LocalPlayer.Name = $"Player_{LocalPeerId}";
 		LocalPlayer.GlobalPosition = PlayerSpawnLocation;
 
-		CameraRig = this.AddScene<CameraRig>(Scenes.Camera);
+		if(!IsInstanceValid(CameraRig)) {
+			CameraRig = this.AddScene<CameraRig>(Scenes.Camera);
+		}
+
 		CameraRig.Target = LocalPlayer;
 
+		return LocalPlayer;
+	}
+
+	public Player RespawnPlayer() {
+		if(!IsInstanceValid(LocalPlayer)) {
+			Log.Warn("RespawnPlayer called but no player exists, spawning new player");
+			return SpawnLocalPlayer();
+		}
+
+		var inventoryData = LocalPlayer.Inventory.Serialize();
+		var hotbarData = LocalPlayer.Hotbar.Serialize();
+
+		LocalPlayer.QueueFree();
+		LocalPlayer = null;
+
+		SpawnLocalPlayer();
+
+		LocalPlayer!.Inventory.Deserialize(inventoryData);
+		LocalPlayer.Hotbar.Deserialize(hotbarData);
+
+		Log.Info("Player respawned");
+
+		return LocalPlayer;
 	}
 
 	private void UpdateTimer() {
@@ -210,6 +236,10 @@ public sealed partial class GameManager : Node {
 
 		CleanupObject(CameraRig);
 		CameraRig = null;
+
+		// Reset spawn state
+		EnemyCount = 0;
+		SpawnTimer = 5.0f;
 	}
 
 	private void SpawnTestItem(string path, Vector3 position, float scaleFactor = 1.0f) {

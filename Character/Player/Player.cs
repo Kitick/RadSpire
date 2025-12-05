@@ -115,10 +115,14 @@ public sealed partial class Player : CharacterBody3D, IDamageable, ISaveable<Pla
 	}
 
 	public void Die() {
-		var hud = GetNode<HUD>("HUD");
-		hud.ShowRespawnMenu();
-		GD.Print("Respawn Showing");
-		//QueueFree();
+		var hud = GetNodeOrNull<HUD>("HUD");
+		if(hud != null) {
+			hud.ShowRespawnMenu();
+			Log.Info("Player died, showing respawn menu");
+		}
+		else {
+			Log.Error("Player.Die: Could not find HUD to show respawn menu");
+		}
 	}
 
 	private float GetMultiplier() {
