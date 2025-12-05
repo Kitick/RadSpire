@@ -5,7 +5,8 @@ using Core;
 using Godot;
 using SaveSystem;
 
-public sealed partial class Player : CharacterBody3D, ISaveable<PlayerData> {
+public sealed partial class Player : CharacterBody3D, IDamageable, ISaveable<PlayerData> {
+	private static readonly Logger Log = new(nameof(Enemy), enabled: true);
 	// Configuration
 	[Export] private int InitalHealth = 100;
 	[Export] private float SprintMultiplier = 2.25f;
@@ -100,6 +101,21 @@ public sealed partial class Player : CharacterBody3D, ISaveable<PlayerData> {
 		else if(keyInput.SprintHeld) { StateMachine.TransitionTo(State.Sprinting); }
 		else if(keyInput.CrouchHeld) { StateMachine.TransitionTo(State.Crouching); }
 		else { StateMachine.TransitionTo(State.Walking); }
+	}
+	
+	public void TakeDamage(int amount) {
+		Health.CurrentHealth -= amount;
+		Log.Info($"Player HP: {Health.CurrentHealth}");
+		
+		HandleHealthChanged(Health.CurrentHealth);
+
+		if(Health.IsDead()) {
+			Animator.PlayDie();
+		}
+	}
+	
+	public void Die() {
+		QueueFree();
 	}
 
 	private float GetMultiplier() {

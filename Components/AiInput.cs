@@ -24,7 +24,11 @@ namespace Components {
 			Target = target;
 			PickNewWanderAction();
 		}
-		
+
+		public Vector3 GetLocation() {
+			return	Target.GlobalPosition - Self.GlobalPosition;
+		}
+
 		private float WanderTimer = 0f;
 		private float WanderDuration = 2.0f; // how long to do each action
 		private Vector3 CurrentWanderDir = Vector3.Zero;
@@ -82,7 +86,7 @@ namespace Components {
 			CurrentWanderDir = WanderDirections[i];
 
 			// choose how long this action lasts
-			WanderDuration = (float)GD.RandRange(1.5f, 4.0f);
+			WanderDuration = (float)GD.RandRange(1.5f, 4.5f);
 			WanderTimer = WanderDuration;
 		}
 	}

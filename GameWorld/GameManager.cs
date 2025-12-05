@@ -19,7 +19,12 @@ public sealed partial class GameManager : Node {
 
 	private readonly KeyInput KeyInput = new();
 
+	private float SpawnTimer = 5.0f;
+	private int EnemyCount;
+	private PackedScene EnemyScene = null!;
+
 	public override void _Ready() {
+		EnemyScene = GD.Load<PackedScene>("res://Character/Enemy/Enemy.tscn");
 		Instance = this;
 
 		InitializeNetwork();
@@ -36,17 +41,48 @@ public sealed partial class GameManager : Node {
 
 		KeyInput.Update(CameraRig!);
 		LocalPlayer!.Update(dt, KeyInput);
+		
+		UpdateTimer();
 	}
 
 	private void SpawnLocalPlayer() {
 		LocalPlayer = this.AddScene<Player>(Scenes.Player);
-		Enemy = this.AddScene<Enemy>(Scenes.Enemy);
 
 		LocalPlayer.Name = $"Player_{LocalPeerId}";
 		LocalPlayer.GlobalPosition = SpawnLocation;
 
 		CameraRig = this.AddScene<CameraRig>(Scenes.Camera);
 		CameraRig.Target = LocalPlayer;
+
+	}
+
+	private void UpdateTimer()
+	{
+		SpawnTimer -= 0.015f;
+
+		if(SpawnTimer <= 0.0f && EnemyCount < 5) {
+			GD.Print("Spawned");
+			SpawnTimer = (float) GD.RandRange(1f, 6f);
+			Enemy = EnemyScene.Instantiate<Enemy>();
+			AddChild(Enemy);
+			Enemy.GlobalPosition = GetRandomEnemySpawn();
+			EnemyCount += 1;
+		}
+	}
+	
+	private Vector3 GetRandomEnemySpawn()
+	{
+		var pos = LocalPlayer.GlobalPosition;
+		return pos + new Vector3(
+			(float)GD.RandRange(-10f, 10f),
+			0.25f,
+			(float)GD.RandRange(-10f, 10f)
+		);
+		
+	}
+
+	public void DecrementEnemyCount() {
+		EnemyCount -= 1;
 	}
 
 	public bool Save(string fileName) {
