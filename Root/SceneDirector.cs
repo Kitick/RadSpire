@@ -1,4 +1,6 @@
+using Core;
 using Godot;
+using Settings;
 
 namespace Root {
 	public partial class SceneDirector : Node {
@@ -6,7 +8,9 @@ namespace Root {
 
 		public enum MenuState { MainMenu, Settings }
 
-		public MenuState CurrentState { get; private set; } = MenuState.MainMenu;
+		private readonly StateMachine<MenuState> StateMachine = new();
+
+		public MenuState CurrentState => StateMachine.CurrentState;
 		public Node? CurrentScene { get; private set; }
 
 		[ExportGroup("Menu Scenes")]
@@ -16,21 +20,28 @@ namespace Root {
 		[ExportGroup("Game Scenes")]
 		[Export] private PackedScene GameWorld = null!;
 
-		public override void _Ready() {
-			ChangeState(CurrentState);
+		public SceneDirector() {
+			SetupStateMachine();
 		}
 
-		private void ChangeState(MenuState to) => ChangeState(CurrentState, to);
-		private void ChangeState(MenuState from, MenuState to) {
-			CurrentState = to;
+		public override void _Ready() {
+			StateMachine.TransitionTo(MenuState.MainMenu);
+		}
 
-			if(to == MenuState.MainMenu) {
-				SwitchScene(MainMenu.Instantiate<MainMenu>());
-			}
+		private void SetupStateMachine() {
+			StateMachine.OnEnter(MenuState.MainMenu, () => SwitchScene(MainMenu.Instantiate<MainMenu>()));
+
+			StateMachine.OnEnter(MenuState.Settings, () => {
+				Log.Info("Entering Settings Menu");
+				Settings.Instantiate<SettingsMenu>().OpenMenu(
+					onClose: () => StateMachine.TransitionTo(MenuState.MainMenu)
+				);
+			});
 		}
 
 		private void SwitchScene(Node to) => SwitchScene(CurrentScene, to);
 		private void SwitchScene(Node? from, Node to) {
+			Log.Info($"Switching scene from {from?.Name ?? "null"} to {to.Name}");
 			CurrentScene = to;
 
 			from?.QueueFree();

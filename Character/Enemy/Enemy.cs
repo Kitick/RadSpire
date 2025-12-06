@@ -1,5 +1,6 @@
 using System;
 using Components;
+using Core;
 using Godot;
 using SaveSystem;
 
@@ -20,13 +21,8 @@ public sealed partial class Enemy : CharacterBody3D, IDamageable, ISaveable<Enem
 	// State Machine
 	public enum State { Idle, Walking, Sprinting, Crouching, Falling }
 
-	private readonly FiniteStateMachine<State> StateMachine = new(State.Idle);
-	public State CurrentState => StateMachine.State;
-
-	public event Action<State, State>? OnStateChange {
-		add => StateMachine.OnStateChanged += value;
-		remove => StateMachine.OnStateChanged -= value;
-	}
+	private readonly StateMachine<State> StateMachine = new(State.Idle);
+	public State CurrentState => StateMachine.CurrentState;
 
 	public Enemy() {
 		AiInput = new AiInput(this, Player!);
@@ -112,8 +108,8 @@ public sealed partial class Enemy : CharacterBody3D, IDamageable, ISaveable<Enem
 	private float GetMultiplier() {
 		float multiplier = 1.0f;
 
-		if(StateMachine.State == State.Sprinting) { multiplier *= SprintMultiplier; }
-		if(StateMachine.State == State.Crouching) { multiplier *= CrouchMultiplier; }
+		if(StateMachine.CurrentState == State.Sprinting) { multiplier *= SprintMultiplier; }
+		if(StateMachine.CurrentState == State.Crouching) { multiplier *= CrouchMultiplier; }
 
 		return multiplier;
 	}

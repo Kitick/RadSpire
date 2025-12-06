@@ -44,7 +44,7 @@ public sealed partial class EnemyAnimator : Node3D {
 
 	private void GetComponents() {
 		Enemy = GetParent<Enemy>();
-		Enemy.OnStateChange += OnEnemyMovement;
+		//Enemy.OnStateChange += OnEnemyMovement;
 
 		AnimationPlayer = GetNode<AnimationPlayer>(ANIMATION_PLAYER);
 	}
@@ -77,7 +77,7 @@ public sealed partial class EnemyAnimator : Node3D {
 			SyncAnimation();
 		}
 	}
-	
+
 	public void PlayChop()
 	{
 		if (IsAttacking)
@@ -89,7 +89,7 @@ public sealed partial class EnemyAnimator : Node3D {
 
 	public void SyncAnimation() {
 		if(Debug){ GD.Print($"Syncing animation to: {Enemy.CurrentState}"); }
-		
+
 		if (IsDying)
 			return;
 		if (IsAttacking)
@@ -104,7 +104,7 @@ public sealed partial class EnemyAnimator : Node3D {
 			_ => CurrentAnimation,
 		};
 	}
-	
+
 	public void PlayDie()
 	{
 		IsDying = true;
@@ -113,10 +113,10 @@ public sealed partial class EnemyAnimator : Node3D {
 
 	private void OnEnemyMovement(Enemy.State from, Enemy.State to) {
 		if(Debug){ GD.Print($"Enemy State change: {from} -> {to}"); }
-		
+
 		if (IsAttacking)
 			return;
-		
+
 		if (IsDying)
 			return;
 

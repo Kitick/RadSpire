@@ -46,7 +46,7 @@ public sealed partial class PlayerAnimator : Node3D {
 
 	private void GetComponents() {
 		Player = GetParent<Player>();
-		Player.OnStateChange += OnPlayerMovement;
+		//Player.OnStateChange += OnPlayerMovement;
 
 		AnimationPlayer = GetNode<AnimationPlayer>(ANIMATION_PLAYER);
 	}
@@ -79,7 +79,7 @@ public sealed partial class PlayerAnimator : Node3D {
 			SyncAnimation();
 		}
 	}
-	
+
 	public void PlaySlash()
 	{
 		if (IsAttacking)
@@ -88,7 +88,7 @@ public sealed partial class PlayerAnimator : Node3D {
 		IsAttacking = true;
 		AnimationPlayer.Play(SLASH);
 	}
-	
+
 	public void PlayDie()
 	{
 		if (IsDying)
@@ -99,7 +99,7 @@ public sealed partial class PlayerAnimator : Node3D {
 
 	public void SyncAnimation() {
 		if(Debug){ GD.Print($"Syncing animation to: {Player.CurrentState}"); }
-		
+
 		if (IsAttacking)
 			return;
 		if (IsDying)
@@ -117,7 +117,7 @@ public sealed partial class PlayerAnimator : Node3D {
 
 	private void OnPlayerMovement(Player.State from, Player.State to) {
 		if(Debug){ GD.Print($"Player State change: {from} -> {to}"); }
-		
+
 		if (IsAttacking)
 			return;
 		if (IsDying)

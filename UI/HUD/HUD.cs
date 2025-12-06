@@ -11,8 +11,8 @@ public sealed partial class HUD : Control {
 
 	public enum MenuState { Game, Paused, Settings, Inventory, Host, Death };
 
-	private readonly FiniteStateMachine<MenuState> StateMachine;
-	public MenuState State => StateMachine.State;
+	private readonly StateMachine<MenuState> StateMachine = new();
+	public MenuState State => StateMachine.CurrentState;
 
 	private PauseMenu PauseMenu = null!;
 	private InventoryUI Inventory = null!;
@@ -37,10 +37,6 @@ public sealed partial class HUD : Control {
 	public Player Player = null!;
 	public bool InventoryOpen => Inventory.Visible;
 
-	public HUD() {
-		StateMachine = new(MenuState.Game, OnStateChanged);
-	}
-
 	public override void _EnterTree() {
 		base._EnterTree();
 		Player = GetParent<Player>();
@@ -59,6 +55,8 @@ public sealed partial class HUD : Control {
 		GetComponents();
 		SetInputCallbacks();
 		SetCallbacks();
+
+		StateMachine.TransitionTo(MenuState.Game);
 	}
 
 	public override void _ExitTree() {
@@ -153,8 +151,9 @@ public sealed partial class HUD : Control {
 
 	private void OpenSettings() {
 		var settings = this.AddScene<SettingsMenu>(Scenes.SettingsMenu);
-		settings.OnMenuClosed += () => StateMachine.TransitionTo(MenuState.Paused);
-		settings.OpenMenu();
+		settings.OpenMenu(
+			onClose: () => StateMachine.TransitionTo(MenuState.Paused)
+		);
 	}
 
 	private void OpenSaveMenu() {
