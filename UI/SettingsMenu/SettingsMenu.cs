@@ -26,7 +26,6 @@ namespace Settings {
 
 		private readonly Dictionary<string, (VBoxContainer panel, Button button)> Nodes = [];
 
-		public event Action? OnMenuClosed;
 		private event Action? OnExit;
 
 		public override void _Ready() {
@@ -39,7 +38,6 @@ namespace Settings {
 
 		public override void _ExitTree() {
 			OnExit?.Invoke();
-			OnMenuClosed?.Invoke();
 		}
 
 		private void SetInputCallbacks() {
@@ -78,7 +76,8 @@ namespace Settings {
 			}
 		}
 
-		public void OpenMenu() {
+		public void OpenMenu(Action? onClose = null) {
+			OnExit += onClose;
 			LoadData();
 		}
 

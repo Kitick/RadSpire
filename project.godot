@@ -48,7 +48,7 @@ resources_spreadsheet_view/freeze_first_column=true
 [application]
 
 config/name="RadSpire"
-run/main_scene="uid://udkefarjp6kf"
+run/main_scene="uid://bb7h35lohrhs3"
 config/features=PackedStringArray("4.5", "C#", "Forward Plus")
 config/icon="uid://8ykhw0g480u8"
 

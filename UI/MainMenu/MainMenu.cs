@@ -43,13 +43,8 @@ public partial class MainMenu : Control {
 	private Control SingleplayerButtonPanel = null!;
 	private Control MultiplayerButtonPanel = null!;
 
-	private SettingsMenu Settings = null!;
-	//Load Scene Reference
-	private HostPanel HostPanel = null!;
-
 	// Main
 	public override void _Ready() {
-		LoadScenes();
 		GetComponents();
 		SetCallbacks();
 		SubscribeToNetworkEvents();
@@ -78,14 +73,6 @@ public partial class MainMenu : Control {
 		Log.Info("Host started successfully");
 	}
 
-	//Load Scenes
-	public void LoadScenes() {
-		var packed1 = GD.Load<PackedScene>("res://UI/MultiplayerPanels/HostPanel/HostPanel.tscn");
-        HostPanel = packed1.Instantiate<HostPanel>();
-		HostPanel.Visible = false;
-        AddChild(HostPanel);
-	}
-
 	// Components
 	private void GetComponents() {
 		// Singleplayer Components
@@ -96,6 +83,8 @@ public partial class MainMenu : Control {
 		// Multiplayer Components
 		MultiplayerButton = GetNode<Button>(MULTIPLAYER_BUTTON);
 		MultiplayerButtonPanel = GetNode<Control>(MULTIPLAYER_POPUP);
+
+		this.AddScene<HostPanel>(Scenes.HostPanel);
 
 		// Update continue button state based on autosave existence
 		UpdateContinueButtonState();
@@ -207,8 +196,6 @@ public partial class MainMenu : Control {
 	private void OnHostNewButtonPressed() {
 		var host = this.AddScene<HostPanel>(Scenes.HostPanel);
 		host.OpenMenu();
-
-		HostPanel.UpdateHostText("Host New Game");
 	}
 
 	private void OnHostSavedButtonPressed() {
