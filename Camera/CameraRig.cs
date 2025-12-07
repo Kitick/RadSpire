@@ -100,7 +100,7 @@ namespace Camera {
 		public readonly Vector3 AlignVector(Vector3 direction) => direction.Rotated(Vector3.Up, RadHDG);
 
 		public readonly Vector3 CalcPosition(Node3D space) {
-			Vector3 direction = Extensions.ToPolar(RadHDG, RadPIT);
+			Vector3 direction = MathExtensions.ToPolar(RadHDG, RadPIT);
 
 			float distance = Math.Min(Distance, space.IntersectRay(Anchor + direction * MinDistance, direction, MaxDistance) - BufferDistance);
 			distance = Math.Max(distance, MinDistance);
