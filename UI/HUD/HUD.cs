@@ -147,9 +147,10 @@ public sealed partial class HUD : Control {
 	}
 
 	private void OpenSaveMenu() {
-		var savemenu = SaveMenu.Instantiate<SaveMenu>();
-		savemenu.Mode = SaveMenuMode.Save;
-		savemenu.OpenMenu(onClose: () => StateMachine.TransitionTo(MenuState.Paused));
+		var saveMenu = SaveMenu.Instantiate<SaveMenu>();
+		saveMenu.Mode = SaveMenuMode.Save;
+		saveMenu.OnSave += fileName => GameManager.Instance.SaveGame(fileName);
+		saveMenu.OpenMenu(onClose: () => StateMachine.TransitionTo(MenuState.Paused));
 	}
 
 	private void TogglePause() {

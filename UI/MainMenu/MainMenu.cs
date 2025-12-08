@@ -15,10 +15,10 @@ public sealed partial class MainMenu : Control {
 
 	private const float HideDelay = 0.25f;
 
-	// Events for SceneDirector to handle scene transitions
+	// Intent Events
 	public event Action? OnStartNewGame;
 	public event Action? OnContinueGame;
-	public event Action<string>? OnLoadGame; // For future use when SaveMenu delegates loading
+	public event Action<string>? OnLoadGame;
 	public event Action? OnQuit;
 
 	[ExportCategory("Main Buttons")]
@@ -76,65 +76,31 @@ public sealed partial class MainMenu : Control {
 	}
 
 	private void SetCallbacks() {
-		// Main Menu buttons
-		SingleplayerButton.Pressed += OnSingleplayerButtonPressed;
-		MultiplayerButton.Pressed += OnMultiplayerButtonPressed;
-		SettingsButton.Pressed += OnSettingsButtonPressed;
-		ExtrasButton.Pressed += OnExtrasButtonPressed;
-		QuitButton.Pressed += OnQuitButtonPressed;
+		// Main buttons
+		StartNewButton.Pressed += () => OnStartNewGame?.Invoke();
+		ContinueButton.Pressed += () => OnContinueGame?.Invoke();
+		QuitButton.Pressed += () => OnQuit?.Invoke();
 
-		// Hover behavior for Singleplayer
+		// Local popup management
+		SettingsButton.Pressed += OpenSettings;
+		LoadSavedButton.Pressed += OpenSaveMenu;
+		HostNewButton.Pressed += OpenHostPanel;
+		JoinGameButton.Pressed += OpenJoinPanel;
+
+		// Hover behavior for Singleplayer popup
 		SingleplayerButton.MouseEntered += () => SetPopupState(MenuState.SinglePopup);
 		SingleplayerButton.MouseExited += HidePopup;
 		SingleplayerPanel.MouseExited += HidePopup;
 
-		// Hover behavior for Multiplayer
+		// Hover behavior for Multiplayer popup
 		MultiplayerButton.MouseEntered += () => SetPopupState(MenuState.MultiPopup);
 		MultiplayerButton.MouseExited += HidePopup;
 		MultiplayerPanel.MouseExited += HidePopup;
-
-		// Popup buttons for Singleplayer
-		ContinueButton.Pressed += OnContinueButtonPressed;
-		LoadSavedButton.Pressed += OnLoadSavedButtonPressed;
-		StartNewButton.Pressed += OnStartNewButtonPressed;
-
-		// Popup buttons for Multiplayer
-		HostNewButton.Pressed += OnHostNewButtonPressed;
-		HostSavedButton.Pressed += OnHostSavedButtonPressed;
-		JoinGameButton.Pressed += OnJoinGameButtonPressed;
 	}
 
 	private void SetPopupState(MenuState state) {
-		Log.Info($"Setting Menu State to {state}");
 		SingleplayerPanel.Visible = state == MenuState.SinglePopup;
 		MultiplayerPanel.Visible = state == MenuState.MultiPopup;
-	}
-
-	// Main Menu Button Handlers
-	private void OnSingleplayerButtonPressed() { }
-
-	private void OnMultiplayerButtonPressed() { }
-
-	private void OnSettingsButtonPressed() {
-		var settings = this.AddScene<SettingsMenu>(SettingsScene);
-		settings.OpenMenu();
-	}
-
-	private void OnExtrasButtonPressed() { }
-
-	private void OnQuitButtonPressed() {
-		OnQuit?.Invoke();
-	}
-
-	// Unhover Pop-Up Logic
-	private bool IsMouseInside(params Control[] nodes) {
-		Vector2 mousePos = GetViewport().GetMousePosition();
-		foreach(var node in nodes) {
-			if(node.GetGlobalRect().HasPoint(mousePos)) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 	private void HidePopup() {
@@ -145,35 +111,40 @@ public sealed partial class MainMenu : Control {
 		};
 	}
 
+	private bool IsMouseInside(params Control[] nodes) {
+		Vector2 mousePos = GetViewport().GetMousePosition();
+		foreach(var node in nodes) {
+			if(node.GetGlobalRect().HasPoint(mousePos)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	private void UpdateContinueButtonState() {
 		bool hasAutosave = SaveService.Exists(Constants.AutosaveFile);
 		ContinueButton.Disabled = !hasAutosave;
 	}
 
-	// Pop-up panel buttons handler for Singleplayer
-	private void OnContinueButtonPressed() {
-		OnContinueGame?.Invoke();
+	// Local popup management
+	private void OpenSettings() {
+		var settings = this.AddScene<SettingsMenu>(SettingsScene);
+		settings.OpenMenu();
 	}
 
-	private void OnLoadSavedButtonPressed() {
-		var saveLoad = this.AddScene<SaveMenu>(SaveMenuScene);
-		saveLoad.Mode = SaveMenuMode.Load;
-		saveLoad.OpenMenu();
+	private void OpenSaveMenu() {
+		var saveMenu = this.AddScene<SaveMenu>(SaveMenuScene);
+		saveMenu.Mode = SaveMenuMode.Load;
+		saveMenu.OnLoad += fileName => OnLoadGame?.Invoke(fileName);
+		saveMenu.OpenMenu();
 	}
 
-	private void OnStartNewButtonPressed() {
-		OnStartNewGame?.Invoke();
-	}
-
-	// Pop-up panel buttons handler for Multiplayer
-	private void OnHostNewButtonPressed() {
+	private void OpenHostPanel() {
 		var host = this.AddScene<HostPanel>(HostPanelScene);
 		host.OpenMenu();
 	}
 
-	private void OnHostSavedButtonPressed() { }
-
-	private void OnJoinGameButtonPressed() {
+	private void OpenJoinPanel() {
 		var join = this.AddScene<JoinPanel>(JoinPanelScene);
 		join.OpenMenu();
 	}

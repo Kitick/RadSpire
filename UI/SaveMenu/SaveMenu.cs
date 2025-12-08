@@ -8,6 +8,10 @@ public enum SaveMenuMode { Save, Load }
 public sealed partial class SaveMenu : Control {
 	private static readonly Logger Log = new(nameof(SaveMenu), enabled: true);
 
+	// Intent events
+	public event Action<string>? OnSave;
+	public event Action<string>? OnLoad;
+
 	private event Action? OnExit;
 
 	private const string BACK_BUTTON = "BackButton";
@@ -68,11 +72,7 @@ public sealed partial class SaveMenu : Control {
 	}
 
 	private void SetCallbacks() {
-		GetNode<Button>(BACK_BUTTON).Pressed += OnBackButtonPressed;
-	}
-
-	private void OnBackButtonPressed() {
-		CloseMenu();
+		GetNode<Button>(BACK_BUTTON).Pressed += CloseMenu;
 	}
 
 	public void OpenMenu(Action? onClose = null) {
@@ -89,22 +89,20 @@ public sealed partial class SaveMenu : Control {
 		string fileName = SlotFile(slot);
 
 		if(Mode == SaveMenuMode.Save) {
-			Log.Info($"Saving game to {fileName}");
-			if(GameManager.Instance.SaveGame(fileName)) {
-				RefreshSlotDisplay();
-				CloseMenu();
+			if(!SaveService.Exists(fileName)) {
+				// TODO: Could add confirmation dialog for overwriting
 			}
-			else {
-				Log.Error($"Failed to save game to {fileName}");
-			}
+			Log.Info($"Save requested: {fileName}");
+			OnSave?.Invoke(fileName);
+			CloseMenu();
 		}
-		else { // Load mode
+		else {
 			if(!SaveService.Exists(fileName)) {
 				Log.Warn($"No save file exists at {fileName}");
 				return;
 			}
-
-			GameManager.Instance.LoadGame(fileName);
+			Log.Info($"Load requested: {fileName}");
+			OnLoad?.Invoke(fileName);
 			CloseMenu();
 		}
 	}
