@@ -47,6 +47,8 @@ namespace Settings {
 			(AccessibilityPanel, AccessibilityButton),
 		];
 
+		private Control InitialPanel => GeneralPanel;
+
 		private event Action? OnExit;
 
 		public override void _Ready() {
@@ -54,6 +56,8 @@ namespace Settings {
 
 			SetCallbacks();
 			SetInputCallbacks();
+
+			SwitchToPanel(InitialPanel);
 		}
 
 		public override void _ExitTree() {
