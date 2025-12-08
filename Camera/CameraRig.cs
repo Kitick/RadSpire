@@ -2,7 +2,7 @@ using System;
 using Camera;
 using Core;
 using Godot;
-using SaveSystem;
+using Services;
 
 namespace Camera {
 	public sealed partial class CameraRig : Node3D, ISaveable<CameraRigData> {
@@ -110,9 +110,7 @@ namespace Camera {
 			return Anchor + orbit;
 		}
 	}
-}
 
-namespace SaveSystem {
 	public readonly record struct CameraRigData : ISaveData {
 		public CameraPose Pose { get; init; }
 	}

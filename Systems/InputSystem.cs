@@ -1,7 +1,7 @@
 using System;
 using Godot;
 
-namespace InputSystem {
+namespace Services {
 	// Name must match action name
 	public enum ActionEvent {
 		MoveForward, MoveBack, MoveLeft, MoveRight,

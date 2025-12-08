@@ -1,8 +1,8 @@
 using System;
 using Core;
 using Godot;
-using Network;
-using SaveSystem;
+using Services.Network;
+using Services;
 
 namespace Components {
 	public sealed class Movement : ISaveable<MovementData>, INetworkable<MovementData> {
@@ -68,9 +68,7 @@ namespace Components {
 			Body.Velocity = data.Velocity;
 		}
 	}
-}
 
-namespace SaveSystem {
 	public readonly struct MovementData : ISaveData, INetworkData {
 		public Vector3 Position { get; init; }
 		public Vector3 Velocity { get; init; }

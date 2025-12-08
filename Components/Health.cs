@@ -1,11 +1,11 @@
 using System;
-using Network;
-using SaveSystem;
+using Services;
+using Services.Network;
 
 namespace Components {
 	public sealed class Health : ISaveable<HealthData>, INetworkable<HealthData> {
-		private static readonly Logger Log = new(nameof(Health), enabled: true);
-	
+		private static readonly LogService Log = new(nameof(Health), enabled: true);
+
 		public event Action? OnStateChanged;
 
 		public int CurrentHealth {
@@ -59,9 +59,7 @@ namespace Components {
 		public static float Percent(this Health health) =>
 			(float) health.CurrentHealth / health.MaxHealth;
 	}
-}
 
-namespace SaveSystem {
 	public readonly struct HealthData : ISaveData, INetworkData {
 		public int CurrentHealth { get; init; }
 		public int MaxHealth { get; init; }

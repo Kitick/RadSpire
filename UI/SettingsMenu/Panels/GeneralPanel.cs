@@ -1,8 +1,7 @@
-using System;
 using Godot;
-using SaveSystem;
+using Services;
 
-namespace Settings {
+namespace UI.Settings {
 	public sealed partial class GeneralPanel : VBoxContainer {
 
 		[Export] private OptionButton LanguageOption = null!;
@@ -37,10 +36,8 @@ namespace Settings {
 		// ISaveable Implementation Goes Here
 
 	}
-}
 
-// Update As Needed
-namespace SaveSystem {
+	// Update As Needed
 	public readonly record struct GeneralSettings : ISaveData {
 
 	}

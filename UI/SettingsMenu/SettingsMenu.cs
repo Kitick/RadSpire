@@ -1,12 +1,10 @@
 using System;
-using System.Collections.Generic;
 using Godot;
-using InputSystem;
-using SaveSystem;
+using Services;
 
-namespace Settings {
+namespace UI.Settings {
 	public sealed partial class SettingsMenu : Control, ISaveable<SettingsData> {
-		private static readonly Logger Log = new(nameof(SettingsMenu), enabled: true);
+		private static readonly LogService Log = new(nameof(SettingsMenu), enabled: true);
 
 		private const string SAVEFILE = "settings";
 
@@ -130,9 +128,7 @@ namespace Settings {
 			SoundPanel.Deserialize(data.SoundSettings);
 		}
 	}
-}
 
-namespace SaveSystem {
 	public readonly record struct SettingsData : ISaveData {
 		public DisplaySettings DisplaySettings { get; init; }
 		public SoundSettings SoundSettings { get; init; }

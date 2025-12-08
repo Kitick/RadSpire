@@ -1,8 +1,7 @@
-using System;
 using Godot;
-using SaveSystem;
+using Services;
 
-namespace Settings {
+namespace UI.Settings {
 	public sealed partial class MkPanel : VBoxContainer {
 
 		[Export] private HSlider MouseSenseSlider = null!;
@@ -41,10 +40,8 @@ namespace Settings {
 		//ISaveable Implmentation Goes Here
 
 	}
-}
 
-//Update as Needed
-namespace SaveSystem {
+	//Update as Needed
 	public readonly record struct MkSettings : ISaveData {
 
 	}

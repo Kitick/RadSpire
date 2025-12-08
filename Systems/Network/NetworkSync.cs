@@ -1,13 +1,12 @@
 using System;
 using System.Text.Json;
 using Godot;
-using Systems.JSON;
 
-namespace Network {
+namespace Services.Network {
 	public enum TransferMode { Reliable, Unreliable }
 
 	public sealed partial class NetworkSync<T> : Node where T : struct, INetworkData {
-		private static readonly Logger Log = new(nameof(NetworkSync<T>), enabled: true);
+		private static readonly LogService Log = new(nameof(NetworkSync<>), enabled: true);
 
 		private readonly INetworkable<T> SyncObject;
 		private readonly TransferMode Mode;
@@ -23,7 +22,7 @@ namespace Network {
 
 		private bool IsOwner => Server.Instance.IsOwner(OwnerPeerId);
 		private bool IsServer => Multiplayer.IsServer();
-		private string SerializeState() => JSON.Serialize(SyncObject.Serialize(), NetJsonOptions);
+		private string SerializeState() => JsonService.Serialize(SyncObject.Serialize(), NetJsonOptions);
 
 		public NetworkSync(INetworkable<T> syncObject, int ownerPeerId, string syncId = "sync", TransferMode mode = TransferMode.Reliable) {
 			SyncObject = syncObject;
@@ -102,7 +101,7 @@ namespace Network {
 		}
 
 		private void ProcessAndBroadcast(int senderPeerId, string json) {
-			var data = JSON.Deserialize<T>(json, NetJsonOptions);
+			var data = JsonService.Deserialize<T>(json, NetJsonOptions);
 
 			if(Validator != null) {
 				var validated = Validator(data);
@@ -111,7 +110,7 @@ namespace Network {
 					return;
 				}
 				data = validated.Value;
-				json = JSON.Serialize(data, NetJsonOptions);
+				json = JsonService.Serialize(data, NetJsonOptions);
 			}
 
 			Log.Info($"{LogPrefix} Host broadcasting to all clients");
@@ -134,7 +133,7 @@ namespace Network {
 			if(IsOwner) { return; }
 
 			Log.Info($"{LogPrefix} Received broadcast, applying to SyncObject");
-			var data = JSON.Deserialize<T>(json, NetJsonOptions);
+			var data = JsonService.Deserialize<T>(json, NetJsonOptions);
 			SyncObject.Deserialize(data);
 		}
 

@@ -1,10 +1,13 @@
-using Godot;
 using System.Collections.Generic;
 using System.Linq;
+using Godot;
+using Services;
+using Character;
+using Components;
 
-namespace Components {
+namespace ItemSystem {
 	public partial class Item3DIconPickup : Node3D {
-		private static readonly Logger Log = new(nameof(Item3DIconPickup), enabled: true);
+		private static readonly LogService Log = new(nameof(Item3DIconPickup), enabled: true);
 
 		public Player Player = null!;
 		public Inventory PlayerInventory = null!;

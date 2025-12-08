@@ -1,14 +1,13 @@
 using System;
-using System.Collections.Generic;
 using Core;
 using Godot;
-using SaveSystem;
+using Services;
 
-namespace Settings {
+namespace UI.Settings {
 	public enum AudioBus { Master, Music, SFX }
 
 	public sealed partial class SoundPanel : VBoxContainer, ISaveable<SoundSettings> {
-		private static readonly Logger Log = new(nameof(SoundPanel), enabled: true);
+		private static readonly LogService Log = new(nameof(SoundPanel), enabled: true);
 
 		[Export] private HSlider MasterSlider = null!;
 		[Export] private HSlider MusicSlider = null!;
@@ -131,9 +130,7 @@ namespace Settings {
 			AudioServer.SetBusMute(bus.GetIndex(), isMuted);
 		}
 	}
-}
 
-namespace SaveSystem {
 	public readonly record struct SoundSettings : ISaveData {
 		public int MasterVolume { get; init; }
 		public int MusicVolume { get; init; }

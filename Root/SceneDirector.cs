@@ -1,9 +1,10 @@
-using Core;
 using Godot;
+using Services;
+using UI;
 
 namespace Root {
 	public partial class SceneDirector : Node {
-		private static readonly Logger Log = new(nameof(SceneDirector), enabled: true);
+		private static readonly LogService Log = new(nameof(SceneDirector), enabled: true);
 
 		public Node? CurrentScene { get; private set; }
 

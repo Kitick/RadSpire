@@ -1,8 +1,7 @@
 using System;
 using Godot;
-using Systems.JSON;
 
-namespace Network {
+namespace Services.Network {
 	public interface INetworkData : IJSONData;
 
 	public interface INetworkable<T> : IJSONable<T> where T : INetworkData {
@@ -12,7 +11,7 @@ namespace Network {
 	public sealed partial class Server : Node {
 		public static Server Instance { get; private set; } = null!;
 
-		private static readonly Logger Log = new(nameof(Server), enabled: true);
+		private static readonly LogService Log = new(nameof(Server), enabled: true);
 
 		private const int Port = 8080;
 		private const int MaxPlayers = 10;

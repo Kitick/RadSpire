@@ -1,10 +1,10 @@
 using Core;
 using Godot;
-using SaveSystem;
+using Services;
 
-namespace Settings {
+namespace UI.Settings {
 	public sealed partial class DisplayPanel : VBoxContainer, ISaveable<DisplaySettings> {
-		private static readonly Logger Log = new(nameof(DisplayPanel), enabled: true);
+		private static readonly LogService Log = new(nameof(DisplayPanel), enabled: true);
 
 		[Export] private OptionButton ResolutionOption = null!;
 		[Export] private CheckBox FullscreenCheck = null!;
@@ -138,11 +138,9 @@ namespace Settings {
 
 		public override string ToString() => Value == 0 ? "Unlimited" : $"{Value} FPS";
 	}
-}
 
-namespace SaveSystem {
 	public readonly record struct DisplaySettings : ISaveData {
-		public Settings.Resolution Resolution { get; init; }
+		public Resolution Resolution { get; init; }
 		public bool IsFullscreen { get; init; }
 		public bool IsVSyncEnabled { get; init; }
 		public float Brightness { get; init; }

@@ -1,9 +1,8 @@
-using System;
 using Godot;
-using SaveSystem;
+using Services;
 
-namespace Settings {
-	public sealed partial class ControllerPanel : VBoxContainer{
+namespace UI.Settings {
+	public sealed partial class ControllerPanel : VBoxContainer {
 
 		[Export] private CheckBox EnableControllerCheckBox = null!;
 		[Export] private CheckBox VibrationCheckBox = null!;
@@ -35,17 +34,15 @@ namespace Settings {
 			//Implementation Here
 		}
 
-		private void OnRemapButtonsPressed(){
+		private void OnRemapButtonsPressed() {
 			//Implementation Here
 		}
 
 		//ISaveable Implementation Goes Here
 
 	}
-}
 
-// Update as Needed
-namespace SaveSystem {
+	// Update as Needed
 	public readonly record struct ControllerSettings : ISaveData {
 
 	}

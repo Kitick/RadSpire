@@ -1,7 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Systems.JSON {
+namespace Services {
 	public interface IJSONData;
 
 	public interface IJSONable<T> where T : IJSONData {
@@ -9,7 +9,7 @@ namespace Systems.JSON {
 		void Deserialize(in T data);
 	}
 
-	public static class JSON {
+	public static class JsonService {
 		private static readonly JsonConverter[] Converters = [
 			new Vector3Converter()
 		];

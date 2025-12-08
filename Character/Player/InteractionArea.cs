@@ -1,9 +1,10 @@
 using System;
 using Godot;
+using Services;
 
 namespace Components {
 	public partial class InteractionArea : Area3D {
-		private static readonly Logger Log = new(nameof(InteractionArea), enabled: true);
+		private static readonly LogService Log = new(nameof(InteractionArea), enabled: true);
 
 		public event Action<Node3D>? OnBodyEnteredArea;
 		public event Action<Node3D>? OnBodyExitedArea;

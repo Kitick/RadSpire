@@ -19,7 +19,4 @@ namespace Components {
         public void OnEquip(CharacterBody3D equipper);
         public void OnUnequip(CharacterBody3D unequipper);
     }
-    
-
-
 }

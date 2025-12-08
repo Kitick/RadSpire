@@ -1,9 +1,7 @@
-using System.Diagnostics;
-using System;
 using Godot;
-using SaveSystem;
+using Services;
 
-namespace Settings {
+namespace UI.Settings {
 	public sealed partial class AccessibilityPanel : VBoxContainer {
 
 		[Export] private CheckBox SubtitlesCheckBox = null!;
@@ -49,10 +47,8 @@ namespace Settings {
 		//ISaveable Implementation Goes Here
 
 	}
-}
 
-// Update as needed
-namespace SaveSystem {
+	// Update as needed
 	public readonly record struct AccessibilitySettings : ISaveData {
 
 	}
