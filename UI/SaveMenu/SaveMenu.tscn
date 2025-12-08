@@ -1,8 +1,8 @@
 [gd_scene load_steps=4 format=3 uid="uid://dv4igypq0dbv8"]
 
-[ext_resource type="Texture2D" uid="uid://ey80t6hrma51" path="res://Assets/Images/Menu/background_kneeling.png" id="1_668ho"]
-[ext_resource type="Script" path="res://UI/LoadMenu/SaveLoadMenu.cs" id="1_bhsh3"]
-[ext_resource type="Texture2D" uid="uid://8ykhw0g480u8" path="res://Assets/Images/Icons/sword.png" id="2_yf308"]
+[ext_resource type="Script" uid="uid://cnc1drhp35q8y" path="res://UI/SaveMenu/SaveMenu.cs" id="1_ck8wv"]
+[ext_resource type="Texture2D" uid="uid://ey80t6hrma51" path="res://Assets/Images/Menu/background_kneeling.png" id="2_fc0yl"]
+[ext_resource type="Texture2D" uid="uid://8ykhw0g480u8" path="res://Assets/Images/Icons/sword.png" id="3_cru22"]
 
 [node name="LoadMenu" type="Control"]
 layout_mode = 3
@@ -11,7 +11,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_bhsh3")
+script = ExtResource("1_ck8wv")
 
 [node name="LoadMenuBackground" type="TextureRect" parent="."]
 layout_mode = 1
@@ -20,7 +20,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("1_668ho")
+texture = ExtResource("2_fc0yl")
 
 [node name="Panel" type="Control" parent="."]
 layout_mode = 1
@@ -57,31 +57,31 @@ theme_override_constants/separation = 5
 layout_mode = 2
 theme_override_font_sizes/font_size = 128
 text = "Slot 1"
-icon = ExtResource("2_yf308")
+icon = ExtResource("3_cru22")
 
 [node name="Slot2" type="Button" parent="Panel/SaveSlots"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 128
 text = "Slot 2"
-icon = ExtResource("2_yf308")
+icon = ExtResource("3_cru22")
 
 [node name="Slot3" type="Button" parent="Panel/SaveSlots"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 128
 text = "Slot 3"
-icon = ExtResource("2_yf308")
+icon = ExtResource("3_cru22")
 
 [node name="Slot4" type="Button" parent="Panel/SaveSlots"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 128
 text = "Slot 4"
-icon = ExtResource("2_yf308")
+icon = ExtResource("3_cru22")
 
 [node name="Slot5" type="Button" parent="Panel/SaveSlots"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 128
 text = "Slot 5"
-icon = ExtResource("2_yf308")
+icon = ExtResource("3_cru22")
 
 [node name="BackButton" type="Button" parent="."]
 layout_mode = 1

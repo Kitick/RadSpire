@@ -1,10 +1,12 @@
 using System;
 using Godot;
 
-public sealed partial class PlayerAnimator : Node3D {
-	public bool Debug = false;
+public sealed partial class PlayerAnimator : AnimationPlayer {
+	private static readonly Logger Log = new(nameof(PlayerAnimator), enabled: true);
 
-	public enum State { Idle, Walking, Sprinting, Crouching, Jumping, Falling, Landing }
+	public enum AnimState { Idle, Walking, Sprinting, Crouching, Jumping, Falling, Landing, ATTACKING, DYING }
+
+	[Export] private Player Player = null!;
 
 	private const string IDLE = "Idle";
 	private const string WALKING = "Walking_B";
@@ -13,42 +15,31 @@ public sealed partial class PlayerAnimator : Node3D {
 	private const string JUMPING = "Jump_Start";
 	private const string FALLING = "Jump_Idle";
 	private const string LANDING = "Jump_Land";
-	private const string DIE = "Death_A";
+	private const string DEATH = "Death_A";
 	private const string SLASH = "1H_Melee_Attack_Slice_Diagonal";
-	private const string ANIMATION_PLAYER = "AnimationPlayer";
 
-	private Player Player = null!;
-	private AnimationPlayer AnimationPlayer = null!;
-
-	private bool IsAttacking;
-	private bool IsDying;
-
-	public State CurrentAnimation {
+	public AnimState PlayingAnimation {
 		get;
 		private set {
 			field = value;
 			switch(value) {
-				case State.Idle: AnimationPlayer.Play(IDLE); break;
-				case State.Walking: AnimationPlayer.Play(WALKING); break;
-				case State.Sprinting: AnimationPlayer.Play(SPRINTING); break;
-				case State.Crouching: AnimationPlayer.Play(CROUCHING); break;
-				case State.Jumping: AnimationPlayer.Play(JUMPING); break;
-				case State.Falling: AnimationPlayer.Play(FALLING); break;
-				case State.Landing: AnimationPlayer.Play(LANDING); break;
+				case AnimState.Idle: Play(IDLE); break;
+				case AnimState.Walking: Play(WALKING); break;
+				case AnimState.Sprinting: Play(SPRINTING); break;
+				case AnimState.Crouching: Play(CROUCHING); break;
+				case AnimState.Jumping: Play(JUMPING); break;
+				case AnimState.Falling: Play(FALLING); break;
+				case AnimState.Landing: Play(LANDING); break;
+				case AnimState.ATTACKING: Play(SLASH); break;
+				case AnimState.DYING: Play(DEATH); break;
 			}
 		}
 	}
 
 	public override void _Ready() {
-		GetComponents();
+		// sync state machine
+
 		SetupAnimations();
-	}
-
-	private void GetComponents() {
-		Player = GetParent<Player>();
-		//Player.OnStateChange += OnPlayerMovement;
-
-		AnimationPlayer = GetNode<AnimationPlayer>(ANIMATION_PLAYER);
 	}
 
 	private void SetupAnimations() {
@@ -58,76 +49,41 @@ public sealed partial class PlayerAnimator : Node3D {
 		SetLoopMode(CROUCHING);
 		SetLoopMode(FALLING);
 
-		AnimationPlayer.AnimationFinished += OnAnimationFinished;
+		AnimationFinished += OnAnimationFinished;
 		SyncAnimation();
 	}
 
 	private void SetLoopMode(string name) {
-		AnimationPlayer.GetAnimation(name).LoopMode = Animation.LoopModeEnum.Linear;
+		GetAnimation(name).LoopMode = Animation.LoopModeEnum.Linear;
 	}
 
 	public void OnAnimationFinished(StringName name) {
 		if(name == JUMPING || name == LANDING) {
 			SyncAnimation();
 		}
-		else if (name == SLASH) {
-			IsAttacking = false;
-			SyncAnimation();
-		}
-		else if (name == DIE) {
-			GetParent<Player>().Die();
-			SyncAnimation();
-		}
-	}
-
-	public void PlaySlash()
-	{
-		if (IsAttacking)
-			return;
-
-		IsAttacking = true;
-		AnimationPlayer.Play(SLASH);
-	}
-
-	public void PlayDie()
-	{
-		if (IsDying)
-			return;
-		IsDying = true;
-		AnimationPlayer.Play(DIE);
 	}
 
 	public void SyncAnimation() {
-		if(Debug){ GD.Print($"Syncing animation to: {Player.CurrentState}"); }
+		Log.Info($"Syncing animation to: {Player.CurrentState}");
 
-		if (IsAttacking)
-			return;
-		if (IsDying)
-			return;
-
-		CurrentAnimation = Player.CurrentState switch {
-			Player.State.Idle => State.Idle,
-			Player.State.Walking => State.Walking,
-			Player.State.Sprinting => State.Sprinting,
-			Player.State.Crouching => State.Crouching,
-			Player.State.Falling => State.Falling,
-			_ => CurrentAnimation,
+		PlayingAnimation = Player.CurrentState switch {
+			Player.State.Idle => AnimState.Idle,
+			Player.State.Walking => AnimState.Walking,
+			Player.State.Sprinting => AnimState.Sprinting,
+			Player.State.Crouching => AnimState.Crouching,
+			Player.State.Falling => AnimState.Falling,
+			_ => PlayingAnimation,
 		};
 	}
 
 	private void OnPlayerMovement(Player.State from, Player.State to) {
-		if(Debug){ GD.Print($"Player State change: {from} -> {to}"); }
-
-		if (IsAttacking)
-			return;
-		if (IsDying)
-			return;
+		Log.Info($"Player State change: {from} -> {to}");
 
 		bool jumped = from != Player.State.Falling && to == Player.State.Falling;
 		bool landed = from == Player.State.Falling && to != Player.State.Falling;
 
-		if(jumped) { CurrentAnimation = State.Jumping; }
-		else if(landed) { CurrentAnimation = State.Landing; }
+		if(jumped) { PlayingAnimation = AnimState.Jumping; }
+		else if(landed) { PlayingAnimation = AnimState.Landing; }
 		else { SyncAnimation(); }
 	}
 }

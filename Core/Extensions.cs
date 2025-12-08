@@ -63,17 +63,12 @@ namespace Core {
 
 	public static class NodeExtensions {
 		// Node instantiation
+		public static Node AddScene(this Node node, PackedScene scene) => node.AddScene<Node>(scene);
 		public static TScene AddScene<TScene>(this Node node, PackedScene scene) where TScene : Node {
 			TScene instance = scene.Instantiate<TScene>();
 			node.AddChild(instance);
 			return instance;
 		}
-
-		public static TScene AddScene<TScene>(this Node node, string scene) where TScene : Node =>
-			node.AddScene<TScene>(GD.Load<PackedScene>(scene));
-
-		public static Node AddScene(this Node node, PackedScene scene) => node.AddScene<Node>(scene);
-		public static Node AddScene(this Node node, string scene) => node.AddScene<Node>(scene);
 
 		// OptionButton
 		public static void Populate<T>(this OptionButton button, T[] values) where T : notnull {

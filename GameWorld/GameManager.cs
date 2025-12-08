@@ -9,7 +9,13 @@ public sealed partial class GameManager : Node {
 
 	private static readonly Logger Log = new(nameof(GameManager), enabled: true);
 
-	public bool InGame => GetTree().CurrentScene?.SceneFilePath == Scenes.GameScene;
+	[ExportCategory("Scene References")]
+	[Export] private PackedScene GameScene = null!;
+	[Export] private PackedScene PlayerScene = null!;
+	[Export] private PackedScene CameraScene = null!;
+	[Export] private PackedScene MainMenuScene = null!;
+
+	public bool InGame => GetTree().CurrentScene?.SceneFilePath == GameScene.ResourcePath;
 
 	public Player? LocalPlayer;
 	public CameraRig? CameraRig;
@@ -49,13 +55,13 @@ public sealed partial class GameManager : Node {
 	}
 
 	public Player SpawnLocalPlayer() {
-		LocalPlayer = this.AddScene<Player>(Scenes.Player);
+		LocalPlayer = this.AddScene<Player>(PlayerScene);
 
 		LocalPlayer.Name = $"Player_{LocalPeerId}";
 		LocalPlayer.GlobalPosition = PlayerSpawnLocation;
 
 		if(!IsInstanceValid(CameraRig)) {
-			CameraRig = this.AddScene<CameraRig>(Scenes.Camera);
+			CameraRig = this.AddScene<CameraRig>(CameraScene);
 		}
 
 		CameraRig.Target = LocalPlayer;
@@ -176,7 +182,7 @@ public sealed partial class GameManager : Node {
 	private void TransitionToGame() {
 		CleanupGame();
 		GetTree().Paused = false;
-		GetTree().ChangeSceneToFile(Scenes.GameScene);
+		GetTree().ChangeSceneToFile(GameScene.ResourcePath);
 		GetTree().TreeChanged += OnTreeChangedOnce;
 	}
 
@@ -207,7 +213,7 @@ public sealed partial class GameManager : Node {
 		QuickSave();
 		CleanupGame();
 		GetTree().Paused = false;
-		GetTree().ChangeSceneToFile(Scenes.MainMenu);
+		GetTree().ChangeSceneToFile(MainMenuScene.ResourcePath);
 	}
 
 	public void ExitApplication() {

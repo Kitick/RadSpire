@@ -14,28 +14,25 @@ public sealed partial class HUD : Control {
 	private readonly StateMachine<MenuState> StateMachine = new();
 	public MenuState State => StateMachine.CurrentState;
 
-	private PauseMenu PauseMenu = null!;
-	private InventoryUI Inventory = null!;
-	private Control QuestLog = null!;
-	private Hotbar Hotbar = null!;
-	private RespawnMenu RespawnMenu = null!;
+	public Player Player = null!;
 
-	private const string PAUSE_BUTTON = "PauseButton";
-	private const string PAUSE_MENU = "PauseMenu";
-	private const string INVENTORY = "Inventory";
-	private const string QUESTLOG = "QuestLog";
-	private const string HOTBAR = "Hotbar";
-	private const string RESPAWN_MENU = "RespawnMenu";
+	[ExportCategory("HUD Elements")]
+	[Export] private Button PauseButton = null!;
+	[Export] private PauseMenu PauseMenu = null!;
+	[Export] private InventoryUI Inventory = null!;
+	[Export] private Control QuestLog = null!;
+	[Export] private Hotbar Hotbar = null!;
+	[Export] private RespawnMenu RespawnMenu = null!;
+	[Export] private ProgressBar HealthBar = null!;
 
-	//Load Scene Reference
-
-	private HostPanel HostPanel = null!;
+	[ExportCategory("HUD Scenes")]
+	[Export] private PackedScene SettingsScene = null!;
+	[Export] private PackedScene SaveMenu = null!;
+	[Export] private PackedScene HostPanelScene = null!;
 
 	public bool IsPaused => GetTree().Paused;
 
 	private event Action? OnExit;
-	public Player Player = null!;
-	public bool InventoryOpen => Inventory.Visible;
 
 	public override void _EnterTree() {
 		base._EnterTree();
@@ -51,12 +48,22 @@ public sealed partial class HUD : Control {
 	public override void _Ready() {
 		ProcessMode = ProcessModeEnum.Always;
 
-		LoadScenes();
-		GetComponents();
+		if(Player == null) {
+			Log.Error("No Player node defined.");
+			return;
+		}
+
 		SetInputCallbacks();
 		SetCallbacks();
+		SubscribeToPlayerHealth();
 
 		StateMachine.TransitionTo(MenuState.Game);
+	}
+
+	private void SubscribeToPlayerHealth() {
+		HealthBar.MaxValue = Player.Health.MaxHealth;
+		HealthBar.Value = Player.Health.CurrentHealth;
+		Player.Health.OnHealthChanged += (from, to) => HealthBar.Value = to;
 	}
 
 	public override void _ExitTree() {
@@ -69,28 +76,13 @@ public sealed partial class HUD : Control {
 		QuitGame();
 	}
 
-	public void LoadScenes() {
-		var packed1 = GD.Load<PackedScene>("res://UI/MultiplayerPanels/HostPanel/HostPanel.tscn");
-		HostPanel = packed1.Instantiate<HostPanel>();
-		HostPanel.Visible = false;
-		AddChild(HostPanel);
-	}
-
 	private void SetInputCallbacks() {
 		OnExit += ActionEvent.MenuExit.WhenPressed(TogglePause);
 		OnExit += ActionEvent.Inventory.WhenPressed(ToggleInventory);
 	}
 
-	private void GetComponents() {
-		PauseMenu = GetNode<PauseMenu>(PAUSE_MENU);
-		Inventory = GetNode<InventoryUI>(INVENTORY);
-		QuestLog = GetNode<Control>(QUESTLOG);
-		Hotbar = GetNode<Hotbar>(HOTBAR);
-		RespawnMenu = GetNode<RespawnMenu>(RESPAWN_MENU);
-	}
-
 	private void SetCallbacks() {
-		GetNode<Button>(PAUSE_BUTTON).Pressed += TogglePause;
+		PauseButton.Pressed += TogglePause;
 
 		PauseMenu.ResumeButton.Pressed += TogglePause;
 		PauseMenu.SaveButton.Pressed += OpenSaveMenu;
@@ -142,25 +134,22 @@ public sealed partial class HUD : Control {
 	}
 
 	private void OpenHostPanel() {
-		var host = this.AddScene<HostPanel>(Scenes.HostPanel);
-		host.OnMenuClosed += () => StateMachine.TransitionTo(MenuState.Paused);
-		host.OpenMenu();
-
-		host.UpdateHostText("Host Game");
+		var hostpanel = HostPanelScene.Instantiate<HostPanel>();
+		hostpanel.UpdateHostText("Host Game");
+		hostpanel.OpenMenu(onClose: () => StateMachine.TransitionTo(MenuState.Paused));
 	}
 
 	private void OpenSettings() {
-		var settings = this.AddScene<SettingsMenu>(Scenes.SettingsMenu);
+		var settings = SettingsScene.Instantiate<SettingsMenu>();
 		settings.OpenMenu(
 			onClose: () => StateMachine.TransitionTo(MenuState.Paused)
 		);
 	}
 
 	private void OpenSaveMenu() {
-		var saveLoad = this.AddScene<SaveLoadMenu>(Scenes.SaveLoadMenu);
-		saveLoad.Mode = SaveLoadMode.Save;
-		saveLoad.OnMenuClosed += () => StateMachine.TransitionTo(MenuState.Paused);
-		saveLoad.OpenMenu();
+		var savemenu = SaveMenu.Instantiate<SaveMenu>();
+		savemenu.Mode = SaveMenuMode.Save;
+		savemenu.OpenMenu(onClose: () => StateMachine.TransitionTo(MenuState.Paused));
 	}
 
 	private void TogglePause() {
@@ -168,14 +157,14 @@ public sealed partial class HUD : Control {
 		StateMachine.TransitionTo(IsPaused ? MenuState.Game : MenuState.Paused);
 	}
 
-	public void QuitGame() {
+	public static void QuitGame() {
 		GameManager.Instance.ReturnToMainMenu();
 	}
 
 	public void ToggleInventory() {
 		// Don't allow inventory while dead
 		if(State == MenuState.Death) { return; }
-		if(!InventoryOpen) {
+		if(!Inventory.Visible) {
 			Inventory.Visible = true;
 			Hotbar.Visible = true;
 			StateMachine.TransitionTo(MenuState.Inventory);

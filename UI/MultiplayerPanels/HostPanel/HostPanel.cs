@@ -22,7 +22,6 @@ namespace MultiplayerPanels {
 		public LineEdit InputPassword = null!;
 
 		// Events
-		public event Action? OnMenuClosed;
 		private event Action? OnExit;
 
 		// Override Functions
@@ -37,7 +36,6 @@ namespace MultiplayerPanels {
 
 		public override void _ExitTree() {
 			OnExit?.Invoke();
-			OnMenuClosed?.Invoke();
 		}
 
 		//Get Components
@@ -119,7 +117,9 @@ namespace MultiplayerPanels {
 		}
 
 		//Scene Input Callbacks
-		public void OpenMenu() { }
+		public void OpenMenu(Action? onClose = null) {
+			OnExit += onClose;
+		}
 
 		public void CloseMenu() {
 			QueueFree();

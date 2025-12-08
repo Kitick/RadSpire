@@ -1,5 +1,4 @@
 using System;
-using Camera;
 using Components;
 using Core;
 using Godot;
@@ -7,10 +6,14 @@ using SaveSystem;
 
 public sealed partial class Player : CharacterBody3D, IDamageable, ISaveable<PlayerData> {
 	private static readonly Logger Log = new(nameof(Enemy), enabled: true);
-	// Configuration
+
+	[ExportCategory("Player Config")]
 	[Export] private int InitalHealth = 100;
 	[Export] private float SprintMultiplier = 2.25f;
 	[Export] private float CrouchMultiplier = 0.5f;
+
+	[ExportCategory("Player Nodes")]
+	[Export] private PlayerAnimator Animator = null!;
 
 	// Inventories
 	public readonly Inventory Inventory = new Inventory(3, 5);
@@ -22,11 +25,8 @@ public sealed partial class Player : CharacterBody3D, IDamageable, ISaveable<Pla
 	public readonly Movement Movement;
 	public readonly Item3DIconPickup PickupComponent;
 
-	private ProgressBar HealthBar = null!;
-	private PlayerAnimator Animator = null!;
-
 	// State Machine
-	public enum State { Idle, Walking, Sprinting, Crouching, Falling }
+	public enum State { Idle, Walking, Sprinting, Crouching, Falling, Attacking, Dead }
 
 	private readonly StateMachine<State> StateMachine = new(State.Idle);
 	public State CurrentState => StateMachine.CurrentState;
@@ -40,36 +40,12 @@ public sealed partial class Player : CharacterBody3D, IDamageable, ISaveable<Pla
 
 	public override void _Ready() {
 		AddChild(PickupComponent);
-
-		this.AddScene(Scenes.HUD);
 		AddChild(InventoryManager);
-		AddInventoriesToInventoryManager();
-
-		AddToGroup("Player");
-
-		HealthBar = GetNode<ProgressBar>("/root/GameManager/Player/HUD/HealthBar");
-		Animator =  GetNode<PlayerAnimator>("/root/GameManager/Player/Knight");
-
-		HealthBar.MaxValue = Health.MaxHealth;
-		HealthBar.Value = Health.CurrentHealth;
-	}
-
-	private void HandleHealthChanged(int newValue) {
-		HealthBar.Value = newValue;
-	}
-
-	public void AddInventoriesToInventoryManager() {
-		InventoryUI inventoryUI = GetNode<HUD>("HUD").GetNode<InventoryUI>("Inventory");
-		Inventory.Name = "Inventory";
-		InventoryManager.RegisterInventory(Inventory, inventoryUI);
-		Hotbar hotbarUI = GetNode<HUD>("HUD").GetNode<Hotbar>("Hotbar");
-		Hotbar.Name = "Hotbar";
-		InventoryManager.RegisterInventory(Hotbar, hotbarUI);
 	}
 
 	public void Update(float dt, KeyInput keyInput) {
 		if(Health.IsDead()) {
-			StateMachine.TransitionTo(State.Idle);
+			StateMachine.TransitionTo(State.Dead);
 			return;
 		}
 
@@ -87,8 +63,8 @@ public sealed partial class Player : CharacterBody3D, IDamageable, ISaveable<Pla
 	}
 
 	private void UpdateMovementState(KeyInput keyInput) {
-		if (keyInput.AttackPressed) {
-			Animator.PlaySlash();
+		if(keyInput.AttackPressed) {
+			StateMachine.TransitionTo(State.Attacking);
 		}
 
 		if(!IsOnFloor()) { StateMachine.TransitionTo(State.Falling); }
@@ -101,23 +77,6 @@ public sealed partial class Player : CharacterBody3D, IDamageable, ISaveable<Pla
 	public void TakeDamage(int amount) {
 		Health.CurrentHealth -= amount;
 		Log.Info($"Player HP: {Health.CurrentHealth}");
-
-		HandleHealthChanged(Health.CurrentHealth);
-
-		if(Health.IsDead()) {
-			Animator.PlayDie();
-		}
-	}
-
-	public void Die() {
-		var hud = GetNodeOrNull<HUD>("HUD");
-		if(hud != null) {
-			hud.ShowRespawnMenu();
-			Log.Info("Player died, showing respawn menu");
-		}
-		else {
-			Log.Error("Player.Die: Could not find HUD to show respawn menu");
-		}
 	}
 
 	private float GetMultiplier() {

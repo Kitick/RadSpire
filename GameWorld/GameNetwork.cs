@@ -136,7 +136,7 @@ public partial class GameManager {
 	}
 
 	private void CreateNetworkedPlayer(int peerId) {
-		var player = this.AddScene<Player>(Scenes.Player);
+		var player = this.AddScene<Player>(PlayerScene);
 
 		player.Name = $"Player_{peerId}";
 		player.GlobalPosition = PlayerSpawnLocation;

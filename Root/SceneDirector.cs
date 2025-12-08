@@ -1,42 +1,46 @@
 using Core;
 using Godot;
-using Settings;
 
 namespace Root {
 	public partial class SceneDirector : Node {
 		private static readonly Logger Log = new(nameof(SceneDirector), enabled: true);
 
-		public enum MenuState { MainMenu, Settings }
-
-		private readonly StateMachine<MenuState> StateMachine = new();
-
-		public MenuState CurrentState => StateMachine.CurrentState;
 		public Node? CurrentScene { get; private set; }
 
-		[ExportGroup("Menu Scenes")]
-		[Export] private PackedScene MainMenu = null!;
-		[Export] private PackedScene Settings = null!;
-
-		[ExportGroup("Game Scenes")]
-		[Export] private PackedScene GameWorld = null!;
-
-		public SceneDirector() {
-			SetupStateMachine();
-		}
+		[ExportCategory("Scene References")]
+		[Export] private PackedScene MainMenuScene = null!;
+		[Export] private PackedScene GameWorldScene = null!;
 
 		public override void _Ready() {
-			StateMachine.TransitionTo(MenuState.MainMenu);
+			ShowMainMenu();
 		}
 
-		private void SetupStateMachine() {
-			StateMachine.OnEnter(MenuState.MainMenu, () => SwitchScene(MainMenu.Instantiate<MainMenu>()));
+		private void ShowMainMenu() {
+			var mainMenu = MainMenuScene.Instantiate<MainMenu>();
+			SubscribeToMainMenuEvents(mainMenu);
+			SwitchScene(mainMenu);
+		}
 
-			StateMachine.OnEnter(MenuState.Settings, () => {
-				Log.Info("Entering Settings Menu");
-				Settings.Instantiate<SettingsMenu>().OpenMenu(
-					onClose: () => StateMachine.TransitionTo(MenuState.MainMenu)
-				);
-			});
+		private void SubscribeToMainMenuEvents(MainMenu mainMenu) {
+			mainMenu.OnStartNewGame += () => {
+				Log.Info("Starting new game from MainMenu");
+				GameManager.Instance.StartNewGame();
+			};
+
+			mainMenu.OnContinueGame += () => {
+				Log.Info("Continuing game from MainMenu");
+				GameManager.Instance.ContinueGame();
+			};
+
+			mainMenu.OnLoadGame += fileName => {
+				Log.Info($"Loading game '{fileName}' from MainMenu");
+				GameManager.Instance.LoadGame(fileName);
+			};
+
+			mainMenu.OnQuit += () => {
+				Log.Info("Quitting application from MainMenu");
+				GameManager.Instance.ExitApplication();
+			};
 		}
 
 		private void SwitchScene(Node to) => SwitchScene(CurrentScene, to);

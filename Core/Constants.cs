@@ -8,28 +8,6 @@ namespace Core {
 		public const float GRAVITY = 9.8f;
 	}
 
-	public static class Scenes {
-		private const string UI = "res://UI";
-		private const string HUDDIR = $"{UI}/HUD";
-		private const string MultiplayerPanels = $"{UI}/MultiplayerPanels";
-		private const string Character = "res://Character";
-
-		public const string PauseMenu = $"{HUDDIR}/PauseMenu.tscn";
-		public const string RespawnMenu = $"{UI}/RespawnMenu/RespawnMenu.tscn";
-		public const string HUD = $"{HUDDIR}/HUD.tscn";
-
-		public const string MainMenu = $"{UI}/MainMenu/MainMenu.tscn";
-		public const string SettingsMenu = $"{UI}/SettingsMenu/SettingsMenu.tscn";
-		public const string SaveLoadMenu = $"{UI}/LoadMenu/LoadSaveMenu.tscn";
-		public const string HostPanel = $"{MultiplayerPanels}/HostPanel/HostPanel.tscn";
-		public const string JoinPanel = $"{MultiplayerPanels}/JoinPanel/JoinPanel.tscn";
-
-		public const string GameScene = "res://GameWorld/World.tscn";
-		public const string Player = $"{Character}/Player/Player.tscn";
-		public const string Enemy = $"{Character}/Enemy/Enemy.tscn";
-		public const string Camera = "res://Camera/Camera.tscn";
-	}
-
 	public static class Actions {
 		public const string MoveForward = "MoveForward";
 		public const string MoveBack = "MoveBack";
