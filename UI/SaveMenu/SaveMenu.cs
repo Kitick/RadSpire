@@ -27,7 +27,7 @@ public sealed partial class SaveMenu : Control {
 
 	private readonly Button[] SlotButtons = new Button[SlotCount];
 
-	public SaveMenuMode Mode { get; set; } = SaveMenuMode.Load;
+	public SaveMenuMode Mode { get; private set; }
 
 	public static string SlotFile(int slot) => $"slot{slot}";
 
@@ -67,6 +67,8 @@ public sealed partial class SaveMenu : Control {
 	}
 
 	private void RefreshSlotDisplay() {
+		TitleLabel.Text = Mode == SaveMenuMode.Save ? "Save Game" : "Load Game";
+
 		for(int i = 0; i < SlotCount; i++) {
 			int slot = i + 1;
 			bool exists = SaveService.Exists(SlotFile(slot));
@@ -78,9 +80,10 @@ public sealed partial class SaveMenu : Control {
 		BackButton.Pressed += CloseMenu;
 	}
 
-	public void OpenMenu(Action? onClose = null) {
+	public void OpenMenu(SaveMenuMode mode, Action? onClose = null) {
 		OnExit += onClose;
-		TitleLabel.Text = Mode == SaveMenuMode.Save ? "Save Game" : "Load Game";
+		Mode = mode;
+
 		RefreshSlotDisplay();
 	}
 

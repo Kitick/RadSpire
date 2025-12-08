@@ -134,9 +134,8 @@ public sealed partial class MainMenu : Control {
 
 	private void OpenSaveMenu() {
 		var saveMenu = this.AddScene<SaveMenu>(SaveMenuScene);
-		saveMenu.Mode = SaveMenuMode.Load;
 		saveMenu.OnLoad += fileName => OnLoadGame?.Invoke(fileName);
-		saveMenu.OpenMenu();
+		saveMenu.OpenMenu(SaveMenuMode.Load);
 	}
 
 	private void OpenHostPanel() {
