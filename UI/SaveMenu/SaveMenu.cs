@@ -8,32 +8,35 @@ public enum SaveMenuMode { Save, Load }
 public sealed partial class SaveMenu : Control {
 	private static readonly Logger Log = new(nameof(SaveMenu), enabled: true);
 
+	private const int SlotCount = 5;
+	private const int SlotFontSize = 128;
+
 	// Intent events
 	public event Action<string>? OnSave;
 	public event Action<string>? OnLoad;
 
 	private event Action? OnExit;
 
-	private const string BACK_BUTTON = "BackButton";
-	private const string CONTAINER = "Panel/SaveSlots";
-	private const string TITLE_LABEL = "Panel/Title";
+	[ExportCategory("UI Elements")]
+	[Export] private Button BackButton = null!;
+	[Export] private Label TitleLabel = null!;
+	[Export] private Container SlotContainer = null!;
 
-	public static string SlotFile(int slot) => $"slot{slot}";
+	[ExportCategory("Slot Style")]
+	[Export] private Texture2D? SlotIcon;
 
-	private const int SLOTS = 5;
-
-	private Button[] Buttons = new Button[SLOTS];
-	private Label? TitleLabel;
+	private readonly Button[] SlotButtons = new Button[SlotCount];
 
 	public SaveMenuMode Mode { get; set; } = SaveMenuMode.Load;
+
+	public static string SlotFile(int slot) => $"slot{slot}";
 
 	public override void _Ready() {
 		ProcessMode = ProcessModeEnum.Always;
 
+		GenerateSlots();
 		SetInputCallbacks();
-		GetComponents();
 		SetCallbacks();
-		UpdateTitle();
 	}
 
 	public override void _ExitTree() {
@@ -45,39 +48,39 @@ public sealed partial class SaveMenu : Control {
 		OnExit += ActionEvent.MenuExit.WhenPressed(CloseMenu);
 	}
 
-	private void GetComponents() {
-		TitleLabel = GetNodeOrNull<Label>(TITLE_LABEL);
-
-		for(int i = 0; i < SLOTS; i++) {
+	private void GenerateSlots() {
+		for(int i = 0; i < SlotCount; i++) {
 			int slot = i + 1;
-			Buttons[i] = GetNode<Button>($"{CONTAINER}/Slot{slot}");
-			Buttons[i].Pressed += () => OnSlotPressed(slot);
-		}
 
-		RefreshSlotDisplay();
+			var button = new Button {
+				Name = $"Slot{slot}",
+				Text = $"Slot {slot}",
+				Icon = SlotIcon,
+			};
+
+			button.AddThemeFontSizeOverride("font_size", SlotFontSize);
+			button.Pressed += () => OnSlotPressed(slot);
+
+			SlotButtons[i] = button;
+			SlotContainer.AddChild(button);
+		}
 	}
 
 	private void RefreshSlotDisplay() {
-		for(int i = 0; i < SLOTS; i++) {
+		for(int i = 0; i < SlotCount; i++) {
 			int slot = i + 1;
 			bool exists = SaveService.Exists(SlotFile(slot));
-			Buttons[i].Text = exists ? $"Slot {slot}" : "Empty";
-		}
-	}
-
-	private void UpdateTitle() {
-		if(TitleLabel != null) {
-			TitleLabel.Text = Mode == SaveMenuMode.Save ? "Save Game" : "Load Game";
+			SlotButtons[i].Text = exists ? $"Slot {slot}" : "Empty";
 		}
 	}
 
 	private void SetCallbacks() {
-		GetNode<Button>(BACK_BUTTON).Pressed += CloseMenu;
+		BackButton.Pressed += CloseMenu;
 	}
 
 	public void OpenMenu(Action? onClose = null) {
 		OnExit += onClose;
-		UpdateTitle();
+		TitleLabel.Text = Mode == SaveMenuMode.Save ? "Save Game" : "Load Game";
 		RefreshSlotDisplay();
 	}
 
@@ -89,9 +92,6 @@ public sealed partial class SaveMenu : Control {
 		string fileName = SlotFile(slot);
 
 		if(Mode == SaveMenuMode.Save) {
-			if(!SaveService.Exists(fileName)) {
-				// TODO: Could add confirmation dialog for overwriting
-			}
 			Log.Info($"Save requested: {fileName}");
 			OnSave?.Invoke(fileName);
 			CloseMenu();
