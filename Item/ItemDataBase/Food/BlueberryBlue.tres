@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="Item" load_steps=4 format=3 uid="uid://c75reslb6ix7l"]
+[gd_resource type="Resource" load_steps=4 format=3 uid="uid://c75reslb6ix7l"]
 
 [ext_resource type="Resource" uid="uid://ds7c545y5smpx" path="res://Item/ItemDataBase/Food/Level2FoodHeal.tres" id="1_2x3ox"]
 [ext_resource type="Script" uid="uid://3l5yftlfas15" path="res://Item/Item.cs" id="2_2x3ox"]

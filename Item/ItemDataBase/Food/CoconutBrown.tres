@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="Item" load_steps=3 format=3 uid="uid://dkoc6qldmxufq"]
+[gd_resource type="Resource" load_steps=3 format=3 uid="uid://dkoc6qldmxufq"]
 
 [ext_resource type="Texture2D" uid="uid://omieuodqgb81" path="res://Assets/scrimsy fruit icons/color/brown/brown coconut 1.png" id="1_8qc7p"]
 [ext_resource type="Script" uid="uid://3l5yftlfas15" path="res://Item/Item.cs" id="1_m5cnl"]

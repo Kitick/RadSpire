@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="Item" load_steps=4 format=3 uid="uid://dhx4gdrvb1a56"]
+[gd_resource type="Resource" load_steps=4 format=3 uid="uid://dhx4gdrvb1a56"]
 
 [ext_resource type="Resource" uid="uid://ds7c545y5smpx" path="res://Item/ItemDataBase/Food/Level2FoodHeal.tres" id="1_8fbpk"]
 [ext_resource type="Texture2D" uid="uid://cwuh4vb48fpcr" path="res://Assets/scrimsy fruit icons/color/yellow/yellow apple.png" id="1_m5abc"]
