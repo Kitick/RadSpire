@@ -5,6 +5,7 @@ using Core;
 using Godot;
 using ItemSystem;
 using Services;
+using UI;
 
 namespace Root {
 	public sealed partial class GameManager : Node {
@@ -15,6 +16,7 @@ namespace Root {
 		[ExportCategory("Scene References")]
 		[Export] private PackedScene GameScene = null!;
 		[Export] private PackedScene PlayerScene = null!;
+		[Export] private PackedScene EnemyScene = null!;
 		[Export] private PackedScene CameraScene = null!;
 		[Export] private PackedScene MainMenuScene = null!;
 
@@ -22,7 +24,7 @@ namespace Root {
 
 		public Player? LocalPlayer;
 		public CameraRig? CameraRig;
-		public Enemy? Enemy;
+		private HUD? HUD;
 
 		private const int SpawnHeight = 5;
 		private const int SpawnRadius = 50;
@@ -33,7 +35,6 @@ namespace Root {
 
 		private float SpawnTimer = 5.0f;
 		private int EnemyCount;
-		private PackedScene EnemyScene = null!;
 
 		public override void _Ready() {
 			EnemyScene = GD.Load<PackedScene>("res://Character/Enemy/Enemy.tscn");
@@ -69,7 +70,69 @@ namespace Root {
 
 			CameraRig.Target = LocalPlayer;
 
+			// Set up HUD
+			HUD = LocalPlayer.GetNodeOrNull<HUD>("HUD");
+			if(HUD != null) {
+				HUD.Player = LocalPlayer;
+				SubscribeToHUDEvents(HUD);
+				SubscribeToPlayerHealth(LocalPlayer, HUD);
+			}
+			else {
+				Log.Warn("HUD not found on Player");
+			}
+
 			return LocalPlayer;
+		}
+
+		private void SubscribeToHUDEvents(HUD hud) {
+			hud.OnPausePressed += () => {
+				GetTree().Paused = true;
+				hud.SetState(HUD.MenuState.Paused);
+			};
+
+			hud.OnResumePressed += () => {
+				GetTree().Paused = false;
+				hud.SetState(HUD.MenuState.Game);
+			};
+
+			hud.OnSettingsPressed += () => {
+				hud.SetState(HUD.MenuState.Settings);
+			};
+
+			hud.OnHostPressed += () => {
+				hud.SetState(HUD.MenuState.Host);
+			};
+
+			hud.OnMainMenuPressed += () => {
+				ReturnToMainMenu();
+			};
+
+			hud.OnRespawnPressed += () => {
+				GetTree().Paused = false;
+				RespawnPlayer();
+				hud.SetState(HUD.MenuState.Game);
+			};
+
+			hud.OnInventoryTogglePressed += () => {
+				if(hud.State == HUD.MenuState.Inventory) {
+					GetTree().Paused = false;
+					hud.SetState(HUD.MenuState.Game);
+				}
+				else {
+					GetTree().Paused = true;
+					hud.SetState(HUD.MenuState.Inventory);
+				}
+			};
+
+			hud.OnSaveRequested += fileName => {
+				SaveGame(fileName);
+			};
+		}
+
+		private void SubscribeToPlayerHealth(Player player, HUD hud) {
+			hud.UpdateHealthBar(player.Health.CurrentHealth, player.Health.MaxHealth);
+			player.Health.OnHealthChanged += (from, to) => hud.UpdateHealthBar(to, player.Health.MaxHealth);
+			player.Health.WhenDead(() => hud.ShowDeathScreen());
 		}
 
 		public Player RespawnPlayer() {
@@ -100,9 +163,8 @@ namespace Root {
 			if(SpawnTimer <= 0.0f && EnemyCount < 5) {
 				GD.Print("Spawned");
 				SpawnTimer = (float) GD.RandRange(1f, 6f);
-				Enemy = EnemyScene.Instantiate<Enemy>();
-				AddChild(Enemy);
-				Enemy.GlobalPosition = GetRandomEnemySpawn();
+				var enemy = this.AddScene<Enemy>(EnemyScene);
+				enemy.GlobalPosition = GetRandomEnemySpawn();
 				EnemyCount += 1;
 			}
 		}
@@ -229,18 +291,15 @@ namespace Root {
 		}
 
 		private void CleanupGame() {
+			HUD = null;
+
 			CleanupObject(LocalPlayer);
 			LocalPlayer = null;
-
-			CleanupObject(Enemy);
-			Enemy = null;
 
 			CleanupObject(CameraRig);
 			CameraRig = null;
 
 			// Reset spawn state
-
-
 			EnemyCount = 0;
 			SpawnTimer = 5.0f;
 		}

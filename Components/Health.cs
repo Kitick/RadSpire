@@ -58,6 +58,14 @@ namespace Components {
 
 		public static float Percent(this Health health) =>
 			(float) health.CurrentHealth / health.MaxHealth;
+
+		public static Action WhenDead(this Health health, Action onDeath) {
+			void handler(int from, int to) {
+				if(from > 0 && to == 0) { onDeath(); }
+			}
+			health.OnHealthChanged += handler;
+			return () => health.OnHealthChanged -= handler;
+		}
 	}
 
 	public readonly struct HealthData : ISaveData, INetworkData {
