@@ -67,12 +67,8 @@ namespace UI {
 			});
 
 			// Paused state
-			StateMachine.OnEnter(MenuState.Paused, () => {
-				PauseMenu.OpenMenu();
-			});
-			StateMachine.OnExit(MenuState.Paused, () => {
-				PauseMenu.CloseMenu();
-			});
+			StateMachine.OnEnter(MenuState.Paused, PauseMenu.OpenMenu);
+			StateMachine.OnExit(MenuState.Paused, PauseMenu.CloseMenu);
 
 			// Settings state
 			StateMachine.OnEnter(MenuState.Settings, OpenSettingsPanel);
@@ -90,12 +86,8 @@ namespace UI {
 			StateMachine.OnEnter(MenuState.Host, OpenHostPanel);
 
 			// Death state
-			StateMachine.OnEnter(MenuState.Death, () => {
-				RespawnMenu.OpenMenu();
-			});
-			StateMachine.OnExit(MenuState.Death, () => {
-				RespawnMenu.CloseMenu();
-			});
+			StateMachine.OnEnter(MenuState.Death, RespawnMenu.OpenMenu);
+			StateMachine.OnExit(MenuState.Death, RespawnMenu.CloseMenu);
 		}
 
 		private void SetInputCallbacks() {

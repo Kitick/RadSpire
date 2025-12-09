@@ -37,7 +37,6 @@ namespace Root {
 		private int EnemyCount;
 
 		public override void _Ready() {
-			EnemyScene = GD.Load<PackedScene>("res://Character/Enemy/Enemy.tscn");
 			Instance = this;
 
 			InitializeNetwork();
