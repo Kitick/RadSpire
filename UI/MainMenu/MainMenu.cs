@@ -9,16 +9,6 @@ namespace UI {
 	public sealed partial class MainMenu : Control {
 		private static readonly LogService Log = new(nameof(MainMenu), enabled: true);
 
-		enum MenuState { Normal, SinglePopup, MultiPopup }
-
-		private const float HideDelay = 0.25f;
-
-		// Intent Events
-		public event Action? OnStartNewGame;
-		public event Action? OnContinueGame;
-		public event Action<string>? OnLoadGame;
-		public event Action? OnQuit;
-
 		[ExportCategory("Main Buttons")]
 		[Export] private Button SingleplayerButton = null!;
 		[Export] private Button MultiplayerButton = null!;
@@ -44,31 +34,18 @@ namespace UI {
 		[Export] private PackedScene HostPanelScene = null!;
 		[Export] private PackedScene JoinPanelScene = null!;
 
+		enum MenuState { Normal, SinglePopup, MultiPopup }
+
+		private const float HideDelay = 0.25f;
+
+		public event Action? OnStartNewGame;
+		public event Action? OnContinueGame;
+		public event Action<string>? OnLoadGame;
+		public event Action? OnQuit;
+
 		public override void _Ready() {
 			UpdateContinueButtonState();
 			SetCallbacks();
-			SubscribeToNetworkEvents();
-		}
-
-		public override void _ExitTree() {
-			UnsubscribeFromNetworkEvents();
-		}
-
-		private void SubscribeToNetworkEvents() {
-
-		}
-
-		private void UnsubscribeFromNetworkEvents() {
-
-		}
-
-		private void OnJoinedServer() {
-			Log.Info("Successfully joined server, starting game...");
-			OnStartNewGame?.Invoke();
-		}
-
-		private void OnHostStarted() {
-			Log.Info("Host started successfully");
 		}
 
 		private void SetCallbacks() {

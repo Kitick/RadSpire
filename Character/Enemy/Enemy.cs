@@ -62,7 +62,6 @@ namespace Character {
 		}
 
 		public void Die() {
-			GameManager.Instance.DecrementEnemyCount();
 			QueueFree();
 		}
 

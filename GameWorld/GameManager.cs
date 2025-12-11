@@ -1,3 +1,4 @@
+using System;
 using Camera;
 using Character;
 using Components;
@@ -9,37 +10,40 @@ using UI;
 
 namespace Root {
 	public sealed partial class GameManager : Node {
-		public static GameManager Instance { get; private set; } = null!;
-
 		private static readonly LogService Log = new(nameof(GameManager), enabled: true);
 
 		[ExportCategory("Scene References")]
-		[Export] private PackedScene GameScene = null!;
+		[Export] private PackedScene CameraScene = null!;
+		[Export] private PackedScene HUDScene = null!;
 		[Export] private PackedScene PlayerScene = null!;
 		[Export] private PackedScene EnemyScene = null!;
-		[Export] private PackedScene CameraScene = null!;
-		[Export] private PackedScene MainMenuScene = null!;
 
-		public bool InGame => GetTree().CurrentScene?.SceneFilePath == GameScene.ResourcePath;
-
-		public Player? LocalPlayer;
-		public CameraRig? CameraRig;
+		private readonly KeyInput KeyInput = new();
+		private CameraRig CameraRig = null!;
+		private Player? LocalPlayer;
 		private HUD? HUD;
 
-		private const int SpawnHeight = 5;
+		public Action? MainMenuRequested;
+
+		public enum MenuState { Game, Paused, Settings, Inventory, Host, Death }
+		private readonly StateMachine<MenuState> StateMachine = new();
+
+		private string? LoadFile;
+
+		private const int SpawnHeight = 4;
 		private const int SpawnRadius = 50;
 
 		private static readonly Vector3 PlayerSpawnLocation = new Vector3(0, SpawnHeight, 0);
-
-		private readonly KeyInput KeyInput = new();
 
 		private float SpawnTimer = 5.0f;
 		private int EnemyCount;
 
 		public override void _Ready() {
-			Instance = this;
-
+			CameraRig = this.AddScene<CameraRig>(CameraScene);
+			ConfigureStateMachine();
 			InitializeNetwork();
+
+			StartGame();
 		}
 
 		public override void _ExitTree() {
@@ -47,7 +51,7 @@ namespace Root {
 		}
 
 		public override void _PhysicsProcess(double delta) {
-			if(!InGame || !IsInstanceValid(LocalPlayer) || !IsInstanceValid(CameraRig)) { return; }
+			if(!IsInstanceValid(LocalPlayer)) { return; }
 
 			float dt = (float) delta;
 
@@ -57,87 +61,43 @@ namespace Root {
 			UpdateTimer();
 		}
 
-		public Player SpawnLocalPlayer() {
+		private void ConfigureStateMachine() {
+			StateMachine.OnEnter(MenuState.Game, () => GetTree().Paused = false);
+			StateMachine.OnExit(MenuState.Game, () => GetTree().Paused = true);
+		}
+
+		private void SpawnLocalPlayer() {
 			LocalPlayer = this.AddScene<Player>(PlayerScene);
-
-			LocalPlayer.Name = $"Player_{LocalPeerId}";
 			LocalPlayer.GlobalPosition = PlayerSpawnLocation;
-
-			if(!IsInstanceValid(CameraRig)) {
-				CameraRig = this.AddScene<CameraRig>(CameraScene);
-			}
 
 			CameraRig.Target = LocalPlayer;
 
-			// Set up HUD
-			HUD = LocalPlayer.GetNodeOrNull<HUD>("HUD");
-			if(HUD != null) {
-				HUD.Player = LocalPlayer;
-				SubscribeToHUDEvents(HUD);
-				SubscribeToPlayerHealth(LocalPlayer, HUD);
-			}
-			else {
-				Log.Warn("HUD not found on Player");
-			}
-
-			return LocalPlayer;
+			AttachHUD();
 		}
 
-		private void SubscribeToHUDEvents(HUD hud) {
-			hud.OnPausePressed += () => {
-				GetTree().Paused = true;
-				hud.SetState(HUD.MenuState.Paused);
-			};
+		private void AttachHUD() {
+			HUD = HUDScene.Instantiate<HUD>();
+			SubscribeToEvents(HUD);
+			HUD.Init(LocalPlayer!, StateMachine);
 
-			hud.OnResumePressed += () => {
-				GetTree().Paused = false;
-				hud.SetState(HUD.MenuState.Game);
-			};
-
-			hud.OnSettingsPressed += () => {
-				hud.SetState(HUD.MenuState.Settings);
-			};
-
-			hud.OnHostPressed += () => {
-				hud.SetState(HUD.MenuState.Host);
-			};
-
-			hud.OnMainMenuPressed += () => {
-				ReturnToMainMenu();
-			};
-
-			hud.OnRespawnPressed += () => {
-				GetTree().Paused = false;
-				RespawnPlayer();
-				hud.SetState(HUD.MenuState.Game);
-			};
-
-			hud.OnInventoryTogglePressed += () => {
-				if(hud.State == HUD.MenuState.Inventory) {
-					GetTree().Paused = false;
-					hud.SetState(HUD.MenuState.Game);
-				}
-				else {
-					GetTree().Paused = true;
-					hud.SetState(HUD.MenuState.Inventory);
-				}
-			};
-
-			hud.OnSaveRequested += fileName => {
-				SaveGame(fileName);
-			};
+			AddChild(HUD);
 		}
 
-		private void SubscribeToPlayerHealth(Player player, HUD hud) {
-			hud.UpdateHealthBar(player.Health.CurrentHealth, player.Health.MaxHealth);
-			player.Health.OnHealthChanged += (from, to) => hud.UpdateHealthBar(to, player.Health.MaxHealth);
-			player.Health.WhenDead(() => hud.ShowDeathScreen());
+		private void SubscribeToEvents(HUD hud) {
+			hud.PauseRequested += () => StateMachine.TransitionTo(MenuState.Paused);
+			hud.ResumeRequested += () => StateMachine.TransitionTo(MenuState.Game);
+			hud.SettingsRequested += () => StateMachine.TransitionTo(MenuState.Settings);
+			hud.HostRequested += () => StateMachine.TransitionTo(MenuState.Host);
+			hud.MainMenuRequested += ReturnToMainMenu;
+			hud.RespawnRequested += RespawnPlayer;
+			hud.SaveRequested += (fileName) => SaveGame(fileName);
 		}
 
-		public Player RespawnPlayer() {
+		public void RespawnPlayer() {
 			if(!IsInstanceValid(LocalPlayer)) {
 				Log.Warn("RespawnPlayer called but no player exists, spawning new player");
-				return SpawnLocalPlayer();
+				SpawnLocalPlayer();
+				return;
 			}
 
 			var inventoryData = LocalPlayer.Inventory.Serialize();
@@ -152,8 +112,6 @@ namespace Root {
 			LocalPlayer.Hotbar.Deserialize(hotbarData);
 
 			Log.Info("Player respawned");
-
-			return LocalPlayer;
 		}
 
 		private void UpdateTimer() {
@@ -178,16 +136,7 @@ namespace Root {
 
 		}
 
-		public void DecrementEnemyCount() {
-			EnemyCount -= 1;
-		}
-
 		public bool SaveGame(string fileName) {
-			if(!InGame) {
-				Log.Error("Cannot save game when not in a game");
-				return false;
-			}
-
 			if(!IsInstanceValid(LocalPlayer) || !IsInstanceValid(CameraRig)) {
 				Log.Error("Cannot save game: game objects are not valid");
 				return false;
@@ -205,98 +154,49 @@ namespace Root {
 
 		public bool QuickSave() => SaveGame(Constants.AutosaveFile);
 
-		private bool ApplyLoadedState(string fileName) {
-			if(!SaveService.Exists(fileName)) {
-				Log.Error($"Save file '{fileName}' does not exist");
-				return false;
-			}
+		public void InitGame(string? loadfile = null) {
+			Log.Info("Initializing game");
 
-			var data = SaveService.Load<GameState>(fileName);
+			if(loadfile != null && !SaveService.Exists(loadfile)) {
+				Log.Error($"Cannot initialize game: save file '{loadfile}' does not exist");
+			}
+			else {
+				LoadFile = loadfile;
+			}
+		}
+
+		private void StartGame() {
+			SpawnLocalPlayer();
+
+			if(LoadFile != null) {
+				LoadData(LoadFile);
+				LoadFile = null;
+			}
+		}
+
+		private void LoadData(string file) {
+			var data = SaveService.Load<GameState>(file);
 
 			LocalPlayer!.Deserialize(data.Player);
 			CameraRig!.Deserialize(data.CameraRig);
-
-			Log.Info($"Game loaded from '{fileName}'");
-			return true;
-		}
-
-		private string? PendingLoadFile;
-
-		public void StartNewGame() {
-			Log.Info("Starting new game");
-			PendingLoadFile = null;
-			TransitionToGame();
-		}
-
-		public void ContinueGame() {
-			Log.Info("Continuing game from autosave");
-			LoadGame(Constants.AutosaveFile);
-		}
-
-		public void LoadGame(string fileName) {
-			if(!SaveService.Exists(fileName)) {
-				Log.Error($"Cannot load game: save file '{fileName}' does not exist");
-				return;
-			}
-			Log.Info($"Loading game from '{fileName}'");
-			PendingLoadFile = fileName;
-			TransitionToGame();
-		}
-
-		private void TransitionToGame() {
-			CleanupGame();
-			GetTree().Paused = false;
-			GetTree().ChangeSceneToFile(GameScene.ResourcePath);
-			GetTree().TreeChanged += OnTreeChangedOnce;
-		}
-
-		private void OnTreeChangedOnce() {
-			GetTree().TreeChanged -= OnTreeChangedOnce;
-			CallDeferred(nameof(OnGameSceneLoaded));
-		}
-
-		private void OnGameSceneLoaded() {
-			if(!InGame) {
-				Log.Warn("OnGameSceneLoaded called but not in game scene yet, deferring...");
-				CallDeferred(nameof(OnGameSceneLoaded));
-				return;
-			}
-
-			SpawnLocalPlayer();
-
-			if(PendingLoadFile != null) {
-				ApplyLoadedState(PendingLoadFile);
-				PendingLoadFile = null;
-			}
-			else {
-				SpawnTestItems();
-			}
 		}
 
 		public void ReturnToMainMenu() {
 			QuickSave();
 			CleanupGame();
 			GetTree().Paused = false;
-			GetTree().ChangeSceneToFile(MainMenuScene.ResourcePath);
+			MainMenuRequested?.Invoke();
 		}
 
-		public void ExitApplication() {
-			CleanupGame();
-			GetTree().Quit();
-		}
-
-		private static void CleanupObject(Node? obj) {
-			if(IsInstanceValid(obj)) { obj.QueueFree(); }
+		private static void Cleanup(Node? node) {
+			if(IsInstanceValid(node)) { node.QueueFree(); }
 		}
 
 		private void CleanupGame() {
 			HUD = null;
 
-			CleanupObject(LocalPlayer);
+			Cleanup(LocalPlayer);
 			LocalPlayer = null;
-
-			CleanupObject(CameraRig);
-			CameraRig = null;
 
 			// Reset spawn state
 			EnemyCount = 0;
