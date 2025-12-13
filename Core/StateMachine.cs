@@ -1,3 +1,5 @@
+//This file was developed entirely by the RadSpire Development Team.
+
 using System;
 
 public sealed class FiniteStateMachine<TState> where TState : Enum {

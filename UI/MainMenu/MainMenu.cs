@@ -1,3 +1,4 @@
+//This file was developed entirely by the RadSpire Development Team.
 //Purpose: Main Menu Layout and Pop-up Panels
 
 using Core;

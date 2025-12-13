@@ -1,3 +1,5 @@
+//This file was developed entirely by the RadSpire Development Team.
+
 using Camera;
 using Components;
 using Core;

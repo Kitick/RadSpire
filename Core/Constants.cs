@@ -1,3 +1,5 @@
+//This file was developed entirely by the RadSpire Development Team.
+
 namespace Core {
 	public static class Constants {
 		public const string AutosaveFile = "autosave";

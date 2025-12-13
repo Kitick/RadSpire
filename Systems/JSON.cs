@@ -1,3 +1,5 @@
+//This file was developed entirely by the RadSpire Development Team.
+
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
