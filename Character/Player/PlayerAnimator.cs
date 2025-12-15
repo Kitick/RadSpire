@@ -5,19 +5,19 @@ namespace Character {
 	public sealed partial class PlayerAnimator : AnimationPlayer {
 		private static readonly LogService Log = new(nameof(PlayerAnimator), enabled: true);
 
+		private static readonly StringName IDLE = "Idle";
+		private static readonly StringName WALKING = "Walking_B";
+		private static readonly StringName SPRINTING = "Running_B";
+		private static readonly StringName CROUCHING = "Walking_C";
+		private static readonly StringName JUMPING = "Jump_Start";
+		private static readonly StringName FALLING = "Jump_Idle";
+		private static readonly StringName LANDING = "Jump_Land";
+		private static readonly StringName DEATH = "Death_A";
+		private static readonly StringName SLASH = "1H_Melee_Attack_Slice_Diagonal";
+
 		public enum AnimState { Idle, Walking, Sprinting, Crouching, Jumping, Falling, Landing, ATTACKING, DYING }
 
 		[Export] private Player Player = null!;
-
-		private const string IDLE = "Idle";
-		private const string WALKING = "Walking_B";
-		private const string SPRINTING = "Running_B";
-		private const string CROUCHING = "Walking_C";
-		private const string JUMPING = "Jump_Start";
-		private const string FALLING = "Jump_Idle";
-		private const string LANDING = "Jump_Land";
-		private const string DEATH = "Death_A";
-		private const string SLASH = "1H_Melee_Attack_Slice_Diagonal";
 
 		public AnimState PlayingAnimation {
 			get;
@@ -38,9 +38,9 @@ namespace Character {
 		}
 
 		public override void _Ready() {
-			// sync state machine
-
+			Player.OnStateChanged += OnPlayerMovement;
 			SetupAnimations();
+			SyncAnimation(Player.CurrentState);
 		}
 
 		private void SetupAnimations() {
@@ -51,23 +51,22 @@ namespace Character {
 			SetLoopMode(FALLING);
 
 			AnimationFinished += OnAnimationFinished;
-			SyncAnimation();
 		}
 
-		private void SetLoopMode(string name) {
+		private void SetLoopMode(StringName name) {
 			GetAnimation(name).LoopMode = Animation.LoopModeEnum.Linear;
 		}
 
 		public void OnAnimationFinished(StringName name) {
 			if(name == JUMPING || name == LANDING) {
-				SyncAnimation();
+				SyncAnimation(Player.CurrentState);
 			}
 		}
 
-		public void SyncAnimation() {
-			Log.Info($"Syncing animation to: {Player.CurrentState}");
+		public void SyncAnimation(Player.State state) {
+			Log.Info($"Syncing animation to: {state}");
 
-			PlayingAnimation = Player.CurrentState switch {
+			PlayingAnimation = state switch {
 				Player.State.Idle => AnimState.Idle,
 				Player.State.Walking => AnimState.Walking,
 				Player.State.Sprinting => AnimState.Sprinting,
@@ -85,7 +84,7 @@ namespace Character {
 
 			if(jumped) { PlayingAnimation = AnimState.Jumping; }
 			else if(landed) { PlayingAnimation = AnimState.Landing; }
-			else { SyncAnimation(); }
+			else { SyncAnimation(to); }
 		}
 	}
 }

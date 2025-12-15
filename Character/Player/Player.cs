@@ -3,18 +3,15 @@ using Core;
 using Godot;
 using Services;
 using ItemSystem;
+using System;
 
 namespace Character {
-	public sealed partial class Player : CharacterBody3D, IDamageable, ISaveable<PlayerData> {
+	public sealed partial class Player : CharacterBody3D, ISaveable<PlayerData> {
 		private static readonly LogService Log = new(nameof(Enemy), enabled: true);
 
-		[ExportCategory("Player Config")]
 		[Export] private int InitalHealth = 100;
 		[Export] private float SprintMultiplier = 2.25f;
 		[Export] private float CrouchMultiplier = 0.5f;
-
-		[ExportCategory("Player Nodes")]
-		[Export] private PlayerAnimator Animator = null!;
 
 		// Inventories
 
@@ -33,13 +30,17 @@ namespace Character {
 		public enum State { Idle, Walking, Sprinting, Crouching, Falling, Attacking, Dead }
 
 		private readonly StateMachine<State> StateMachine = new(State.Idle);
+
 		public State CurrentState => StateMachine.CurrentState;
+		public event Action<State, State>? OnStateChanged;
 
 		public Player() {
 			Movement = new Movement(this);
 			Health = new Health(InitalHealth);
 			PickupComponent = new Item3DIconPickup();
 			InventoryManager = new InventoryManager();
+
+			StateMachine.OnChange((from, to) => OnStateChanged?.Invoke(from, to));
 		}
 
 		public override void _Ready() {
@@ -76,11 +77,6 @@ namespace Character {
 			else if(keyInput.SprintHeld) { StateMachine.TransitionTo(State.Sprinting); }
 			else if(keyInput.CrouchHeld) { StateMachine.TransitionTo(State.Crouching); }
 			else { StateMachine.TransitionTo(State.Walking); }
-		}
-
-		public void TakeDamage(int amount) {
-			Health.CurrentHealth -= amount;
-			Log.Info($"Player HP: {Health.CurrentHealth}");
 		}
 
 		private float GetMultiplier() {
