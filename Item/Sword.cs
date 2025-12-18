@@ -19,11 +19,6 @@ namespace ItemSystem {
 		private void OnBodyEntered(Node3D body) {
 			if(body == WeaponOwner)
 				return;
-
-			if(body is IDamageable damageable) {
-				damageable.TakeDamage(Damage);
-				Log.Info($"{body.Name} took damage.");
-			}
 		}
 	}
 }

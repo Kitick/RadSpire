@@ -69,7 +69,6 @@ namespace Character {
 				SyncAnimation();
 			}
 			else if(name == DIE) {
-				GetParent<Enemy>().Die();
 				SyncAnimation();
 			}
 			else if(name == CHOP) {

@@ -18,8 +18,6 @@ namespace Services.Network {
 
 		private static readonly JsonSerializerOptions NetJsonOptions = new();
 
-		public Func<T, T?>? Validator { get; set; }
-
 		private bool IsOwner => Server.Instance.IsOwner(OwnerPeerId);
 		private bool IsServer => Multiplayer.IsServer();
 		private string SerializeState() => JsonService.Serialize(SyncObject.Serialize(), NetJsonOptions);
@@ -33,7 +31,7 @@ namespace Services.Network {
 
 		public override void _Ready() {
 			if(IsOwner) {
-				SyncObject.OnStateChanged += OnLocalStateChanged;
+				SyncObject.OnChanged += OnLocalStateChanged;
 
 				if(IsServer) {
 					CallDeferred(nameof(BroadcastCurrentState));
@@ -45,7 +43,7 @@ namespace Services.Network {
 		}
 
 		public override void _ExitTree() {
-			SyncObject.OnStateChanged -= OnLocalStateChanged;
+			SyncObject.OnChanged -= OnLocalStateChanged;
 		}
 
 		public override void _Process(double delta) {
@@ -102,16 +100,6 @@ namespace Services.Network {
 
 		private void ProcessAndBroadcast(int senderPeerId, string json) {
 			var data = JsonService.Deserialize<T>(json, NetJsonOptions);
-
-			if(Validator != null) {
-				var validated = Validator(data);
-				if(validated == null) {
-					Log.Warn($"{LogPrefix} Rejected update from peer {senderPeerId}");
-					return;
-				}
-				data = validated.Value;
-				json = JsonService.Serialize(data, NetJsonOptions);
-			}
 
 			Log.Info($"{LogPrefix} Host broadcasting to all clients");
 

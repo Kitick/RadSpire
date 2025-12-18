@@ -7,7 +7,6 @@ namespace ItemSystem {
 			get;
 			set {
 				field = value;
-				Item?.BuildComponents();
 			}
 		}
 
@@ -119,16 +118,6 @@ namespace ItemSystem {
 			return Item!.SameItem(other.Item!);
 		}
 
-		public ItemSlot Copy() {
-			ItemSlot copy = new ItemSlot();
-			if(Item == null) {
-				return copy;
-			}
-			copy.Item = Item.Copy();
-			copy.Quantity = Quantity;
-			return copy;
-		}
-
 		public ItemSlotData Serialize() {
 			return new ItemSlotData {
 				Item = Item?.Serialize(),
@@ -137,7 +126,7 @@ namespace ItemSystem {
 		}
 
 		public void Deserialize(in ItemSlotData data) {
-			if(data.Item is null || string.IsNullOrEmpty(data.Item.Value.ResourcePath)) {
+			if(data.Item is null) {
 				Item = null;
 				Quantity = 0;
 				return;
@@ -145,7 +134,6 @@ namespace ItemSystem {
 
 			// Load the item directly from resource path
 
-			Item = Item.LoadFromData(data.Item.Value);
 			Quantity = data.Quantity;
 		}
 	}

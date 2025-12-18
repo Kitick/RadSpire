@@ -96,12 +96,12 @@ namespace UI {
 			RespawnMenu.MainMenuButton.Pressed += () => MainMenuRequested?.Invoke();
 
 			// Health bar updates
-			Player.Health.OnHealthChanged += (from, to) => UpdateHealthBar();
+			Player.Health.OnChanged += (from, to) => UpdateHealthBar();
 		}
 
 		private void UpdateHealthBar() {
-			int current = Player.Health.CurrentHealth;
-			int max = Player.Health.MaxHealth;
+			int current = Player.Health.Current;
+			int max = Player.Health.Max;
 
 			HealthBar.MaxValue = max;
 			HealthBar.Value = current;

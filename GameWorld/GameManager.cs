@@ -41,13 +41,8 @@ namespace Root {
 		public override void _Ready() {
 			CameraRig = this.AddScene<CameraRig>(CameraScene);
 			ConfigureStateMachine();
-			InitializeNetwork();
 
 			StartGame();
-		}
-
-		public override void _ExitTree() {
-			CleanupNetwork();
 		}
 
 		public override void _PhysicsProcess(double delta) {

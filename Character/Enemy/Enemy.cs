@@ -5,20 +5,21 @@ using Root;
 using Services;
 
 namespace Character {
-	public sealed partial class Enemy : CharacterBody3D, IDamageable, ISaveable<EnemyData> {
+	public sealed partial class Enemy : CharacterBody3D, IHealth, IAttack, ISaveable<EnemyData> {
 		private static readonly LogService Log = new(nameof(Enemy), enabled: true);
 
-		[Export] private int InitalHealth = 30;
-		[Export] private float SprintMultiplier = 1.15f;
-		[Export] private float CrouchMultiplier = 0.5f;
-		[Export] public Node3D Player = null!;
+		[Export] private int InitialHealth = 50;
+		[Export] private int InitialDamage = 5;
+
+		private Player? Target;
 
 		// Components
 
-		private Health Health = null!;
-		private Movement Movement = null!;
-		private AiInput AiInput = null!;
-		private EnemyAnimator Animator = null!;
+		public Health Health { get; }
+		public Attack Attack { get; }
+
+		private readonly Movement Movement;
+		private readonly ChaseAI AI;
 
 		// State Machine
 
@@ -28,93 +29,25 @@ namespace Character {
 		public State CurrentState => StateMachine.CurrentState;
 
 		public Enemy() {
-			AiInput = new AiInput(this, Player!);
+			Movement = new Movement(this);
+			AI = new ChaseAI(this);
+
+			Health = new Health(InitialHealth);
+			Attack = new Attack(InitialDamage);
 		}
 
 		public override void _Ready() {
-			Movement = new Movement(this);
-			Health = new Health(InitalHealth);
 
-			Node3D? player = null;
-
-			var players = GetTree().GetNodesInGroup("Player");
-			if(players.Count > 0) {
-				player = players[0] as Node3D;
-			}
-
-			Animator = GetNode<EnemyAnimator>("Barbarian");
-
-			if(player == null) {
-				Log.Warn("Enemy could not find any node in group 'player'. AI will not move.");
-				return;
-			}
-
-			AiInput = new AiInput(this, player);
-		}
-
-		public void TakeDamage(int amount) {
-			Health.CurrentHealth -= amount;
-			Log.Info($"Enemy HP: {Health.CurrentHealth}");
-
-			if(Health.IsDead()) {
-				Animator.PlayDie();
-			}
-		}
-
-		public void Die() {
-			QueueFree();
 		}
 
 		public override void _PhysicsProcess(double delta) {
 			float dt = (float) delta;
 
-			if(Player == null || !IsInstanceValid(Player)) {
-				var players = GetTree().GetNodesInGroup("Player");
-				if(players.Count == 0) {
-					// No player currently in the scene → do nothing this frame
-					// This prevents ObjectDisposedException
+			AI.Update();
 
-					return;
-				}
-
-				if(players[0] is not Node3D player) { return; }
-
-				Player = player;
-				AiInput.SetTarget(Player);
-			}
-
-			AiInput.Update();
-
-			float multiplier = GetMultiplier();
-
-			if(IsOnFloor()) {
-				Movement.Move(AiInput.HorizontalInput, multiplier);
-			}
+			Movement.Move(AI.HorizontalInput, 1);
 
 			Movement.Update(dt);
-
-			UpdateMovementState();
-		}
-
-		private void UpdateMovementState() {
-			if(AiInput.GetLocation().Length() <= 2.0f) {
-				Animator.PlayChop();
-			}
-
-			if(!IsOnFloor()) { StateMachine.TransitionTo(State.Falling); }
-			else if(!AiInput.IsMoving) { StateMachine.TransitionTo(State.Idle); }
-			else if(AiInput.SprintHeld) { StateMachine.TransitionTo(State.Sprinting); }
-			else if(AiInput.CrouchHeld) { StateMachine.TransitionTo(State.Crouching); }
-			else { StateMachine.TransitionTo(State.Walking); }
-		}
-
-		private float GetMultiplier() {
-			float multiplier = 1.0f;
-
-			if(StateMachine.CurrentState == State.Sprinting) { multiplier *= SprintMultiplier; }
-			if(StateMachine.CurrentState == State.Crouching) { multiplier *= CrouchMultiplier; }
-
-			return multiplier;
 		}
 
 		public EnemyData Serialize() => new EnemyData {

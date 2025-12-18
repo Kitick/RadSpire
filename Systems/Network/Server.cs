@@ -4,8 +4,8 @@ using Godot;
 namespace Services.Network {
 	public interface INetworkData : IJSONData;
 
-	public interface INetworkable<T> : IJSONable<T> where T : INetworkData {
-		event Action? OnStateChanged;
+	public interface INetworkable<T> : IJSONable<T> where T : struct, INetworkData {
+		event Action? OnChanged;
 	}
 
 	public sealed partial class Server : Node {

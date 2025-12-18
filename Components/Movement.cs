@@ -5,8 +5,8 @@ using Services.Network;
 using Services;
 
 namespace Components {
-	public sealed class Movement : ISaveable<MovementData>, INetworkable<MovementData> {
-		public event Action? OnStateChanged;
+	public sealed class Movement : ISaveable<MovementData> {
+		public event Action? OnChanged;
 
 		public float BaseSpeed = 3.0f;
 		public float RotationSpeed = 2.0f;
@@ -24,7 +24,8 @@ namespace Components {
 
 			UpdateRotation(dt);
 			Body.MoveAndSlide();
-			OnStateChanged?.Invoke();
+
+			OnChanged?.Invoke();
 		}
 
 		public void Move(Vector3 direction, float multiplier) {

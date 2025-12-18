@@ -93,8 +93,7 @@ namespace ItemSystem {
 					return;
 				}
 				Log.Info("Picking up item from inventory:" + inventoryName + " slot index: " + slotIndex);
-				HeldItemSlot = GetItemSlotCopy(inventoryName, slotIndex);
-				StartMoveItemEvent?.Invoke(HeldItemSlot);
+
 				MouseHasItemSlot = true;
 				GetInventory(inventoryName).RemoveItem(GetInventory(inventoryName).GetRow(slotIndex), GetInventory(inventoryName).GetColumn(slotIndex));
 			}
@@ -102,19 +101,6 @@ namespace ItemSystem {
 
 		public bool IsItemSlotEmpty(string inventoryName, int slotIndex) {
 			return GetInventory(inventoryName).IsEmptySlot(GetInventory(inventoryName).GetRow(slotIndex), GetInventory(inventoryName).GetColumn(slotIndex));
-		}
-
-		public ItemSlot GetItemSlotCopy(string inventoryName, int slotIndex) {
-			ItemSlot original = GetInventory(inventoryName).GetItemSlot(GetInventory(inventoryName).GetRow(slotIndex), GetInventory(inventoryName).GetColumn(slotIndex));
-			if(original == null || original.IsEmpty()) {
-				Log.Error("Error: Original ItemSlot is null/empty");
-				return new ItemSlot();
-			}
-			Log.Info("Getting copy of ItemSlot: " + original.Item!.Name + " x" + original.Quantity);
-			ItemSlot copy = new ItemSlot();
-			copy.Item = original.Item.Copy();
-			copy.Quantity = original.Quantity;
-			return copy;
 		}
 
 		public void HandlePlaceItemSlot(string inventoryName, int slotIndex) {
@@ -160,10 +146,10 @@ namespace ItemSystem {
 			if(targetItem == null) return;
 			if(!HeldItemSlot.SameItem(targetItem)) {
 				Log.Info("Placing held item onto different item type slot inventory:" + inventoryName + " index: " + slotIndex);
-				ItemSlot tempSlot = GetItemSlotCopy(inventoryName, slotIndex);
+
 				GetInventory(inventoryName).RemoveItem(GetInventory(inventoryName).GetRow(slotIndex), GetInventory(inventoryName).GetColumn(slotIndex));
 				GetInventory(inventoryName).AddItem(HeldItemSlot, GetInventory(inventoryName).GetRow(slotIndex), GetInventory(inventoryName).GetColumn(slotIndex));
-				HeldItemSlot = tempSlot;
+
 				EndMoveItemEvent?.Invoke();
 				StartMoveItemEvent?.Invoke(HeldItemSlot);
 			}
@@ -205,7 +191,7 @@ namespace ItemSystem {
 				HandleItemDropWithKeyboard();
 			}
 			if(@event.IsActionPressed("Consume")) {
-				HandleConsumeItem();
+
 			}
 		}
 
@@ -272,33 +258,6 @@ namespace ItemSystem {
 			Log.Info("Dropping item from hotbar slot index: " + selectedIndex);
 			hotbarInventory.RemoveItem(hotbar.Inventory.GetRow(selectedIndex), hotbar.Inventory.GetColumn(selectedIndex), 1);
 			DropItem(selectedSlot.Item!);
-		}
-
-		public void HandleConsumeItem() {
-			Log.Info("Handling consume item action.");
-			Hotbar hotbar = null!;
-			Inventory hotbarInventory = null!;
-			foreach(string inventoryName in Inventories.Keys) {
-				if(GetInventoryUI(inventoryName) is Hotbar currentHotbar) {
-					hotbar = currentHotbar;
-					hotbarInventory = GetInventory(inventoryName);
-					break;
-				}
-			}
-			if(hotbar == null) {
-				Log.Error("No Hotbar inventory found for consume item.");
-				return;
-			}
-			ItemSlot selectedSlot = hotbar.GetSelectedItemSlot();
-			if(selectedSlot.IsEmpty()) {
-				Log.Info("No item in selected hotbar slot to consume.");
-				return;
-			}
-			Log.Info("Consuming item from hotbar slot: " + hotbar.SelectedSlot);
-			int selectedIndex = hotbar.SelectedSlot;
-			if(selectedSlot.Item!.OnConsume(GetParent<Player>())) {
-				hotbarInventory.RemoveItem(hotbar.Inventory.GetRow(selectedIndex), hotbar.Inventory.GetColumn(selectedIndex), 1);
-			}
 		}
 	}
 }

@@ -36,7 +36,6 @@ namespace UI {
 
 		public void CreateHeldItemSlotUI(ItemSlot itemSlot) {
 			Log.Info("CreateHeldItemSlotUI called");
-			ItemSlot itemSlotCopy = itemSlot.Copy();
 			LoadTemplate();
 			DestroyHeldItemSlotUI();
 
@@ -54,7 +53,7 @@ namespace UI {
 			var style = new StyleBoxFlat();
 			style.BgColor = new Color(1, 1, 1, 0);
 			HeldItemSlotUI.AddThemeStyleboxOverride("panel", style);
-			HeldItemSlotUI.UpdateSlotUI(itemSlotCopy);
+
 			HeldItemSlotExist = true;
 		}
 

@@ -5,7 +5,7 @@ namespace ItemSystem {
 	public partial class Item3DIcon : Node3D {
 		private static readonly LogService Log = new(nameof(Item3DIcon), enabled: true);
 
-		[Export] public Item? Item { get; set; }
+		public Item? Item { get; set; }
 		[Export] public PackedScene? Item3DSceneTemplate { get; set; }
 		private Node3D? CurrentItem3DScene;
 		[Export] public float ScaleFactor { get; set; } = 1.0f;

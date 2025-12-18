@@ -8,6 +8,7 @@ using Services.Network;
 using Services;
 
 namespace Root {
+	/*
 	public partial class GameManager {
 		private readonly Dictionary<int, (Player Player, NetworkSync<MovementData> MovementSync, NetworkSync<HealthData> HealthSync)> RemotePlayers = [];
 
@@ -163,4 +164,5 @@ namespace Root {
 			RemotePlayers[peerId] = (player, movementSync, healthSync);
 		}
 	}
+	*/
 }

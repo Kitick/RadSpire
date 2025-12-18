@@ -3,73 +3,76 @@ using Services;
 using Services.Network;
 
 namespace Components {
-	public sealed class Health : ISaveable<HealthData>, INetworkable<HealthData> {
-		private static readonly LogService Log = new(nameof(Health), enabled: true);
+	public interface IHealth { Health Health { get; } }
 
-		public event Action? OnStateChanged;
-
-		public int CurrentHealth {
+	public sealed class Health : IOnChanged<int>, ISaveable<HealthData> {
+		public int Current {
 			get;
 			set {
-				value = Math.Clamp(value, 0, MaxHealth);
-				Log.Info($"Health changed from {field} to {value}.");
+				value = Math.Clamp(value, 0, Max);
 				if(field == value) { return; }
 
-				OnHealthChanged?.Invoke(field, value);
-				OnStateChanged?.Invoke();
-
+				OnChanged?.Invoke(field, value);
 				field = value;
 			}
 		}
 
-		public int MaxHealth {
+		public int Max {
 			get;
 			set {
-				var oldValue = field;
 				field = Math.Max(1, value);
-				CurrentHealth = Math.Min(CurrentHealth, field);
-				if(oldValue != field) { OnStateChanged?.Invoke(); }
+				Current = Math.Min(Current, field);
 			}
 		}
 
-		public event Action<int, int>? OnHealthChanged;
+		public event Action<int, int>? OnChanged;
 
-		public Health(int maxHealth) {
-			MaxHealth = maxHealth;
-			CurrentHealth = maxHealth;
+		public Health(int max) {
+			Max = max;
+			Current = max;
 		}
 
 		public HealthData Serialize() => new HealthData {
-			MaxHealth = MaxHealth,
-			CurrentHealth = CurrentHealth
+			Max = Max,
+			Current = Current
 		};
 
 		public void Deserialize(in HealthData data) {
-			MaxHealth = data.MaxHealth;
-			CurrentHealth = data.CurrentHealth;
+			Max = data.Max;
+			Current = data.Current;
 		}
 	}
 
 	public static class HealthExtensions {
-		public static bool IsAlive(this Health health) => health.CurrentHealth > 0;
-		public static bool IsFull(this Health health) => health.CurrentHealth == health.MaxHealth;
-		public static bool IsHurt(this Health health) => health.CurrentHealth < health.MaxHealth;
-		public static bool IsDead(this Health health) => health.CurrentHealth == 0;
+		public static void Heal(this IHealth target, int amount) => target.Health.Current += amount;
+		public static void Hurt(this IHealth target, int amount) => target.Health.Current -= amount;
+		public static void Heal(this IHealth target) => target.Health.Current = target.Health.Max;
+		public static void Hurt(this IHealth target) => target.Health.Current = 0;
 
-		public static float Percent(this Health health) =>
-			(float) health.CurrentHealth / health.MaxHealth;
+		public static bool IsHealed(this IHealth target) => target.Health.Current == target.Health.Max;
+		public static bool IsDead(this IHealth target) => target.Health.Current == 0;
+		public static bool IsHurt(this IHealth target) => !IsHealed(target);
+		public static bool IsAlive(this IHealth target) => !IsDead(target);
 
-		public static Action WhenDead(this Health health, Action onDeath) {
-			void handler(int from, int to) {
-				if(from > 0 && to == 0) { onDeath(); }
-			}
-			health.OnHealthChanged += handler;
-			return () => health.OnHealthChanged -= handler;
+		public static float Percent(this IHealth target) {
+			return (float) target.Health.Current / target.Health.Max;
+		}
+
+		public static Action WhenHealed(this IHealth target, Action callback) {
+			return target.Health.When((int from, int to) => {
+				if(from < target.Health.Max && to == target.Health.Max) { callback(); }
+			});
+		}
+
+		public static Action WhenDead(this IHealth target, Action callback) {
+			return target.Health.When((int from, int to) => {
+				if(from > 0 && to == 0) { callback(); }
+			});
 		}
 	}
 
-	public readonly struct HealthData : ISaveData, INetworkData {
-		public int CurrentHealth { get; init; }
-		public int MaxHealth { get; init; }
+	public readonly record struct HealthData : ISaveData, INetworkData {
+		public int Current { get; init; }
+		public int Max { get; init; }
 	}
 }

@@ -2,8 +2,7 @@ using Godot;
 using Services;
 
 namespace Components {
-	[GlobalClass]
-	public partial class WeaponBase : Resource, IItemComponent, ISaveable<WeaponBaseData> {
+	public partial class Weapon : ISaveable<WeaponBaseData> {
 		[Export] public int BaseAttack { get; set; } = 10;
 		[Export] public float AttackSpeed { get; set; } = 1;
 		[Export] public float Range { get; set; } = 1;
