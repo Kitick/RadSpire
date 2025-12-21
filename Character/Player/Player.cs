@@ -91,20 +91,20 @@ namespace Character {
 			return multiplier;
 		}
 
-		public PlayerData Serialize() => new PlayerData {
-			Movement = Movement.Serialize(),
-			Health = Health.Serialize(),
-			Attack = Attack.Serialize(),
-			Inventory = Inventory.Serialize(),
-			Hotbar = Hotbar.Serialize(),
+		public PlayerData Export() => new PlayerData {
+			Movement = Movement.Export(),
+			Health = Health.Export(),
+			Attack = Attack.Export(),
+			Inventory = Inventory.Export(),
+			Hotbar = Hotbar.Export(),
 		};
 
-		public void Deserialize(in PlayerData data) {
-			Movement.Deserialize(data.Movement);
-			Health.Deserialize(data.Health);
-			Attack.Deserialize(data.Attack);
-			Inventory.Deserialize(data.Inventory);
-			Hotbar.Deserialize(data.Hotbar);
+		public void Import(PlayerData data) {
+			Movement.Import(data.Movement);
+			Health.Import(data.Health);
+			Attack.Import(data.Attack);
+			Inventory.Import(data.Inventory);
+			Hotbar.Import(data.Hotbar);
 		}
 	}
 

@@ -32,12 +32,12 @@ namespace Components {
 			Current = max;
 		}
 
-		public HealthData Serialize() => new HealthData {
+		public HealthData Export() => new HealthData {
 			Max = Max,
 			Current = Current
 		};
 
-		public void Deserialize(in HealthData data) {
+		public void Import(HealthData data) {
 			Max = data.Max;
 			Current = data.Current;
 		}

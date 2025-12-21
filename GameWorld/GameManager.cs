@@ -95,16 +95,16 @@ namespace Root {
 				return;
 			}
 
-			var inventoryData = LocalPlayer.Inventory.Serialize();
-			var hotbarData = LocalPlayer.Hotbar.Serialize();
+			var inventoryData = LocalPlayer.Inventory.Export();
+			var hotbarData = LocalPlayer.Hotbar.Export();
 
 			LocalPlayer.QueueFree();
 			LocalPlayer = null;
 
 			SpawnLocalPlayer();
 
-			LocalPlayer!.Inventory.Deserialize(inventoryData);
-			LocalPlayer.Hotbar.Deserialize(hotbarData);
+			LocalPlayer!.Inventory.Import(inventoryData);
+			LocalPlayer.Hotbar.Import(hotbarData);
 
 			Log.Info("Player respawned");
 		}
@@ -138,11 +138,12 @@ namespace Root {
 			}
 
 			var data = new GameState {
-				Player = LocalPlayer.Serialize(),
-				CameraRig = CameraRig.Serialize(),
+				Player = LocalPlayer.Export(),
+				CameraRig = CameraRig.Export(),
 			};
 
-			SaveService.Save(fileName, data);
+			data.Save(fileName);
+
 			Log.Info($"Game saved to '{fileName}'");
 			return true;
 		}
@@ -172,8 +173,8 @@ namespace Root {
 		private void LoadData(string file) {
 			var data = SaveService.Load<GameState>(file);
 
-			LocalPlayer!.Deserialize(data.Player);
-			CameraRig!.Deserialize(data.CameraRig);
+			LocalPlayer!.Import(data.Player);
+			CameraRig!.Import(data.CameraRig);
 		}
 
 		public void ReturnToMainMenu() {

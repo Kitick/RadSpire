@@ -5,7 +5,7 @@ using Godot;
 namespace Services.Network {
 	public enum TransferMode { Reliable, Unreliable }
 
-	public sealed partial class NetworkSync<T> : Node where T : struct, INetworkData {
+	public sealed partial class NetworkSync<T> : Node where T : INetworkData {
 		private static readonly LogService Log = new(nameof(NetworkSync<>), enabled: true);
 
 		private readonly INetworkable<T> SyncObject;
@@ -20,7 +20,7 @@ namespace Services.Network {
 
 		private bool IsOwner => Server.Instance.IsOwner(OwnerPeerId);
 		private bool IsServer => Multiplayer.IsServer();
-		private string SerializeState() => JsonService.Serialize(SyncObject.Serialize(), NetJsonOptions);
+		private string SerializeState() => JsonService.Serialize(SyncObject.Export(), NetJsonOptions);
 
 		public NetworkSync(INetworkable<T> syncObject, int ownerPeerId, string syncId = "sync", TransferMode mode = TransferMode.Reliable) {
 			SyncObject = syncObject;
@@ -122,7 +122,7 @@ namespace Services.Network {
 
 			Log.Info($"{LogPrefix} Received broadcast, applying to SyncObject");
 			var data = JsonService.Deserialize<T>(json, NetJsonOptions);
-			SyncObject.Deserialize(data);
+			SyncObject.Import(data);
 		}
 
 		private void RequestCurrentState() {

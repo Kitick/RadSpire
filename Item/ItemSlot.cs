@@ -118,14 +118,14 @@ namespace ItemSystem {
 			return Item!.SameItem(other.Item!);
 		}
 
-		public ItemSlotData Serialize() {
+		public ItemSlotData Export() {
 			return new ItemSlotData {
-				Item = Item?.Serialize(),
+				Item = Item?.Export(),
 				Quantity = Quantity,
 			};
 		}
 
-		public void Deserialize(in ItemSlotData data) {
+		public void Import(ItemSlotData data) {
 			if(data.Item is null) {
 				Item = null;
 				Quantity = 0;

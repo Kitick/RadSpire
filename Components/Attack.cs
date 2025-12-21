@@ -11,11 +11,11 @@ namespace Components {
 			Damage = damage;
 		}
 
-		public AttackData Serialize() => new AttackData {
+		public AttackData Export() => new AttackData {
 
 		};
 
-		public void Deserialize(in AttackData data) {
+		public void Import(AttackData data) {
 
 		}
 	}

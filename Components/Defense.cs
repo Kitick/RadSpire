@@ -6,12 +6,12 @@ namespace Components {
 		public int DefenseVal { get; set; }
 		public float KnockbackResist { get; set; }
 
-		public DefenseData Serialize() => new DefenseData {
+		public DefenseData Export() => new DefenseData {
 			DefenseVal = DefenseVal,
 			KnockbackResist = KnockbackResist,
 		};
 
-		public void Deserialize(in DefenseData data) {
+		public void Import(DefenseData data) {
 			DefenseVal = data.DefenseVal;
 			KnockbackResist = data.KnockbackResist;
 		}

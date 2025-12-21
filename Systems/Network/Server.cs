@@ -2,10 +2,14 @@ using System;
 using Godot;
 
 namespace Services.Network {
-	public interface INetworkData : IJSONData;
+	public interface INetworkData;
 
-	public interface INetworkable<T> : IJSONable<T> where T : struct, INetworkData {
+	public interface INetworkable<T> where T : INetworkData {
+		// Add enum for reliable/unreliable here?
 		event Action? OnChanged;
+
+		T Export();
+		void Import(T data);
 	}
 
 	public sealed partial class Server : Node {

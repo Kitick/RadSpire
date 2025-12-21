@@ -50,14 +50,14 @@ namespace Character {
 			Movement.Update(dt);
 		}
 
-		public EnemyData Serialize() => new EnemyData {
-			Health = Health.Serialize(),
-			Movement = Movement.Serialize(),
+		public EnemyData Export() => new EnemyData {
+			Health = Health.Export(),
+			Movement = Movement.Export(),
 		};
 
-		public void Deserialize(in EnemyData data) {
-			Health.Deserialize(data.Health);
-			Movement.Deserialize(data.Movement);
+		public void Import(EnemyData data) {
+			Health.Import(data.Health);
+			Movement.Import(data.Movement);
 		}
 	}
 

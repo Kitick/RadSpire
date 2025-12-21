@@ -61,11 +61,11 @@ namespace ItemSystem {
 			return Id == other.Id;
 		}
 
-		public ItemData Serialize() => new ItemData {
+		public ItemData Export() => new ItemData {
 
 		};
 
-		public void Deserialize(in ItemData data) {
+		public void Import(ItemData data) {
 
 		}
 	}

@@ -7,11 +7,11 @@ namespace Components {
 	public sealed class Consumable : ISaveable<ConsumeableData> {
 		public int HealAmount { get; set; }
 
-		public ConsumeableData Serialize() => new ConsumeableData {
+		public ConsumeableData Export() => new ConsumeableData {
 			Amount = HealAmount,
 		};
 
-		public void Deserialize(in ConsumeableData data) {
+		public void Import(ConsumeableData data) {
 			HealAmount = data.Amount;
 		}
 	}

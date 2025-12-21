@@ -79,7 +79,7 @@ namespace UI.Settings {
 			SetOutputDevice(selectedDevice);
 		}
 
-		public SoundSettings Serialize() => new SoundSettings {
+		public SoundSettings Export() => new SoundSettings {
 			MasterVolume = AudioBus.Master.GetVolume(),
 			MusicVolume = AudioBus.Music.GetVolume(),
 			SFXVolume = AudioBus.SFX.GetVolume(),
@@ -87,7 +87,7 @@ namespace UI.Settings {
 			OutputDevice = AudioServer.OutputDevice,
 		};
 
-		public void Deserialize(in SoundSettings data) {
+		public void Import(SoundSettings data) {
 			AudioBus.Master.SetVolume(data.MasterVolume);
 			AudioBus.Music.SetVolume(data.MusicVolume);
 			AudioBus.SFX.SetVolume(data.SFXVolume);

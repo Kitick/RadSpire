@@ -223,24 +223,24 @@ namespace ItemSystem {
 		private ItemSlotData[] SerializeItemSlots() {
 			ItemSlotData[] itemSlots = new ItemSlotData[ItemSlots.Length];
 			for(int i = 0; i < ItemSlots.Length; i++) {
-				itemSlots[i] = ItemSlots[i].Serialize();
+				itemSlots[i] = ItemSlots[i].Export();
 			}
 			return itemSlots;
 		}
 
-		public InventoryData Serialize() => new InventoryData {
+		public InventoryData Export() => new InventoryData {
 			MaxSlotsRows = MaxRows,
 			MaxSlotsColumns = MaxColumns,
 			ItemSlots = SerializeItemSlots(),
 		};
 
-		public void Deserialize(in InventoryData data) {
+		public void Import(InventoryData data) {
 			MaxRows = data.MaxSlotsRows;
 			MaxColumns = data.MaxSlotsColumns;
 			ItemSlots = new ItemSlot[MaxSlots];
 			for(int i = 0; i < ItemSlots.Length; i++) {
 				ItemSlots[i] = new ItemSlot();
-				ItemSlots[i].Deserialize(data.ItemSlots[i]);
+				ItemSlots[i].Import(data.ItemSlots[i]);
 			}
 		}
 	}

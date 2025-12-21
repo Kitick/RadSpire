@@ -103,14 +103,13 @@ namespace UI.Settings {
 		}
 
 		private void SaveData() {
-			SaveService.Save(SAVEFILE, Serialize());
+			this.Save(SAVEFILE);
 			Log.Info("Settings saved");
 		}
 
 		private void LoadData() {
 			if(SaveService.Exists(SAVEFILE)) {
-				var data = SaveService.Load<SettingsData>(SAVEFILE);
-				Deserialize(data);
+				this.Load(SAVEFILE);
 				Log.Info("Settings loaded");
 			}
 			else {
@@ -118,14 +117,14 @@ namespace UI.Settings {
 			}
 		}
 
-		public SettingsData Serialize() => new SettingsData {
-			DisplaySettings = DisplayPanel.Serialize(),
-			SoundSettings = SoundPanel.Serialize(),
+		public SettingsData Export() => new SettingsData {
+			DisplaySettings = DisplayPanel.Export(),
+			SoundSettings = SoundPanel.Export(),
 		};
 
-		public void Deserialize(in SettingsData data) {
-			DisplayPanel.Deserialize(data.DisplaySettings);
-			SoundPanel.Deserialize(data.SoundSettings);
+		public void Import(SettingsData data) {
+			DisplayPanel.Import(data.DisplaySettings);
+			SoundPanel.Import(data.SoundSettings);
 		}
 	}
 

@@ -31,12 +31,12 @@ namespace Components {
 			Current = max;
 		}
 
-		public DurabilityData Serialize() => new DurabilityData {
+		public DurabilityData Export() => new DurabilityData {
 			Current = Current,
 			Max = Max,
 		};
 
-		public void Deserialize(in DurabilityData data) {
+		public void Import(DurabilityData data) {
 			Current = data.Current;
 			Max = data.Max;
 		}

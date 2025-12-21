@@ -9,7 +9,8 @@ namespace Components {
 		[Export] public float Knockback { get; set; } = 0;
 		[Export] public float CriticalChance { get; set; } = 0;
 		[Export] public float CriticalMultiplier { get; set; } = 1;
-		public WeaponBaseData Serialize() => new WeaponBaseData {
+
+		public WeaponBaseData Export() => new WeaponBaseData {
 			BaseAttack = BaseAttack,
 			AttackSpeed = AttackSpeed,
 			Range = Range,
@@ -18,7 +19,7 @@ namespace Components {
 			CriticalMultiplier = CriticalMultiplier,
 		};
 
-		public void Deserialize(in WeaponBaseData data) {
+		public void Import(WeaponBaseData data) {
 			BaseAttack = data.BaseAttack;
 			AttackSpeed = data.AttackSpeed;
 			Range = data.Range;

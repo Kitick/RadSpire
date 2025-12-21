@@ -92,7 +92,7 @@ namespace UI.Settings {
 		}
 
 		// ISaveable implementation
-		public DisplaySettings Serialize() {
+		public DisplaySettings Export() {
 			Resolution selectedResolution = Resolutions[ResolutionOption.Selected];
 			Framerate selectedFPS = Framerates[FramerateOption.Selected];
 
@@ -105,7 +105,7 @@ namespace UI.Settings {
 			};
 		}
 
-		public void Deserialize(in DisplaySettings data) {
+		public void Import(DisplaySettings data) {
 			Resolution = data.Resolution;
 			ResolutionOption.Select(data.Resolution);
 

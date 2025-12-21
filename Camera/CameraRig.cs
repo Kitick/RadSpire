@@ -71,11 +71,11 @@ namespace Camera {
 			return moved;
 		}
 
-		public CameraRigData Serialize() => new CameraRigData {
+		public CameraRigData Export() => new CameraRigData {
 			Pose = Pose,
 		};
 
-		public void Deserialize(in CameraRigData data) {
+		public void Import(CameraRigData data) {
 			Pose = data.Pose;
 		}
 	}

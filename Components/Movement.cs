@@ -57,13 +57,13 @@ namespace Components {
 			Body.Velocity = horizontal + Body.Velocity.Vertical();
 		}
 
-		public MovementData Serialize() => new MovementData {
+		public MovementData Export() => new MovementData {
 			Position = Body.GlobalPosition,
 			Velocity = Body.Velocity,
 			Rotation = Body.RotationDegrees,
 		};
 
-		public void Deserialize(in MovementData data) {
+		public void Import(MovementData data) {
 			Body.GlobalPosition = data.Position;
 			Body.RotationDegrees = data.Rotation;
 			Body.Velocity = data.Velocity;
