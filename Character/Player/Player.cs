@@ -6,11 +6,12 @@ using ItemSystem;
 using System;
 
 namespace Character {
-	public sealed partial class Player : CharacterBody3D, IHealth, IAttack, ISaveable<PlayerData> {
+	public sealed partial class Player : CharacterBody3D, IHealth, IOffense, ISaveable<PlayerData> {
 		private static readonly LogService Log = new(nameof(Enemy), enabled: true);
 
 		[Export] private int InitialHealth = 100;
 		[Export] private int InitialDamage = 10;
+		[Export] private int InitialDefense = 5;
 
 		[Export] private float SprintMultiplier = 2.25f;
 		[Export] private float CrouchMultiplier = 0.5f;
@@ -22,7 +23,8 @@ namespace Character {
 
 		// Components
 		public Health Health { get; }
-		public Attack Attack { get; }
+		public Offense Offense { get; }
+		public Defense Defense { get; }
 
 		public readonly Movement Movement;
 		public readonly Item3DIconPickup PickupComponent;
@@ -41,7 +43,8 @@ namespace Character {
 			InventoryManager = new InventoryManager();
 
 			Health = new Health(InitialHealth);
-			Attack = new Attack(InitialDamage);
+			Offense = new Offense(InitialDamage, 0);
+			Defense = new Defense(InitialDefense, 0);
 
 			StateMachine.OnChange((from, to) => OnStateChanged?.Invoke(from, to));
 		}
@@ -94,7 +97,7 @@ namespace Character {
 		public PlayerData Export() => new PlayerData {
 			Movement = Movement.Export(),
 			Health = Health.Export(),
-			Attack = Attack.Export(),
+			Offense = Offense.Export(),
 			Inventory = Inventory.Export(),
 			Hotbar = Hotbar.Export(),
 		};
@@ -102,7 +105,7 @@ namespace Character {
 		public void Import(PlayerData data) {
 			Movement.Import(data.Movement);
 			Health.Import(data.Health);
-			Attack.Import(data.Attack);
+			Offense.Import(data.Offense);
 			Inventory.Import(data.Inventory);
 			Hotbar.Import(data.Hotbar);
 		}
@@ -111,7 +114,7 @@ namespace Character {
 	public readonly record struct PlayerData : ISaveData {
 		public MovementData Movement { get; init; }
 		public HealthData Health { get; init; }
-		public AttackData Attack { get; init; }
+		public OffenseData Offense { get; init; }
 		public InventoryData Inventory { get; init; }
 		public InventoryData Hotbar { get; init; }
 	}

@@ -5,26 +5,22 @@ namespace Components {
 	public interface IHealItem { HealItem Item { get; } }
 
 	public sealed class HealItem : ISaveable<HealItemData> {
-		public int HealAmount { get; set; }
+		public int HealAmount;
+
+		public HealItem(int amount) {
+			HealAmount = amount;
+		}
 
 		public HealItemData Export() => new HealItemData {
-			Amount = HealAmount,
+			HealAmount = HealAmount,
 		};
 
 		public void Import(HealItemData data) {
-			HealAmount = data.Amount;
+			HealAmount = data.HealAmount;
 		}
 	}
 
-	public static class ItemExtensions {
-		public static void HealWith<TEntity, TItem>(this TEntity target, TItem item)
-		where TEntity : IHealth
-		where TItem : IHealItem {
-			target.Heal(item.Item.HealAmount);
-		}
-	}
-
-	public readonly struct HealItemData : ISaveData {
-		public int Amount { get; init; }
+	public readonly record struct HealItemData : ISaveData {
+		public int HealAmount { get; init; }
 	}
 }
