@@ -6,12 +6,18 @@ using ItemSystem;
 using System;
 
 namespace Character {
-	public sealed partial class Player : CharacterBody3D, IHealth, IOffense, ISaveable<PlayerData> {
-		private static readonly LogService Log = new(nameof(Enemy), enabled: true);
+	public sealed partial class Player : CharacterBase, ISaveable<PlayerData> {
+		private static readonly LogService Log = new(nameof(Player), enabled: true);
 
-		[Export] private int InitialHealth = 100;
-		[Export] private int InitialDamage = 10;
-		[Export] private int InitialDefense = 5;
+		[Export] private int InitialHealthValue = 100;
+		[Export] private int InitialDamagePhysical = 10;
+		[Export] private int InitialDamageMagic = 0;
+		[Export] private int InitialDefensePhysical = 5;
+		[Export] private int InitialDefenseMagic = 2;
+
+		protected override int InitialHealth => InitialHealthValue;
+		protected override (int phys, int mag) InitialDamage => (InitialDamagePhysical, InitialDamageMagic);
+		protected override (int phys, int mag) InitialDefense => (InitialDefensePhysical, InitialDefenseMagic);
 
 		[Export] private float SprintMultiplier = 2.25f;
 		[Export] private float CrouchMultiplier = 0.5f;
@@ -19,37 +25,18 @@ namespace Character {
 		// Inventories
 		public readonly Inventory Inventory = new Inventory(3, 5);
 		public readonly Inventory Hotbar = new Inventory(1, 5);
-		public InventoryManager InventoryManager = null!;
+		public readonly InventoryManager InventoryManager = new InventoryManager();
 
 		// Components
-		public Health Health { get; }
-		public Offense Offense { get; }
-		public Defense Defense { get; }
-
 		public readonly Movement Movement;
-		public readonly Item3DIconPickup PickupComponent;
-
-		// State Machine
-		public enum State { Idle, Walking, Sprinting, Crouching, Falling, Attacking, Dead }
-
-		private readonly StateMachine<State> StateMachine = new(State.Idle);
-
-		public State CurrentState => StateMachine.CurrentState;
-		public event Action<State, State>? OnStateChanged;
+		public readonly Item3DIconPickup PickupComponent = new Item3DIconPickup();
 
 		public Player() {
 			Movement = new Movement(this);
-			PickupComponent = new Item3DIconPickup();
-			InventoryManager = new InventoryManager();
-
-			Health = new Health(InitialHealth);
-			Offense = new Offense(InitialDamage, 0);
-			Defense = new Defense(InitialDefense, 0);
-
-			StateMachine.OnChange((from, to) => OnStateChanged?.Invoke(from, to));
 		}
 
 		public override void _Ready() {
+			base._Ready();
 			AddChild(PickupComponent);
 			AddChild(InventoryManager);
 		}
@@ -98,6 +85,7 @@ namespace Character {
 			Movement = Movement.Export(),
 			Health = Health.Export(),
 			Offense = Offense.Export(),
+			Defense = Defense.Export(),
 			Inventory = Inventory.Export(),
 			Hotbar = Hotbar.Export(),
 		};
@@ -106,6 +94,7 @@ namespace Character {
 			Movement.Import(data.Movement);
 			Health.Import(data.Health);
 			Offense.Import(data.Offense);
+			Defense.Import(data.Defense);
 			Inventory.Import(data.Inventory);
 			Hotbar.Import(data.Hotbar);
 		}
@@ -115,6 +104,7 @@ namespace Character {
 		public MovementData Movement { get; init; }
 		public HealthData Health { get; init; }
 		public OffenseData Offense { get; init; }
+		public DefenseData Defense { get; init; }
 		public InventoryData Inventory { get; init; }
 		public InventoryData Hotbar { get; init; }
 	}

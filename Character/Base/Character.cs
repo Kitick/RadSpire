@@ -2,26 +2,27 @@ using System;
 using Components;
 using Core;
 using Godot;
-using Services;
 
 namespace Character {
-	public abstract partial class CharacterBase : CharacterBody3D, IHealth, IAttack {
-		[Export] private int InitialHealth = 100;
-		[Export] private int InitialDamage = 10;
+	public abstract partial class CharacterBase : CharacterBody3D, IHealth, IOffense, IDefense {
+		protected abstract int InitialHealth { get; }
+		protected abstract (int phys, int mag) InitialDamage { get; }
+		protected abstract (int phys, int mag) InitialDefense { get; }
 
-		public Health Health { get; }
-		public Attack Attack { get; }
+		public Health Health { get; protected set; } = null!;
+		public Offense Offense { get; protected set; } = null!;
+		public Defense Defense { get; protected set; } = null!;
+
+		protected readonly StateMachine<State> StateMachine = new(State.Idle);
 
 		public enum State { Idle, Walking, Sprinting, Crouching, Falling, Attacking, Dead }
-
-		private readonly StateMachine<State> StateMachine = new(State.Idle);
-
 		public State CurrentState => StateMachine.CurrentState;
 		public event Action<State, State>? OnStateChanged;
 
-		public CharacterBase() {
+		public override void _Ready() {
 			Health = new Health(InitialHealth);
-			Attack = new Attack(InitialDamage);
+			Offense = new Offense(InitialDamage.phys, InitialDamage.mag);
+			Defense = new Defense(InitialDefense.phys, InitialDefense.mag);
 
 			StateMachine.OnChange((from, to) => OnStateChanged?.Invoke(from, to));
 		}
