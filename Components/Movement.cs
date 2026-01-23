@@ -1,10 +1,10 @@
-using System;
-using Core;
-using Godot;
-using Services.Network;
-using Services;
-
 namespace Components {
+	using System;
+	using Core;
+	using Godot;
+	using Services;
+	using Services.Network;
+
 	public sealed class Movement : ISaveable<MovementData> {
 		public event Action? OnChanged;
 

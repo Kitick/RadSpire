@@ -1,45 +1,23 @@
-using System;
-using Services;
-
 namespace Components {
+	using System;
+
 	public interface IDurable { Durability Durability { get; } }
 
-	public sealed class Durability : IOnChanged<int>, ISaveable<DurabilityData> {
+	public sealed class Durability : Component<DurabilityData> {
 		public int Current {
-			get;
-			set {
-				value = Math.Clamp(value, 0, Max);
-				if(field == value) { return; }
-
-				OnChanged?.Invoke(field, value);
-				field = value;
-			}
+			get => Data.Current;
+			set => SetData(Data with { Current = Math.Clamp(value, 0, Data.Max) });
 		}
 
 		public int Max {
-			get;
+			get => Data.Max;
 			set {
-				field = Math.Max(1, value);
-				Current = Math.Min(Current, field);
+				int max = Math.Max(1, value);
+				SetData(Data with { Max = max, Current = Math.Min(Data.Current, max) });
 			}
 		}
 
-		public event Action<int, int>? OnChanged;
-
-		public Durability(int max) {
-			Max = max;
-			Current = max;
-		}
-
-		public DurabilityData Export() => new DurabilityData {
-			Current = Current,
-			Max = Max,
-		};
-
-		public void Import(DurabilityData data) {
-			Current = data.Current;
-			Max = data.Max;
-		}
+		public Durability(int max) : base(new DurabilityData { Max = max, Current = max }) { }
 	}
 
 	public static class DurabilityExtensions {
@@ -58,19 +36,19 @@ namespace Components {
 		}
 
 		public static Action WhenNew(this IDurable entity, Action callback) {
-			return entity.Durability.When((int from, int to) => {
-				if(from < entity.Durability.Max && to == entity.Durability.Max) { callback(); }
+			return entity.Durability.When((DurabilityData from, DurabilityData to) => {
+				if(from.Current < to.Max && to.Current == to.Max) { callback(); }
 			});
 		}
 
 		public static Action WhenBroken(this IDurable entity, Action callback) {
-			return entity.Durability.When((int from, int to) => {
-				if(from > 0 && to == 0) { callback(); }
+			return entity.Durability.When((DurabilityData from, DurabilityData to) => {
+				if(from.Current > 0 && to.Current == 0) { callback(); }
 			});
 		}
 	}
 
-	public readonly record struct DurabilityData : ISaveData {
+	public readonly record struct DurabilityData : Services.ISaveData {
 		public int Current { get; init; }
 		public int Max { get; init; }
 	}

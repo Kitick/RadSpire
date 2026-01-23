@@ -1,12 +1,27 @@
-using System;
-
 namespace Components {
-	public interface IOnChanged<T> {
-		event Action<T, T> OnChanged;
+	using System;
+	using Services;
+
+	public abstract class Component<TData> : ISaveable<TData> where TData : struct, ISaveData {
+		protected TData Data;
+
+		public event Action<TData, TData>? OnChanged;
+
+		protected Component(TData data) => Data = data;
+
+		protected void SetData(TData newData) {
+			if(Data.Equals(newData)) { return; }
+			TData previous = Data;
+			Data = newData;
+			OnChanged?.Invoke(previous, newData);
+		}
+
+		public TData Export() => Data;
+		public void Import(TData data) => SetData(data);
 	}
 
 	public static class Extensions {
-		public static Action When<TComp, TData>(this TComp target, Action<TData, TData> callback) where TComp : IOnChanged<TData> {
+		public static Action When<TData>(this Component<TData> target, Action<TData, TData> callback) where TData : struct, ISaveData {
 			target.OnChanged += callback;
 			return () => target.OnChanged -= callback;
 		}
@@ -22,9 +37,9 @@ namespace Components {
 			int physicalDefense = 0;
 			int magicDefense = 0;
 
-			if(defender is IDefense defense) {
-				physicalDefense = defense.Defense.PhysicalDefense;
-				magicDefense = defense.Defense.MagicDefense;
+			if(defender is IDefense defendable) {
+				physicalDefense = defendable.Defense.PhysicalDefense;
+				magicDefense = defendable.Defense.MagicDefense;
 			}
 
 			physicalDamage = Math.Max(0, physicalDamage - physicalDefense);

@@ -1,8 +1,7 @@
-using System;
-using Core;
-using Godot;
-
 namespace Components {
+	using Core;
+	using Godot;
+
 	public sealed class ChaseAI {
 		public Vector3 HorizontalInput { get; private set; }
 

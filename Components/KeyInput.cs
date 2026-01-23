@@ -1,9 +1,8 @@
-using System;
-using Camera;
-using Core;
-using Godot;
-
 namespace Components {
+	using Camera;
+	using Core;
+	using Godot;
+
 	public sealed class KeyInput {
 		public Vector3 HorizontalInput { get; private set; }
 

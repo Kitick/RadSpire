@@ -1,46 +1,23 @@
-using System;
-using Services;
-using Services.Network;
-
 namespace Components {
+	using System;
+
 	public interface IHealth { Health Health { get; } }
 
-	public sealed class Health : IOnChanged<int>, ISaveable<HealthData> {
+	public sealed class Health : Component<HealthData> {
 		public int Current {
-			get;
-			set {
-				value = Math.Clamp(value, 0, Max);
-				if(field == value) { return; }
-
-				OnChanged?.Invoke(field, value);
-				field = value;
-			}
+			get => Data.Current;
+			set => SetData(Data with { Current = Math.Clamp(value, 0, Data.Max) });
 		}
 
 		public int Max {
-			get;
+			get => Data.Max;
 			set {
-				field = Math.Max(1, value);
-				Current = Math.Min(Current, field);
+				int max = Math.Max(1, value);
+				SetData(Data with { Max = max, Current = Math.Min(Data.Current, max) });
 			}
 		}
 
-		public event Action<int, int>? OnChanged;
-
-		public Health(int max) {
-			Max = max;
-			Current = max;
-		}
-
-		public HealthData Export() => new HealthData {
-			Max = Max,
-			Current = Current
-		};
-
-		public void Import(HealthData data) {
-			Max = data.Max;
-			Current = data.Current;
-		}
+		public Health(int max) : base(new HealthData { Max = max, Current = max }) { }
 	}
 
 	public static class HealthExtensions {
@@ -58,20 +35,20 @@ namespace Components {
 			return (float) entity.Health.Current / entity.Health.Max;
 		}
 
-		public static Action WhenHealed(this IHealth entity, Action callback) {
-			return entity.Health.When((int from, int to) => {
-				if(from < entity.Health.Max && to == entity.Health.Max) { callback(); }
+		public static Action WhenRestored(this IHealth entity, Action callback) {
+			return entity.Health.When((from, to) => {
+				if(from.Current < to.Max && to.Current == to.Max) { callback(); }
 			});
 		}
 
 		public static Action WhenDead(this IHealth entity, Action callback) {
-			return entity.Health.When((int from, int to) => {
-				if(from > 0 && to == 0) { callback(); }
+			return entity.Health.When((from, to) => {
+				if(from.Current > 0 && to.Current == 0) { callback(); }
 			});
 		}
 	}
 
-	public readonly record struct HealthData : ISaveData, INetworkData {
+	public readonly record struct HealthData : Services.ISaveData {
 		public int Current { get; init; }
 		public int Max { get; init; }
 	}

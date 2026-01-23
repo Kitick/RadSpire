@@ -1,30 +1,23 @@
-using Godot;
-using Services;
-
 namespace Components {
 	public interface IDefense { Defense Defense { get; } }
 
-	public sealed class Defense : ISaveable<DefenseData> {
-		public int PhysicalDefense;
-		public int MagicDefense;
-
-		public Defense(int phys, int mag) {
-			PhysicalDefense = phys;
-			MagicDefense = mag;
+	public sealed class Defense : Component<DefenseData> {
+		public int PhysicalDefense {
+			get => Data.PhysicalDefense;
+			set => SetData(Data with { PhysicalDefense = value });
 		}
 
-		public DefenseData Export() => new DefenseData {
-			PhysicalDefense = PhysicalDefense,
-			MagicDefense = MagicDefense,
-		};
-
-		public void Import(DefenseData data) {
-			PhysicalDefense = data.PhysicalDefense;
-			MagicDefense = data.MagicDefense;
+		public int MagicDefense {
+			get => Data.MagicDefense;
+			set => SetData(Data with { MagicDefense = value });
 		}
+
+		public Defense(DefenseData data) : base(data) { }
+
+		public Defense(int phys, int mag) : base(new DefenseData { PhysicalDefense = phys, MagicDefense = mag }) { }
 	}
 
-	public readonly record struct DefenseData : ISaveData {
+	public readonly record struct DefenseData : Services.ISaveData {
 		public int PhysicalDefense { get; init; }
 		public int MagicDefense { get; init; }
 	}
