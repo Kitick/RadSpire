@@ -10,10 +10,22 @@
       "resource_name": {
         "visibility": 0.0
       }
+    },
+    "res://Item/ItemDataBase/Food/": {
+      "metadata/_custom_type_script": {
+        "visibility": 0
+      },
+      "resource_local_to_scene": {
+        "visibility": 0
+      },
+      "resource_name": {
+        "visibility": 0
+      }
     }
   },
   "recent_paths": [
-    "res://Item/ItemDataBase/"
+    "res://Item/ItemDataBase/",
+    "res://Item/ItemDataBase/Food/"
   ],
   "table_functions": {
     "filter": [
