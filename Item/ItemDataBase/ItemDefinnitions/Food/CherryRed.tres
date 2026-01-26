@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="ItemDefinition" load_steps=5 format=3 uid="uid://dwoggasdmmseo"]
+
+[ext_resource type="Script" uid="uid://cnm5iegiuj4xu" path="res://Item/ItemDataBase/ItemDataBaseScripts/ItemComponentDefinition.cs" id="1_dypxo"]
+[ext_resource type="Resource" uid="uid://ds7c545y5smpx" path="res://Item/ItemDataBase/ComponentDefinitions/HealItemDefinition/Level2FoodHeal.tres" id="2_dhlq2"]
+[ext_resource type="Texture2D" uid="uid://doih4qelotqko" path="res://Assets/scrimsy fruit icons/color/red/red cherry.png" id="2_uaxus"]
+[ext_resource type="Script" uid="uid://bxmh4fd7kjvv1" path="res://Item/ItemDataBase/ItemDataBaseScripts/ItemDefinition.cs" id="3_uaxus"]
+
+[resource]
+script = ExtResource("3_uaxus")
+Id = "CherryRed"
+Name = "Cherry"
+Description = "A delicious cherry."
+MaxStackSize = 64
+IconTexture = ExtResource("2_uaxus")
+ComponentsResources = Array[ExtResource("1_dypxo")]([ExtResource("2_dhlq2")])
+metadata/_custom_type_script = "uid://3l5yftlfas15"

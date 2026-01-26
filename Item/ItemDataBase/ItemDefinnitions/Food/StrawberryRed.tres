@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="ItemDefinition" load_steps=5 format=3 uid="uid://cuir5siy4hxft"]
+
+[ext_resource type="Texture2D" uid="uid://di6lvqbjfukk1" path="res://Assets/scrimsy fruit icons/color/red/red strawberry.png" id="1_7v25h"]
+[ext_resource type="Script" uid="uid://cnm5iegiuj4xu" path="res://Item/ItemDataBase/ItemDataBaseScripts/ItemComponentDefinition.cs" id="1_n14aj"]
+[ext_resource type="Resource" uid="uid://ds7c545y5smpx" path="res://Item/ItemDataBase/ComponentDefinitions/HealItemDefinition/Level2FoodHeal.tres" id="2_67ui4"]
+[ext_resource type="Script" uid="uid://bxmh4fd7kjvv1" path="res://Item/ItemDataBase/ItemDataBaseScripts/ItemDefinition.cs" id="3_21yjn"]
+
+[resource]
+script = ExtResource("3_21yjn")
+Id = "StrawberryRed"
+Name = "Red Strawberry"
+Description = "A delicously ripe red strawberry."
+MaxStackSize = 64
+IconTexture = ExtResource("1_7v25h")
+ComponentsResources = Array[ExtResource("1_n14aj")]([ExtResource("2_67ui4")])
+metadata/_custom_type_script = "uid://3l5yftlfas15"

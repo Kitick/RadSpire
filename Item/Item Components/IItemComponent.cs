@@ -1,6 +1,6 @@
-using Godot;
+namespace ItemSystem {
+	using Godot;
 
-namespace Components {
 	public interface IItemComponent {
 
 	}

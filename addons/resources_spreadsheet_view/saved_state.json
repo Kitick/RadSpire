@@ -11,21 +11,39 @@
         "visibility": 0.0
       }
     },
-    "res://Item/ItemDataBase/Food/": {
+    "res://Item/ItemDataBase/ComponentDefinitions/": {
       "metadata/_custom_type_script": {
-        "visibility": 0
+        "visibility": 0.0
       },
       "resource_local_to_scene": {
-        "visibility": 0
+        "visibility": 0.0
       },
       "resource_name": {
-        "visibility": 0
+        "visibility": 0.0
+      }
+    },
+    "res://Item/ItemDataBase/Food/": {
+      "ComponentsResources": {
+        "visibility": 1.0
+      },
+      "metadata/_custom_type_script": {
+        "visibility": 0.0
+      },
+      "resource_local_to_scene": {
+        "visibility": 0.0
+      },
+      "resource_name": {
+        "visibility": 0.0
+      },
+      "resource_path": {
+        "visibility": 1.0
       }
     }
   },
   "recent_paths": [
     "res://Item/ItemDataBase/",
-    "res://Item/ItemDataBase/Food/"
+    "res://Item/ItemDataBase/Food/",
+    "res://Item/ItemDataBase/ComponentDefinitions/"
   ],
   "table_functions": {
     "filter": [
