@@ -4,7 +4,7 @@ namespace ItemSystem {
 	using Godot;
 	using Services;
 
-	public partial class ItemHeal : ISaveable<ItemHealData>, IHealItem {
+	public partial class ItemHeal : Item, IHealItem, ISaveable<ItemHealData> {
         public HealItem Heal { get; set; } = null!;
 
 		public ItemHealData Export() => new ItemHealData {

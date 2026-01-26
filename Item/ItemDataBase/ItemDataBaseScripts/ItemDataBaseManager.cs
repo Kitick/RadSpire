@@ -36,11 +36,20 @@ namespace ItemSystem {
 
         public Item CreateItemInstanceById(string id) {
             Item item = new Item();
-
             ItemDefinition? itemDef = GetItemDefinitionById(id);
             if(itemDef == null) {
                 Log.Error($"Cannot create Item instance. ItemDefinition with ID {id} not found.");
-                return item;
+                return null!;
+            }
+            if(itemDef.ComponentsResources.Count == 0) {
+                Log.Info($"Base ItemDefinition with ID {id} has no components.");
+            }
+            else if(itemDef.ComponentsResources.Contains<HealItemDefinition>()) {
+                item = new ItemHeal();
+                item.Heal = new HealItem();
+            }
+            else if(itemDef.ComponentsResources.Contains<DurabilityItemDefinition>()) {
+                item = new ItemDurability();
             }
 
             //Copy properties from definition to instance
