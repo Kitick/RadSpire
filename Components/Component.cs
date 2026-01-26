@@ -55,7 +55,7 @@ namespace Components {
 		public static void HealWith<TEntity, TItem>(this TEntity target, TItem item)
 		where TEntity : IHealth
 		where TItem : IHealItem {
-			target.Heal(item.Item.HealAmount);
+			target.Heal(item.Heal.HealAmount);
 		}
 	}
 }
