@@ -49,16 +49,6 @@ namespace ItemSystem {
             item.Description = itemDef.Description;
             item.MaxStackSize = itemDef.MaxStackSize;
             item.IconTexture = itemDef.IconTexture;
-
-            //Initialize components
-            foreach(ItemComponentDefinition compDef in itemDef.ComponentsResources) {
-                if(compDef is HealItemDefinition healDef) {
-                    item.Heal = new HealItem(healDef.HealAmount);
-                }
-                else if(compDef is DurabilityDefinition durabilityDef) {
-                    item.Durability = new Durability(durabilityDef.MaxDurability);
-                }
-            }
             return item;
         }
 	}
