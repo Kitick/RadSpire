@@ -44,20 +44,34 @@ namespace ItemSystem {
             if(itemDef.ComponentsResources.Count == 0) {
                 Log.Info($"Base ItemDefinition with ID {id} has no components.");
             }
-            else if(itemDef.ComponentsResources.Contains<HealItemDefinition>()) {
-                item = new ItemHeal();
-                item.Heal = new HealItem();
-            }
-            else if(itemDef.ComponentsResources.Contains<DurabilityItemDefinition>()) {
-                item = new ItemDurability();
+            else {
+                foreach(ItemComponentDefinition compDef in itemDef.ComponentsResources) {
+                    if(compDef == null) {
+                        Log.Error($"Failed to create component from definition in ItemDefinition ID {id}.");
+                        continue;
+                    }
+                    switch(compDef) {
+                        case HealItemDefinition healDef:
+                            HealItem healComp = new HealItem(healDef.HealAmount);
+                            item = new ItemHeal(item, healComp);
+                            break;
+                        case DurabilityDefinition durabilityDef:
+                            Durability durabilityComp = new Durability(durabilityDef.MaxDurability);
+                            item = new ItemDurability(item, durabilityComp);
+                            break;
+                        default:
+                            Log.Error($"Unknown component type in ItemDefinition ID {id}.");
+                            break;
+                    }
+                }
             }
 
-            //Copy properties from definition to instance
             item.Id = itemDef.Id;
             item.Name = itemDef.Name;
             item.Description = itemDef.Description;
             item.MaxStackSize = itemDef.MaxStackSize;
             item.IconTexture = itemDef.IconTexture;
+            
             return item;
         }
 	}

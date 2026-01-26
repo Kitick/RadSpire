@@ -59,6 +59,18 @@ namespace ItemSystem {
 			return Id == other.Id;
 		}
 
+		public Item() {
+
+		}
+		
+		public Item(Item other) {
+			Id = other.Id;
+			Name = other.Name;
+			Description = other.Description;
+			MaxStackSize = other.MaxStackSize;
+			IconTexture = other.IconTexture;
+		}
+
 		public ItemData Export() {
 			return new ItemData {
 				Id = Id

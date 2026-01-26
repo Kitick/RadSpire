@@ -7,6 +7,10 @@ namespace ItemSystem {
 	public partial class ItemHeal : Item, IHealItem, ISaveable<ItemHealData> {
         public HealItem Heal { get; set; } = null!;
 
+        public ItemHeal(Item BaseItem, HealItem HealComponent) : base(BaseItem) {
+            Heal = HealComponent;
+        }
+
 		public ItemHealData Export() => new ItemHealData {
 			HealData = Heal.Export()
 		};

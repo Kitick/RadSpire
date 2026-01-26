@@ -7,13 +7,7 @@ namespace ItemSystem {
 	public partial class ItemDurability : Item, IDurable, ISaveable<ItemDurabilityData> {
         public Durability Durability { get; set; } = null!;
 
-        public ItemDurability(Item BaseItem, Durability DurabilityComponent) {
-            Id = BaseItem.Id;
-            Name = BaseItem.Name;
-            Description = BaseItem.Description;
-            MaxStackSize = BaseItem.MaxStackSize;
-            IconTexture = BaseItem.IconTexture;
-
+        public ItemDurability(Item BaseItem, Durability DurabilityComponent) : base(BaseItem) {
             Durability = DurabilityComponent;
         }
 
