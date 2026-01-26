@@ -75,11 +75,15 @@ project/assembly_name="RadSpire"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/resources_spreadsheet_view/plugin.cfg", "res://addons/simplegrasstextured/plugin.cfg", "res://addons/sprite_mesh/plugin.cfg")
+enabled=PackedStringArray("res://addons/godot_resource_groups/plugin.cfg", "res://addons/resources_spreadsheet_view/plugin.cfg", "res://addons/simplegrasstextured/plugin.cfg", "res://addons/sprite_mesh/plugin.cfg")
 
 [filesystem]
 
 import/blender/enabled=false
+
+[godot_resource_groups]
+
+auto_rebuild=true
 
 [input]
 

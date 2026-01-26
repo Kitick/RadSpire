@@ -53,8 +53,9 @@ namespace ItemSystem {
 		[Export] public Texture2D IconTexture { get; set; } = null!;
 
 		//Components
-		public HealItem Heal { get; protected set; } = null!;
-		public Durability Durability { get; protected set; } = null!;
+		public HealItem Heal { get; set; } = null!;
+		public Durability Durability { get; set; } = null!;
+
 
 		public bool SameItem(Item other) {
 			if(other == null) {

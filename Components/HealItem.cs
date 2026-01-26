@@ -1,5 +1,5 @@
 namespace Components {
-	public interface IHealItem { HealItem Heal { get; } }
+	public interface IHealItem { HealItem Heal { get; set; } }
 
 	public sealed class HealItem : Component<HealItemData> {
 		public int HealAmount {

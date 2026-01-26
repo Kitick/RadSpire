@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="ResourceGroup" load_steps=2 format=3 uid="uid://1240p44q0o62"]
+
+[ext_resource type="Script" uid="uid://bmvsfy3sftdii" path="res://addons/godot_resource_groups/resource_group.gd" id="1_o2jny"]
+
+[resource]
+script = ExtResource("1_o2jny")
+base_folder = "res://Item/ItemDataBase/ItemDefinitions"
+includes = Array[String](["Food/*.tres"])
+paths = Array[String](["res://Item/ItemDataBase/ItemDefinitions/Food/AppleGreen.tres", "res://Item/ItemDataBase/ItemDefinitions/Food/AppleRed.tres", "res://Item/ItemDataBase/ItemDefinitions/Food/AppleYellow.tres", "res://Item/ItemDataBase/ItemDefinitions/Food/BananaGreen.tres", "res://Item/ItemDataBase/ItemDefinitions/Food/BananaYellow.tres", "res://Item/ItemDataBase/ItemDefinitions/Food/BerryBlack.tres", "res://Item/ItemDataBase/ItemDefinitions/Food/BerryGreen.tres", "res://Item/ItemDataBase/ItemDefinitions/Food/BerryRed.tres", "res://Item/ItemDataBase/ItemDefinitions/Food/BlueberryBlue.tres", "res://Item/ItemDataBase/ItemDefinitions/Food/BlueberryGreen.tres", "res://Item/ItemDataBase/ItemDefinitions/Food/CherryGreen.tres", "res://Item/ItemDataBase/ItemDefinitions/Food/CherryRed.tres", "res://Item/ItemDataBase/ItemDefinitions/Food/CoconutBrown.tres", "res://Item/ItemDataBase/ItemDefinitions/Food/CoconutBrownOpen.tres", "res://Item/ItemDataBase/ItemDefinitions/Food/CoconutGreen.tres", "res://Item/ItemDataBase/ItemDefinitions/Food/CoconutGreenOpen.tres", "res://Item/ItemDataBase/ItemDefinitions/Food/StrawberryGreen.tres", "res://Item/ItemDataBase/ItemDefinitions/Food/StrawberryRed.tres"])
+metadata/_custom_type_script = "uid://bmvsfy3sftdii"

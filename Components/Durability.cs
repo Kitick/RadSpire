@@ -1,7 +1,7 @@
 namespace Components {
 	using System;
 
-	public interface IDurable { Durability Durability { get; } }
+	public interface IDurable { Durability Durability { get; set; } }
 
 	public sealed class Durability : Component<DurabilityData> {
 		public int Current {
