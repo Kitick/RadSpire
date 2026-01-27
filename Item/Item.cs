@@ -78,7 +78,12 @@ namespace ItemSystem {
 		}
 
 		public void Import(ItemData data) {
-			Id = data.Id;
+			Item item = ItemDataBaseManager.Instance.CreateBaseItemInstanceById(data.Id);
+			Id = item.Id;
+			Name = item.Name;
+			Description = item.Description;
+			MaxStackSize = item.MaxStackSize;
+			IconTexture = item.IconTexture;	
 		}
 	}
 

@@ -7,7 +7,8 @@ namespace ItemSystem {
     using Components;
 
     public partial class ItemDataBaseManager : Node {
-		private static readonly LogService Log = new(nameof(Item3DIconPickup), enabled: true);
+        private static readonly LogService Log = new(nameof(ItemDataBaseManager), enabled: true);
+        public static ItemDataBaseManager Instance { get; private set; } = null!;
 
 		public ResourceGroup AllItemDefinitions { get; set; } = ResourceGroup.Of("res://Item/ItemDataBase/AllItemDefinitions.tres");
 		public Dictionary<string, ItemDefinition> ItemsDefinitions { get; private set; } = new();
@@ -24,6 +25,8 @@ namespace ItemSystem {
                     ItemsDefinitions.Add(itemDef.Id, itemDef);
                 }
             }
+            Instance = this;
+            Log.Info($"Loaded {ItemsDefinitions.Count} ItemDefinitions into ItemDataBaseManager.");
         }
 
         public ItemDefinition? GetItemDefinitionById(string id) {
@@ -32,6 +35,23 @@ namespace ItemSystem {
             }
             Log.Info($"ItemDefinition with ID {id} not found.");
             return null;
+        }
+
+        public Item CreateBaseItemInstanceById(string id) {
+            Item item = new Item();
+            ItemDefinition? itemDef = GetItemDefinitionById(id);
+            if(itemDef == null) {
+                Log.Error($"Cannot create Item instance. ItemDefinition with ID {id} not found.");
+                return null!;
+            }
+
+            item.Id = itemDef.Id;
+            item.Name = itemDef.Name;
+            item.Description = itemDef.Description;
+            item.MaxStackSize = itemDef.MaxStackSize;
+            item.IconTexture = itemDef.IconTexture;
+            
+            return item;
         }
 
         public Item CreateItemInstanceById(string id) {
