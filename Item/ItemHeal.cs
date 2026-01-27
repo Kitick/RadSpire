@@ -12,15 +12,18 @@ namespace ItemSystem {
         }
 
 		public ItemHealData Export() => new ItemHealData {
+            BaseItemData = base.Export(),
 			HealData = Heal.Export()
 		};
 
 		public void Import(ItemHealData data) {
+            base.Import(data.BaseItemData);
 			Heal.Import(data.HealData);
 		}
 	}
 
 	public readonly record struct ItemHealData : ISaveData {
+        public ItemData BaseItemData { get; init; }
 		public HealItemData HealData { get; init; }
 	}
 }
