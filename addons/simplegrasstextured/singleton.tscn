@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://bfq0snth8sj3h"]
+[gd_scene format=3 uid="uid://bfq0snth8sj3h"]
 
 [ext_resource type="Script" uid="uid://bcnq5eix75v5b" path="res://addons/simplegrasstextured/singleton.gd" id="1_bos4q"]
 [ext_resource type="Shader" uid="uid://h3cmhcmf6wwy" path="res://addons/simplegrasstextured/shaders/distance.gdshader" id="2_x0p7u"]
@@ -52,28 +52,28 @@ shader_parameter/delta = 1.0
 shader = ExtResource("4_5b1gv")
 shader_parameter/prev_depth = ExtResource("9_yreb8")
 
-[node name="SimpleGrassSingleton" type="Node3D"]
+[node name="SimpleGrassSingleton" type="Node3D" unique_id=567573666]
 visible = false
 script = ExtResource("1_bos4q")
 
-[node name="HeightMapView" type="SubViewport" parent="."]
+[node name="HeightMapView" type="SubViewport" parent="." unique_id=374086425]
 own_world_3d = true
 world_3d = SubResource("World3D_wpi3i")
 size = Vector2i(128, 128)
 render_target_update_mode = 1
 
-[node name="Camera" type="Camera3D" parent="HeightMapView"]
+[node name="Camera" type="Camera3D" parent="HeightMapView" unique_id=687250579]
 physics_interpolation_mode = 2
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 50, 0)
 environment = SubResource("Environment_ub5wl")
 projection = 1
 size = 50.0
 
-[node name="DistanceView" type="SubViewport" parent="."]
+[node name="DistanceView" type="SubViewport" parent="." unique_id=1445842445]
 size_2d_override = Vector2i(512, 512)
 render_target_update_mode = 1
 
-[node name="Camera" type="Camera3D" parent="DistanceView"]
+[node name="Camera" type="Camera3D" parent="DistanceView" unique_id=185558756]
 physics_interpolation_mode = 2
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, -25, 0)
 cull_mask = 65536
@@ -82,7 +82,7 @@ projection = 1
 size = 50.0
 far = 100.0
 
-[node name="Mesh" type="MeshInstance3D" parent="DistanceView/Camera"]
+[node name="Mesh" type="MeshInstance3D" parent="DistanceView/Camera" unique_id=1580429521]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1)
 visible = false
 layers = 65536
@@ -90,12 +90,12 @@ material_override = SubResource("ShaderMaterial_bhk8n")
 cast_shadow = 0
 mesh = SubResource("QuadMesh_2vmyu")
 
-[node name="Normal" type="SubViewport" parent="."]
+[node name="Normal" type="SubViewport" parent="." unique_id=944934240]
 disable_3d = true
 size_2d_override = Vector2i(512, 512)
 render_target_update_mode = 1
 
-[node name="NormalRect" type="ColorRect" parent="Normal"]
+[node name="NormalRect" type="ColorRect" parent="Normal" unique_id=761992244]
 material = SubResource("ShaderMaterial_0yrkm")
 anchors_preset = 15
 anchor_right = 1.0
@@ -103,12 +103,12 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Blur1" type="SubViewport" parent="."]
+[node name="Blur1" type="SubViewport" parent="." unique_id=522360738]
 disable_3d = true
 size_2d_override = Vector2i(512, 512)
 render_target_update_mode = 1
 
-[node name="Blur1Rect" type="ColorRect" parent="Blur1"]
+[node name="Blur1Rect" type="ColorRect" parent="Blur1" unique_id=791041739]
 material = SubResource("ShaderMaterial_7aqh4")
 anchors_preset = 15
 anchor_right = 1.0
@@ -116,12 +116,12 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Blur2" type="SubViewport" parent="."]
+[node name="Blur2" type="SubViewport" parent="." unique_id=2970663]
 disable_3d = true
 size_2d_override = Vector2i(512, 512)
 render_target_update_mode = 1
 
-[node name="Blur2Rect" type="ColorRect" parent="Blur2"]
+[node name="Blur2Rect" type="ColorRect" parent="Blur2" unique_id=1647863951]
 material = SubResource("ShaderMaterial_tt7gm")
 anchors_preset = 15
 anchor_right = 1.0
@@ -129,12 +129,12 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Motion1" type="SubViewport" parent="."]
+[node name="Motion1" type="SubViewport" parent="." unique_id=1457307553]
 disable_3d = true
 size_2d_override = Vector2i(512, 512)
 render_target_update_mode = 1
 
-[node name="Motion1Rect" type="ColorRect" parent="Motion1"]
+[node name="Motion1Rect" type="ColorRect" parent="Motion1" unique_id=1050327327]
 material = SubResource("ShaderMaterial_bi14c")
 anchors_preset = 15
 anchor_right = 1.0
@@ -142,12 +142,12 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Motion2" type="SubViewport" parent="."]
+[node name="Motion2" type="SubViewport" parent="." unique_id=1531096163]
 disable_3d = true
 size_2d_override = Vector2i(512, 512)
 render_target_update_mode = 1
 
-[node name="Motion2Rect" type="ColorRect" parent="Motion2"]
+[node name="Motion2Rect" type="ColorRect" parent="Motion2" unique_id=1563325870]
 material = SubResource("ShaderMaterial_5hmhs")
 anchors_preset = 15
 anchor_right = 1.0

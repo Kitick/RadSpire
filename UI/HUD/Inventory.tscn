@@ -1,4 +1,4 @@
-[gd_scene load_steps=3 format=3 uid="uid://m00q7guersgc"]
+[gd_scene format=3 uid="uid://m00q7guersgc"]
 
 [ext_resource type="Texture2D" uid="uid://8ykhw0g480u8" path="res://Assets/Images/Icons/sword.png" id="1_ck2mn"]
 
@@ -13,13 +13,13 @@ corner_radius_top_right = 4
 corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
 
-[node name="Inventory" type="Control"]
+[node name="Inventory" type="Control" unique_id=1919486184]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 350.0
 offset_bottom = 250.0
 
-[node name="Background" type="ColorRect" parent="."]
+[node name="Background" type="ColorRect" parent="." unique_id=1142572123]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.1
@@ -27,7 +27,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 color = Color(0.45054996, 0.2622559, 0.190151, 1)
 
-[node name="GridBackground" type="ColorRect" parent="Background"]
+[node name="GridBackground" type="ColorRect" parent="Background" unique_id=202275643]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.025
@@ -36,7 +36,7 @@ anchor_right = 0.975
 anchor_bottom = 0.965
 color = Color(1, 1, 1, 0.60784316)
 
-[node name="GridContainer" type="GridContainer" parent="Background/GridBackground"]
+[node name="GridContainer" type="GridContainer" parent="Background/GridBackground" unique_id=1200341760]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.025
@@ -47,13 +47,13 @@ theme_override_constants/h_separation = 7
 theme_override_constants/v_separation = 5
 columns = 5
 
-[node name="InvSlot1" type="Panel" parent="Background/GridBackground/GridContainer"]
+[node name="InvSlot1" type="Panel" parent="Background/GridBackground/GridContainer" unique_id=522207077]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_7pfaa")
 
-[node name="TextureRect" type="TextureRect" parent="Background/GridBackground/GridContainer/InvSlot1"]
+[node name="TextureRect" type="TextureRect" parent="Background/GridBackground/GridContainer/InvSlot1" unique_id=1406123832]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
@@ -65,7 +65,7 @@ offset_bottom = -5.0
 texture = ExtResource("1_ck2mn")
 expand_mode = 1
 
-[node name="ItemCountLabel" type="Label" parent="Background/GridBackground/GridContainer/InvSlot1"]
+[node name="ItemCountLabel" type="Label" parent="Background/GridBackground/GridContainer/InvSlot1" unique_id=1988963731]
 layout_mode = 0
 offset_left = 0.9375
 offset_top = 39.8475
@@ -73,13 +73,13 @@ offset_right = 55.9375
 offset_bottom = 62.8475
 horizontal_alignment = 2
 
-[node name="InvSlot2" type="Panel" parent="Background/GridBackground/GridContainer"]
+[node name="InvSlot2" type="Panel" parent="Background/GridBackground/GridContainer" unique_id=2732465]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_7pfaa")
 
-[node name="TextureRect" type="TextureRect" parent="Background/GridBackground/GridContainer/InvSlot2"]
+[node name="TextureRect" type="TextureRect" parent="Background/GridBackground/GridContainer/InvSlot2" unique_id=510524287]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
@@ -90,7 +90,7 @@ offset_right = -5.0
 offset_bottom = -5.0
 expand_mode = 1
 
-[node name="ItemCountLabel" type="Label" parent="Background/GridBackground/GridContainer/InvSlot2"]
+[node name="ItemCountLabel" type="Label" parent="Background/GridBackground/GridContainer/InvSlot2" unique_id=1697960994]
 layout_mode = 0
 offset_left = 0.9375
 offset_top = 39.8475
@@ -98,13 +98,13 @@ offset_right = 55.9375
 offset_bottom = 62.8475
 horizontal_alignment = 2
 
-[node name="InvSlot3" type="Panel" parent="Background/GridBackground/GridContainer"]
+[node name="InvSlot3" type="Panel" parent="Background/GridBackground/GridContainer" unique_id=321362525]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_7pfaa")
 
-[node name="TextureRect" type="TextureRect" parent="Background/GridBackground/GridContainer/InvSlot3"]
+[node name="TextureRect" type="TextureRect" parent="Background/GridBackground/GridContainer/InvSlot3" unique_id=524744595]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
@@ -115,7 +115,7 @@ offset_right = -5.0
 offset_bottom = -5.0
 expand_mode = 1
 
-[node name="ItemCountLabel" type="Label" parent="Background/GridBackground/GridContainer/InvSlot3"]
+[node name="ItemCountLabel" type="Label" parent="Background/GridBackground/GridContainer/InvSlot3" unique_id=677210785]
 layout_mode = 0
 offset_left = 0.9375
 offset_top = 39.8475
@@ -123,13 +123,13 @@ offset_right = 55.9375
 offset_bottom = 62.8475
 horizontal_alignment = 2
 
-[node name="InvSlot4" type="Panel" parent="Background/GridBackground/GridContainer"]
+[node name="InvSlot4" type="Panel" parent="Background/GridBackground/GridContainer" unique_id=132481213]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_7pfaa")
 
-[node name="TextureRect" type="TextureRect" parent="Background/GridBackground/GridContainer/InvSlot4"]
+[node name="TextureRect" type="TextureRect" parent="Background/GridBackground/GridContainer/InvSlot4" unique_id=1341105412]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
@@ -140,7 +140,7 @@ offset_right = -5.0
 offset_bottom = -5.0
 expand_mode = 1
 
-[node name="ItemCountLabel" type="Label" parent="Background/GridBackground/GridContainer/InvSlot4"]
+[node name="ItemCountLabel" type="Label" parent="Background/GridBackground/GridContainer/InvSlot4" unique_id=839831719]
 layout_mode = 0
 offset_left = 0.9375
 offset_top = 39.8475
@@ -148,13 +148,13 @@ offset_right = 55.9375
 offset_bottom = 62.8475
 horizontal_alignment = 2
 
-[node name="InvSlot5" type="Panel" parent="Background/GridBackground/GridContainer"]
+[node name="InvSlot5" type="Panel" parent="Background/GridBackground/GridContainer" unique_id=1155484086]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_7pfaa")
 
-[node name="TextureRect" type="TextureRect" parent="Background/GridBackground/GridContainer/InvSlot5"]
+[node name="TextureRect" type="TextureRect" parent="Background/GridBackground/GridContainer/InvSlot5" unique_id=1795292467]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
@@ -165,7 +165,7 @@ offset_right = -5.0
 offset_bottom = -5.0
 expand_mode = 1
 
-[node name="ItemCountLabel" type="Label" parent="Background/GridBackground/GridContainer/InvSlot5"]
+[node name="ItemCountLabel" type="Label" parent="Background/GridBackground/GridContainer/InvSlot5" unique_id=1465899169]
 layout_mode = 0
 offset_left = 0.9375
 offset_top = 39.8475
@@ -173,13 +173,13 @@ offset_right = 55.9375
 offset_bottom = 62.8475
 horizontal_alignment = 2
 
-[node name="InvSlot6" type="Panel" parent="Background/GridBackground/GridContainer"]
+[node name="InvSlot6" type="Panel" parent="Background/GridBackground/GridContainer" unique_id=2111456440]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_7pfaa")
 
-[node name="TextureRect" type="TextureRect" parent="Background/GridBackground/GridContainer/InvSlot6"]
+[node name="TextureRect" type="TextureRect" parent="Background/GridBackground/GridContainer/InvSlot6" unique_id=1906929199]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
@@ -190,7 +190,7 @@ offset_right = -5.0
 offset_bottom = -5.0
 expand_mode = 1
 
-[node name="ItemCountLabel" type="Label" parent="Background/GridBackground/GridContainer/InvSlot6"]
+[node name="ItemCountLabel" type="Label" parent="Background/GridBackground/GridContainer/InvSlot6" unique_id=359082279]
 layout_mode = 0
 offset_left = 0.9375
 offset_top = 39.8475
@@ -198,13 +198,13 @@ offset_right = 55.9375
 offset_bottom = 62.8475
 horizontal_alignment = 2
 
-[node name="InvSlot7" type="Panel" parent="Background/GridBackground/GridContainer"]
+[node name="InvSlot7" type="Panel" parent="Background/GridBackground/GridContainer" unique_id=352881289]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_7pfaa")
 
-[node name="TextureRect" type="TextureRect" parent="Background/GridBackground/GridContainer/InvSlot7"]
+[node name="TextureRect" type="TextureRect" parent="Background/GridBackground/GridContainer/InvSlot7" unique_id=523925139]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
@@ -215,7 +215,7 @@ offset_right = -5.0
 offset_bottom = -5.0
 expand_mode = 1
 
-[node name="ItemCountLabel" type="Label" parent="Background/GridBackground/GridContainer/InvSlot7"]
+[node name="ItemCountLabel" type="Label" parent="Background/GridBackground/GridContainer/InvSlot7" unique_id=1613827768]
 layout_mode = 0
 offset_left = 0.9375
 offset_top = 39.8475
@@ -223,13 +223,13 @@ offset_right = 55.9375
 offset_bottom = 62.8475
 horizontal_alignment = 2
 
-[node name="InvSlot8" type="Panel" parent="Background/GridBackground/GridContainer"]
+[node name="InvSlot8" type="Panel" parent="Background/GridBackground/GridContainer" unique_id=1877452957]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_7pfaa")
 
-[node name="TextureRect" type="TextureRect" parent="Background/GridBackground/GridContainer/InvSlot8"]
+[node name="TextureRect" type="TextureRect" parent="Background/GridBackground/GridContainer/InvSlot8" unique_id=1933992733]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
@@ -240,7 +240,7 @@ offset_right = -5.0
 offset_bottom = -5.0
 expand_mode = 1
 
-[node name="ItemCountLabel" type="Label" parent="Background/GridBackground/GridContainer/InvSlot8"]
+[node name="ItemCountLabel" type="Label" parent="Background/GridBackground/GridContainer/InvSlot8" unique_id=1988476422]
 layout_mode = 0
 offset_left = 0.9375
 offset_top = 39.8475
@@ -248,13 +248,13 @@ offset_right = 55.9375
 offset_bottom = 62.8475
 horizontal_alignment = 2
 
-[node name="InvSlot9" type="Panel" parent="Background/GridBackground/GridContainer"]
+[node name="InvSlot9" type="Panel" parent="Background/GridBackground/GridContainer" unique_id=1237489285]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_7pfaa")
 
-[node name="TextureRect" type="TextureRect" parent="Background/GridBackground/GridContainer/InvSlot9"]
+[node name="TextureRect" type="TextureRect" parent="Background/GridBackground/GridContainer/InvSlot9" unique_id=66660337]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
@@ -265,7 +265,7 @@ offset_right = -5.0
 offset_bottom = -5.0
 expand_mode = 1
 
-[node name="ItemCountLabel" type="Label" parent="Background/GridBackground/GridContainer/InvSlot9"]
+[node name="ItemCountLabel" type="Label" parent="Background/GridBackground/GridContainer/InvSlot9" unique_id=1272560825]
 layout_mode = 0
 offset_left = 0.9375
 offset_top = 39.8475
@@ -273,13 +273,13 @@ offset_right = 55.9375
 offset_bottom = 62.8475
 horizontal_alignment = 2
 
-[node name="InvSlot10" type="Panel" parent="Background/GridBackground/GridContainer"]
+[node name="InvSlot10" type="Panel" parent="Background/GridBackground/GridContainer" unique_id=727847726]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_7pfaa")
 
-[node name="TextureRect" type="TextureRect" parent="Background/GridBackground/GridContainer/InvSlot10"]
+[node name="TextureRect" type="TextureRect" parent="Background/GridBackground/GridContainer/InvSlot10" unique_id=1890198546]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
@@ -290,7 +290,7 @@ offset_right = -5.0
 offset_bottom = -5.0
 expand_mode = 1
 
-[node name="ItemCountLabel" type="Label" parent="Background/GridBackground/GridContainer/InvSlot10"]
+[node name="ItemCountLabel" type="Label" parent="Background/GridBackground/GridContainer/InvSlot10" unique_id=569149246]
 layout_mode = 0
 offset_left = 0.9375
 offset_top = 39.8475
@@ -298,13 +298,13 @@ offset_right = 55.9375
 offset_bottom = 62.8475
 horizontal_alignment = 2
 
-[node name="InvSlot11" type="Panel" parent="Background/GridBackground/GridContainer"]
+[node name="InvSlot11" type="Panel" parent="Background/GridBackground/GridContainer" unique_id=1413175186]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_7pfaa")
 
-[node name="TextureRect" type="TextureRect" parent="Background/GridBackground/GridContainer/InvSlot11"]
+[node name="TextureRect" type="TextureRect" parent="Background/GridBackground/GridContainer/InvSlot11" unique_id=1104869458]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
@@ -315,7 +315,7 @@ offset_right = -5.0
 offset_bottom = -5.0
 expand_mode = 1
 
-[node name="ItemCountLabel" type="Label" parent="Background/GridBackground/GridContainer/InvSlot11"]
+[node name="ItemCountLabel" type="Label" parent="Background/GridBackground/GridContainer/InvSlot11" unique_id=183195754]
 layout_mode = 0
 offset_left = 0.9375
 offset_top = 39.8475
@@ -323,13 +323,13 @@ offset_right = 55.9375
 offset_bottom = 62.8475
 horizontal_alignment = 2
 
-[node name="InvSlot12" type="Panel" parent="Background/GridBackground/GridContainer"]
+[node name="InvSlot12" type="Panel" parent="Background/GridBackground/GridContainer" unique_id=108462065]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_7pfaa")
 
-[node name="TextureRect" type="TextureRect" parent="Background/GridBackground/GridContainer/InvSlot12"]
+[node name="TextureRect" type="TextureRect" parent="Background/GridBackground/GridContainer/InvSlot12" unique_id=234185855]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
@@ -340,7 +340,7 @@ offset_right = -5.0
 offset_bottom = -5.0
 expand_mode = 1
 
-[node name="ItemCountLabel" type="Label" parent="Background/GridBackground/GridContainer/InvSlot12"]
+[node name="ItemCountLabel" type="Label" parent="Background/GridBackground/GridContainer/InvSlot12" unique_id=524229280]
 layout_mode = 0
 offset_left = 0.9375
 offset_top = 39.8475
@@ -348,13 +348,13 @@ offset_right = 55.9375
 offset_bottom = 62.8475
 horizontal_alignment = 2
 
-[node name="InvSlot13" type="Panel" parent="Background/GridBackground/GridContainer"]
+[node name="InvSlot13" type="Panel" parent="Background/GridBackground/GridContainer" unique_id=2064539967]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_7pfaa")
 
-[node name="TextureRect" type="TextureRect" parent="Background/GridBackground/GridContainer/InvSlot13"]
+[node name="TextureRect" type="TextureRect" parent="Background/GridBackground/GridContainer/InvSlot13" unique_id=1317251923]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
@@ -365,7 +365,7 @@ offset_right = -5.0
 offset_bottom = -5.0
 expand_mode = 1
 
-[node name="ItemCountLabel" type="Label" parent="Background/GridBackground/GridContainer/InvSlot13"]
+[node name="ItemCountLabel" type="Label" parent="Background/GridBackground/GridContainer/InvSlot13" unique_id=786834803]
 layout_mode = 0
 offset_left = 0.9375
 offset_top = 39.8475
@@ -373,13 +373,13 @@ offset_right = 55.9375
 offset_bottom = 62.8475
 horizontal_alignment = 2
 
-[node name="InvSlot14" type="Panel" parent="Background/GridBackground/GridContainer"]
+[node name="InvSlot14" type="Panel" parent="Background/GridBackground/GridContainer" unique_id=659625036]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_7pfaa")
 
-[node name="TextureRect" type="TextureRect" parent="Background/GridBackground/GridContainer/InvSlot14"]
+[node name="TextureRect" type="TextureRect" parent="Background/GridBackground/GridContainer/InvSlot14" unique_id=359013133]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
@@ -390,7 +390,7 @@ offset_right = -5.0
 offset_bottom = -5.0
 expand_mode = 1
 
-[node name="ItemCountLabel" type="Label" parent="Background/GridBackground/GridContainer/InvSlot14"]
+[node name="ItemCountLabel" type="Label" parent="Background/GridBackground/GridContainer/InvSlot14" unique_id=244596721]
 layout_mode = 0
 offset_left = 0.9375
 offset_top = 39.8475
@@ -398,13 +398,13 @@ offset_right = 55.9375
 offset_bottom = 62.8475
 horizontal_alignment = 2
 
-[node name="InvSlot15" type="Panel" parent="Background/GridBackground/GridContainer"]
+[node name="InvSlot15" type="Panel" parent="Background/GridBackground/GridContainer" unique_id=1805754135]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_7pfaa")
 
-[node name="TextureRect" type="TextureRect" parent="Background/GridBackground/GridContainer/InvSlot15"]
+[node name="TextureRect" type="TextureRect" parent="Background/GridBackground/GridContainer/InvSlot15" unique_id=1710128635]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
@@ -415,7 +415,7 @@ offset_right = -5.0
 offset_bottom = -5.0
 expand_mode = 1
 
-[node name="ItemCountLabel" type="Label" parent="Background/GridBackground/GridContainer/InvSlot15"]
+[node name="ItemCountLabel" type="Label" parent="Background/GridBackground/GridContainer/InvSlot15" unique_id=1040595291]
 layout_mode = 0
 offset_left = 0.9375
 offset_top = 39.8475
@@ -423,7 +423,7 @@ offset_right = 55.9375
 offset_bottom = 62.8475
 horizontal_alignment = 2
 
-[node name="TabBackground" type="ColorRect" parent="."]
+[node name="TabBackground" type="ColorRect" parent="." unique_id=899536601]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 0.3
@@ -431,7 +431,7 @@ anchor_bottom = 0.1
 offset_bottom = 1.0
 color = Color(0.4509804, 0.2627451, 0.1882353, 1)
 
-[node name="Label" type="RichTextLabel" parent="TabBackground"]
+[node name="Label" type="RichTextLabel" parent="TabBackground" unique_id=1193163398]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0

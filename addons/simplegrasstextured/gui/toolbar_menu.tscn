@@ -1,8 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://der2mmxtog2mt"]
+[gd_scene format=3 uid="uid://der2mmxtog2mt"]
 
 [ext_resource type="Script" uid="uid://bk4wcnwns36qk" path="res://addons/simplegrasstextured/gui/toolbar_menu.gd" id="1_mmgcy"]
 
-[node name="ToolbarMenu" type="MenuButton"]
+[node name="ToolbarMenu" type="MenuButton" unique_id=840908915]
 item_count = 11
 popup/item_0/text = "Tools"
 popup/item_0/id = 0

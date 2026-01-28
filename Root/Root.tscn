@@ -1,10 +1,10 @@
-[gd_scene load_steps=4 format=3 uid="uid://bb7h35lohrhs3"]
+[gd_scene format=3 uid="uid://bb7h35lohrhs3"]
 
 [ext_resource type="Script" uid="uid://bk57lmbkusubq" path="res://Root/SceneDirector.cs" id="1_7w7js"]
 [ext_resource type="PackedScene" uid="uid://udkefarjp6kf" path="res://UI/MainMenu/MainMenu.tscn" id="3_2wl8r"]
 [ext_resource type="PackedScene" uid="uid://cj70horwpl6yp" path="res://GameWorld/World.tscn" id="5_freuv"]
 
-[node name="SceneDirector" type="Node"]
+[node name="SceneDirector" type="Node" unique_id=473618115]
 script = ExtResource("1_7w7js")
 MainMenuScene = ExtResource("3_2wl8r")
 GameWorldScene = ExtResource("5_freuv")

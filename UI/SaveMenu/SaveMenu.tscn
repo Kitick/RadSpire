@@ -1,10 +1,10 @@
-[gd_scene load_steps=4 format=3 uid="uid://dv4igypq0dbv8"]
+[gd_scene format=3 uid="uid://dv4igypq0dbv8"]
 
 [ext_resource type="Script" uid="uid://cnc1drhp35q8y" path="res://UI/SaveMenu/SaveMenu.cs" id="1_ck8wv"]
 [ext_resource type="Texture2D" uid="uid://ey80t6hrma51" path="res://Assets/Images/Menu/background_kneeling.png" id="2_fc0yl"]
 [ext_resource type="Texture2D" uid="uid://8ykhw0g480u8" path="res://Assets/Images/Icons/sword.png" id="3_cru22"]
 
-[node name="LoadMenu" type="Control" node_paths=PackedStringArray("BackButton", "TitleLabel", "SlotContainer")]
+[node name="LoadMenu" type="Control" unique_id=728771275 node_paths=PackedStringArray("BackButton", "TitleLabel", "SlotContainer")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -17,7 +17,7 @@ TitleLabel = NodePath("Panel/Header")
 SlotContainer = NodePath("Panel/SaveSlots")
 SlotIcon = ExtResource("3_cru22")
 
-[node name="LoadMenuBackground" type="TextureRect" parent="."]
+[node name="LoadMenuBackground" type="TextureRect" parent="." unique_id=389917991]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -26,7 +26,7 @@ grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("2_fc0yl")
 
-[node name="Panel" type="Control" parent="."]
+[node name="Panel" type="Control" parent="." unique_id=240532448]
 layout_mode = 1
 anchors_preset = 4
 anchor_top = 0.5
@@ -37,7 +37,7 @@ offset_right = 500.0
 offset_bottom = 200.0
 grow_vertical = 2
 
-[node name="Header" type="Label" parent="Panel"]
+[node name="Header" type="Label" parent="Panel" unique_id=224217511]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.1
@@ -48,7 +48,7 @@ text = "Select Saved Game"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="SaveSlots" type="VBoxContainer" parent="Panel"]
+[node name="SaveSlots" type="VBoxContainer" parent="Panel" unique_id=1349601993]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.2
@@ -57,7 +57,7 @@ anchor_bottom = 4.0
 scale = Vector2(0.25, 0.25)
 theme_override_constants/separation = 5
 
-[node name="BackButton" type="Button" parent="."]
+[node name="BackButton" type="Button" parent="." unique_id=1195950355]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 1.0

@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="ItemDefinition" load_steps=5 format=3 uid="uid://bevcybi5jsob5"]
+[gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://bevcybi5jsob5"]
 
 [ext_resource type="Script" uid="uid://cnm5iegiuj4xu" path="res://Item/ItemDataBase/ItemDataBaseScripts/ItemComponentDefinition.cs" id="1_kw6bk"]
 [ext_resource type="Texture2D" uid="uid://dlw6napxej5pg" path="res://Assets/scrimsy fruit icons/color/green/green banana.png" id="1_sfa46"]

@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://dxvau62v0efr7"]
+[gd_scene format=3 uid="uid://dxvau62v0efr7"]
 
 [ext_resource type="Script" uid="uid://bee1n6ixna6g5" path="res://UI/HUD/HUD.cs" id="1_10ibt"]
 [ext_resource type="PackedScene" uid="uid://bnjymb23oq215" path="res://UI/MultiplayerPanels/HostPanel/HostPanel.tscn" id="2_3o8sq"]
@@ -12,7 +12,7 @@
 [ext_resource type="PackedScene" uid="uid://bjql4hi1q0ouh" path="res://UI/QuestLog/QuestLog.tscn" id="8_6ymr8"]
 [ext_resource type="PackedScene" uid="uid://2mdnsh082j66" path="res://UI/RespawnMenu/RespawnMenu.tscn" id="8_10ibt"]
 
-[node name="HUD" type="Control" node_paths=PackedStringArray("PauseButton", "PauseMenu", "Inventory", "QuestLog", "Hotbar", "RespawnMenu", "HealthBar")]
+[node name="HUD" type="Control" unique_id=935922708 node_paths=PackedStringArray("PauseButton", "PauseMenu", "Inventory", "QuestLog", "Hotbar", "RespawnMenu", "HealthBar")]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 1920.0
@@ -29,7 +29,7 @@ SettingsScene = ExtResource("2_o30d6")
 SaveMenuScene = ExtResource("3_o30d6")
 HostPanelScene = ExtResource("2_3o8sq")
 
-[node name="PauseButton" type="Button" parent="."]
+[node name="PauseButton" type="Button" parent="." unique_id=948900833]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
@@ -42,7 +42,7 @@ grow_horizontal = 2
 theme_override_icons/icon = ExtResource("2_785o0")
 expand_icon = true
 
-[node name="PauseMenu" parent="." instance=ExtResource("5_jmlhc")]
+[node name="PauseMenu" parent="." unique_id=144172425 instance=ExtResource("5_jmlhc")]
 visible = false
 layout_mode = 1
 anchors_preset = -1
@@ -55,7 +55,7 @@ offset_top = -150.0
 offset_right = 100.0
 offset_bottom = 150.0
 
-[node name="Inventory" parent="." instance=ExtResource("6_785o0")]
+[node name="Inventory" parent="." unique_id=209910365 instance=ExtResource("6_785o0")]
 visible = false
 layout_mode = 1
 anchors_preset = -1
@@ -70,7 +70,7 @@ offset_bottom = 125.0
 grow_horizontal = 2
 script = ExtResource("5_q8dl0")
 
-[node name="QuestLog" parent="." instance=ExtResource("8_6ymr8")]
+[node name="QuestLog" parent="." unique_id=1556372553 instance=ExtResource("8_6ymr8")]
 visible = false
 layout_mode = 1
 anchors_preset = 8
@@ -85,7 +85,7 @@ offset_bottom = 251.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Hotbar" parent="." instance=ExtResource("5_c358i")]
+[node name="Hotbar" parent="." unique_id=546357907 instance=ExtResource("5_c358i")]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
@@ -99,7 +99,7 @@ offset_bottom = -50.0
 grow_horizontal = 2
 grow_vertical = 0
 
-[node name="RespawnMenu" parent="." instance=ExtResource("8_10ibt")]
+[node name="RespawnMenu" parent="." unique_id=1064470580 instance=ExtResource("8_10ibt")]
 visible = false
 layout_mode = 1
 offset_left = 837.0
@@ -107,7 +107,7 @@ offset_top = 424.0
 offset_right = -839.0
 offset_bottom = -593.0
 
-[node name="HealthBar" type="ProgressBar" parent="."]
+[node name="HealthBar" type="ProgressBar" parent="." unique_id=1858352792]
 editor_description = "
 "
 layout_mode = 0
