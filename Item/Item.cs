@@ -72,6 +72,8 @@ namespace ItemSystem {
 		public ItemData Export() {
 			DurabilityData? DurabilityData = null;
 			HealItemData? HealItemData = null;
+			WeaponBaseData? WeaponBaseData = null;
+			// Additional component data can be declared here
 			foreach(IItemComponent component in Components) {
 				if(component is Durability durabilityComp) {
 					DurabilityData = durabilityComp.Export();
@@ -79,12 +81,17 @@ namespace ItemSystem {
 				else if(component is HealItem healComp) {
 					HealItemData = healComp.Export();
 				}
+				else if(component is WeaponBase weaponComp) {
+					WeaponBaseData = weaponComp.Export();
+				}
 				// Additional components can be exported here
 			}
 			return new ItemData {
 				Id = Id,
 				DurabilityData = DurabilityData,
-				HealItemData = HealItemData
+				HealItemData = HealItemData,
+				WeaponBaseData = WeaponBaseData
+				// Additional component data can be added here
 			};
 		}
 
@@ -106,6 +113,11 @@ namespace ItemSystem {
 				healComp.Import(data.HealItemData.Value);
 				Components.Add(healComp);
 			}
+			if(data.WeaponBaseData != null) {
+				WeaponBase weaponComp = new WeaponBase(1, 1f, 1f, 1f, 0f, 1f);
+				weaponComp.Import(data.WeaponBaseData.Value);
+				Components.Add(weaponComp);
+			}
 			// Additional components can be imported here
 		}
 	}
@@ -119,6 +131,35 @@ namespace ItemSystem {
 			}
 			return item.Id == other.Id;
 		}
+
+		public static bool IsIHealItem(this Item item) {
+			foreach(IItemComponent component in item.Components) {
+				if(component is HealItem) {
+					return true;
+				}
+			}
+			return false;
+		}
+
+		public static bool IsIDurability(this Item item) {
+			foreach(IItemComponent component in item.Components) {
+				if(component is Durability) {
+					return true;
+				}
+			}
+			return false;
+		}
+
+		public static bool IsIWeaponBase(this Item item) {
+			foreach(IItemComponent component in item.Components) {
+				if(component is WeaponBase) {
+					return true;
+				}
+			}
+			return false;
+		}
+
+		//Add component to item
 
 		public static bool AddComponent(this Item item, IItemComponent component) {
 			if(component == null) {
@@ -155,6 +196,7 @@ namespace ItemSystem {
 		public string Id { get; init; }
 		public DurabilityData? DurabilityData { get; init; }
 		public HealItemData? HealItemData { get; init; }
+		public WeaponBaseData? WeaponBaseData { get; init; }
 		// Additional component data can be added here
 	}
 }

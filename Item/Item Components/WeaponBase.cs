@@ -1,35 +1,24 @@
-using Godot;
-using Services;
-
 namespace Components {
-	public partial class Weapon : ISaveable<WeaponBaseData> {
-		[Export] public int BaseAttack { get; set; } = 10;
-		[Export] public float AttackSpeed { get; set; } = 1;
-		[Export] public float Range { get; set; } = 1;
-		[Export] public float Knockback { get; set; } = 0;
-		[Export] public float CriticalChance { get; set; } = 0;
-		[Export] public float CriticalMultiplier { get; set; } = 1;
+	using System;
+	using ItemSystem;
 
-		public WeaponBaseData Export() => new WeaponBaseData {
-			BaseAttack = BaseAttack,
-			AttackSpeed = AttackSpeed,
-			Range = Range,
-			Knockback = Knockback,
-			CriticalChance = CriticalChance,
-			CriticalMultiplier = CriticalMultiplier,
-		};
+	public interface IWeaponBase { WeaponBase Weapon { get; set; } }
 
-		public void Import(WeaponBaseData data) {
-			BaseAttack = data.BaseAttack;
-			AttackSpeed = data.AttackSpeed;
-			Range = data.Range;
-			Knockback = data.Knockback;
-			CriticalChance = data.CriticalChance;
-			CriticalMultiplier = data.CriticalMultiplier;
-		}
+	public sealed class WeaponBase : Component<WeaponBaseData>, IItemComponent {
+		public int BaseAttack { get; set; } = 10;
+		public float AttackSpeed { get; set; } = 1f;
+		public float Range { get; set; } = 1f;
+		public float Knockback { get; set; } = 0f;
+		public float CriticalChance { get; set; } = 0f;
+		public float CriticalMultiplier { get; set; } = 1f;
+		public WeaponBase(int baseAttack, float attackSpeed, float range, float knockback, float criticalChance, float criticalMultiplier) : base(new WeaponBaseData { BaseAttack = baseAttack, AttackSpeed = attackSpeed, Range = range, Knockback = knockback, CriticalChance = criticalChance, CriticalMultiplier = criticalMultiplier }) { }
 	}
 
-	public readonly struct WeaponBaseData : ISaveData {
+	public static class WeaponExtensions {
+
+	}
+
+	public readonly record struct WeaponBaseData : Services.ISaveData {
 		public int BaseAttack { get; init; }
 		public float AttackSpeed { get; init; }
 		public float Range { get; init; }
