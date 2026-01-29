@@ -132,7 +132,7 @@ namespace ItemSystem {
 				return;
 			}
 
-			// Load the item directly from resource path
+			Item!.Import(data.Item.Value);
 
 			Quantity = data.Quantity;
 		}

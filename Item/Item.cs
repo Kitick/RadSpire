@@ -55,13 +55,6 @@ namespace ItemSystem {
 
 		[Export] public List<IItemComponent> Components { get; set; } = new();
 
-		public bool SameItem(Item other) {
-			if(other == null) {
-				return false;
-			}
-			return Id == other.Id;
-		}
-
 		public Item() {
 			Components = new List<IItemComponent>();
 		}
@@ -75,40 +68,23 @@ namespace ItemSystem {
 
 			Components = new List<IItemComponent>(other.Components);
 		}
-		
-		public bool AddComponent(IItemComponent component) {
-			if(component == null) {
-				return false;
-			}
-			if(!(component is IItemComponent comp)) {
-				return false;
-			}
-			foreach(IItemComponent c in Components) {
-				if(component.GetType() == c.GetType()) {
-					Log.Info($"Item already has a component of type {component.GetType().Name}.");
-					return false;
-				}
-			}
-			Components.Add(component);
-			return true;
-		}
-
-		public bool RemoveComponent(IItemComponent component) {
-			if(component == null) {
-				return false;
-			}
-			foreach(IItemComponent comp in Components) {
-				if(component.GetType() == comp.GetType()) {
-					Components.Remove(component);
-					return true;
-				}
-			}
-			return false;
-		}
 
 		public ItemData Export() {
+			DurabilityData? DurabilityData = null;
+			HealItemData? HealItemData = null;
+			foreach(IItemComponent component in Components) {
+				if(component is Durability durabilityComp) {
+					DurabilityData = durabilityComp.Export();
+				}
+				else if(component is HealItem healComp) {
+					HealItemData = healComp.Export();
+				}
+				// Additional components can be exported here
+			}
 			return new ItemData {
-				Id = Id
+				Id = Id,
+				DurabilityData = DurabilityData,
+				HealItemData = HealItemData
 			};
 		}
 
@@ -119,12 +95,66 @@ namespace ItemSystem {
 			Description = item.Description;
 			MaxStackSize = item.MaxStackSize;
 			IconTexture = item.IconTexture;
-			Components = new List<IItemComponent>(data.ComponentsData);
+			Components = new List<IItemComponent>();
+			if(data.DurabilityData != null) {
+				Durability durabilityComp = new Durability(1);
+				durabilityComp.Import(data.DurabilityData.Value);
+				Components.Add(durabilityComp);
+			}
+			if(data.HealItemData != null) {
+				HealItem healComp = new HealItem(1);
+				healComp.Import(data.HealItemData.Value);
+				Components.Add(healComp);
+			}
+			// Additional components can be imported here
+		}
+	}
+
+	public static class ItemExtensions {
+		public static readonly LogService Log = new(nameof(ItemExtensions), enabled: true);
+
+		public static bool SameItem(this Item item, Item other) {
+			if(other == null) {
+				return false;
+			}
+			return item.Id == other.Id;
+		}
+
+		public static bool AddComponent(this Item item, IItemComponent component) {
+			if(component == null) {
+				return false;
+			}
+			if(!(component is IItemComponent comp)) {
+				return false;
+			}
+			foreach(IItemComponent c in item.Components) {
+				if(component.GetType() == c.GetType()) {
+					Log.Info($"Item already has a component of type {component.GetType().Name}.");
+					return false;
+				}
+			}
+			item.Components.Add(component);
+			return true;
+		}
+
+		public static bool RemoveComponent(this Item item, IItemComponent component) {
+			if(component == null) {
+				return false;
+			}
+			foreach(IItemComponent comp in item.Components) {
+				if(component.GetType() == comp.GetType()) {
+					item.Components.Remove(component);
+					return true;
+				}
+			}
+			return false;
 		}
 	}
 
 	public readonly record struct ItemData : ISaveData {
 		public string Id { get; init; }
-		public List<IItemComponent> ComponentsData { get; init; }
+		public DurabilityData? DurabilityData { get; init; }
+		public HealItemData? HealItemData { get; init; }
+		// Additional component data can be added here
 	}
 }

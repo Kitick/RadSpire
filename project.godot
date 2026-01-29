@@ -61,6 +61,7 @@ buses/default_bus_layout="uid://cpvwo1bhm4q26"
 SimpleGrass="*res://addons/simplegrasstextured/singleton.tscn"
 InputSystem="*res://Systems/InputSystem.cs"
 Server="*res://Systems/Network/Server.cs"
+ItemDataBaseManager="*uid://ck6f260wrgmhk"
 
 [display]
 
