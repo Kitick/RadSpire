@@ -4,7 +4,7 @@ namespace Components {
 
 	public interface IDurable { Durability Durability { get; set; } }
 
-	public sealed class Durability : Component<DurabilityData>, IItemComponent {
+	public sealed class Durability : Component<DurabilityData>, IItemComponent, IItemUseable, IItemUseableOnTarget {
 		public int Current {
 			get => Data.Current;
 			set => SetData(Data with { Current = Math.Clamp(value, 0, Data.Max) });
@@ -16,6 +16,16 @@ namespace Components {
 				int max = Math.Max(1, value);
 				SetData(Data with { Max = max, Current = Math.Min(Data.Current, max) });
 			}
+		}
+
+		public bool Use<TEntity>(TEntity user) {
+			// Durability usage logic here
+			return false;
+		}
+
+		public bool UseOnTarget<TEntity, TTarget>(TEntity user, TTarget target) {
+			// Durability usage on target logic here
+			return false;
 		}
 
 		public Durability(int max) : base(new DurabilityData { Max = max, Current = max }) { }
