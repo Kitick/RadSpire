@@ -9,18 +9,20 @@ namespace Components {
         where TEntity : CharacterBase
         where TItem : Item {
 
+            return false;
         }
 
         public static bool UnequipItem<TEntity, TItem>(this TEntity user, TItem item)
         where TEntity : CharacterBase
         where TItem : Item {
 
+            return false;
         }
 
         public static bool UseItem<TEntity, TItem>(this TEntity user, TItem item)
         where TEntity : CharacterBase
         where TItem : Item {
-
+            
         }
 
         public static bool UseItemOnTarget<TEntity, TItem, TTarget>(this TEntity user, TItem item, TTarget target)
@@ -28,6 +30,7 @@ namespace Components {
         where TItem : Item
         where TTarget : CharacterBase {
 
+            return false;
         }
     }
 }

@@ -1,5 +1,6 @@
 namespace ItemSystem {
 	using System.Collections.Generic;
+	using System.Runtime.CompilerServices;
 	using Components;
 	using Godot;
 	using Services;
@@ -124,6 +125,46 @@ namespace ItemSystem {
 
 	public static class ItemExtensions {
 		public static readonly LogService Log = new(nameof(ItemExtensions), enabled: true);
+
+		public static bool Use<TEntity>(this Item item, TEntity user) {
+			bool sucess = false;
+			foreach(IItemComponent component in item.Components) {
+				if(component is IItemUseable useable) {
+					sucess |= useable.Use(user);
+				}
+			}
+			return sucess;
+		}
+
+		public static bool Equip<TEntity>(this Item item, TEntity user) {
+			bool sucess = false;
+			foreach(IItemComponent component in item.Components) {
+				if(component is IItemEquipable equipable) {
+					sucess |= equipable.Equip(user);
+				}
+			}
+			return sucess;
+		}
+
+		public static bool Unequip<TEntity>(this Item item, TEntity user) {
+			bool sucess = false;
+			foreach(IItemComponent component in item.Components) {
+				if(component is IItemEquipable equipable) {
+					sucess |= equipable.Unequip(user);
+				}
+			}
+			return sucess;
+		}
+
+		public static bool UseOnTarget<TEntity, TTarget>(this Item item, TEntity user, TTarget target) {
+			bool sucess = false;
+			foreach(IItemComponent component in item.Components) {
+				if(component is IItemUseableOnTarget useableOnTarget) {
+					sucess |= useableOnTarget.UseOnTarget(user, target);
+				}
+			}
+			return sucess;
+		}
 
 		public static bool SameItem(this Item item, Item other) {
 			if(other == null) {

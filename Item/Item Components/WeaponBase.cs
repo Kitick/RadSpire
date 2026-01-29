@@ -15,7 +15,7 @@ namespace Components {
 	}
 
 	public static class WeaponExtensions {
-
+		
 	}
 
 	public readonly record struct WeaponBaseData : Services.ISaveData {
