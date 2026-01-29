@@ -1,5 +1,5 @@
 namespace ItemSystem {
-    using Godot;
+	using Godot;
 
     public partial class ItemComponentDefinition : Resource {
 

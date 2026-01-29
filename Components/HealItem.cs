@@ -1,7 +1,8 @@
 namespace Components {
+	using ItemSystem;
 	public interface IHealItem { HealItem Heal { get; set; } }
 
-	public sealed class HealItem : Component<HealItemData> {
+	public sealed class HealItem : Component<HealItemData>, IItemComponent {
 		public int HealAmount {
 			get => Data.HealAmount;
 			set => SetData(Data with { HealAmount = value });

@@ -37,23 +37,6 @@ namespace ItemSystem {
             return null;
         }
 
-        public Item CreateBaseItemInstanceById(string id) {
-            Item item = new Item();
-            ItemDefinition? itemDef = GetItemDefinitionById(id);
-            if(itemDef == null) {
-                Log.Error($"Cannot create Item instance. ItemDefinition with ID {id} not found.");
-                return null!;
-            }
-
-            item.Id = itemDef.Id;
-            item.Name = itemDef.Name;
-            item.Description = itemDef.Description;
-            item.MaxStackSize = itemDef.MaxStackSize;
-            item.IconTexture = itemDef.IconTexture;
-            
-            return item;
-        }
-
         public Item CreateItemInstanceById(string id) {
             Item item = new Item();
             ItemDefinition? itemDef = GetItemDefinitionById(id);
@@ -61,38 +44,35 @@ namespace ItemSystem {
                 Log.Error($"Cannot create Item instance. ItemDefinition with ID {id} not found.");
                 return null!;
             }
-            if(itemDef.ComponentsResources.Count == 0) {
-                Log.Info($"Base ItemDefinition with ID {id} has no components.");
-            }
-            else {
-                foreach(ItemComponentDefinition compDef in itemDef.ComponentsResources) {
-                    if(compDef == null) {
-                        Log.Error($"Failed to create component from definition in ItemDefinition ID {id}.");
-                        continue;
-                    }
-                    switch(compDef) {
-                        case HealItemDefinition healDef:
-                            HealItem healComp = new HealItem(healDef.HealAmount);
-                            item = new ItemHeal(item, healComp);
-                            break;
-                        case DurabilityDefinition durabilityDef:
-                            Durability durabilityComp = new Durability(durabilityDef.MaxDurability);
-                            item = new ItemDurability(item, durabilityComp);
-                            break;
-                        default:
-                            Log.Error($"Unknown component type in ItemDefinition ID {id}.");
-                            break;
-                    }
-                }
-            }
 
             item.Id = itemDef.Id;
             item.Name = itemDef.Name;
             item.Description = itemDef.Description;
             item.MaxStackSize = itemDef.MaxStackSize;
             item.IconTexture = itemDef.IconTexture;
-            
+
+            BuildComponents(item, itemDef);
+
             return item;
         }
+        
+        public void BuildComponents(Item item, ItemDefinition itemDef) {
+            item.Components = new List<IItemComponent>();
+            if(itemDef.ComponentsResources.Count == 0) {
+                return;
+            }
+			foreach(var resource in itemDef.ComponentsResources) {
+				if(resource is ItemComponentDefinition comp) {
+                    if(comp is HealItemDefinition healDef) {
+                        HealItem healComp = new HealItem(healDef.HealAmount);
+                        item.Components.Add(healComp);
+                    }
+                    else if(comp is DurabilityDefinition durabilityDef) {
+                        Durability durabilityComp = new Durability(durabilityDef.MaxDurability);
+                        item.Components.Add(durabilityComp);
+                    }
+				}
+			}
+		}
 	}
 }
