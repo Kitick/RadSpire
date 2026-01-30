@@ -26,7 +26,7 @@ namespace Root {
 		public Action? MainMenuRequested;
 
 		public enum MenuState { Game, Paused, Settings, Inventory, Host, Death }
-		private readonly StateMachine<MenuState> StateMachine = new();
+		private readonly StateMachine<MenuState> StateMachine = new(MenuState.Game);
 
 		private string? LoadFile;
 
