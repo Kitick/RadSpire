@@ -24,7 +24,7 @@ namespace Core {
 		public const string HostPanel = $"{MultiplayerPanels}/HostPanel/HostPanel.tscn";
 		public const string JoinPanel = $"{MultiplayerPanels}/JoinPanel/JoinPanel.tscn";
 
-		public const string GameScene = "res://GameWorld/World.tscn";
+		public const string GameScene = "res://GameWorld/NewWorld.tscn";
 		public const string Player = $"{Character}/Player/Player.tscn";
 		public const string Enemy = $"{Character}/Enemy/Enemy.tscn";
 		public const string Camera = "res://Camera/Camera.tscn";
