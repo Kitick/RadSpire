@@ -1,13 +1,13 @@
-using System;
-using Character;
-using Core;
-using Godot;
-using Services;
-using UI.Multiplayer;
-using UI.Settings;
-using MenuState = Root.GameManager.MenuState;
-
 namespace UI {
+	using System;
+	using Character;
+	using Core;
+	using Godot;
+	using Services;
+	using UI.Multiplayer;
+	using UI.Settings;
+	using MenuState = Root.GameManager.MenuState;
+
 	public sealed partial class HUD : Control {
 		private static readonly LogService Log = new(nameof(HUD), enabled: true);
 
@@ -108,18 +108,18 @@ namespace UI {
 		}
 
 		private void OpenSettingsPanel() {
-			var settings = SettingsScene.Instantiate<SettingsMenu>();
+			var settings = this.AddScene<SettingsMenu>(SettingsScene);
 			settings.OpenMenu();
 		}
 
 		private void OpenHostPanel() {
-			var hostPanel = HostPanelScene.Instantiate<HostPanel>();
+			var hostPanel = this.AddScene<HostPanel>(HostPanelScene);
 			hostPanel.UpdateHostText("Host Game");
 			hostPanel.OpenMenu();
 		}
 
 		private void OpenSaveMenu() {
-			var saveMenu = SaveMenuScene.Instantiate<SaveMenu>();
+			var saveMenu = this.AddScene<SaveMenu>(SaveMenuScene);
 			saveMenu.OnSave += fileName => SaveRequested?.Invoke(fileName);
 			saveMenu.OpenMenu(SaveMenuMode.Save);
 		}
