@@ -30,6 +30,7 @@ namespace Character {
 		// Components
 		public readonly Movement Movement;
 		public readonly Item3DIconPickup PickupComponent = new Item3DIconPickup();
+		public readonly UseItem UseItemComponent = new UseItem();
 
 		public Player() {
 			Movement = new Movement(this);
@@ -39,6 +40,8 @@ namespace Character {
 			base._Ready();
 			AddChild(PickupComponent);
 			AddChild(InventoryManager);
+			AddChild(UseItemComponent);
+			SetupChildren();
 		}
 
 		public void Update(float dt, KeyInput keyInput) {
@@ -79,6 +82,10 @@ namespace Character {
 			if(StateMachine.CurrentState == State.Crouching) { multiplier *= CrouchMultiplier; }
 
 			return multiplier;
+		}
+
+		private void SetupChildren() {
+			UseItemComponent.User = this;
 		}
 
 		public PlayerData Export() => new PlayerData {
