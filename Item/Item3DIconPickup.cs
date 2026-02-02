@@ -1,11 +1,12 @@
-using System.Collections.Generic;
-using System.Linq;
-using Godot;
-using Services;
-using Character;
-using Components;
-
 namespace ItemSystem {
+	using System.Collections.Generic;
+	using System.Linq;
+	using Godot;
+	using Services;
+	using Character;
+	using Components;
+	using System;
+
 	public partial class Item3DIconPickup : Node3D {
 		private static readonly LogService Log = new(nameof(Item3DIconPickup), enabled: true);
 
@@ -16,6 +17,7 @@ namespace ItemSystem {
 		[Export] public PackedScene? Item3DIconPromptTemplate = null!;
 		[Export] public PackedScene? Item3DIconPickupScreenTemplate = null!;
 		public Control? Item3DIconPickupScreenInstance = null;
+		private Action? UnsubscribeInteraction;
 		OrderedDictionary<Item3DIcon, Control> ItemsInRange = new OrderedDictionary<Item3DIcon, Control>();
 
 		public override void _Ready() {
@@ -36,10 +38,15 @@ namespace ItemSystem {
 			if(Item3DIconPickupScreenTemplate == null) {
 				Item3DIconPickupScreenTemplate = GD.Load<PackedScene>("res://UI/HUD/Item3DIconPickupScreen.tscn");
 			}
+			SetInputCallbacks();
 		}
 
-		public override void _UnhandledInput(InputEvent @event) {
-			if(@event.IsActionPressed("Interact")) {
+		public override void _ExitTree() {
+			UnsubscribeInteraction?.Invoke();
+		}
+
+		void SetInputCallbacks() {
+			UnsubscribeInteraction = ActionEvent.Interact.WhenPressed(() => {
 				Log.Info("Interact action pressed.");
 				if(ItemsInRange.Count == 0) {
 					Log.Info("No items in range to pick up.");
@@ -49,7 +56,7 @@ namespace ItemSystem {
 					Log.Info("Items in range detected, attempting to pick up.");
 					PickupItem();
 				}
-			}
+			});
 		}
 
 		public void PickupItem() {
