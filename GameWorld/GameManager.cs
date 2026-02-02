@@ -1,14 +1,14 @@
-using System;
-using Camera;
-using Character;
-using Components;
-using Core;
-using Godot;
-using ItemSystem;
-using Services;
-using UI;
-
 namespace Root {
+	using System;
+	using Camera;
+	using Character;
+	using Components;
+	using Core;
+	using Godot;
+	using ItemSystem;
+	using Services;
+	using UI;
+
 	public sealed partial class GameManager : Node {
 		private static readonly LogService Log = new(nameof(GameManager), enabled: true);
 
@@ -26,7 +26,7 @@ namespace Root {
 		public Action? MainMenuRequested;
 
 		public enum MenuState { Game, Paused, Settings, Inventory, Host, Death }
-		private readonly StateMachine<MenuState> StateMachine = new();
+		private readonly StateMachine<MenuState> StateMachine = new(MenuState.Game);
 
 		private string? LoadFile;
 
@@ -39,6 +39,8 @@ namespace Root {
 		private int EnemyCount;
 
 		public override void _Ready() {
+			ProcessMode = ProcessModeEnum.Always;
+
 			CameraRig = this.AddScene<CameraRig>(CameraScene);
 			ConfigureStateMachine();
 

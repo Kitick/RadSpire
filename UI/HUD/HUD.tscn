@@ -50,10 +50,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -100.0
-offset_top = -150.0
-offset_right = 100.0
-offset_bottom = 150.0
+offset_left = -150.0
+offset_top = -225.0
+offset_right = 150.0
+offset_bottom = 225.0
 
 [node name="Inventory" parent="." unique_id=209910365 instance=ExtResource("6_785o0")]
 visible = false
