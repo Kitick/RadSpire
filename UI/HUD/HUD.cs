@@ -27,6 +27,9 @@ namespace UI {
 
 		public Player Player = null!;
 
+		private StateMachine<MenuState> StateMachineRef = null!;
+		private Action? UnsubscribeInventory;
+
 		public event Action? ResumeRequested;
 		public event Action? PauseRequested;
 		public event Action? SettingsRequested;
@@ -37,6 +40,7 @@ namespace UI {
 
 		public void Init(Player player, StateMachine<MenuState> stateMachine) {
 			Player = player;
+			StateMachineRef = stateMachine;
 			ConfigureStateMachine(stateMachine);
 		}
 
@@ -44,7 +48,16 @@ namespace UI {
 			ProcessMode = ProcessModeEnum.Always;
 
 			SetCallbacks();
+			SetInputCallbacks();
 			UpdateHealthBar();
+		}
+
+		public override void _ExitTree() {
+			UnsubscribeInventory?.Invoke();
+		}
+
+		private void SetInputCallbacks() {
+			UnsubscribeInventory = ActionEvent.Inventory.WhenPressed(ToggleInventory);
 		}
 
 		private void ConfigureStateMachine(StateMachine<MenuState> stateMachine) {
@@ -122,6 +135,27 @@ namespace UI {
 			var saveMenu = SaveMenuScene.Instantiate<SaveMenu>();
 			saveMenu.OnSave += fileName => SaveRequested?.Invoke(fileName);
 			saveMenu.OpenMenu(SaveMenuMode.Save);
+		}
+
+		private void ToggleInventory() {
+			if(StateMachineRef == null) {
+				Log.Error("ToggleInventory: StateMachineRef is null");
+				return;
+			}
+
+			if(!StateMachineRef.IsSettled) {
+				Log.Info("ToggleInventory: state machine not started, starting at Game");
+				StateMachineRef.Start(MenuState.Game);
+			}
+
+			if(StateMachineRef.CurrentState == MenuState.Inventory) {
+				Log.Info("Toggling Inventory: Closing Inventory");
+				StateMachineRef.TransitionTo(MenuState.Game);
+			}
+			else {
+				Log.Info("Toggling Inventory: Opening Inventory");
+				StateMachineRef.TransitionTo(MenuState.Inventory);
+			}
 		}
 	}
 }
