@@ -163,6 +163,7 @@ namespace Root {
 
 		private void StartGame() {
 			SpawnLocalPlayer();
+			SpawnTestItems();
 
 			if(LoadFile != null) {
 				LoadData(LoadFile);
@@ -199,10 +200,10 @@ namespace Root {
 			SpawnTimer = 5.0f;
 		}
 
-		private void SpawnTestItem(string path, Vector3 position, float scaleFactor = 1.0f) {
-			Item? item = GD.Load<Item>(path);
+		private void SpawnTestItem(string itemID, Vector3 position, float scaleFactor = 1.0f) {
+			Item? item = ItemDataBaseManager.Instance.CreateItemInstanceById(itemID);
 			if(item == null) {
-				Log.Error($"Failed to load item at path: {path}");
+				Log.Error($"Failed to load item with ID: {itemID}");
 				return;
 			}
 			Item3DIcon item3DIcon = new Item3DIcon();
@@ -222,14 +223,14 @@ namespace Root {
 		}
 
 		private void SpawnTestItems() {
-			SpawnTestItem(Items.AppleRed, RandomLocation());
-			SpawnTestItem(Items.AppleYellow, RandomLocation());
-			SpawnTestItem(Items.AppleGreen, RandomLocation());
-			SpawnTestItem(Items.BananaYellow, RandomLocation());
-			SpawnTestItem(Items.BananaGreen, RandomLocation());
-			SpawnTestItem(Items.StrawberryGreen, RandomLocation());
-			SpawnTestItem(Items.StrawberryRed, RandomLocation());
-			SpawnTestItem(Items.StrawberryRed, new Vector3(40, SpawnHeight, 20), 3);
+			SpawnTestItem(ItemID.AppleRed, RandomLocation());
+			SpawnTestItem(ItemID.AppleYellow, RandomLocation());
+			SpawnTestItem(ItemID.AppleGreen, RandomLocation());
+			SpawnTestItem(ItemID.BananaYellow, RandomLocation());
+			SpawnTestItem(ItemID.BananaGreen, RandomLocation());
+			SpawnTestItem(ItemID.StrawberryGreen, RandomLocation());
+			SpawnTestItem(ItemID.StrawberryRed, RandomLocation());
+			SpawnTestItem(ItemID.StrawberryRed, new Vector3(40, SpawnHeight, 20), 3);
 		}
 	}
 

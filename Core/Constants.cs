@@ -51,7 +51,25 @@ namespace Core {
 		public const string StrawberryRed = $"{Food}/StrawberryRed.tres";
 	}
 
-	public static class Icons {
-
+	public static class ItemID {
+		public const string AppleRed = "AppleRed";
+		public const string AppleYellow = "AppleYellow";
+		public const string AppleGreen = "AppleGreen";
+		public const string BananaYellow = "BananaYellow";
+		public const string BananaGreen = "BananaGreen";
+		public const string BerryBlack = "BerryBlack";
+		public const string BerryGreen = "BerryGreen";
+		public const string BerryRed = "BerryRed";
+		public const string BlueberryBlue = "BlueberryBlue";
+		public const string BlueberryGreen = "BlueberryGreen";
+		public const string CherryGreen = "CherryGreen";
+		public const string CherryRed = "CherryRed";
+		public const string CoconutBrown = "CoconutBrown";
+		public const string CoconutBrownOpen = "CoconutBrownOpen";
+		public const string CoconutGreen = "CoconutGreen";
+		public const string CoconutGreenOpen = "CoconutGreenOpen";
+		public const string StrawberryGreen = "StrawberryGreen";
+		public const string StrawberryRed = "StrawberryRed";
 	}
+
 }
