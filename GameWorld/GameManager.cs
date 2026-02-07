@@ -233,6 +233,10 @@ namespace Root {
 			SpawnTestItem(ItemID.BananaGreen, RandomLocation());
 			SpawnTestItem(ItemID.StrawberryGreen, RandomLocation());
 			SpawnTestItem(ItemID.StrawberryRed, RandomLocation());
+			SpawnTestItem(ItemID.StrawberryRed, RandomLocation());
+			SpawnTestItem(ItemID.StrawberryRed, RandomLocation());
+			SpawnTestItem(ItemID.StrawberryRed, RandomLocation());
+			SpawnTestItem(ItemID.StrawberryRed, RandomLocation());
 			SpawnTestItem(ItemID.StrawberryRed, new Vector3(40, SpawnHeight, 20), 3);
 		}
 	}

@@ -61,6 +61,10 @@ namespace Components {
                     bool success = User.UseItem(ItemToUse);
                     if(success) {
                         Log.Info("Item used successfully.");
+                        if(ItemToUse.IsConsumable) {
+                            Log.Info("Item is consumable, consuming from inventory.");
+                            User.InventoryManager.ConsumeSelectedHotbar(UserHotbar, 1);
+                        }
                     }
                     else {
                         Log.Info("Failed to use item.");

@@ -52,6 +52,9 @@ namespace ItemSystem {
 		} = 1;
 
 		public bool IsStackable => MaxStackSize > 1;
+
+		[Export] public bool IsConsumable { get; set; } = false;
+
 		[Export] public Texture2D IconTexture { get; set; } = null!;
 
 		[Export] public List<IItemComponent> Components { get; set; } = new();
@@ -70,6 +73,7 @@ namespace ItemSystem {
 			Name = other.Name;
 			Description = other.Description;
 			MaxStackSize = other.MaxStackSize;
+			IsConsumable = other.IsConsumable;
 			IconTexture = other.IconTexture;
 
 			Components = new List<IItemComponent>(other.Components);
@@ -97,7 +101,7 @@ namespace ItemSystem {
 				Id = Id,
 				DurabilityData = DurabilityData,
 				HealItemData = HealItemData,
-				WeaponBaseData = WeaponBaseData
+				WeaponBaseData = WeaponBaseData,
 				// Additional component data can be added here
 			};
 		}
@@ -108,6 +112,7 @@ namespace ItemSystem {
 			Name = item.Name;
 			Description = item.Description;
 			MaxStackSize = item.MaxStackSize;
+			IsConsumable = item.IsConsumable;
 			IconTexture = item.IconTexture;
 			Components = new List<IItemComponent>();
 			if(data.DurabilityData != null) {

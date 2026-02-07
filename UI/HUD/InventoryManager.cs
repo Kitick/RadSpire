@@ -259,5 +259,20 @@ namespace ItemSystem {
 			hotbarInventory.RemoveItem(hotbar.Inventory.GetRow(selectedIndex), hotbar.Inventory.GetColumn(selectedIndex), 1);
 			DropItem(selectedSlot.Item!);
 		}
+
+		public bool ConsumeSelectedHotbar(Hotbar hotbar, int amount) {
+			if(hotbar == null) {
+				Log.Error("ConsumeSelectedHotbar: Hotbar is null.");
+				return false;
+			}
+			int selectedIndex = hotbar.SelectedSlot;
+			int row = hotbar.Inventory.GetRow(selectedIndex);
+			int column = hotbar.Inventory.GetColumn(selectedIndex);
+			if(hotbar.Inventory.IsEmptySlot(row, column)) {
+				Log.Info("ConsumeSelectedHotbar: Selected slot is empty.");
+				return false;
+			}
+			return hotbar.Inventory.RemoveItem(row, column, amount);
+		}
 	}
 }
