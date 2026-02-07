@@ -4,6 +4,7 @@ namespace Components {
     using Services;
     using ItemSystem;
     using Character;
+	using UI;
 
 	public static class ItemInteractions {
         public static bool EquipItem<TEntity, TItem>(this TEntity user, TItem item)
@@ -34,9 +35,10 @@ namespace Components {
 
     public partial class UseItem : Node {
         private static readonly LogService Log = new(nameof(UseItem), enabled: true);
-        public CharacterBase? User;
+        public Player? User;
         public Item? ItemToUse;
         private Action? UnsubscribeUse;
+        public Hotbar UserHotbar = null!;
 
         public override void _Ready() {
             SetInputCallbacks();
@@ -45,12 +47,17 @@ namespace Components {
         void SetInputCallbacks() {
             UnsubscribeUse = ActionEvent.Consume.WhenPressed(() => {
                 Log.Info("UseItem action pressed.");
-                if(User == null || ItemToUse == null) {
-                    Log.Info("User or ItemToUse is null, cannot use item.");
+                if(User == null || UserHotbar == null) {
+                    Log.Info("User or UserHotbar is null");
                     return;
                 }
                 else {
                     Log.Info("Attempting to use item.");
+                    ItemToUse = UserHotbar.GetSelectedItem();
+                    if(ItemToUse == null) {
+                        Log.Info("No item selected in hotbar.");
+                        return;
+                    }
                     bool success = User.UseItem(ItemToUse);
                     if(success) {
                         Log.Info("Item used successfully.");

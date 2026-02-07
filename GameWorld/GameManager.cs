@@ -76,6 +76,7 @@ namespace Root {
 			HUD = HUDScene.Instantiate<HUD>();
 			SubscribeToEvents(HUD);
 			HUD.Init(LocalPlayer!, StateMachine);
+			LocalPlayer!.UseItemComponent.UserHotbar = HUD.GetNode<Hotbar>("Hotbar");
 
 			AddChild(HUD);
 		}
