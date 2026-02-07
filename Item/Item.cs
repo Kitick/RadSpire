@@ -56,8 +56,13 @@ namespace ItemSystem {
 
 		[Export] public List<IItemComponent> Components { get; set; } = new();
 
+		public void SortComponents() {
+			Components.Sort((left, right) => left.priority.CompareTo(right.priority));
+		}
+
 		public Item() {
 			Components = new List<IItemComponent>();
+			SortComponents();
 		}
 
 		public Item(Item other) {
@@ -68,6 +73,7 @@ namespace ItemSystem {
 			IconTexture = other.IconTexture;
 
 			Components = new List<IItemComponent>(other.Components);
+			SortComponents();
 		}
 
 		public ItemData Export() {
@@ -120,6 +126,7 @@ namespace ItemSystem {
 				Components.Add(weaponComp);
 			}
 			// Additional components can be imported here
+			SortComponents();
 		}
 	}
 
@@ -216,6 +223,7 @@ namespace ItemSystem {
 				}
 			}
 			item.Components.Add(component);
+			item.SortComponents();
 			return true;
 		}
 
@@ -226,6 +234,7 @@ namespace ItemSystem {
 			foreach(IItemComponent comp in item.Components) {
 				if(component.GetType() == comp.GetType()) {
 					item.Components.Remove(component);
+					item.SortComponents();
 					return true;
 				}
 			}

@@ -5,6 +5,7 @@ namespace Components {
 	public interface IHealItem { HealItem Heal { get; set; } }
 
 	public sealed class HealItem : Component<HealItemData>, IItemComponent, IItemUseable {
+		public int priority { get; init; } = 0;
 		private static readonly LogService Log = new(nameof(HealItem), enabled: true);
 		public int HealAmount {
 			get => Data.HealAmount;

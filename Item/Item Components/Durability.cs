@@ -5,6 +5,7 @@ namespace Components {
 	public interface IDurable { Durability Durability { get; set; } }
 
 	public sealed class Durability : Component<DurabilityData>, IItemComponent, IItemUseable, IItemUseableOnTarget {
+		public int priority { get; init; } = 10;
 		public int Current {
 			get => Data.Current;
 			set => SetData(Data with { Current = Math.Clamp(value, 0, Data.Max) });
@@ -19,7 +20,7 @@ namespace Components {
 		}
 
 		public bool Use<TEntity>(TEntity user) {
-			// Durability usage logic here
+			
 			return false;
 		}
 

@@ -2,7 +2,7 @@ namespace ItemSystem {
 	using Godot;
 
 	public interface IItemComponent {
-
+		public int priority { get; init; }
 	}
 
 	public interface IItemUseable {

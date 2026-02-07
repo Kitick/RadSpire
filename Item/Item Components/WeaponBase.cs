@@ -5,6 +5,7 @@ namespace Components {
 	public interface IWeaponBase { WeaponBase Weapon { get; set; } }
 
 	public sealed class WeaponBase : Component<WeaponBaseData>, IItemComponent, IItemUseableOnTarget {
+		public int priority { get; init; } = 0;
 		public int BaseAttack { get; set; } = 10;
 		public float AttackSpeed { get; set; } = 1f;
 		public float Range { get; set; } = 1f;

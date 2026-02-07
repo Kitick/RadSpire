@@ -68,5 +68,9 @@ namespace Components {
                 }
             });
         }
+        
+        public override void _ExitTree() {
+            UnsubscribeUse?.Invoke();
+        }
     }
 }

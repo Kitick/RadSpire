@@ -42,6 +42,7 @@ namespace Character {
 			AddChild(InventoryManager);
 			AddChild(UseItemComponent);
 			SetupChildren();
+			this.Hurt(50); // For testing purposes, start the player hurt.
 		}
 
 		public void Update(float dt, KeyInput keyInput) {
