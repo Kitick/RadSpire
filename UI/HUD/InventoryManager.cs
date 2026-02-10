@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Character;
 using Godot;
+using Root;
 using Services;
 using UI;
 
@@ -31,7 +32,7 @@ namespace ItemSystem {
 				InventoryUIManagerTemplate = GD.Load<PackedScene>("res://UI/Inventory/InventoryUIManager.tscn");
 			}
 			InventoryUIManager = InventoryUIManagerTemplate.Instantiate<InventoryUIManager>();
-			GetParent<Player>().GetNode<HUD>("HUD").GetNode<InventoryUI>("Inventory").AddChild(InventoryUIManager);
+			GetParent<GameManager>().GetNode<HUD>("HUD").GetNode<InventoryUI>("Inventory").AddChild(InventoryUIManager);
 		}
 
 		public void RegisterInventory(Inventory inventory, IInventoryUI uiControl) {

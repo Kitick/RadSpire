@@ -28,7 +28,7 @@ namespace UI {
 		public Player Player = null!;
 
 		private StateMachine<MenuState> StateMachineRef = null!;
-		private Action? UnsubscribeInventory;
+		private Action? Unsubscribe;
 
 		public event Action? ResumeRequested;
 		public event Action? PauseRequested;
@@ -53,11 +53,16 @@ namespace UI {
 		}
 
 		public override void _ExitTree() {
-			UnsubscribeInventory?.Invoke();
+			Unsubscribe?.Invoke();
 		}
 
 		private void SetInputCallbacks() {
-			UnsubscribeInventory = ActionEvent.Inventory.WhenPressed(ToggleInventory);
+			Unsubscribe = ActionEvent.Inventory.WhenPressed(ToggleInventory);
+
+			Unsubscribe += ActionEvent.MenuExit.WhenPressed(() => {
+				if(StateMachineRef.CurrentState == MenuState.Game) { PauseRequested?.Invoke(); }
+				else if(StateMachineRef.CurrentState != MenuState.Game) { ResumeRequested?.Invoke(); }
+			});
 		}
 
 		private void ConfigureStateMachine(StateMachine<MenuState> stateMachine) {
