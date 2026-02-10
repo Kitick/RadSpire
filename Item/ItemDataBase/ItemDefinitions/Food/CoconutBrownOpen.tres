@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://ccl45twf7obeu"]
 
-[ext_resource type="Script" uid="uid://cnm5iegiuj4xu" path="res://Item/ItemDataBase/ItemDataBaseScripts/ItemComponentDefinition.cs" id="1_c5fmb"]
+[ext_resource type="Script" uid="uid://cnm5iegiuj4xu" path="res://Item/ItemDataBase/ItemDataBaseScripts/ItemComponentDefinitions/ItemComponentDefinition.cs" id="1_c5fmb"]
 [ext_resource type="Resource" uid="uid://b08lbebkh6ytl" path="res://Item/ItemDataBase/ComponentDefinitions/HealItemDefinition/Level3FoodHeal.tres" id="2_2hv27"]
 [ext_resource type="Texture2D" uid="uid://7x4q56bvy1ab" path="res://Assets/scrimsy fruit icons/color/brown/brown coconut 2.png" id="2_xanxq"]
 [ext_resource type="Script" uid="uid://bxmh4fd7kjvv1" path="res://Item/ItemDataBase/ItemDataBaseScripts/ItemDefinition.cs" id="3_xanxq"]

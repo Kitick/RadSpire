@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://bc1kyi8tgjufg"]
 
-[ext_resource type="Script" uid="uid://cnm5iegiuj4xu" path="res://Item/ItemDataBase/ItemDataBaseScripts/ItemComponentDefinition.cs" id="1_8s03o"]
+[ext_resource type="Script" uid="uid://cnm5iegiuj4xu" path="res://Item/ItemDataBase/ItemDataBaseScripts/ItemComponentDefinitions/ItemComponentDefinition.cs" id="1_8s03o"]
 [ext_resource type="Texture2D" uid="uid://bhkjqpmrdll58" path="res://Assets/scrimsy fruit icons/color/green/green berry.png" id="2_ifsyk"]
 [ext_resource type="Resource" uid="uid://cw2hegmrmnxk2" path="res://Item/ItemDataBase/ComponentDefinitions/HealItemDefinition/Level1FoodHeal.tres" id="2_nkqjy"]
 [ext_resource type="Script" uid="uid://bxmh4fd7kjvv1" path="res://Item/ItemDataBase/ItemDataBaseScripts/ItemDefinition.cs" id="3_ifsyk"]
