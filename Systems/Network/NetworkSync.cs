@@ -1,13 +1,12 @@
 using System;
 using System.Text.Json;
 using Godot;
-using Systems.JSON;
 
-namespace Network {
+namespace Services.Network {
 	public enum TransferMode { Reliable, Unreliable }
 
-	public sealed partial class NetworkSync<T> : Node where T : struct, INetworkData {
-		private static readonly Logger Log = new(nameof(NetworkSync<T>), enabled: true);
+	public sealed partial class NetworkSync<T> : Node where T : INetworkData {
+		private static readonly LogService Log = new(nameof(NetworkSync<>), enabled: true);
 
 		private readonly INetworkable<T> SyncObject;
 		private readonly TransferMode Mode;
@@ -19,11 +18,9 @@ namespace Network {
 
 		private static readonly JsonSerializerOptions NetJsonOptions = new();
 
-		public Func<T, T?>? Validator { get; set; }
-
 		private bool IsOwner => Server.Instance.IsOwner(OwnerPeerId);
 		private bool IsServer => Multiplayer.IsServer();
-		private string SerializeState() => JSON.Serialize(SyncObject.Serialize(), NetJsonOptions);
+		private string SerializeState() => JsonService.Serialize(SyncObject.Export(), NetJsonOptions);
 
 		public NetworkSync(INetworkable<T> syncObject, int ownerPeerId, string syncId = "sync", TransferMode mode = TransferMode.Reliable) {
 			SyncObject = syncObject;
@@ -34,7 +31,7 @@ namespace Network {
 
 		public override void _Ready() {
 			if(IsOwner) {
-				SyncObject.OnStateChanged += OnLocalStateChanged;
+				SyncObject.OnChanged += OnLocalStateChanged;
 
 				if(IsServer) {
 					CallDeferred(nameof(BroadcastCurrentState));
@@ -46,7 +43,7 @@ namespace Network {
 		}
 
 		public override void _ExitTree() {
-			SyncObject.OnStateChanged -= OnLocalStateChanged;
+			SyncObject.OnChanged -= OnLocalStateChanged;
 		}
 
 		public override void _Process(double delta) {
@@ -102,17 +99,7 @@ namespace Network {
 		}
 
 		private void ProcessAndBroadcast(int senderPeerId, string json) {
-			var data = JSON.Deserialize<T>(json, NetJsonOptions);
-
-			if(Validator != null) {
-				var validated = Validator(data);
-				if(validated == null) {
-					Log.Warn($"{LogPrefix} Rejected update from peer {senderPeerId}");
-					return;
-				}
-				data = validated.Value;
-				json = JSON.Serialize(data, NetJsonOptions);
-			}
+			var data = JsonService.Deserialize<T>(json, NetJsonOptions);
 
 			Log.Info($"{LogPrefix} Host broadcasting to all clients");
 
@@ -134,8 +121,8 @@ namespace Network {
 			if(IsOwner) { return; }
 
 			Log.Info($"{LogPrefix} Received broadcast, applying to SyncObject");
-			var data = JSON.Deserialize<T>(json, NetJsonOptions);
-			SyncObject.Deserialize(data);
+			var data = JsonService.Deserialize<T>(json, NetJsonOptions);
+			SyncObject.Import(data);
 		}
 
 		private void RequestCurrentState() {

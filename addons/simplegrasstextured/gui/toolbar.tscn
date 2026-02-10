@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://dsim5cbhc6kwm"]
+[gd_scene format=3 uid="uid://dsim5cbhc6kwm"]
 
 [ext_resource type="Script" uid="uid://usxgr64t746m" path="res://addons/simplegrasstextured/gui/toolbar.gd" id="1_aa1o6"]
 [ext_resource type="Material" uid="uid://cl74usvfymgvs" path="res://addons/simplegrasstextured/materials/icon.material" id="2_p7k4b"]
@@ -18,31 +18,31 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hc7jq"]
 
-[node name="SGTToolbar" type="HFlowContainer"]
+[node name="SGTToolbar" type="HFlowContainer" unique_id=629286037]
 anchors_preset = 10
 anchor_right = 1.0
 offset_bottom = 31.0
 grow_horizontal = 2
 script = ExtResource("1_aa1o6")
 
-[node name="PanelContainer" type="PanelContainer" parent="."]
+[node name="PanelContainer" type="PanelContainer" parent="." unique_id=1354803735]
 custom_minimum_size = Vector2(24, 0)
 layout_mode = 2
 mouse_default_cursor_shape = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_6mh15")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer" unique_id=110276166]
 layout_mode = 2
 mouse_filter = 2
 alignment = 1
 
-[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/VBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/VBoxContainer" unique_id=85266436]
 custom_minimum_size = Vector2(24, 0)
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/margin_bottom = 3
 
-[node name="TextureRect" type="TextureRect" parent="PanelContainer/VBoxContainer/MarginContainer"]
+[node name="TextureRect" type="TextureRect" parent="PanelContainer/VBoxContainer/MarginContainer" unique_id=398637107]
 material = ExtResource("2_p7k4b")
 custom_minimum_size = Vector2(24, 0)
 layout_mode = 2
@@ -50,7 +50,7 @@ mouse_filter = 2
 texture = ExtResource("3_tl64l")
 stretch_mode = 3
 
-[node name="LabelVersion" type="Label" parent="PanelContainer"]
+[node name="LabelVersion" type="Label" parent="PanelContainer" unique_id=1214223161]
 unique_name_in_owner = true
 auto_translate_mode = 2
 clip_contents = true
@@ -63,14 +63,14 @@ text = "2.0.5"
 horizontal_alignment = 1
 vertical_alignment = 2
 
-[node name="VSeparator" type="VSeparator" parent="."]
+[node name="VSeparator" type="VSeparator" parent="." unique_id=115208586]
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="."]
+[node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=1688107861]
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="ButtonAirbrush" type="Button" parent="HBoxContainer"]
+[node name="ButtonAirbrush" type="Button" parent="HBoxContainer" unique_id=918949698]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Airdraw tool
@@ -79,7 +79,7 @@ theme_type_variation = &"FlatButton"
 toggle_mode = true
 icon = ExtResource("4_weijg")
 
-[node name="AirbrushOptions" type="MenuButton" parent="HBoxContainer"]
+[node name="AirbrushOptions" type="MenuButton" parent="HBoxContainer" unique_id=1574819609]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
@@ -87,11 +87,11 @@ theme_type_variation = &"FlatMenuButton"
 icon = ExtResource("5_jg7h4")
 flat = false
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="."]
+[node name="HBoxContainer2" type="HBoxContainer" parent="." unique_id=1806883064]
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="ButtonPencil" type="Button" parent="HBoxContainer2"]
+[node name="ButtonPencil" type="Button" parent="HBoxContainer2" unique_id=942009729]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Pencil tool
@@ -100,7 +100,7 @@ theme_type_variation = &"FlatButton"
 toggle_mode = true
 icon = ExtResource("5_itpep")
 
-[node name="PencilOptions" type="MenuButton" parent="HBoxContainer2"]
+[node name="PencilOptions" type="MenuButton" parent="HBoxContainer2" unique_id=1045847230]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
@@ -108,11 +108,11 @@ theme_type_variation = &"FlatMenuButton"
 icon = ExtResource("5_jg7h4")
 flat = false
 
-[node name="HBoxContainer3" type="HBoxContainer" parent="."]
+[node name="HBoxContainer3" type="HBoxContainer" parent="." unique_id=728854100]
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="ButtonEraser" type="Button" parent="HBoxContainer3"]
+[node name="ButtonEraser" type="Button" parent="HBoxContainer3" unique_id=593209001]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Eraser tool
@@ -121,7 +121,7 @@ theme_type_variation = &"FlatButton"
 toggle_mode = true
 icon = ExtResource("6_jg7h4")
 
-[node name="EraserOptions" type="MenuButton" parent="HBoxContainer3"]
+[node name="EraserOptions" type="MenuButton" parent="HBoxContainer3" unique_id=396690486]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
@@ -129,17 +129,17 @@ theme_type_variation = &"FlatMenuButton"
 icon = ExtResource("5_jg7h4")
 flat = false
 
-[node name="ButtonMore" parent="." instance=ExtResource("4_1u4kn")]
+[node name="ButtonMore" parent="." unique_id=1652307985 instance=ExtResource("4_1u4kn")]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"FlatMenuButton"
 flat = false
 switch_on_hover = true
 
-[node name="VSeparator2" type="VSeparator" parent="."]
+[node name="VSeparator2" type="VSeparator" parent="." unique_id=1753666516]
 layout_mode = 2
 
-[node name="IconRadius" type="Button" parent="."]
+[node name="IconRadius" type="Button" parent="." unique_id=50195332]
 unique_name_in_owner = true
 texture_filter = 1
 layout_mode = 2
@@ -147,7 +147,7 @@ tooltip_text = "Radius"
 icon = ExtResource("5_55kgh")
 flat = true
 
-[node name="HSliderRadius" type="HSlider" parent="."]
+[node name="HSliderRadius" type="HSlider" parent="." unique_id=1404955156]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_vertical = 1
@@ -157,7 +157,7 @@ max_value = 10.0
 step = 0.1
 value = 1.0
 
-[node name="Label" type="Label" parent="HSliderRadius"]
+[node name="Label" type="Label" parent="HSliderRadius" unique_id=1895028763]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -169,11 +169,11 @@ theme_override_constants/outline_size = 2
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Separator" type="Control" parent="."]
+[node name="Separator" type="Control" parent="." unique_id=720375472]
 custom_minimum_size = Vector2(15, 0)
 layout_mode = 2
 
-[node name="IconDensity" type="Button" parent="."]
+[node name="IconDensity" type="Button" parent="." unique_id=619586369]
 unique_name_in_owner = true
 texture_filter = 1
 layout_mode = 2
@@ -181,7 +181,7 @@ tooltip_text = "Density"
 icon = ExtResource("6_wboky")
 flat = true
 
-[node name="HSliderDensity" type="HSlider" parent="."]
+[node name="HSliderDensity" type="HSlider" parent="." unique_id=1744143949]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_vertical = 1
@@ -190,7 +190,7 @@ min_value = 1.0
 max_value = 200.0
 value = 1.0
 
-[node name="Label" type="Label" parent="HSliderDensity"]
+[node name="Label" type="Label" parent="HSliderDensity" unique_id=959968508]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -202,15 +202,15 @@ theme_override_constants/outline_size = 2
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Separator2" type="Control" parent="."]
+[node name="Separator2" type="Control" parent="." unique_id=720447050]
 custom_minimum_size = Vector2(15, 0)
 layout_mode = 2
 
-[node name="SlopeCont" type="HBoxContainer" parent="."]
+[node name="SlopeCont" type="HBoxContainer" parent="." unique_id=1349325841]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="IconSlope" type="Button" parent="SlopeCont"]
+[node name="IconSlope" type="Button" parent="SlopeCont" unique_id=400426947]
 unique_name_in_owner = true
 texture_filter = 1
 layout_mode = 2
@@ -218,56 +218,56 @@ tooltip_text = "Slope"
 icon = ExtResource("7_4wrj3")
 flat = true
 
-[node name="SlopeRange" parent="SlopeCont" instance=ExtResource("8_y7yf0")]
+[node name="SlopeRange" parent="SlopeCont" unique_id=2130543904 instance=ExtResource("8_y7yf0")]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="ScaleCont" type="HBoxContainer" parent="."]
+[node name="ScaleCont" type="HBoxContainer" parent="." unique_id=84477350]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="IconScale" type="Button" parent="ScaleCont"]
+[node name="IconScale" type="Button" parent="ScaleCont" unique_id=348453333]
 unique_name_in_owner = true
 texture_filter = 1
 layout_mode = 2
 tooltip_text = "Scale"
 flat = true
 
-[node name="Separator3" type="Control" parent="."]
+[node name="Separator3" type="Control" parent="." unique_id=1083555952]
 custom_minimum_size = Vector2(15, 0)
 layout_mode = 2
 
-[node name="RotationCont" type="HBoxContainer" parent="."]
+[node name="RotationCont" type="HBoxContainer" parent="." unique_id=1440389096]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="IconRotation" type="Button" parent="RotationCont"]
+[node name="IconRotation" type="Button" parent="RotationCont" unique_id=2056140714]
 unique_name_in_owner = true
 texture_filter = 1
 layout_mode = 2
 tooltip_text = "Rotation"
 flat = true
 
-[node name="RotationRandCont" type="HBoxContainer" parent="."]
+[node name="RotationRandCont" type="HBoxContainer" parent="." unique_id=1353285890]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="IconRotationRand" type="Button" parent="RotationRandCont"]
+[node name="IconRotationRand" type="Button" parent="RotationRandCont" unique_id=2092343009]
 unique_name_in_owner = true
 texture_filter = 1
 layout_mode = 2
 tooltip_text = "Rotation randomizer"
 flat = true
 
-[node name="Separator4" type="Control" parent="."]
+[node name="Separator4" type="Control" parent="." unique_id=1051516389]
 custom_minimum_size = Vector2(15, 0)
 layout_mode = 2
 
-[node name="DistanceCont" type="HBoxContainer" parent="."]
+[node name="DistanceCont" type="HBoxContainer" parent="." unique_id=1476559914]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="IconDistance" type="Button" parent="DistanceCont"]
+[node name="IconDistance" type="Button" parent="DistanceCont" unique_id=693450162]
 unique_name_in_owner = true
 texture_filter = 1
 layout_mode = 2
@@ -275,18 +275,18 @@ tooltip_text = "Minimum distance between grasses"
 icon = ExtResource("7_ao3h0")
 flat = true
 
-[node name="Separator5" type="Control" parent="."]
+[node name="Separator5" type="Control" parent="." unique_id=1512065322]
 custom_minimum_size = Vector2(15, 0)
 layout_mode = 2
 
-[node name="LabelStats" type="Label" parent="."]
+[node name="LabelStats" type="Label" parent="." unique_id=1818879095]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Count: 0"
 horizontal_alignment = 2
 vertical_alignment = 1
 
-[node name="TimerReimportIcons" type="Timer" parent="."]
+[node name="TimerReimportIcons" type="Timer" parent="." unique_id=910830515]
 
 [connection signal="gui_input" from="PanelContainer" to="." method="_on_panel_container_gui_input"]
 [connection signal="pressed" from="IconRadius" to="." method="_on_icon_radius_pressed"]

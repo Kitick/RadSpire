@@ -8,28 +8,6 @@ namespace Core {
 		public const float GRAVITY = 9.8f;
 	}
 
-	public static class Scenes {
-		private const string UI = "res://UI";
-		private const string HUDDIR = $"{UI}/HUD";
-		private const string MultiplayerPanels = $"{UI}/MultiplayerPanels";
-		private const string Character = "res://Character";
-
-		public const string PauseMenu = $"{HUDDIR}/PauseMenu.tscn";
-		public const string RespawnMenu = $"{UI}/RespawnMenu/RespawnMenu.tscn";
-		public const string HUD = $"{HUDDIR}/HUD.tscn";
-
-		public const string MainMenu = $"{UI}/MainMenu/MainMenu.tscn";
-		public const string SettingsMenu = $"{UI}/SettingsMenu/SettingsMenu.tscn";
-		public const string SaveLoadMenu = $"{UI}/LoadMenu/LoadSaveMenu.tscn";
-		public const string HostPanel = $"{MultiplayerPanels}/HostPanel/HostPanel.tscn";
-		public const string JoinPanel = $"{MultiplayerPanels}/JoinPanel/JoinPanel.tscn";
-
-		public const string GameScene = "res://GameWorld/NewWorld.tscn";
-		public const string Player = $"{Character}/Player/Player.tscn";
-		public const string Enemy = $"{Character}/Enemy/Enemy.tscn";
-		public const string Camera = "res://Camera/Camera.tscn";
-	}
-
 	public static class Actions {
 		public const string MoveForward = "MoveForward";
 		public const string MoveBack = "MoveBack";
@@ -73,7 +51,25 @@ namespace Core {
 		public const string StrawberryRed = $"{Food}/StrawberryRed.tres";
 	}
 
-	public static class Icons {
-
+	public static class ItemID {
+		public const string AppleRed = "AppleRed";
+		public const string AppleYellow = "AppleYellow";
+		public const string AppleGreen = "AppleGreen";
+		public const string BananaYellow = "BananaYellow";
+		public const string BananaGreen = "BananaGreen";
+		public const string BerryBlack = "BerryBlack";
+		public const string BerryGreen = "BerryGreen";
+		public const string BerryRed = "BerryRed";
+		public const string BlueberryBlue = "BlueberryBlue";
+		public const string BlueberryGreen = "BlueberryGreen";
+		public const string CherryGreen = "CherryGreen";
+		public const string CherryRed = "CherryRed";
+		public const string CoconutBrown = "CoconutBrown";
+		public const string CoconutBrownOpen = "CoconutBrownOpen";
+		public const string CoconutGreen = "CoconutGreen";
+		public const string CoconutGreenOpen = "CoconutGreenOpen";
+		public const string StrawberryGreen = "StrawberryGreen";
+		public const string StrawberryRed = "StrawberryRed";
 	}
+
 }

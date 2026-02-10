@@ -1,15 +1,12 @@
-using System.Diagnostics;
-using System;
 using Godot;
-using SaveSystem;
+using Services;
 
-namespace Settings {
+namespace UI.Settings {
 	public sealed partial class GeneralPanel : VBoxContainer {
-		
-		// Node Paths
-		private const string LANGUAGE = "Language/OptionButton";
-		private const string UI_SCALE = "UI_Scale/HSlider";
-		private const string THEME = "Theme/OptionButton";
+
+		[Export] private OptionButton LanguageOption = null!;
+		[Export] private HSlider UIScaleSlider = null!;
+		[Export] private OptionButton ThemeOption = null!;
 
 		// Main
 		public override void _Ready() {
@@ -18,19 +15,19 @@ namespace Settings {
 
 		// Set Callbacks
 		private void SetCallbacks() {
-			GetNode<OptionButton>(LANGUAGE).ItemSelected += OnLanguageOptionSelected;
-			GetNode<HSlider>(UI_SCALE).ValueChanged += OnUIScaleChanged;
-			GetNode<OptionButton>(THEME).ItemSelected += OnThemeOptionSelected;
+			LanguageOption.ItemSelected += OnLanguageOptionSelected;
+			UIScaleSlider.ValueChanged += OnUIScaleChanged;
+			ThemeOption.ItemSelected += OnThemeOptionSelected;
 		}
 
 		// Callbacks
-		private void OnLanguageOptionSelected(long selected){
+		private void OnLanguageOptionSelected(long selected) {
 			//Implementation Here
 		}
 
 		private void OnUIScaleChanged(double value) {
-            //Implementation Here
-        }
+			//Implementation Here
+		}
 
 		private void OnThemeOptionSelected(long selected) {
 			//Implementation Here
@@ -39,11 +36,9 @@ namespace Settings {
 		// ISaveable Implementation Goes Here
 
 	}
-}
 
-// Update As Needed
-namespace SaveSystem {
+	// Update As Needed
 	public readonly record struct GeneralSettings : ISaveData {
-		
+
 	}
 }

@@ -1,16 +1,20 @@
 using System.IO;
 using System.Linq;
 using System.Text.Json;
-using Systems.JSON;
 
-namespace SaveSystem {
-	public interface ISaveData : IJSONData;
-	public interface ISaveable<T> : IJSONable<T> where T : ISaveData;
+namespace Services {
+	public interface ISaveData;
+
+	public interface ISaveable<T> where T : ISaveData {
+		T Export();
+		void Import(T data);
+	}
 
 	public static class SaveService {
 		private const string SaveDirName = "saves";
 
 		private static readonly JsonSerializerOptions FileJsonOptions = new() {
+			IncludeFields = true,
 			WriteIndented = true,
 			IndentCharacter = '\t',
 			IndentSize = 1,
@@ -29,26 +33,35 @@ namespace SaveSystem {
 			return new FileInfo(path);
 		}
 
-		private static void Write<T>(this FileInfo file, in T data) where T : struct, ISaveData {
-			var json = JSON.Serialize(data, FileJsonOptions);
+		private static void Write<TData>(this FileInfo file, TData data) {
+			var json = JsonService.Serialize(data, FileJsonOptions);
 			File.WriteAllText(file.FullName, json);
 		}
 
-		private static T Read<T>(this FileInfo file) where T : struct, ISaveData {
+		private static TData Read<TData>(this FileInfo file) {
 			if(!file.Exists) { throw new FileNotFoundException("Save file not found", file.Name); }
 
 			var json = File.ReadAllText(file.FullName);
-			var data = JSON.Deserialize<T>(json, FileJsonOptions);
+			var data = JsonService.Deserialize<TData>(json, FileJsonOptions);
 
 			return data;
 		}
 
-		public static void Save<T>(string fileName, in T data) where T : struct, ISaveData {
+		public static void Save<TData>(this TData data, string fileName) where TData : ISaveData {
 			GetFile(fileName).Write(data);
 		}
 
-		public static T Load<T>(string fileName) where T : struct, ISaveData {
-			return GetFile(fileName).Read<T>();
+		public static TData Load<TData>(string fileName) where TData : ISaveData {
+			return GetFile(fileName).Read<TData>();
+		}
+
+		public static void Save<TData>(this ISaveable<TData> saveable, string fileName) where TData : ISaveData {
+			saveable.Export().Save(fileName);
+		}
+
+		public static void Load<TData>(this ISaveable<TData> saveable, string fileName) where TData : ISaveData {
+			var data = Load<TData>(fileName);
+			saveable.Import(data);
 		}
 
 		public static bool Exists(string fileName) {
@@ -60,7 +73,7 @@ namespace SaveSystem {
 			if(file.Exists) { file.Delete(); }
 		}
 
-		public static string[] ListSaves() {
+		public static string[] List() {
 			var files = GetSaveDir().GetFiles("*.json");
 
 			return files.Select(file => Path.GetFileNameWithoutExtension(file.Name)).ToArray();

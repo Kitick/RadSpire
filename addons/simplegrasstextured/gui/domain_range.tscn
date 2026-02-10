@@ -1,8 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://r30ih7dtx1uo"]
+[gd_scene format=3 uid="uid://r30ih7dtx1uo"]
 
 [ext_resource type="Script" uid="uid://dmpm4vrmag0ru" path="res://addons/simplegrasstextured/gui/domain_range.gd" id="1_xiopc"]
 
-[node name="DomainRange" type="Control"]
+[node name="DomainRange" type="Control" unique_id=169812227]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 3
 anchors_preset = 15
@@ -17,7 +17,7 @@ Max: 45°
 focus_mode = 2
 script = ExtResource("1_xiopc")
 
-[node name="LineEdit" type="LineEdit" parent="."]
+[node name="LineEdit" type="LineEdit" parent="." unique_id=1007634211]
 visible = false
 layout_mode = 1
 anchors_preset = 15

@@ -52,7 +52,7 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 [application]
 
 config/name="RadSpire"
-run/main_scene="uid://udkefarjp6kf"
+run/main_scene="uid://bb7h35lohrhs3"
 config/features=PackedStringArray("4.6", "C#", "Forward Plus")
 config/icon="uid://8ykhw0g480u8"
 
@@ -65,7 +65,7 @@ buses/default_bus_layout="uid://cpvwo1bhm4q26"
 SimpleGrass="*res://addons/simplegrasstextured/singleton.tscn"
 InputSystem="*res://Systems/InputSystem.cs"
 Server="*res://Systems/Network/Server.cs"
-GameManager="*res://GameWorld/GameManager.cs"
+ItemDataBaseManager="*uid://ck6f260wrgmhk"
 
 [display]
 
@@ -80,11 +80,15 @@ project/assembly_name="RadSpire"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/resources_spreadsheet_view/plugin.cfg", "res://addons/simplegrasstextured/plugin.cfg", "res://addons/sprite_mesh/plugin.cfg")
+enabled=PackedStringArray("res://addons/godot_resource_groups/plugin.cfg", "res://addons/resources_spreadsheet_view/plugin.cfg", "res://addons/simplegrasstextured/plugin.cfg", "res://addons/sprite_mesh/plugin.cfg")
 
 [filesystem]
 
 import/blender/enabled=false
+
+[godot_resource_groups]
+
+auto_rebuild=true
 
 [input]
 

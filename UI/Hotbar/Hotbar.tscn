@@ -1,8 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://etextx8i4ksr"]
+[gd_scene format=3 uid="uid://etextx8i4ksr"]
 
 [ext_resource type="Script" uid="uid://crgbkjwmhm4is" path="res://UI/Hotbar/Hotbar.cs" id="1_r24te"]
 
-[node name="Hotbar" type="Control"]
+[node name="Hotbar" type="Control" unique_id=1895407884]
 custom_minimum_size = Vector2(370, 82)
 layout_mode = 3
 anchors_preset = 0
@@ -11,7 +11,7 @@ offset_bottom = 82.0
 mouse_filter = 1
 script = ExtResource("1_r24te")
 
-[node name="Background" type="ColorRect" parent="."]
+[node name="Background" type="ColorRect" parent="." unique_id=934910993]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
@@ -19,7 +19,7 @@ anchor_bottom = 1.0
 mouse_filter = 1
 color = Color(0.4509804, 0.2627451, 0.1882353, 1)
 
-[node name="GridBackground" type="ColorRect" parent="Background"]
+[node name="GridBackground" type="ColorRect" parent="Background" unique_id=2007865003]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
@@ -31,7 +31,7 @@ offset_bottom = -5.0
 mouse_filter = 1
 color = Color(1, 1, 1, 0.60784316)
 
-[node name="HotbarSlots" type="GridContainer" parent="Background/GridBackground"]
+[node name="HotbarSlots" type="GridContainer" parent="Background/GridBackground" unique_id=1072107204]
 layout_direction = 2
 layout_mode = 1
 anchors_preset = -1

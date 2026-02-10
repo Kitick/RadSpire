@@ -1,19 +1,66 @@
 using System;
+using System.Collections.Generic;
 
-public sealed class FiniteStateMachine<TState> where TState : Enum {
-	public TState State { get; private set; }
+namespace Core {
+	public sealed class StateMachine<TState> where TState : struct, Enum {
+		private readonly Dictionary<(TState? from, TState? to), Action<TState, TState>> Transitions = [];
 
-	public event Action<TState, TState>? OnStateChanged;
+		private TState? State;
 
-	public FiniteStateMachine(TState inital) => State = inital;
-	public FiniteStateMachine(TState inital, Action<TState, TState> onChanged) : this(inital) => OnStateChanged += onChanged;
+		public TState CurrentState => State ?? throw new InvalidOperationException("StateMachine is not in a valid state.");
+		public bool IsSettled => State != null;
 
-	public void TransitionTo(TState newState) {
-		if(State.Equals(newState)) { return; }
+		public StateMachine(TState? initial = null) => State = initial;
 
-		var last = State;
-		State = newState;
+		private Action<TState, TState>? Get(TState? from, TState? to) {
+			return Transitions.TryGetValue((from, to), out var action) ? action : null;
+		}
 
-		OnStateChanged?.Invoke(last, newState);
+		private void Register(Action<TState, TState> action, TState? from = null, TState? to = null) {
+			var key = (from, to);
+
+			if(Transitions.TryGetValue(key, out var existing)) {
+				Transitions[key] = existing + action;
+			}
+			else {
+				Transitions[key] = action;
+			}
+		}
+
+		private Action<TState, TState>? GetSpecific(TState from, TState to) => Get(from, to);
+		private Action<TState, TState>? GetEnter(TState state) => Get(null, state);
+		private Action<TState, TState>? GetExit(TState state) => Get(state, null);
+		private Action<TState, TState>? GetChange() => Get(null, null);
+
+		public void OnSpecific(TState from, TState to, Action action) => Register((_, _) => action(), from, to);
+		public void OnEnter(TState state, Action action) => Register((_, _) => action(), null, state);
+		public void OnExit(TState state, Action action) => Register((_, _) => action(), state, null);
+		public void OnChange(Action<TState, TState> action) => Register(action, null, null);
+
+		public void Start(TState initial) {
+			if(IsSettled) { throw new InvalidOperationException("StateMachine has already been started."); }
+
+			GetEnter(initial)?.Invoke(initial, initial);
+
+			State = initial;
+		}
+
+		public void ForceTransitionTo(TState next) {
+			TState prev = CurrentState;
+			State = null;
+
+			GetChange()?.Invoke(prev, next);
+			GetExit(prev)?.Invoke(prev, next);
+			GetEnter(next)?.Invoke(prev, next);
+			GetSpecific(prev, next)?.Invoke(prev, next);
+
+			State = next;
+		}
+
+		public bool TransitionTo(TState next) {
+			bool changed = !CurrentState.Equals(next);
+			if(changed) { ForceTransitionTo(next); }
+			return changed;
+		}
 	}
 }

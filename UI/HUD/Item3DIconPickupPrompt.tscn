@@ -1,4 +1,4 @@
-[gd_scene load_steps=2 format=3 uid="uid://cknyx8qv60d2t"]
+[gd_scene format=3 uid="uid://cknyx8qv60d2t"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_23yn0"]
 bg_color = Color(1, 1, 1, 0.09803922)
@@ -7,7 +7,7 @@ corner_radius_top_right = 20
 corner_radius_bottom_right = 20
 corner_radius_bottom_left = 20
 
-[node name="Item3DIconPickupPrompt" type="Control"]
+[node name="Item3DIconPickupPrompt" type="Control" unique_id=162595653]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -15,14 +15,14 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="GlassPanel" type="Panel" parent="."]
+[node name="GlassPanel" type="Panel" parent="." unique_id=898570850]
 z_index = 1
 layout_mode = 0
 offset_right = 511.0
 offset_bottom = 75.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_23yn0")
 
-[node name="TextureRect" type="TextureRect" parent="GlassPanel"]
+[node name="TextureRect" type="TextureRect" parent="GlassPanel" unique_id=1883415936]
 z_index = 2
 layout_mode = 0
 offset_left = 19.0
@@ -30,7 +30,7 @@ offset_top = 4.0
 offset_right = 94.0
 offset_bottom = 71.0
 
-[node name="Label" type="Label" parent="GlassPanel"]
+[node name="Label" type="Label" parent="GlassPanel" unique_id=1515137808]
 z_index = 2
 layout_mode = 0
 offset_left = 112.0

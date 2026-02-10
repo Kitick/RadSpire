@@ -1,12 +1,9 @@
 using System;
 using Godot;
-using InputSystem;
-using Network;
+using Services;
 
-namespace MultiplayerPanels {
+namespace UI.Multiplayer {
 	public partial class JoinPanel : Control {
-		private static readonly Logger Log = new(nameof(JoinPanel), enabled: true);
-
 		// Paths for Panel Attributes
 		private const string PANEL_AREA = "PanelArea";
 		private const string NO_PASSWORD_CHECKBOX = PANEL_AREA + "/NoPassword/NoPasswordCheckBox";
@@ -57,12 +54,10 @@ namespace MultiplayerPanels {
 		// CallBacks
 		private void OnNoPasswordCheckboxToggled(bool check) {
 			//Implementation Here
-			Log.Info($"No Password Toggled: {check}");
 		}
 
 		private void OnNotFullCheckboxToggled(bool check) {
 			//Implementation Here
-			Log.Info($"Not Full Toggled: {check}");
 		}
 		private void OnCancelButtonPressed() {
 			CloseMenu();
@@ -85,15 +80,7 @@ namespace MultiplayerPanels {
 			}
 
 			UpdateStatus("Connecting...");
-			Error result = Server.Instance.Join(address);
-
-			if(result != Error.Ok) {
-				Log.Error($"Failed to join: {result}");
-				UpdateStatus($"Failed to connect: {result}");
-			}
-			else {
-				Log.Info($"Attempting to join {address}...");
-			}
+			//Error result = Server.Instance.Join(address);
 		}
 
 		private void UpdateStatus(string message) {

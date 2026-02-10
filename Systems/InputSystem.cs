@@ -1,20 +1,20 @@
 using System;
 using Godot;
 
-namespace InputSystem {
+namespace Services {
 	// Name must match action name
 	public enum ActionEvent {
 		MoveForward, MoveBack, MoveLeft, MoveRight,
-		Jump, Sprint, Crouch, Interact, Inventory,
+		Jump, Sprint, Crouch, Interact, Consume, Inventory,
 		MenuBack, MenuExit,
 		Hotbar1, Hotbar2, Hotbar3, Hotbar4, Hotbar5,
 		HotbarNext, HotbarPrev,
 	};
 
 	public sealed partial class InputSystem : Node {
-		public static InputSystem Instance { get; private set; } = null!;
+		public static readonly LogService Log = new(nameof(InputSystem), enabled: true);
 
-		public static readonly bool Debug = false;
+		public static InputSystem Instance { get; private set; } = null!;
 
 		public readonly ActionEvent[] Actions = Enum.GetValues<ActionEvent>();
 
@@ -24,24 +24,18 @@ namespace InputSystem {
 		public override void _Ready() {
 			Instance = this;
 			ProcessMode = ProcessModeEnum.Always;
-			Log("Ready");
+			Log.Info("Ready");
 		}
 
 		public override void _Input(InputEvent input) {
 			if(input is InputEventMouseMotion mouse) {
-				Log($"Mouse moved {mouse.Relative}");
+				Log.Info($"Mouse moved {mouse.Relative}");
 			}
 			else if(input is InputEventJoypadMotion joypad) {
-				Log($"Joypad moved {joypad.Axis} : {joypad.AxisValue}");
+				Log.Info($"Joypad moved {joypad.Axis} : {joypad.AxisValue}");
 			}
 			else {
 				CheckActionEvents(input);
-			}
-		}
-
-		private static void Log(string message) {
-			if(Debug) {
-				GD.Print($"[InputSystem] {message}");
 			}
 		}
 
@@ -50,12 +44,12 @@ namespace InputSystem {
 				string name = action.ToString();
 
 				if(input.IsActionPressed(name)) {
-					Log($"Pressed {name}");
+					Log.Info($"Pressed {name}");
 					OnActionPressed?.Invoke(action);
 
 				}
 				else if(input.IsActionReleased(name)) {
-					Log($"Released {name}");
+					Log.Info($"Released {name}");
 					OnActionReleased?.Invoke(action);
 				}
 			}

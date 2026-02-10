@@ -1,10 +1,14 @@
-[gd_scene load_steps=4 format=3 uid="uid://udkefarjp6kf"]
+[gd_scene format=3 uid="uid://udkefarjp6kf"]
 
 [ext_resource type="Script" uid="uid://ctdqi1hddclge" path="res://UI/MainMenu/MainMenu.cs" id="1_7b88o"]
+[ext_resource type="PackedScene" uid="uid://eqxx1dru7wg3" path="res://UI/SettingsMenu/SettingsMenu.tscn" id="2_a712v"]
 [ext_resource type="Texture2D" uid="uid://dfr168nswrve8" path="res://Assets/Images/Menu/background_standing.png" id="2_vpabl"]
+[ext_resource type="PackedScene" uid="uid://dv4igypq0dbv8" path="res://UI/SaveMenu/SaveMenu.tscn" id="3_1dhmk"]
 [ext_resource type="Texture2D" uid="uid://howutpu3c584" path="res://Assets/Images/Menu/title.png" id="3_ectev"]
+[ext_resource type="PackedScene" uid="uid://bnjymb23oq215" path="res://UI/MultiplayerPanels/HostPanel/HostPanel.tscn" id="4_jhcbk"]
+[ext_resource type="PackedScene" uid="uid://bg5jxcp2jtwjp" path="res://UI/MultiplayerPanels/JoinPanel/JoinPanel.tscn" id="5_32jca"]
 
-[node name="Main_Menu" type="Control"]
+[node name="MainMenu" type="Control" unique_id=2104341140 node_paths=PackedStringArray("SingleplayerButton", "MultiplayerButton", "SettingsButton", "ExtrasButton", "QuitButton", "SingleplayerPanel", "ContinueButton", "LoadSavedButton", "StartNewButton", "MultiplayerPanel", "HostNewButton", "HostSavedButton", "JoinGameButton")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -12,8 +16,25 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_7b88o")
+SingleplayerButton = NodePath("ButtonPanel/Singleplayer_Button")
+MultiplayerButton = NodePath("ButtonPanel/Multiplayer_Button")
+SettingsButton = NodePath("ButtonPanel/Settings_Button")
+ExtrasButton = NodePath("ButtonPanel/Extras_Button")
+QuitButton = NodePath("ButtonPanel/Quit_Button")
+SingleplayerPanel = NodePath("ButtonPanel/Singleplayer_Button/Singleplayer_Popup")
+ContinueButton = NodePath("ButtonPanel/Singleplayer_Button/Singleplayer_Popup/Continue_Button")
+LoadSavedButton = NodePath("ButtonPanel/Singleplayer_Button/Singleplayer_Popup/Load_Saved_Button")
+StartNewButton = NodePath("ButtonPanel/Singleplayer_Button/Singleplayer_Popup/Start_New_Button")
+MultiplayerPanel = NodePath("ButtonPanel/Multiplayer_Button/Multiplayer_Popup")
+HostNewButton = NodePath("ButtonPanel/Multiplayer_Button/Multiplayer_Popup/Host_New_Button")
+HostSavedButton = NodePath("ButtonPanel/Multiplayer_Button/Multiplayer_Popup/Host_Saved_Button")
+JoinGameButton = NodePath("ButtonPanel/Multiplayer_Button/Multiplayer_Popup/Join_Game_Button")
+SettingsScene = ExtResource("2_a712v")
+SaveMenuScene = ExtResource("3_1dhmk")
+HostPanelScene = ExtResource("4_jhcbk")
+JoinPanelScene = ExtResource("5_32jca")
 
-[node name="Background" type="TextureRect" parent="."]
+[node name="Background" type="TextureRect" parent="." unique_id=2006019579]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -22,7 +43,7 @@ grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("2_vpabl")
 
-[node name="Title_Card" type="TextureRect" parent="."]
+[node name="TitleCard" type="TextureRect" parent="." unique_id=249959125]
 layout_mode = 1
 anchors_preset = -1
 offset_left = 44.0
@@ -32,7 +53,7 @@ offset_bottom = 955.0
 scale = Vector2(0.3, 0.3)
 texture = ExtResource("3_ectev")
 
-[node name="Main_Button_Panel" type="VBoxContainer" parent="."]
+[node name="ButtonPanel" type="VBoxContainer" parent="." unique_id=754483232]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.5
@@ -42,12 +63,12 @@ offset_top = -174.0
 offset_right = 539.0
 offset_bottom = 132.00006
 
-[node name="Singleplayer_Button" type="Button" parent="Main_Button_Panel"]
+[node name="Singleplayer_Button" type="Button" parent="ButtonPanel" unique_id=1691967867]
 layout_mode = 2
 theme_override_font_sizes/font_size = 40
 text = "Singleplayer"
 
-[node name="Singleplayer_Popup" type="VBoxContainer" parent="Main_Button_Panel/Singleplayer_Button"]
+[node name="Singleplayer_Popup" type="VBoxContainer" parent="ButtonPanel/Singleplayer_Button" unique_id=1125284422]
 visible = false
 layout_mode = 1
 anchors_preset = -1
@@ -60,30 +81,30 @@ offset_top = -25.0
 offset_right = 202.0
 offset_bottom = 105.0
 
-[node name="Continue_Button" type="Button" parent="Main_Button_Panel/Singleplayer_Button/Singleplayer_Popup"]
+[node name="Continue_Button" type="Button" parent="ButtonPanel/Singleplayer_Button/Singleplayer_Popup" unique_id=964876287]
 layout_mode = 2
 theme_override_font_sizes/font_size = 30
 text = "> Continue"
 alignment = 0
 
-[node name="Load_Saved_Button" type="Button" parent="Main_Button_Panel/Singleplayer_Button/Singleplayer_Popup"]
+[node name="Load_Saved_Button" type="Button" parent="ButtonPanel/Singleplayer_Button/Singleplayer_Popup" unique_id=933429725]
 layout_mode = 2
 theme_override_font_sizes/font_size = 30
 text = "> Load Saved"
 alignment = 0
 
-[node name="Start_New_Button" type="Button" parent="Main_Button_Panel/Singleplayer_Button/Singleplayer_Popup"]
+[node name="Start_New_Button" type="Button" parent="ButtonPanel/Singleplayer_Button/Singleplayer_Popup" unique_id=226862696]
 layout_mode = 2
 theme_override_font_sizes/font_size = 30
 text = "> Start New"
 alignment = 0
 
-[node name="Multiplayer_Button" type="Button" parent="Main_Button_Panel"]
+[node name="Multiplayer_Button" type="Button" parent="ButtonPanel" unique_id=2106788877]
 layout_mode = 2
 theme_override_font_sizes/font_size = 40
 text = "Multiplayer"
 
-[node name="Multiplayer_Popup" type="VBoxContainer" parent="Main_Button_Panel/Multiplayer_Button"]
+[node name="Multiplayer_Popup" type="VBoxContainer" parent="ButtonPanel/Multiplayer_Button" unique_id=1142054968]
 visible = false
 layout_mode = 1
 anchors_preset = -1
@@ -95,35 +116,35 @@ offset_left = 5.0
 offset_top = -25.0
 offset_right = 140.0
 
-[node name="Host_New_Button" type="Button" parent="Main_Button_Panel/Multiplayer_Button/Multiplayer_Popup"]
+[node name="Host_New_Button" type="Button" parent="ButtonPanel/Multiplayer_Button/Multiplayer_Popup" unique_id=337774414]
 layout_mode = 2
 theme_override_font_sizes/font_size = 30
 text = "> Host New"
 alignment = 0
 
-[node name="Host_Saved_Button" type="Button" parent="Main_Button_Panel/Multiplayer_Button/Multiplayer_Popup"]
+[node name="Host_Saved_Button" type="Button" parent="ButtonPanel/Multiplayer_Button/Multiplayer_Popup" unique_id=495328532]
 layout_mode = 2
 theme_override_font_sizes/font_size = 30
 text = "> Host Saved"
 alignment = 0
 
-[node name="Join_Game_Button" type="Button" parent="Main_Button_Panel/Multiplayer_Button/Multiplayer_Popup"]
+[node name="Join_Game_Button" type="Button" parent="ButtonPanel/Multiplayer_Button/Multiplayer_Popup" unique_id=1757166324]
 layout_mode = 2
 theme_override_font_sizes/font_size = 30
 text = "> Join"
 alignment = 0
 
-[node name="Settings_Button" type="Button" parent="Main_Button_Panel"]
+[node name="Settings_Button" type="Button" parent="ButtonPanel" unique_id=1623634328]
 layout_mode = 2
 theme_override_font_sizes/font_size = 40
 text = "Settings"
 
-[node name="Extras_Button" type="Button" parent="Main_Button_Panel"]
+[node name="Extras_Button" type="Button" parent="ButtonPanel" unique_id=41319027]
 layout_mode = 2
 theme_override_font_sizes/font_size = 40
 text = "Extras"
 
-[node name="Quit_Button" type="Button" parent="Main_Button_Panel"]
+[node name="Quit_Button" type="Button" parent="ButtonPanel" unique_id=968431614]
 layout_mode = 2
 theme_override_font_sizes/font_size = 40
 text = "Quit"

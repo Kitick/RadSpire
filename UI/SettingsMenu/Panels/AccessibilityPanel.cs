@@ -1,17 +1,14 @@
-using System.Diagnostics;
-using System;
 using Godot;
-using SaveSystem;
+using Services;
 
-namespace Settings {
+namespace UI.Settings {
 	public sealed partial class AccessibilityPanel : VBoxContainer {
-		
-		// Node Paths
-		private const string SUBTITLES = "Subtitles/CheckBox";
-		private const string SUBTITLES_SIZE = "Subtitle_Size/HSlider";
-		private const string COLORBLIND_MODE = "Colorblind_Mode/OptionButton";
-		private const string TEXT_TO_SPEECH = "Text-to-Speech/CheckBox";
-		private const string HIGH_CONTRAST_UI = "High_Contrast_UI/CheckBox";
+
+		[Export] private CheckBox SubtitlesCheckBox = null!;
+		[Export] private HSlider SubtitleSizeSlider = null!;
+		[Export] private OptionButton ColorblindModeOption = null!;
+		[Export] private CheckBox TextToSpeechCheckBox = null!;
+		[Export] private CheckBox HighContrastUICheckBox = null!;
 
 		public override void _Ready() {
 			SetCallbacks();
@@ -19,11 +16,11 @@ namespace Settings {
 
 		// Set Callbacks
 		public void SetCallbacks() {
-			GetNode<CheckBox>(SUBTITLES).Toggled += OnSubtitlesCheckBox;
-			GetNode<HSlider>(SUBTITLES_SIZE).ValueChanged += OnSubtitleSizeChanged;
-			GetNode<OptionButton>(COLORBLIND_MODE).ItemSelected += OnColorblindSelected;
-			GetNode<CheckBox>(TEXT_TO_SPEECH).Toggled += OnTextToSpeechCheckBox;
-			GetNode<CheckBox>(HIGH_CONTRAST_UI).Toggled += OnHighContrastUICheckBox;
+			SubtitlesCheckBox.Toggled += OnSubtitlesCheckBox;
+			SubtitleSizeSlider.ValueChanged += OnSubtitleSizeChanged;
+			ColorblindModeOption.ItemSelected += OnColorblindSelected;
+			TextToSpeechCheckBox.Toggled += OnTextToSpeechCheckBox;
+			HighContrastUICheckBox.Toggled += OnHighContrastUICheckBox;
 		}
 
 		// Callbacks
@@ -50,11 +47,9 @@ namespace Settings {
 		//ISaveable Implementation Goes Here
 
 	}
-}
 
-// Update as needed
-namespace SaveSystem {
+	// Update as needed
 	public readonly record struct AccessibilitySettings : ISaveData {
-		
+
 	}
 }

@@ -1,40 +1,21 @@
 using System;
-using System.Collections.Generic;
 using Core;
 using Godot;
-using SaveSystem;
+using Services;
 
-namespace Settings {
+namespace UI.Settings {
 	public enum AudioBus { Master, Music, SFX }
 
 	public sealed partial class SoundPanel : VBoxContainer, ISaveable<SoundSettings> {
-		private static readonly Logger Log = new(nameof(SoundPanel), enabled: true);
+		private static readonly LogService Log = new(nameof(SoundPanel), enabled: true);
 
-		// Node Paths
-		private const string MASTER_SLIDER = "Master_Volume/HSlider";
-		private const string MUSIC_SLIDER = "Music_Volume/HSlider";
-		private const string SFX_SLIDER = "SFX_Volume/HSlider";
-		private const string MUTE_ALL_CHECKBOX = "Mute_All/CheckBox";
-		private const string OUTPUT_DEVICE = "Output_Device/OptionButton";
-
-		// Mapping enum to bus names
-		public static readonly Dictionary<AudioBus, string> BusNames = new() {
-			{ AudioBus.Master, "Master" },
-			{ AudioBus.Music, "Music" },
-			{ AudioBus.SFX, "SFX" }
-		};
-
-		// Mapping enum to slider paths
-		private static readonly Dictionary<AudioBus, string> BusToSlider = new() {
-			{ AudioBus.Master, MASTER_SLIDER },
-			{ AudioBus.Music, MUSIC_SLIDER },
-			{ AudioBus.SFX, SFX_SLIDER }
-		};
-
-		private OptionButton OutputDeviceOption = null!;
+		[Export] private HSlider MasterSlider = null!;
+		[Export] private HSlider MusicSlider = null!;
+		[Export] private HSlider SFXSlider = null!;
+		[Export] private CheckBox MuteAllCheckBox = null!;
+		[Export] private OptionButton OutputDeviceOption = null!;
 
 		public override void _Ready() {
-			GetComponents();
 			LoadCurrentVolumes();
 			SetCallbacks();
 
@@ -43,32 +24,33 @@ namespace Settings {
 			OutputDeviceOption.Select(AudioServer.OutputDevice);
 		}
 
-		private void GetComponents() {
-			OutputDeviceOption = GetNode<OptionButton>(OUTPUT_DEVICE);
-		}
-
 		private void SetCallbacks() {
-			GetNode<HSlider>(MASTER_SLIDER).ValueChanged += OnMasterVolumeChanged;
-			GetNode<HSlider>(MUSIC_SLIDER).ValueChanged += OnMusicVolumeChanged;
-			GetNode<HSlider>(SFX_SLIDER).ValueChanged += OnSFXVolumeChanged;
-			GetNode<CheckBox>(MUTE_ALL_CHECKBOX).Toggled += OnMuteAllToggled;
+			MasterSlider.ValueChanged += OnMasterVolumeChanged;
+			MusicSlider.ValueChanged += OnMusicVolumeChanged;
+			SFXSlider.ValueChanged += OnSFXVolumeChanged;
+			MuteAllCheckBox.Toggled += OnMuteAllToggled;
 			OutputDeviceOption.ItemSelected += OnOutputDeviceSelected;
 		}
 
-		private HSlider GetSlider(AudioBus bus) => GetNode<HSlider>(BusToSlider[bus]);
+		private HSlider GetSlider(AudioBus bus) => bus switch {
+			AudioBus.Master => MasterSlider,
+			AudioBus.Music => MusicSlider,
+			AudioBus.SFX => SFXSlider,
+			_ => throw new ArgumentException($"Unknown bus: {bus}")
+		};
 
 		private float GetSliderValue(AudioBus bus) => (float) GetSlider(bus).Value;
 		private void SetSliderValue(AudioBus bus, float value) => GetSlider(bus).Value = value;
 
 		// Sets the initial slider values based on current volumes
 		private void LoadCurrentVolumes() {
-			foreach(var bus in BusNames.Keys) {
+			foreach(var bus in AudioBusExtensions.GetAllNames()) {
 				SetSliderValue(bus, bus.GetVolume());
 			}
 		}
 
 		private static void SetMuteAll(bool isMuted) {
-			foreach(var bus in BusNames.Keys) {
+			foreach(var bus in AudioBusExtensions.GetAllNames()) {
 				bus.SetMuted(isMuted);
 			}
 		}
@@ -97,7 +79,7 @@ namespace Settings {
 			SetOutputDevice(selectedDevice);
 		}
 
-		public SoundSettings Serialize() => new SoundSettings {
+		public SoundSettings Export() => new SoundSettings {
 			MasterVolume = AudioBus.Master.GetVolume(),
 			MusicVolume = AudioBus.Music.GetVolume(),
 			SFXVolume = AudioBus.SFX.GetVolume(),
@@ -105,18 +87,17 @@ namespace Settings {
 			OutputDevice = AudioServer.OutputDevice,
 		};
 
-		public void Deserialize(in SoundSettings data) {
+		public void Import(SoundSettings data) {
 			AudioBus.Master.SetVolume(data.MasterVolume);
 			AudioBus.Music.SetVolume(data.MusicVolume);
 			AudioBus.SFX.SetVolume(data.SFXVolume);
 			AudioBus.Master.SetMuted(data.IsMuted);
 			SetOutputDevice(data.OutputDevice);
 
-			// Update UI sliders to reflect loaded values
-			GetNode<HSlider>(MASTER_SLIDER).Value = data.MasterVolume;
-			GetNode<HSlider>(MUSIC_SLIDER).Value = data.MusicVolume;
-			GetNode<HSlider>(SFX_SLIDER).Value = data.SFXVolume;
-			GetNode<CheckBox>(MUTE_ALL_CHECKBOX).ButtonPressed = data.IsMuted;
+			MasterSlider.Value = data.MasterVolume;
+			MusicSlider.Value = data.MusicVolume;
+			SFXSlider.Value = data.SFXVolume;
+			MuteAllCheckBox.ButtonPressed = data.IsMuted;
 
 			OutputDeviceOption.Select(data.OutputDevice);
 		}
@@ -124,8 +105,8 @@ namespace Settings {
 
 	// AudioBus extension methods for volume and mute controls
 	public static class AudioBusExtensions {
-		public static string GetName(this AudioBus bus) =>
-			SoundPanel.BusNames[bus];
+		public static AudioBus[] GetAllNames() => Enum.GetValues<AudioBus>();
+		public static string GetName(this AudioBus bus) => bus.ToString();
 
 		private static int GetIndex(this AudioBus bus) =>
 			AudioServer.GetBusIndex(bus.GetName());
@@ -149,9 +130,7 @@ namespace Settings {
 			AudioServer.SetBusMute(bus.GetIndex(), isMuted);
 		}
 	}
-}
 
-namespace SaveSystem {
 	public readonly record struct SoundSettings : ISaveData {
 		public int MasterVolume { get; init; }
 		public int MusicVolume { get; init; }

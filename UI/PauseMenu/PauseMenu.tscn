@@ -1,28 +1,27 @@
-[gd_scene load_steps=2 format=3 uid="uid://crye0f0yw8xrb"]
+[gd_scene format=3 uid="uid://crye0f0yw8xrb"]
 
 [ext_resource type="Script" uid="uid://d1semxqghe872" path="res://UI/PauseMenu/PauseMenu.cs" id="1_1f24j"]
 
-[node name="PauseMenu" type="Control"]
+[node name="PauseMenu" type="Control" unique_id=1762630433 node_paths=PackedStringArray("ResumeButton", "SaveButton", "HostButton", "SettingsButton", "MainMenuButton")]
 layout_mode = 3
 anchors_preset = 0
-offset_right = 200.0
-offset_bottom = 300.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
+offset_right = 300.0
+offset_bottom = 450.0
 script = ExtResource("1_1f24j")
+ResumeButton = NodePath("PanelArea/Buttons/Resume")
+SaveButton = NodePath("PanelArea/Buttons/Save")
+HostButton = NodePath("PanelArea/Buttons/Host")
+SettingsButton = NodePath("PanelArea/Buttons/Settings")
+MainMenuButton = NodePath("PanelArea/Buttons/MainMenu")
 
-[node name="PanelArea" type="ColorRect" parent="."]
+[node name="PanelArea" type="ColorRect" parent="." unique_id=1350342570]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_right = 48.0
-offset_bottom = 100.0
-grow_horizontal = 2
-grow_vertical = 2
 color = Color(0.41960785, 0.2784314, 0.23921569, 0.45882353)
 
-[node name="Label" type="RichTextLabel" parent="PanelArea"]
+[node name="Label" type="RichTextLabel" parent="PanelArea" unique_id=1056583576]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
@@ -32,7 +31,7 @@ text = "PAUSED"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Buttons" type="VBoxContainer" parent="PanelArea"]
+[node name="Buttons" type="VBoxContainer" parent="PanelArea" unique_id=414783453]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
@@ -48,27 +47,27 @@ grow_vertical = 2
 theme_override_constants/separation = 10
 alignment = 1
 
-[node name="Resume" type="Button" parent="PanelArea/Buttons"]
+[node name="Resume" type="Button" parent="PanelArea/Buttons" unique_id=1338784497]
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
 text = "RESUME"
 
-[node name="Save" type="Button" parent="PanelArea/Buttons"]
+[node name="Save" type="Button" parent="PanelArea/Buttons" unique_id=871118558]
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
 text = "SAVE"
 
-[node name="Host" type="Button" parent="PanelArea/Buttons"]
+[node name="Host" type="Button" parent="PanelArea/Buttons" unique_id=715289411]
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
 text = "HOST"
 
-[node name="Settings" type="Button" parent="PanelArea/Buttons"]
+[node name="Settings" type="Button" parent="PanelArea/Buttons" unique_id=305439042]
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
 text = "SETTINGS"
 
-[node name="Main_Menu" type="Button" parent="PanelArea/Buttons"]
+[node name="MainMenu" type="Button" parent="PanelArea/Buttons" unique_id=613053613]
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
 text = "MAIN MENU"

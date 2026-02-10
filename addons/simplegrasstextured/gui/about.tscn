@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://cb8klhv6nwvtl"]
+[gd_scene format=3 uid="uid://cb8klhv6nwvtl"]
 
 [ext_resource type="Script" uid="uid://cu72rjuvdnnx" path="res://addons/simplegrasstextured/gui/about.gd" id="1_r23hh"]
 [ext_resource type="Material" uid="uid://cl74usvfymgvs" path="res://addons/simplegrasstextured/materials/icon.material" id="2_4glo1"]
@@ -15,7 +15,7 @@ content_margin_right = 5.0
 content_margin_bottom = 5.0
 draw_center = false
 
-[node name="SimpleGrassTexturedHelpAbout" type="AcceptDialog"]
+[node name="SimpleGrassTexturedHelpAbout" type="AcceptDialog" unique_id=428704117]
 oversampling_override = 1.0
 title = "About"
 position = Vector2i(0, 36)
@@ -30,7 +30,7 @@ by IcterusGames
 [font_size=7] [/font_size]
 [b]Support me on:[/b]"
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=1163658266]
 offset_left = 8.0
 offset_top = 8.0
 offset_right = 636.0
@@ -40,22 +40,22 @@ theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer" unique_id=519811765]
 layout_mode = 2
 theme_override_constants/separation = 20
 
-[node name="TextureRect" type="TextureRect" parent="MarginContainer/HBoxContainer"]
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/HBoxContainer" unique_id=1827601635]
 material = ExtResource("2_4glo1")
 custom_minimum_size = Vector2(48, 48)
 layout_mode = 2
 texture = ExtResource("3_7w1su")
 stretch_mode = 4
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer" unique_id=433510824]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer/HBoxContainer/VBoxContainer" unique_id=1171941262]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(420, 0)
 layout_mode = 2
@@ -70,16 +70,16 @@ by IcterusGames
 [b]Support me on:[/b]"
 fit_content = true
 
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer/VBoxContainer" unique_id=550098505]
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/margin_left = 15
 
-[node name="ItchButton" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer/MarginContainer"]
+[node name="ItchButton" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer/MarginContainer" unique_id=1257135203]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer/VBoxContainer/MarginContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer/VBoxContainer/MarginContainer" unique_id=1239594546]
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/margin_left = 5
@@ -87,12 +87,12 @@ theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
-[node name="ItchContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer/MarginContainer/MarginContainer"]
+[node name="ItchContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer/MarginContainer/MarginContainer" unique_id=1789872007]
 unique_name_in_owner = true
 layout_mode = 2
 mouse_filter = 2
 
-[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer/HBoxContainer/VBoxContainer/MarginContainer/MarginContainer/ItchContainer"]
+[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer/HBoxContainer/VBoxContainer/MarginContainer/MarginContainer/ItchContainer" unique_id=374866762]
 custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
 size_flags_vertical = 4
@@ -103,16 +103,16 @@ text = "[b]Itch.io[/b]
 [url]https://icterusgames.itch.io[url]"
 fit_content = true
 
-[node name="MarginContainer2" type="MarginContainer" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+[node name="MarginContainer2" type="MarginContainer" parent="MarginContainer/HBoxContainer/VBoxContainer" unique_id=1628263500]
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/margin_left = 15
 
-[node name="PatreonButton" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer/MarginContainer2"]
+[node name="PatreonButton" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer/MarginContainer2" unique_id=110658278]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer/VBoxContainer/MarginContainer2"]
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer/VBoxContainer/MarginContainer2" unique_id=1294513729]
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/margin_left = 5
@@ -120,12 +120,12 @@ theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
-[node name="PatreonContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer/MarginContainer2/MarginContainer"]
+[node name="PatreonContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer/MarginContainer2/MarginContainer" unique_id=511238892]
 unique_name_in_owner = true
 layout_mode = 2
 mouse_filter = 2
 
-[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer/HBoxContainer/VBoxContainer/MarginContainer2/MarginContainer/PatreonContainer"]
+[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer/HBoxContainer/VBoxContainer/MarginContainer2/MarginContainer/PatreonContainer" unique_id=864608223]
 custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
 size_flags_vertical = 4
@@ -136,7 +136,7 @@ text = "[b]Patreon[/b]
 [url]https://www.patreon.com/IcterusGames[/url]"
 fit_content = true
 
-[node name="RichTextLabel2" type="RichTextLabel" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+[node name="RichTextLabel2" type="RichTextLabel" parent="MarginContainer/HBoxContainer/VBoxContainer" unique_id=439313278]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(420, 0)
 layout_mode = 2
@@ -148,16 +148,16 @@ text = "[font_size=7] [/font_size]
 [b]Source code on:[/b]"
 fit_content = true
 
-[node name="MarginContainer3" type="MarginContainer" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+[node name="MarginContainer3" type="MarginContainer" parent="MarginContainer/HBoxContainer/VBoxContainer" unique_id=107574248]
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/margin_left = 15
 
-[node name="GithubButton" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer/MarginContainer3"]
+[node name="GithubButton" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer/MarginContainer3" unique_id=483762719]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer/VBoxContainer/MarginContainer3"]
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer/VBoxContainer/MarginContainer3" unique_id=1416584481]
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/margin_left = 5
@@ -165,12 +165,12 @@ theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
-[node name="GithubContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer/MarginContainer3/MarginContainer"]
+[node name="GithubContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer/MarginContainer3/MarginContainer" unique_id=1476419762]
 unique_name_in_owner = true
 layout_mode = 2
 mouse_filter = 2
 
-[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer/HBoxContainer/VBoxContainer/MarginContainer3/MarginContainer/GithubContainer"]
+[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer/HBoxContainer/VBoxContainer/MarginContainer3/MarginContainer/GithubContainer" unique_id=1123983467]
 custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
 size_flags_vertical = 4

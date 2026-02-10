@@ -1,158 +1,118 @@
-using System;
-using Camera;
 using Components;
 using Core;
 using Godot;
-using SaveSystem;
+using Services;
+using ItemSystem;
+using System;
 
-public sealed partial class Player : CharacterBody3D, IDamageable, ISaveable<PlayerData> {
-	private static readonly Logger Log = new(nameof(Enemy), enabled: true);
-	// Configuration
-	[Export] private int InitalHealth = 100;
-	[Export] private float SprintMultiplier = 2.25f;
-	[Export] private float CrouchMultiplier = 0.5f;
+namespace Character {
+	public sealed partial class Player : CharacterBase, ISaveable<PlayerData> {
+		private static readonly LogService Log = new(nameof(Player), enabled: true);
 
-	// Inventories
-	public readonly Inventory Inventory = new Inventory(3, 5);
-	public readonly Inventory Hotbar = new Inventory(1, 5);
-	public InventoryManager InventoryManager = null!;
+		[Export] private int InitialHealthValue = 100;
+		[Export] private int InitialDamagePhysical = 10;
+		[Export] private int InitialDamageMagic = 0;
+		[Export] private int InitialDefensePhysical = 5;
+		[Export] private int InitialDefenseMagic = 2;
 
-	// Components
-	public readonly Health Health;
-	public readonly Movement Movement;
-	public readonly Item3DIconPickup PickupComponent;
+		protected override int InitialHealth => InitialHealthValue;
+		protected override (int phys, int mag) InitialDamage => (InitialDamagePhysical, InitialDamageMagic);
+		protected override (int phys, int mag) InitialDefense => (InitialDefensePhysical, InitialDefenseMagic);
 
-	private ProgressBar HealthBar = null!;
-	private PlayerAnimator Animator = null!;
+		[Export] private float SprintMultiplier = 2.25f;
+		[Export] private float CrouchMultiplier = 0.5f;
 
-	// State Machine
-	public enum State { Idle, Walking, Sprinting, Crouching, Falling }
+		// Inventories
+		public readonly Inventory Inventory = new Inventory(3, 5);
+		public readonly Inventory Hotbar = new Inventory(1, 5);
+		public readonly InventoryManager InventoryManager = new InventoryManager();
 
-	private readonly FiniteStateMachine<State> StateMachine = new(State.Idle);
-	public State CurrentState => StateMachine.State;
+		// Components
+		public readonly Movement Movement;
+		public readonly Item3DIconPickup PickupComponent = new Item3DIconPickup();
+		public readonly UseItem UseItemComponent = new UseItem();
 
-	public event Action<State, State>? OnStateChange {
-		add => StateMachine.OnStateChanged += value;
-		remove => StateMachine.OnStateChanged -= value;
-	}
-
-	public Player() {
-		Movement = new Movement(this);
-		Health = new Health(InitalHealth);
-		PickupComponent = new Item3DIconPickup();
-		InventoryManager = new InventoryManager();
-	}
-
-	public override void _Ready() {
-		AddChild(PickupComponent);
-
-		this.AddScene(Scenes.HUD);
-		AddChild(InventoryManager);
-		AddInventoriesToInventoryManager();
-
-		AddToGroup("Player");
-
-		HealthBar = GetNode<ProgressBar>("/root/GameManager/Player/HUD/HealthBar");
-		Animator =  GetNode<PlayerAnimator>("/root/GameManager/Player/Knight");
-
-		HealthBar.MaxValue = Health.MaxHealth;
-		HealthBar.Value = Health.CurrentHealth;
-	}
-
-	private void HandleHealthChanged(int newValue) {
-		HealthBar.Value = newValue;
-	}
-
-	public void AddInventoriesToInventoryManager() {
-		InventoryUI inventoryUI = GetNode<HUD>("HUD").GetNode<InventoryUI>("Inventory");
-		Inventory.Name = "Inventory";
-		InventoryManager.RegisterInventory(Inventory, inventoryUI);
-		Hotbar hotbarUI = GetNode<HUD>("HUD").GetNode<Hotbar>("Hotbar");
-		Hotbar.Name = "Hotbar";
-		InventoryManager.RegisterInventory(Hotbar, hotbarUI);
-	}
-
-	public void Update(float dt, KeyInput keyInput) {
-		if(Health.IsDead()) {
-			StateMachine.TransitionTo(State.Idle);
-			return;
+		public Player() {
+			Movement = new Movement(this);
 		}
 
-		float multiplier = GetMultiplier();
-
-		if(IsOnFloor()) {
-			Movement.Move(keyInput.HorizontalInput, multiplier);
-
-			if(keyInput.JumpPressed) { Movement.Jump(); }
+		public override void _Ready() {
+			base._Ready();
+			AddChild(PickupComponent);
+			AddChild(InventoryManager);
+			AddChild(UseItemComponent);
+			SetupChildren();
+			this.Hurt(50); // For testing purposes, start the player hurt.
 		}
 
-		Movement.Update(dt);
+		public void Update(float dt, KeyInput keyInput) {
+			if(this.IsDead()) {
+				StateMachine.TransitionTo(State.Dead);
+				return;
+			}
 
-		UpdateMovementState(keyInput);
-	}
+			float multiplier = GetMultiplier();
 
-	private void UpdateMovementState(KeyInput keyInput) {
-		if (keyInput.AttackPressed) {
-			Animator.PlaySlash();
+			if(IsOnFloor()) {
+				Movement.Move(keyInput.HorizontalInput, multiplier);
+
+				if(keyInput.JumpPressed) { Movement.Jump(); }
+			}
+
+			Movement.Update(dt);
+
+			UpdateMovementState(keyInput);
 		}
 
-		if(!IsOnFloor()) { StateMachine.TransitionTo(State.Falling); }
-		else if(!keyInput.IsMoving) { StateMachine.TransitionTo(State.Idle); }
-		else if(keyInput.SprintHeld) { StateMachine.TransitionTo(State.Sprinting); }
-		else if(keyInput.CrouchHeld) { StateMachine.TransitionTo(State.Crouching); }
-		else { StateMachine.TransitionTo(State.Walking); }
-	}
+		private void UpdateMovementState(KeyInput keyInput) {
+			if(keyInput.AttackPressed) {
+				StateMachine.TransitionTo(State.Attacking);
+			}
 
-	public void TakeDamage(int amount) {
-		Health.CurrentHealth -= amount;
-		Log.Info($"Player HP: {Health.CurrentHealth}");
+			if(!IsOnFloor()) { StateMachine.TransitionTo(State.Falling); }
+			else if(!keyInput.IsMoving) { StateMachine.TransitionTo(State.Idle); }
+			else if(keyInput.SprintHeld) { StateMachine.TransitionTo(State.Sprinting); }
+			else if(keyInput.CrouchHeld) { StateMachine.TransitionTo(State.Crouching); }
+			else { StateMachine.TransitionTo(State.Walking); }
+		}
 
-		HandleHealthChanged(Health.CurrentHealth);
+		private float GetMultiplier() {
+			float multiplier = 1.0f;
 
-		if(Health.IsDead()) {
-			Animator.PlayDie();
+			if(StateMachine.CurrentState == State.Sprinting) { multiplier *= SprintMultiplier; }
+			if(StateMachine.CurrentState == State.Crouching) { multiplier *= CrouchMultiplier; }
+
+			return multiplier;
+		}
+
+		private void SetupChildren() {
+			UseItemComponent.User = this;
+		}
+
+		public PlayerData Export() => new PlayerData {
+			Movement = Movement.Export(),
+			Health = Health.Export(),
+			Offense = Offense.Export(),
+			Defense = Defense.Export(),
+			Inventory = Inventory.Export(),
+			Hotbar = Hotbar.Export(),
+		};
+
+		public void Import(PlayerData data) {
+			Movement.Import(data.Movement);
+			Health.Import(data.Health);
+			Offense.Import(data.Offense);
+			Defense.Import(data.Defense);
+			Inventory.Import(data.Inventory);
+			Hotbar.Import(data.Hotbar);
 		}
 	}
 
-	public void Die() {
-		var hud = GetNodeOrNull<HUD>("HUD");
-		if(hud != null) {
-			hud.ShowRespawnMenu();
-			Log.Info("Player died, showing respawn menu");
-		}
-		else {
-			Log.Error("Player.Die: Could not find HUD to show respawn menu");
-		}
-	}
-
-	private float GetMultiplier() {
-		float multiplier = 1.0f;
-
-		if(StateMachine.State == State.Sprinting) { multiplier *= SprintMultiplier; }
-		if(StateMachine.State == State.Crouching) { multiplier *= CrouchMultiplier; }
-
-		return multiplier;
-	}
-
-	public PlayerData Serialize() => new PlayerData {
-		Health = Health.Serialize(),
-		Movement = Movement.Serialize(),
-		Inventory = Inventory.Serialize(),
-		Hotbar = Hotbar.Serialize(),
-	};
-
-	public void Deserialize(in PlayerData data) {
-		Health.Deserialize(data.Health);
-		Movement.Deserialize(data.Movement);
-		Inventory.Deserialize(data.Inventory);
-		Hotbar.Deserialize(data.Hotbar);
-	}
-}
-
-namespace SaveSystem {
 	public readonly record struct PlayerData : ISaveData {
-		public HealthData Health { get; init; }
 		public MovementData Movement { get; init; }
+		public HealthData Health { get; init; }
+		public OffenseData Offense { get; init; }
+		public DefenseData Defense { get; init; }
 		public InventoryData Inventory { get; init; }
 		public InventoryData Hotbar { get; init; }
 	}

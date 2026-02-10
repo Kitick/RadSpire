@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://eqxx1dru7wg3"]
+[gd_scene format=3 uid="uid://eqxx1dru7wg3"]
 
 [ext_resource type="Script" uid="uid://cir0b6r530jd0" path="res://UI/SettingsMenu/SettingsMenu.cs" id="1_dv3nc"]
 [ext_resource type="Script" uid="uid://4s4bl8f2mte1" path="res://UI/SettingsMenu/Panels/GeneralPanel.cs" id="2_n8tfj"]
@@ -8,10 +8,7 @@
 [ext_resource type="Script" uid="uid://8tuxmuyevsjl" path="res://UI/SettingsMenu/Panels/MkPanel.cs" id="6_uv3og"]
 [ext_resource type="Script" uid="uid://fxvdaltq3r54" path="res://UI/SettingsMenu/Panels/AccessibilityPanel.cs" id="7_2kpqc"]
 
-[sub_resource type="Environment" id="Environment_w7gfg"]
-adjustment_enabled = true
-
-[node name="Settings_Menu" type="Control"]
+[node name="SettingsMenu" type="Control" unique_id=440443673 node_paths=PackedStringArray("BackButton", "ResetButton", "GeneralPanel", "GeneralButton", "DisplayPanel", "DisplayButton", "SoundPanel", "SoundButton", "ControllerPanel", "ControllerButton", "MKPanel", "MKButton", "AccessibilityPanel", "AccessibilityButton")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -19,8 +16,22 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_dv3nc")
+BackButton = NodePath("BackButton")
+ResetButton = NodePath("ResetSettingsButton")
+GeneralPanel = NodePath("General")
+GeneralButton = NodePath("NavBar/General_Button")
+DisplayPanel = NodePath("Display")
+DisplayButton = NodePath("NavBar/Display_Button")
+SoundPanel = NodePath("Sound")
+SoundButton = NodePath("NavBar/Sound_Button")
+ControllerPanel = NodePath("Controller")
+ControllerButton = NodePath("NavBar/Controller_Button")
+MKPanel = NodePath("MK")
+MKButton = NodePath("NavBar/MK_Button")
+AccessibilityPanel = NodePath("Accessibility")
+AccessibilityButton = NodePath("NavBar/Accessibility_Button")
 
-[node name="PanelArea" type="ColorRect" parent="."]
+[node name="PanelArea" type="ColorRect" parent="." unique_id=1866459416]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -29,7 +40,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.5)
 
-[node name="Top_Panel" type="HBoxContainer" parent="."]
+[node name="NavBar" type="HBoxContainer" parent="." unique_id=2126123833]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
@@ -41,37 +52,38 @@ offset_bottom = 53.0
 grow_horizontal = 2
 theme_override_constants/separation = 8
 
-[node name="General_Button" type="Button" parent="Top_Panel"]
+[node name="General_Button" type="Button" parent="NavBar" unique_id=1431747125]
 layout_mode = 2
 theme_override_font_sizes/font_size = 40
 text = "General"
 
-[node name="Display_Button" type="Button" parent="Top_Panel"]
+[node name="Display_Button" type="Button" parent="NavBar" unique_id=465923652]
 layout_mode = 2
 theme_override_font_sizes/font_size = 40
 text = "Display"
 
-[node name="Sound_Button" type="Button" parent="Top_Panel"]
+[node name="Sound_Button" type="Button" parent="NavBar" unique_id=1150145720]
 layout_mode = 2
 theme_override_font_sizes/font_size = 40
 text = "Sound"
 
-[node name="Controller_Button" type="Button" parent="Top_Panel"]
+[node name="Controller_Button" type="Button" parent="NavBar" unique_id=1841363012]
 layout_mode = 2
 theme_override_font_sizes/font_size = 40
 text = "Controller"
 
-[node name="MK_Button" type="Button" parent="Top_Panel"]
+[node name="MK_Button" type="Button" parent="NavBar" unique_id=1818435186]
 layout_mode = 2
 theme_override_font_sizes/font_size = 40
 text = "Mouse & Keyboard"
 
-[node name="Accessibility_Button" type="Button" parent="Top_Panel"]
+[node name="Accessibility_Button" type="Button" parent="NavBar" unique_id=1538897931]
 layout_mode = 2
 theme_override_font_sizes/font_size = 40
 text = "Accessibility"
 
-[node name="General_Panel" type="VBoxContainer" parent="."]
+[node name="General" type="VBoxContainer" parent="." unique_id=75046396 node_paths=PackedStringArray("LanguageOption", "UIScaleSlider", "ThemeOption")]
+visible = false
 layout_mode = 1
 anchors_preset = 14
 anchor_top = 0.5
@@ -85,13 +97,16 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 0
 script = ExtResource("2_n8tfj")
+LanguageOption = NodePath("Language/OptionButton")
+UIScaleSlider = NodePath("UIScale/HSlider")
+ThemeOption = NodePath("Theme/OptionButton")
 
-[node name="Language" type="Label" parent="General_Panel"]
+[node name="Language" type="Label" parent="General" unique_id=1481583718]
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
 text = "Language"
 
-[node name="OptionButton" type="OptionButton" parent="General_Panel/Language"]
+[node name="OptionButton" type="OptionButton" parent="General/Language" unique_id=748508690]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 1.0
@@ -103,12 +118,12 @@ offset_top = -16.0
 offset_bottom = 16.0
 theme_override_font_sizes/font_size = 20
 
-[node name="UI_Scale" type="Label" parent="General_Panel"]
+[node name="UIScale" type="Label" parent="General" unique_id=204374435]
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
 text = "UI Scale"
 
-[node name="HSlider" type="HSlider" parent="General_Panel/UI_Scale"]
+[node name="HSlider" type="HSlider" parent="General/UIScale" unique_id=971533785]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 1.0
@@ -123,12 +138,12 @@ max_value = 1.0
 step = 0.01
 value = 0.5
 
-[node name="Theme" type="Label" parent="General_Panel"]
+[node name="Theme" type="Label" parent="General" unique_id=384361819]
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
 text = "Theme"
 
-[node name="OptionButton" type="OptionButton" parent="General_Panel/Theme"]
+[node name="OptionButton" type="OptionButton" parent="General/Theme" unique_id=1761650502]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 1.0
@@ -140,7 +155,7 @@ offset_top = -16.0
 offset_bottom = 16.0
 theme_override_font_sizes/font_size = 20
 
-[node name="Display_Panel" type="VBoxContainer" parent="."]
+[node name="Display" type="VBoxContainer" parent="." unique_id=730687821 node_paths=PackedStringArray("ResolutionOption", "FullscreenCheck", "VSyncCheck", "BrightnessSlider", "FramerateOption")]
 visible = false
 layout_mode = 1
 anchors_preset = 14
@@ -155,13 +170,18 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 0
 script = ExtResource("3_qn140")
+ResolutionOption = NodePath("Resolution/OptionButton")
+FullscreenCheck = NodePath("Fullscreen/CheckBox")
+VSyncCheck = NodePath("VSync/CheckBox")
+BrightnessSlider = NodePath("Brightness/HSlider")
+FramerateOption = NodePath("Framerate/OptionButton")
 
-[node name="Resolution" type="Label" parent="Display_Panel"]
+[node name="Resolution" type="Label" parent="Display" unique_id=1102883880]
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
 text = "Resolution"
 
-[node name="OptionButton" type="OptionButton" parent="Display_Panel/Resolution"]
+[node name="OptionButton" type="OptionButton" parent="Display/Resolution" unique_id=744878939]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 1.0
@@ -174,12 +194,12 @@ offset_right = 150.0
 offset_bottom = 16.015
 theme_override_font_sizes/font_size = 20
 
-[node name="Fullscreen" type="Label" parent="Display_Panel"]
+[node name="Fullscreen" type="Label" parent="Display" unique_id=872083276]
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
 text = "Fullscreen"
 
-[node name="CheckBox" type="CheckBox" parent="Display_Panel/Fullscreen"]
+[node name="CheckBox" type="CheckBox" parent="Display/Fullscreen" unique_id=954081725]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 1.0
@@ -191,12 +211,12 @@ offset_top = -24.0
 offset_bottom = 8.0
 scale = Vector2(1.5, 1.5)
 
-[node name="VSync" type="Label" parent="Display_Panel"]
+[node name="VSync" type="Label" parent="Display" unique_id=2147413102]
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
 text = "VSync"
 
-[node name="CheckBox" type="CheckBox" parent="Display_Panel/VSync"]
+[node name="CheckBox" type="CheckBox" parent="Display/VSync" unique_id=151589879]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 1.0
@@ -208,12 +228,12 @@ offset_top = -24.0
 offset_bottom = 8.0
 scale = Vector2(1.5, 1.5)
 
-[node name="Brightness" type="Label" parent="Display_Panel"]
+[node name="Brightness" type="Label" parent="Display" unique_id=803022101]
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
 text = "Brightness"
 
-[node name="HSlider" type="HSlider" parent="Display_Panel/Brightness"]
+[node name="HSlider" type="HSlider" parent="Display/Brightness" unique_id=1972906422]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 1.0
@@ -228,12 +248,12 @@ max_value = 2.0
 step = 0.01
 value = 1.0
 
-[node name="FPS_Cap" type="Label" parent="Display_Panel"]
+[node name="Framerate" type="Label" parent="Display" unique_id=1766648480]
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
 text = "FPS Cap"
 
-[node name="OptionButton" type="OptionButton" parent="Display_Panel/FPS_Cap"]
+[node name="OptionButton" type="OptionButton" parent="Display/Framerate" unique_id=799170710]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 1.0
@@ -246,7 +266,7 @@ offset_right = 150.0
 offset_bottom = 16.0
 theme_override_font_sizes/font_size = 20
 
-[node name="Sound_Panel" type="VBoxContainer" parent="."]
+[node name="Sound" type="VBoxContainer" parent="." unique_id=626981101 node_paths=PackedStringArray("MasterSlider", "MusicSlider", "SFXSlider", "MuteAllCheckBox", "OutputDeviceOption")]
 visible = false
 layout_mode = 1
 anchors_preset = 14
@@ -261,13 +281,18 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 0
 script = ExtResource("4_jxq57")
+MasterSlider = NodePath("Master/HSlider")
+MusicSlider = NodePath("Music/HSlider")
+SFXSlider = NodePath("SFX/HSlider")
+MuteAllCheckBox = NodePath("Mute/CheckBox")
+OutputDeviceOption = NodePath("OutputDevice/OptionButton")
 
-[node name="Master_Volume" type="Label" parent="Sound_Panel"]
+[node name="Master" type="Label" parent="Sound" unique_id=680519911]
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
 text = "Master Volume"
 
-[node name="HSlider" type="HSlider" parent="Sound_Panel/Master_Volume"]
+[node name="HSlider" type="HSlider" parent="Sound/Master" unique_id=1116721174]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 1.0
@@ -279,12 +304,12 @@ offset_top = -16.0
 offset_right = 256.0
 offset_bottom = 16.0
 
-[node name="Music_Volume" type="Label" parent="Sound_Panel"]
+[node name="Music" type="Label" parent="Sound" unique_id=1613468907]
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
 text = "Music Volume"
 
-[node name="HSlider" type="HSlider" parent="Sound_Panel/Music_Volume"]
+[node name="HSlider" type="HSlider" parent="Sound/Music" unique_id=616946594]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 1.0
@@ -296,12 +321,12 @@ offset_top = -16.0
 offset_right = 256.0
 offset_bottom = 16.0
 
-[node name="SFX_Volume" type="Label" parent="Sound_Panel"]
+[node name="SFX" type="Label" parent="Sound" unique_id=1434505635]
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
 text = "SFX Volume"
 
-[node name="HSlider" type="HSlider" parent="Sound_Panel/SFX_Volume"]
+[node name="HSlider" type="HSlider" parent="Sound/SFX" unique_id=1212596604]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 1.0
@@ -313,12 +338,12 @@ offset_top = -16.0
 offset_right = 256.0
 offset_bottom = 16.0
 
-[node name="Mute_All" type="Label" parent="Sound_Panel"]
+[node name="Mute" type="Label" parent="Sound" unique_id=520914139]
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
 text = "Mute All"
 
-[node name="CheckBox" type="CheckBox" parent="Sound_Panel/Mute_All"]
+[node name="CheckBox" type="CheckBox" parent="Sound/Mute" unique_id=1436120856]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 1.0
@@ -330,12 +355,12 @@ offset_top = -24.0
 offset_bottom = 8.0
 scale = Vector2(1.5, 1.5)
 
-[node name="Output_Device" type="Label" parent="Sound_Panel"]
+[node name="OutputDevice" type="Label" parent="Sound" unique_id=1624693647]
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
 text = "Output Device"
 
-[node name="OptionButton" type="OptionButton" parent="Sound_Panel/Output_Device"]
+[node name="OptionButton" type="OptionButton" parent="Sound/OutputDevice" unique_id=2087250848]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 1.0
@@ -347,7 +372,7 @@ offset_top = -16.0
 offset_bottom = 16.0
 theme_override_font_sizes/font_size = 20
 
-[node name="Controller_Panel" type="VBoxContainer" parent="."]
+[node name="Controller" type="VBoxContainer" parent="." unique_id=1706615415 node_paths=PackedStringArray("EnableControllerCheckBox", "VibrationCheckBox", "DeadzoneSlider", "RemapButtonsButton")]
 visible = false
 layout_mode = 1
 anchors_preset = 14
@@ -362,13 +387,17 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 0
 script = ExtResource("5_jh1wv")
+EnableControllerCheckBox = NodePath("Enable_Controller/CheckBox")
+VibrationCheckBox = NodePath("Vibration/CheckBox")
+DeadzoneSlider = NodePath("Deadzone/HSlider")
+RemapButtonsButton = NodePath("Remap_Buttons")
 
-[node name="Enable_Controller" type="Label" parent="Controller_Panel"]
+[node name="Enable_Controller" type="Label" parent="Controller" unique_id=554200959]
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
 text = "Enable Controller"
 
-[node name="CheckBox" type="CheckBox" parent="Controller_Panel/Enable_Controller"]
+[node name="CheckBox" type="CheckBox" parent="Controller/Enable_Controller" unique_id=398049958]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 1.0
@@ -380,12 +409,12 @@ offset_top = -24.0
 offset_bottom = 8.0
 scale = Vector2(1.5, 1.5)
 
-[node name="Vibration" type="Label" parent="Controller_Panel"]
+[node name="Vibration" type="Label" parent="Controller" unique_id=765539001]
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
 text = "Vibration"
 
-[node name="CheckBox" type="CheckBox" parent="Controller_Panel/Vibration"]
+[node name="CheckBox" type="CheckBox" parent="Controller/Vibration" unique_id=1815502275]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 1.0
@@ -397,12 +426,12 @@ offset_top = -24.0
 offset_bottom = 8.0
 scale = Vector2(1.5, 1.5)
 
-[node name="Deadzone" type="Label" parent="Controller_Panel"]
+[node name="Deadzone" type="Label" parent="Controller" unique_id=1100646173]
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
 text = "Deadzone"
 
-[node name="HSlider" type="HSlider" parent="Controller_Panel/Deadzone"]
+[node name="HSlider" type="HSlider" parent="Controller/Deadzone" unique_id=2070950332]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 1.0
@@ -414,13 +443,13 @@ offset_top = -16.0
 offset_right = 231.0
 offset_bottom = 16.0
 
-[node name="Remap_Buttons" type="Button" parent="Controller_Panel"]
+[node name="Remap_Buttons" type="Button" parent="Controller" unique_id=479465820]
 layout_mode = 2
 size_flags_horizontal = 0
 theme_override_font_sizes/font_size = 32
 text = "Remap Buttons"
 
-[node name="MK_Panel" type="VBoxContainer" parent="."]
+[node name="MK" type="VBoxContainer" parent="." unique_id=1252852007 node_paths=PackedStringArray("MouseSenseSlider", "InvertedYAxisCheckBox", "RawInputCheckBox", "RemapKeysButton")]
 visible = false
 layout_mode = 1
 anchors_preset = 14
@@ -435,13 +464,17 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 0
 script = ExtResource("6_uv3og")
+MouseSenseSlider = NodePath("Mouse_Sense/HSlider")
+InvertedYAxisCheckBox = NodePath("Invert_Y-Axis/CheckBox")
+RawInputCheckBox = NodePath("Enable_Raw_Input/CheckBox")
+RemapKeysButton = NodePath("Remap_Keys")
 
-[node name="Mouse_Sense" type="Label" parent="MK_Panel"]
+[node name="Mouse_Sense" type="Label" parent="MK" unique_id=2053511060]
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
 text = "Mouse Sense"
 
-[node name="HSlider" type="HSlider" parent="MK_Panel/Mouse_Sense"]
+[node name="HSlider" type="HSlider" parent="MK/Mouse_Sense" unique_id=830775731]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 1.0
@@ -453,12 +486,12 @@ offset_top = -16.0
 offset_right = 231.0
 offset_bottom = 16.0
 
-[node name="Invert_Y-Axis" type="Label" parent="MK_Panel"]
+[node name="Invert_Y-Axis" type="Label" parent="MK" unique_id=648042255]
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
 text = "Invert Y-Axis"
 
-[node name="CheckBox" type="CheckBox" parent="MK_Panel/Invert_Y-Axis"]
+[node name="CheckBox" type="CheckBox" parent="MK/Invert_Y-Axis" unique_id=118223002]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 1.0
@@ -470,12 +503,12 @@ offset_top = -24.0
 offset_bottom = 8.0
 scale = Vector2(1.5, 1.5)
 
-[node name="Enable_Raw_Input" type="Label" parent="MK_Panel"]
+[node name="Enable_Raw_Input" type="Label" parent="MK" unique_id=76786761]
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
 text = "Enable Raw Input"
 
-[node name="CheckBox" type="CheckBox" parent="MK_Panel/Enable_Raw_Input"]
+[node name="CheckBox" type="CheckBox" parent="MK/Enable_Raw_Input" unique_id=692041654]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 1.0
@@ -488,13 +521,13 @@ offset_right = 24.0
 offset_bottom = 8.0
 scale = Vector2(1.5, 1.5)
 
-[node name="Remap_Keys" type="Button" parent="MK_Panel"]
+[node name="Remap_Keys" type="Button" parent="MK" unique_id=1463648465]
 layout_mode = 2
 size_flags_horizontal = 0
 theme_override_font_sizes/font_size = 32
 text = "Remap Keys"
 
-[node name="Accessibility_Panel" type="VBoxContainer" parent="."]
+[node name="Accessibility" type="VBoxContainer" parent="." unique_id=229276971 node_paths=PackedStringArray("SubtitlesCheckBox", "SubtitleSizeSlider", "ColorblindModeOption", "TextToSpeechCheckBox", "HighContrastUICheckBox")]
 visible = false
 layout_mode = 1
 anchors_preset = 14
@@ -509,13 +542,18 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 0
 script = ExtResource("7_2kpqc")
+SubtitlesCheckBox = NodePath("Subtitles/CheckBox")
+SubtitleSizeSlider = NodePath("Subtitle_Size/HSlider")
+ColorblindModeOption = NodePath("Colorblind_Mode/OptionButton")
+TextToSpeechCheckBox = NodePath("Text-to-Speech/CheckBox")
+HighContrastUICheckBox = NodePath("High_Contrast_UI/CheckBox")
 
-[node name="Subtitles" type="Label" parent="Accessibility_Panel"]
+[node name="Subtitles" type="Label" parent="Accessibility" unique_id=185340189]
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
 text = "Subtitles"
 
-[node name="CheckBox" type="CheckBox" parent="Accessibility_Panel/Subtitles"]
+[node name="CheckBox" type="CheckBox" parent="Accessibility/Subtitles" unique_id=2075677649]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 1.0
@@ -527,12 +565,12 @@ offset_top = -24.0
 offset_bottom = 8.0
 scale = Vector2(1.5, 1.5)
 
-[node name="Subtitle_Size" type="Label" parent="Accessibility_Panel"]
+[node name="Subtitle_Size" type="Label" parent="Accessibility" unique_id=517582319]
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
 text = "Subtitle Size"
 
-[node name="HSlider" type="HSlider" parent="Accessibility_Panel/Subtitle_Size"]
+[node name="HSlider" type="HSlider" parent="Accessibility/Subtitle_Size" unique_id=550718222]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 1.0
@@ -544,12 +582,12 @@ offset_top = -16.0
 offset_right = 237.0
 offset_bottom = 16.0
 
-[node name="Colorblind_Mode" type="Label" parent="Accessibility_Panel"]
+[node name="Colorblind_Mode" type="Label" parent="Accessibility" unique_id=709399320]
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
 text = "Colorblind Mode"
 
-[node name="OptionButton" type="OptionButton" parent="Accessibility_Panel/Colorblind_Mode"]
+[node name="OptionButton" type="OptionButton" parent="Accessibility/Colorblind_Mode" unique_id=2105192749]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 1.0
@@ -560,12 +598,12 @@ offset_left = 12.0
 offset_top = -16.0
 offset_bottom = 16.0
 
-[node name="Text-to-Speech" type="Label" parent="Accessibility_Panel"]
+[node name="Text-to-Speech" type="Label" parent="Accessibility" unique_id=277903164]
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
 text = "Text to Speech"
 
-[node name="CheckBox" type="CheckBox" parent="Accessibility_Panel/Text-to-Speech"]
+[node name="CheckBox" type="CheckBox" parent="Accessibility/Text-to-Speech" unique_id=207702641]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 1.0
@@ -577,12 +615,12 @@ offset_top = -24.0
 offset_bottom = 8.0
 scale = Vector2(1.5, 1.5)
 
-[node name="High_Contrast_UI" type="Label" parent="Accessibility_Panel"]
+[node name="High_Contrast_UI" type="Label" parent="Accessibility" unique_id=906879753]
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
 text = "High Contrast UI"
 
-[node name="CheckBox" type="CheckBox" parent="Accessibility_Panel/High_Contrast_UI"]
+[node name="CheckBox" type="CheckBox" parent="Accessibility/High_Contrast_UI" unique_id=28417821]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 1.0
@@ -594,10 +632,17 @@ offset_top = -24.0
 offset_bottom = 8.0
 scale = Vector2(1.5, 1.5)
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = SubResource("Environment_w7gfg")
+[node name="BackButton" type="Button" parent="." unique_id=878620147]
+layout_mode = 0
+offset_left = 64.0
+offset_top = 960.0
+offset_right = 181.0
+offset_bottom = 1023.0
+size_flags_horizontal = 0
+theme_override_font_sizes/font_size = 40
+text = "Back"
 
-[node name="ResetSettingsButton" type="Button" parent="."]
+[node name="ResetSettingsButton" type="Button" parent="." unique_id=1422098046]
 layout_mode = 0
 offset_left = 1576.0
 offset_top = 960.0
@@ -606,13 +651,3 @@ offset_bottom = 1023.0
 size_flags_horizontal = 0
 theme_override_font_sizes/font_size = 40
 text = "Reset Settings"
-
-[node name="BackButton" type="Button" parent="."]
-layout_mode = 0
-offset_left = 64.0
-offset_top = 960.0
-offset_right = 181.0
-offset_bottom = 991.0
-size_flags_horizontal = 0
-theme_override_font_sizes/font_size = 40
-text = "Back"

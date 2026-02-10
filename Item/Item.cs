@@ -1,207 +1,257 @@
-using System;
-using Components;
-using Core;
-using SaveSystem;
-using Godot;
-using System.Collections.Generic;
+namespace ItemSystem {
+	using System.Collections.Generic;
+	using System.Runtime.CompilerServices;
+	using Components;
+	using Godot;
+	using Services;
 
-[GlobalClass]
-public partial class Item : Resource, ISaveable<ItemData> {
-    //Basic properties of all items
-    [Export]
-    public string Id {
-        get;
-        set {
-            if(string.IsNullOrWhiteSpace(value)) {
-                return;
-            }
-            field = value;
-        }
-    } = "ItemDefault";
+	public partial class Item : ISaveable<ItemData> {
+		private static readonly LogService Log = new(nameof(Item), enabled: true);
+		[Export]
+		public string Id {
+			get;
+			set {
+				if(string.IsNullOrWhiteSpace(value)) {
+					return;
+				}
+				field = value;
+			}
+		} = "ItemDefault";
 
-    [Export]
-    public string Name {
-        get;
-        set {
-            if(string.IsNullOrWhiteSpace(value)) {
-                return;
-            }
-            field = value;
-        }
-    } = "Default Item";
+		[Export]
+		public string Name {
+			get;
+			set {
+				if(string.IsNullOrWhiteSpace(value)) {
+					return;
+				}
+				field = value;
+			}
+		} = "Default Item";
 
-    [Export]
-    public string Description {
-        get;
-        set {
-            if(string.IsNullOrWhiteSpace(value)) {
-                return;
-            }
-            field = value;
-        }
-    } = "Default Description";
+		[Export]
+		public string Description {
+			get;
+			set {
+				if(string.IsNullOrWhiteSpace(value)) {
+					return;
+				}
+				field = value;
+			}
+		} = "Default Description";
 
-    [Export]
-    public int MaxStackSize {
-        get; set {
-            if(value < 1) {
-                field = 1;
-                return;
-            }
-            field = value;
-        }
-    } = 1;
+		[Export]
+		public int MaxStackSize {
+			get; set {
+				if(value < 1) {
+					field = 1;
+					return;
+				}
+				field = value;
+			}
+		} = 1;
 
-    public bool IsStackable => MaxStackSize > 1;
-    [Export] public bool IsConsumable { get; set; } = false;
-    [Export] public Texture2D IconTexture { get; set; } = null!;
+		public bool IsStackable => MaxStackSize > 1;
 
-    [Export] public Godot.Collections.Array<Resource> ComponentResources { get; set; } = new();
-    public List<IItemComponent> Components = new();
+		[Export] public bool IsConsumable { get; set; } = false;
 
-    public Item() {
-        BuildComponents();
-    }
+		[Export] public Texture2D IconTexture { get; set; } = null!;
 
-    public void BuildComponents() {
-        Components.Clear();
-        if(ComponentResources == null){
-            return;
-        }
-        foreach(var resource in ComponentResources) {
-            if(resource is IItemComponent comp){
-                IItemComponent componentInstance = GD.Load<IItemComponent>(resource.ResourcePath);
-                Components.Add(componentInstance);
-            }
-        }
-    }
+		[Export] public List<IItemComponent> Components { get; set; } = new();
 
-    public bool OnUse(CharacterBody3D user) {
-        bool success = false;
-        foreach(IItemComponent component in Components) {
-            if(component is IUsable usable) {
-                success |= usable.OnUse(user);
-            }
-        }
-        return success;
-    }
+		public void SortComponents() {
+			Components.Sort((left, right) => left.priority.CompareTo(right.priority));
+		}
 
-    public bool OnConsume(CharacterBody3D consumer) {
-        bool success = false;
-        foreach(IItemComponent component in Components) {
-            if(component is IConsumable consumable) {
-                GD.Print("Consuming item with component: " + consumable.GetType().Name);
-                success |= consumable.OnConsume(consumer);
-            }
-        }
-        return success;
-    }
+		public Item() {
+			Components = new List<IItemComponent>();
+			SortComponents();
+		}
 
-    public void OnEquip(CharacterBody3D equipper) {
-        foreach(var component in Components) {
-            if(component is IEquipable equipable) {
-                equipable.OnEquip(equipper);
-            }
-        }
-    }
+		public Item(Item other) {
+			Id = other.Id;
+			Name = other.Name;
+			Description = other.Description;
+			MaxStackSize = other.MaxStackSize;
+			IsConsumable = other.IsConsumable;
+			IconTexture = other.IconTexture;
 
-    public void OnUnequip(CharacterBody3D unequipper) {
-        foreach(var component in Components) {
-            if(component is IEquipable equipable) {
-                equipable.OnUnequip(unequipper);
-            }
-        }
-    }
+			Components = new List<IItemComponent>(other.Components);
+			SortComponents();
+		}
 
-    public bool AddComponent(IItemComponent component) {
-        if(component == null) {
-            return false;
-        }
-        if(!(component is IItemComponent comp)){
-            return false;
-        }
-        foreach(var resource in ComponentResources) {
-            if(ReferenceEquals(resource, component)){
-                return false;
-            }
-        }
-        ComponentResources.Add((Resource)component);
-        Components.Add(component);
-        return true;
-    }
+		public ItemData Export() {
+			DurabilityData? DurabilityData = null;
+			HealItemData? HealItemData = null;
+			WeaponBaseData? WeaponBaseData = null;
+			// Additional component data can be declared here
+			foreach(IItemComponent component in Components) {
+				if(component is Durability durabilityComp) {
+					DurabilityData = durabilityComp.Export();
+				}
+				else if(component is HealItem healComp) {
+					HealItemData = healComp.Export();
+				}
+				else if(component is WeaponBase weaponComp) {
+					WeaponBaseData = weaponComp.Export();
+				}
+				// Additional components can be exported here
+			}
+			return new ItemData {
+				Id = Id,
+				DurabilityData = DurabilityData,
+				HealItemData = HealItemData,
+				WeaponBaseData = WeaponBaseData,
+				// Additional component data can be added here
+			};
+		}
 
-    public bool RemoveComponent(IItemComponent component) {
-        if(component == null){
-            return false;
-        }
-        foreach(IItemComponent comp in Components) {
-            if(ReferenceEquals(comp, component)){
-                ComponentResources.Remove((Resource)comp);
-                Components.Remove(component);
-                return true;
-            }
-        }
-        return false;
-    }
+		public void Import(ItemData data) {
+			Item item = ItemDataBaseManager.Instance.CreateItemInstanceById(data.Id);
+			Id = item.Id;
+			Name = item.Name;
+			Description = item.Description;
+			MaxStackSize = item.MaxStackSize;
+			IsConsumable = item.IsConsumable;
+			IconTexture = item.IconTexture;
+			Components = new List<IItemComponent>();
+			if(data.DurabilityData != null) {
+				Durability durabilityComp = new Durability(1);
+				durabilityComp.Import(data.DurabilityData.Value);
+				Components.Add(durabilityComp);
+			}
+			if(data.HealItemData != null) {
+				HealItem healComp = new HealItem(1);
+				healComp.Import(data.HealItemData.Value);
+				Components.Add(healComp);
+			}
+			if(data.WeaponBaseData != null) {
+				WeaponBase weaponComp = new WeaponBase(1, 1f, 1f, 1f, 0f, 1f);
+				weaponComp.Import(data.WeaponBaseData.Value);
+				Components.Add(weaponComp);
+			}
+			// Additional components can be imported here
+			SortComponents();
+		}
+	}
 
-    public bool HasComponent(IItemComponent component) {
-        foreach(IItemComponent comp in Components) {
-            if(ReferenceEquals(comp, component)){
-                return true;
-            }
-        }
-        return false;
-    }
+	public static class ItemExtensions {
+		public static readonly LogService Log = new(nameof(ItemExtensions), enabled: true);
 
-    public bool SameItem(Item other) {
-        if(other == null) {
-            return false;
-        }
-        return Id == other.Id;
-    }
+		public static bool Use<TEntity>(this Item item, TEntity user) {
+			bool sucess = false;
+			foreach(IItemComponent component in item.Components) {
+				if(component is IItemUseable useable) {
+					sucess |= useable.Use(user);
+				}
+			}
+			return sucess;
+		}
 
-    public Item Copy() {
-        Item copy = new Item();
-        copy.Id = Id;
-        copy.Name = Name;
-        copy.Description = Description;
-        copy.MaxStackSize = MaxStackSize;
-        copy.IsConsumable = IsConsumable;
-        copy.IconTexture = IconTexture;
-        copy.ComponentResources = new Godot.Collections.Array<Resource>(ComponentResources);
-        copy.BuildComponents();
-        return copy;
-    }
+		public static bool Equip<TEntity>(this Item item, TEntity user) {
+			bool sucess = false;
+			foreach(IItemComponent component in item.Components) {
+				if(component is IItemEquipable equipable) {
+					sucess |= equipable.Equip(user);
+				}
+			}
+			return sucess;
+		}
 
-    public ItemData Serialize() => new ItemData {
-        ResourcePath = ResourcePath,
-    };
+		public static bool Unequip<TEntity>(this Item item, TEntity user) {
+			bool sucess = false;
+			foreach(IItemComponent component in item.Components) {
+				if(component is IItemEquipable equipable) {
+					sucess |= equipable.Unequip(user);
+				}
+			}
+			return sucess;
+		}
 
-    public void Deserialize(in ItemData data) {
-        // Load the item from its resource path and copy properties
-        if(string.IsNullOrEmpty(data.ResourcePath)) return;
+		public static bool UseOnTarget<TEntity, TTarget>(this Item item, TEntity user, TTarget target) {
+			bool sucess = false;
+			foreach(IItemComponent component in item.Components) {
+				if(component is IItemUseableOnTarget useableOnTarget) {
+					sucess |= useableOnTarget.UseOnTarget(user, target);
+				}
+			}
+			return sucess;
+		}
 
-        var loaded = GD.Load<Item>(data.ResourcePath);
-        if(loaded == null) return;
+		public static bool SameItem(this Item item, Item other) {
+			if(other == null) {
+				return false;
+			}
+			return item.Id == other.Id;
+		}
 
-        Id = loaded.Id;
-        Name = loaded.Name;
-        Description = loaded.Description;
-        MaxStackSize = loaded.MaxStackSize;
-        IsConsumable = loaded.IsConsumable;
-        IconTexture = loaded.IconTexture;
-        ComponentResources = new Godot.Collections.Array<Resource>(loaded.ComponentResources);
-        BuildComponents();
-    }
+		public static bool IsIHealItem(this Item item) {
+			foreach(IItemComponent component in item.Components) {
+				if(component is HealItem) {
+					return true;
+				}
+			}
+			return false;
+		}
 
-    public static Item? LoadFromData(in ItemData data) {
-        if(string.IsNullOrEmpty(data.ResourcePath)) return null;
-        return GD.Load<Item>(data.ResourcePath);
-    }
-}
+		public static bool IsIDurability(this Item item) {
+			foreach(IItemComponent component in item.Components) {
+				if(component is Durability) {
+					return true;
+				}
+			}
+			return false;
+		}
 
-namespace SaveSystem {
-    public readonly record struct ItemData : ISaveData {
-        public string ResourcePath { get; init; }
-    }
+		public static bool IsIWeaponBase(this Item item) {
+			foreach(IItemComponent component in item.Components) {
+				if(component is WeaponBase) {
+					return true;
+				}
+			}
+			return false;
+		}
+
+		//Add component to item
+
+		public static bool AddComponent(this Item item, IItemComponent component) {
+			if(component == null) {
+				return false;
+			}
+			if(!(component is IItemComponent comp)) {
+				return false;
+			}
+			foreach(IItemComponent c in item.Components) {
+				if(component.GetType() == c.GetType()) {
+					Log.Info($"Item already has a component of type {component.GetType().Name}.");
+					return false;
+				}
+			}
+			item.Components.Add(component);
+			item.SortComponents();
+			return true;
+		}
+
+		public static bool RemoveComponent(this Item item, IItemComponent component) {
+			if(component == null) {
+				return false;
+			}
+			foreach(IItemComponent comp in item.Components) {
+				if(component.GetType() == comp.GetType()) {
+					item.Components.Remove(component);
+					item.SortComponents();
+					return true;
+				}
+			}
+			return false;
+		}
+	}
+
+	public readonly record struct ItemData : ISaveData {
+		public string Id { get; init; }
+		public DurabilityData? DurabilityData { get; init; }
+		public HealItemData? HealItemData { get; init; }
+		public WeaponBaseData? WeaponBaseData { get; init; }
+		// Additional component data can be added here
+	}
 }

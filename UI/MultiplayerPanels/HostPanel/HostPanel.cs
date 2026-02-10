@@ -1,12 +1,9 @@
 using System;
 using Godot;
-using InputSystem;
-using Network;
+using Services;
 
-namespace MultiplayerPanels {
+namespace UI.Multiplayer {
 	public sealed partial class HostPanel : Control {
-		private static readonly Logger Log = new(nameof(HostPanel), enabled: true);
-
 		//Paths For Panel Attributes
 		private const string PANEL_AREA = "PanelArea";
 		private const string LABEL_HOST_TEXT = PANEL_AREA + "/lblHostText";
@@ -14,7 +11,6 @@ namespace MultiplayerPanels {
 		private const string INPUT_GAME_NAME_TEXT = PANEL_AREA + "/GameNameContainer/InputGameName";
 		private const string INPUT_PASSWORD_TEXT = PANEL_AREA + "/PasswordContainer/InputPassword";
 		private const string CANCEL_BUTTON = PANEL_AREA + "/OptionContainer/CancelButton";
-		private const string HOST_BUTTON = PANEL_AREA + "/OptionContainer/HostButton";
 
 		//Component Reference
 		public Label HostText = null!;
@@ -22,7 +18,6 @@ namespace MultiplayerPanels {
 		public LineEdit InputPassword = null!;
 
 		// Events
-		public event Action? OnMenuClosed;
 		private event Action? OnExit;
 
 		// Override Functions
@@ -37,7 +32,6 @@ namespace MultiplayerPanels {
 
 		public override void _ExitTree() {
 			OnExit?.Invoke();
-			OnMenuClosed?.Invoke();
 		}
 
 		//Get Components
@@ -55,7 +49,6 @@ namespace MultiplayerPanels {
 			InputGameName.Connect("text_submitted", Callable.From<string>(text => OnAnyTextSubmitted(INPUT_GAME_NAME_TEXT, text)));
 			InputPassword.Connect("text_submitted", Callable.From<string>(text => OnAnyTextSubmitted(INPUT_PASSWORD_TEXT, text)));
 			GetNode<Button>(CANCEL_BUTTON).Pressed += OnCancelButtonPressed;
-			GetNode<Button>(HOST_BUTTON).Pressed += OnHostButtonPressed;
 		}
 
 		// Callbacks
@@ -65,21 +58,6 @@ namespace MultiplayerPanels {
 
 		private void OnCancelButtonPressed() => CloseMenu();
 
-		private void OnHostButtonPressed() {
-			Error result = Server.Instance.Host();
-			if(result == Error.Ok) {
-				Log.Info("Successfully started hosting");
-				// Only start a new game if not already in game
-				if(!GameManager.Instance.InGame) {
-					GameManager.Instance.StartNewGame();
-				}
-				CloseMenu();
-			}
-			else {
-				Log.Error($"Failed to host: {result}");
-				UpdateHostText($"Failed to host: {result}");
-			}
-		}
 		private void OnPasswordCheckboxToggled(bool check) {
 			if(check == true) {
 				InputPassword.Show();
@@ -92,12 +70,10 @@ namespace MultiplayerPanels {
 		// User Text Input
 		private void OnInputGameNameTextChanged(string newtext) {
 			// Implementation Here
-			Log.Info($"Game Name New Text: {newtext}");
 		}
 
 		private void OnInputPasswordTextChanged(string newtext) {
 			// Implementation Here
-			Log.Info($"Password New Text: {newtext}");
 		}
 
 		// User Text Submission
@@ -105,11 +81,11 @@ namespace MultiplayerPanels {
 			if(sourceName == null) return;
 
 			if(sourceName == INPUT_GAME_NAME_TEXT) {
-				Log.Info($"Game Name Submitted: {submittedText}");
+
 			}
 
 			else if(sourceName == INPUT_PASSWORD_TEXT) {
-				Log.Info($"Password Submitted: {submittedText}");
+
 			}
 		}
 
@@ -119,7 +95,9 @@ namespace MultiplayerPanels {
 		}
 
 		//Scene Input Callbacks
-		public void OpenMenu() { }
+		public void OpenMenu(Action? onClose = null) {
+			OnExit += onClose;
+		}
 
 		public void CloseMenu() {
 			QueueFree();

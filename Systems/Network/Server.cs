@@ -1,18 +1,21 @@
 using System;
 using Godot;
-using Systems.JSON;
 
-namespace Network {
-	public interface INetworkData : IJSONData;
+namespace Services.Network {
+	public interface INetworkData;
 
-	public interface INetworkable<T> : IJSONable<T> where T : INetworkData {
-		event Action? OnStateChanged;
+	public interface INetworkable<T> where T : INetworkData {
+		// Add enum for reliable/unreliable here?
+		event Action? OnChanged;
+
+		T Export();
+		void Import(T data);
 	}
 
 	public sealed partial class Server : Node {
 		public static Server Instance { get; private set; } = null!;
 
-		private static readonly Logger Log = new(nameof(Server), enabled: true);
+		private static readonly LogService Log = new(nameof(Server), enabled: true);
 
 		private const int Port = 8080;
 		private const int MaxPlayers = 10;

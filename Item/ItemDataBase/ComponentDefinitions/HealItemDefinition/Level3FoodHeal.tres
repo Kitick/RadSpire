@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="HealItemDefinition" format=3 uid="uid://b08lbebkh6ytl"]
+
+[ext_resource type="Script" uid="uid://dsdlapupe10ec" path="res://Item/ItemDataBase/ItemDataBaseScripts/HealItemDefinition.cs" id="1_oa7in"]
+
+[resource]
+script = ExtResource("1_oa7in")
+HealAmount = 30
+metadata/_custom_type_script = "uid://goc1tlurjd5v"

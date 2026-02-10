@@ -1,189 +1,166 @@
-using System;
-using Core;
-using Godot;
-using InputSystem;
-using MultiplayerPanels;
-using Network;
-using Settings;
+namespace UI {
+	using System;
+	using Character;
+	using Core;
+	using Godot;
+	using Services;
+	using UI.Multiplayer;
+	using UI.Settings;
+	using MenuState = Root.GameManager.MenuState;
 
-public sealed partial class HUD : Control {
-	private static readonly Logger Log = new(nameof(HUD), enabled: true);
+	public sealed partial class HUD : Control {
+		private static readonly LogService Log = new(nameof(HUD), enabled: true);
 
-	public enum MenuState { Game, Paused, Settings, Inventory, Host, Death };
+		[ExportCategory("HUD Elements")]
+		[Export] private Button PauseButton = null!;
+		[Export] private PauseMenu PauseMenu = null!;
+		[Export] private InventoryUI Inventory = null!;
+		[Export] private Control QuestLog = null!;
+		[Export] private Hotbar Hotbar = null!;
+		[Export] private RespawnMenu RespawnMenu = null!;
+		[Export] private ProgressBar HealthBar = null!;
 
-	private readonly FiniteStateMachine<MenuState> StateMachine;
-	public MenuState State => StateMachine.State;
+		[ExportCategory("HUD Scenes")]
+		[Export] private PackedScene SettingsScene = null!;
+		[Export] private PackedScene SaveMenuScene = null!;
+		[Export] private PackedScene HostPanelScene = null!;
 
-	private PauseMenu PauseMenu = null!;
-	private InventoryUI Inventory = null!;
-	private Control QuestLog = null!;
-	private Hotbar Hotbar = null!;
-	private RespawnMenu RespawnMenu = null!;
+		public Player Player = null!;
 
-	private const string PAUSE_BUTTON = "PauseButton";
-	private const string PAUSE_MENU = "PauseMenu";
-	private const string INVENTORY = "Inventory";
-	private const string QUESTLOG = "QuestLog";
-	private const string HOTBAR = "Hotbar";
-	private const string RESPAWN_MENU = "RespawnMenu";
+		private StateMachine<MenuState> StateMachineRef = null!;
+		private Action? Unsubscribe;
 
-	//Load Scene Reference
+		public event Action? ResumeRequested;
+		public event Action? PauseRequested;
+		public event Action? SettingsRequested;
+		public event Action? HostRequested;
+		public event Action? MainMenuRequested;
+		public event Action? RespawnRequested;
+		public event Action<string>? SaveRequested;
 
-	private HostPanel HostPanel = null!;
-
-	public bool IsPaused => GetTree().Paused;
-
-	private event Action? OnExit;
-	public Player Player = null!;
-	public bool InventoryOpen => Inventory.Visible;
-
-	public HUD() {
-		StateMachine = new(MenuState.Game, OnStateChanged);
-	}
-
-	public override void _EnterTree() {
-		base._EnterTree();
-		Player = GetParent<Player>();
-		if(Player == null) {
-			Log.Error("HUD could not find Player node in parent.");
+		public void Init(Player player, StateMachine<MenuState> stateMachine) {
+			Player = player;
+			StateMachineRef = stateMachine;
+			ConfigureStateMachine(stateMachine);
 		}
-		else {
-			Log.Info("HUD successfully found Player node in parent.");
+
+		public override void _Ready() {
+			ProcessMode = ProcessModeEnum.Always;
+
+			SetCallbacks();
+			SetInputCallbacks();
+			UpdateHealthBar();
 		}
-	}
 
-	public override void _Ready() {
-		ProcessMode = ProcessModeEnum.Always;
-
-		LoadScenes();
-		GetComponents();
-		SetInputCallbacks();
-		SetCallbacks();
-	}
-
-	public override void _ExitTree() {
-		OnExit?.Invoke();
-		Server.Instance.OnServerDisconnected -= OnServerDisconnected;
-	}
-
-	private void OnServerDisconnected() {
-		Log.Info("Server disconnected, returning to main menu...");
-		QuitGame();
-	}
-
-	public void LoadScenes() {
-		var packed1 = GD.Load<PackedScene>("res://UI/MultiplayerPanels/HostPanel/HostPanel.tscn");
-		HostPanel = packed1.Instantiate<HostPanel>();
-		HostPanel.Visible = false;
-		AddChild(HostPanel);
-	}
-
-	private void SetInputCallbacks() {
-		OnExit += ActionEvent.MenuExit.WhenPressed(TogglePause);
-		OnExit += ActionEvent.Inventory.WhenPressed(ToggleInventory);
-	}
-
-	private void GetComponents() {
-		PauseMenu = GetNode<PauseMenu>(PAUSE_MENU);
-		Inventory = GetNode<InventoryUI>(INVENTORY);
-		QuestLog = GetNode<Control>(QUESTLOG);
-		Hotbar = GetNode<Hotbar>(HOTBAR);
-		RespawnMenu = GetNode<RespawnMenu>(RESPAWN_MENU);
-	}
-
-	private void SetCallbacks() {
-		GetNode<Button>(PAUSE_BUTTON).Pressed += TogglePause;
-
-		PauseMenu.ResumeButton.Pressed += TogglePause;
-		PauseMenu.SaveButton.Pressed += OpenSaveMenu;
-		PauseMenu.HostButton.Pressed += OnHostButtonPressed;
-		PauseMenu.SettingsButton.Pressed += () => StateMachine.TransitionTo(MenuState.Settings);
-		PauseMenu.MainMenuButton.Pressed += QuitGame;
-
-		RespawnMenu.RespawnButton.Pressed += Respawn;
-		RespawnMenu.MainMenuButton.Pressed += QuitGame;
-
-		Server.Instance.OnServerDisconnected += OnServerDisconnected;
-	}
-
-	private void OnHostButtonPressed() {
-		if(Server.Instance.IsNetworkConnected) {
-			Log.Info("Disconnecting from network...");
-			Server.Instance.Disconnect();
-			PauseMenu.UpdateHostButtonText();
+		public override void _ExitTree() {
+			Unsubscribe?.Invoke();
 		}
-		else {
-			Log.Info("Opening host panel...");
-			StateMachine.TransitionTo(MenuState.Host);
+
+		private void SetInputCallbacks() {
+			Unsubscribe = ActionEvent.Inventory.WhenPressed(ToggleInventory);
+
+			Unsubscribe += ActionEvent.MenuExit.WhenPressed(() => {
+				if(StateMachineRef.CurrentState == MenuState.Game) { PauseRequested?.Invoke(); }
+				else if(StateMachineRef.CurrentState != MenuState.Game) { ResumeRequested?.Invoke(); }
+			});
 		}
-	}
 
-	private void Respawn() {
-		GetTree().Paused = false;
+		private void ConfigureStateMachine(StateMachine<MenuState> stateMachine) {
+			// Game state - normal gameplay
+			stateMachine.OnEnter(MenuState.Game, () => {
+				PauseMenu.CloseMenu();
+				RespawnMenu.CloseMenu();
+				Inventory.Visible = false;
+			});
 
-		Player = GameManager.Instance.RespawnPlayer();
+			// Paused state
+			stateMachine.OnEnter(MenuState.Paused, PauseMenu.OpenMenu);
+			stateMachine.OnExit(MenuState.Paused, PauseMenu.CloseMenu);
 
-		StateMachine.TransitionTo(MenuState.Game);
-	}
+			// Settings state
+			stateMachine.OnEnter(MenuState.Settings, OpenSettingsPanel);
 
-	public void ShowRespawnMenu() {
-		StateMachine.TransitionTo(MenuState.Death);
-	}
+			// Inventory state
+			stateMachine.OnEnter(MenuState.Inventory, () => {
+				Inventory.Visible = true;
+				Hotbar.Visible = true;
+			});
 
-	private void OnStateChanged(MenuState from, MenuState to) {
-		GetTree().Paused = to != MenuState.Game && to != MenuState.Death;
+			stateMachine.OnExit(MenuState.Inventory, () => {
+				Inventory.Visible = false;
+			});
 
-		if(to == MenuState.Paused) { PauseMenu.OpenMenu(); }
-		else { PauseMenu.CloseMenu(); }
+			// Host state
+			stateMachine.OnEnter(MenuState.Host, OpenHostPanel);
 
-		if(to == MenuState.Death) { RespawnMenu.OpenMenu(); }
-		else { RespawnMenu.CloseMenu(); }
-
-		if(to == MenuState.Host) { OpenHostPanel(); }
-		if(to == MenuState.Settings) { OpenSettings(); }
-	}
-
-	private void OpenHostPanel() {
-		var host = this.AddScene<HostPanel>(Scenes.HostPanel);
-		host.OnMenuClosed += () => StateMachine.TransitionTo(MenuState.Paused);
-		host.OpenMenu();
-
-		host.UpdateHostText("Host Game");
-	}
-
-	private void OpenSettings() {
-		var settings = this.AddScene<SettingsMenu>(Scenes.SettingsMenu);
-		settings.OnMenuClosed += () => StateMachine.TransitionTo(MenuState.Paused);
-		settings.OpenMenu();
-	}
-
-	private void OpenSaveMenu() {
-		var saveLoad = this.AddScene<SaveLoadMenu>(Scenes.SaveLoadMenu);
-		saveLoad.Mode = SaveLoadMode.Save;
-		saveLoad.OnMenuClosed += () => StateMachine.TransitionTo(MenuState.Paused);
-		saveLoad.OpenMenu();
-	}
-
-	private void TogglePause() {
-		if(State == MenuState.Death) { return; }
-		StateMachine.TransitionTo(IsPaused ? MenuState.Game : MenuState.Paused);
-	}
-
-	public void QuitGame() {
-		GameManager.Instance.ReturnToMainMenu();
-	}
-
-	public void ToggleInventory() {
-		// Don't allow inventory while dead
-		if(State == MenuState.Death) { return; }
-		if(!InventoryOpen) {
-			Inventory.Visible = true;
-			Hotbar.Visible = true;
-			StateMachine.TransitionTo(MenuState.Inventory);
+			// Death state
+			stateMachine.OnEnter(MenuState.Death, RespawnMenu.OpenMenu);
+			stateMachine.OnExit(MenuState.Death, RespawnMenu.CloseMenu);
 		}
-		else {
-			Inventory.Visible = false;
-			StateMachine.TransitionTo(MenuState.Game);
+
+		private void SetCallbacks() {
+			// Pause button in HUD
+			PauseButton.Pressed += () => PauseRequested?.Invoke();
+
+			// Pause menu buttons
+			PauseMenu.ResumeButton.Pressed += () => ResumeRequested?.Invoke();
+			PauseMenu.SaveButton.Pressed += OpenSaveMenu;
+			PauseMenu.HostButton.Pressed += () => HostRequested?.Invoke();
+			PauseMenu.SettingsButton.Pressed += () => SettingsRequested?.Invoke();
+			PauseMenu.MainMenuButton.Pressed += () => MainMenuRequested?.Invoke();
+
+			// Respawn menu buttons
+			RespawnMenu.RespawnButton.Pressed += () => RespawnRequested?.Invoke();
+			RespawnMenu.MainMenuButton.Pressed += () => MainMenuRequested?.Invoke();
+
+			// Health bar updates
+			Player.Health.OnChanged += (from, to) => UpdateHealthBar();
+		}
+
+		private void UpdateHealthBar() {
+			int current = Player.Health.Current;
+			int max = Player.Health.Max;
+
+			HealthBar.MaxValue = max;
+			HealthBar.Value = current;
+		}
+
+		private void OpenSettingsPanel() {
+			var settings = this.AddScene<SettingsMenu>(SettingsScene);
+			settings.OpenMenu();
+		}
+
+		private void OpenHostPanel() {
+			var hostPanel = this.AddScene<HostPanel>(HostPanelScene);
+			hostPanel.UpdateHostText("Host Game");
+			hostPanel.OpenMenu();
+		}
+
+		private void OpenSaveMenu() {
+			var saveMenu = this.AddScene<SaveMenu>(SaveMenuScene);
+			saveMenu.OnSave += fileName => SaveRequested?.Invoke(fileName);
+			saveMenu.OpenMenu(SaveMenuMode.Save);
+		}
+
+		private void ToggleInventory() {
+			if(StateMachineRef == null) {
+				Log.Error("ToggleInventory: StateMachineRef is null");
+				return;
+			}
+
+			if(!StateMachineRef.IsSettled) {
+				Log.Info("ToggleInventory: state machine not started, starting at Game");
+				StateMachineRef.Start(MenuState.Game);
+			}
+
+			if(StateMachineRef.CurrentState == MenuState.Inventory) {
+				Log.Info("Toggling Inventory: Closing Inventory");
+				StateMachineRef.TransitionTo(MenuState.Game);
+			}
+			else {
+				Log.Info("Toggling Inventory: Opening Inventory");
+				StateMachineRef.TransitionTo(MenuState.Inventory);
+			}
 		}
 	}
 }

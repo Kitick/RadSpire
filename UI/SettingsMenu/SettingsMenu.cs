@@ -1,45 +1,65 @@
 using System;
-using System.Collections.Generic;
 using Godot;
-using InputSystem;
-using SaveSystem;
+using Services;
 
-namespace Settings {
+namespace UI.Settings {
 	public sealed partial class SettingsMenu : Control, ISaveable<SettingsData> {
-		private static readonly Logger Log = new(nameof(SettingsMenu), enabled: true);
+		private static readonly LogService Log = new(nameof(SettingsMenu), enabled: true);
 
 		private const string SAVEFILE = "settings";
 
-		private const string GENERAL = "General";
-		private const string DISPLAY = "Display";
-		private const string SOUND = "Sound";
-		private const string CONTROLLER = "Controller";
-		private const string MK = "MK";
-		private const string ACCESSIBILITY = "Accessibility";
-		private const string HEADER = "Top_Panel";
-		private const string TOPANEL = "_Panel";
-		private const string TOBUTTON = "_Button";
-		private readonly string[] Tabs = [GENERAL, DISPLAY, SOUND, CONTROLLER, MK, ACCESSIBILITY];
+		[ExportCategory("Buttons")]
+		[Export] private Button BackButton = null!;
+		[Export] private Button ResetButton = null!;
 
-		private const string BACK_BUTTON = "BackButton";
-		private const string RESET_SETTINGS_BUTTON = "ResetSettingsButton";
+		[ExportCategory("General")]
+		[Export] private Control GeneralPanel = null!;
+		[Export] private Button GeneralButton = null!;
 
-		private readonly Dictionary<string, (VBoxContainer panel, Button button)> Nodes = [];
+		[ExportCategory("Display")]
+		[Export] private DisplayPanel DisplayPanel = null!;
+		[Export] private Button DisplayButton = null!;
 
-		public event Action? OnMenuClosed;
+		[ExportCategory("Sound")]
+		[Export] private SoundPanel SoundPanel = null!;
+		[Export] private Button SoundButton = null!;
+
+		[ExportCategory("Controls")]
+		[Export] private Control ControllerPanel = null!;
+		[Export] private Button ControllerButton = null!;
+
+		[ExportCategory("Mouse & Keyboard")]
+		[Export] private Control MKPanel = null!;
+		[Export] private Button MKButton = null!;
+
+		[ExportCategory("Accessibility")]
+		[Export] private Control AccessibilityPanel = null!;
+		[Export] private Button AccessibilityButton = null!;
+
+		private (Control panel, Button button)[] Panels => [
+			(GeneralPanel, GeneralButton),
+			(DisplayPanel, DisplayButton),
+			(SoundPanel, SoundButton),
+			(ControllerPanel, ControllerButton),
+			(MKPanel, MKButton),
+			(AccessibilityPanel, AccessibilityButton),
+		];
+
+		private Control InitialPanel => GeneralPanel;
+
 		private event Action? OnExit;
 
 		public override void _Ready() {
 			ProcessMode = ProcessModeEnum.Always;
 
-			GetComponents();
 			SetCallbacks();
 			SetInputCallbacks();
+
+			SwitchToPanel(InitialPanel);
 		}
 
 		public override void _ExitTree() {
 			OnExit?.Invoke();
-			OnMenuClosed?.Invoke();
 		}
 
 		private void SetInputCallbacks() {
@@ -47,21 +67,13 @@ namespace Settings {
 			OnExit += ActionEvent.MenuExit.WhenPressed(CloseMenu);
 		}
 
-		private void GetComponents() {
-			var header = GetNode<HBoxContainer>(HEADER);
+		private void SetCallbacks() {
+			BackButton.Pressed += OnBackButtonPressed;
+			ResetButton.Pressed += OnResetSettingsButtonPressed;
 
-			foreach(var path in Tabs) {
-				var panel = GetNode<VBoxContainer>(path + TOPANEL);
-				var button = header.GetNode<Button>(path + TOBUTTON);
-
-				Nodes[path] = (panel, button);
+			foreach(var (panel, button) in Panels) {
 				button.Pressed += () => SwitchToPanel(panel);
 			}
-		}
-
-		private void SetCallbacks() {
-			GetNode<Button>(BACK_BUTTON).Pressed += OnBackButtonPressed;
-			GetNode<Button>(RESET_SETTINGS_BUTTON).Pressed += OnResetSettingsButtonPressed;
 		}
 
 		private void OnBackButtonPressed() {
@@ -72,13 +84,16 @@ namespace Settings {
 			//Implementation Here should make it so what ever panel is open it can be reset
 		}
 
-		private void SwitchToPanel(VBoxContainer target) {
-			foreach(var (panel, _) in Nodes.Values) {
-				panel.Visible = panel == target;
+		private void SwitchToPanel(Control target) {
+			foreach(var (panel, button) in Panels) {
+				var isTarget = panel == target;
+				panel.Visible = isTarget;
+				button.Disabled = isTarget;
 			}
 		}
 
-		public void OpenMenu() {
+		public void OpenMenu(Action? onClose = null) {
+			OnExit += onClose;
 			LoadData();
 		}
 
@@ -88,14 +103,13 @@ namespace Settings {
 		}
 
 		private void SaveData() {
-			SaveService.Save(SAVEFILE, Serialize());
+			this.Save(SAVEFILE);
 			Log.Info("Settings saved");
 		}
 
 		private void LoadData() {
 			if(SaveService.Exists(SAVEFILE)) {
-				var data = SaveService.Load<SettingsData>(SAVEFILE);
-				Deserialize(data);
+				this.Load(SAVEFILE);
 				Log.Info("Settings loaded");
 			}
 			else {
@@ -103,23 +117,17 @@ namespace Settings {
 			}
 		}
 
-		private ISaveable<T> CastISaveable<T>(string path) where T : ISaveData {
-			return (ISaveable<T>) Nodes[path].panel;
-		}
-
-		public SettingsData Serialize() => new SettingsData {
-			DisplaySettings = CastISaveable<DisplaySettings>(DISPLAY).Serialize(),
-			SoundSettings = CastISaveable<SoundSettings>(SOUND).Serialize(),
+		public SettingsData Export() => new SettingsData {
+			DisplaySettings = DisplayPanel.Export(),
+			SoundSettings = SoundPanel.Export(),
 		};
 
-		public void Deserialize(in SettingsData data) {
-			CastISaveable<DisplaySettings>(DISPLAY).Deserialize(data.DisplaySettings);
-			CastISaveable<SoundSettings>(SOUND).Deserialize(data.SoundSettings);
+		public void Import(SettingsData data) {
+			DisplayPanel.Import(data.DisplaySettings);
+			SoundPanel.Import(data.SoundSettings);
 		}
 	}
-}
 
-namespace SaveSystem {
 	public readonly record struct SettingsData : ISaveData {
 		public DisplaySettings DisplaySettings { get; init; }
 		public SoundSettings SoundSettings { get; init; }

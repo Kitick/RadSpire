@@ -1,12 +1,12 @@
-using System;
-using Core;
-using Godot;
-using Network;
-using SaveSystem;
-
 namespace Components {
-	public sealed class Movement : ISaveable<MovementData>, INetworkable<MovementData> {
-		public event Action? OnStateChanged;
+	using System;
+	using Core;
+	using Godot;
+	using Services;
+	using Services.Network;
+
+	public sealed class Movement : ISaveable<MovementData> {
+		public event Action? OnChanged;
 
 		public float BaseSpeed = 3.0f;
 		public float RotationSpeed = 2.0f;
@@ -24,7 +24,8 @@ namespace Components {
 
 			UpdateRotation(dt);
 			Body.MoveAndSlide();
-			OnStateChanged?.Invoke();
+
+			OnChanged?.Invoke();
 		}
 
 		public void Move(Vector3 direction, float multiplier) {
@@ -56,21 +57,19 @@ namespace Components {
 			Body.Velocity = horizontal + Body.Velocity.Vertical();
 		}
 
-		public MovementData Serialize() => new MovementData {
+		public MovementData Export() => new MovementData {
 			Position = Body.GlobalPosition,
 			Velocity = Body.Velocity,
 			Rotation = Body.RotationDegrees,
 		};
 
-		public void Deserialize(in MovementData data) {
+		public void Import(MovementData data) {
 			Body.GlobalPosition = data.Position;
 			Body.RotationDegrees = data.Rotation;
 			Body.Velocity = data.Velocity;
 		}
 	}
-}
 
-namespace SaveSystem {
 	public readonly struct MovementData : ISaveData, INetworkData {
 		public Vector3 Position { get; init; }
 		public Vector3 Velocity { get; init; }

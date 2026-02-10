@@ -2,7 +2,7 @@ using System;
 using Godot;
 
 namespace Core {
-	public static class Extensions {
+	public static class MathExtensions {
 		// Vector Components
 		public static Vector3 Horizontal(this Vector3 vector) => new Vector3(vector.X, 0, vector.Z);
 		public static Vector3 Vertical(this Vector3 vector) => new Vector3(0, vector.Y, 0);
@@ -18,21 +18,6 @@ namespace Core {
 				radius * sinPIT,
 				radius * cosHDG * cosPIT
 			);
-		}
-
-		public static float IntersectRay(this Node3D space, Vector3 origin, Vector3 direction, float distance) =>
-			space.IntersectRay(origin, origin + direction.Normalized() * distance);
-
-		public static float IntersectRay(this Node3D space, Vector3 origin, Vector3 target) {
-			var spaceState = space.GetWorld3D().DirectSpaceState;
-			var query = PhysicsRayQueryParameters3D.Create(origin, target);
-			query.CollideWithAreas = false;
-
-			var result = spaceState.IntersectRay(query);
-			if(result.Count == 0) { return (target - origin).Length(); }
-
-			Vector3 hitpoint = (Vector3) result["position"];
-			return origin.DistanceTo(hitpoint);
 		}
 
 		// Rotation Smoothing
@@ -60,6 +45,31 @@ namespace Core {
 			node.Transform = currentTransform;
 		}
 
+		public static float IntersectRay(this Node3D space, Vector3 origin, Vector3 direction, float distance) =>
+			space.IntersectRay(origin, origin + direction.Normalized() * distance);
+
+		public static float IntersectRay(this Node3D space, Vector3 origin, Vector3 target) {
+			var spaceState = space.GetWorld3D().DirectSpaceState;
+			var query = PhysicsRayQueryParameters3D.Create(origin, target);
+			query.CollideWithAreas = false;
+
+			var result = spaceState.IntersectRay(query);
+			if(result.Count == 0) { return (target - origin).Length(); }
+
+			Vector3 hitpoint = (Vector3) result["position"];
+			return origin.DistanceTo(hitpoint);
+		}
+	}
+
+	public static class NodeExtensions {
+		// Node instantiation
+		public static Node AddScene(this Node node, PackedScene scene) => node.AddScene<Node>(scene);
+		public static TScene AddScene<TScene>(this Node node, PackedScene scene) where TScene : Node {
+			TScene instance = scene.Instantiate<TScene>();
+			node.AddChild(instance);
+			return instance;
+		}
+
 		// OptionButton
 		public static void Populate<T>(this OptionButton button, T[] values) where T : notnull {
 			button.Clear();
@@ -80,18 +90,5 @@ namespace Core {
 			}
 			return false;
 		}
-
-		// Node instantiation
-		public static T AddScene<T>(this Node node, PackedScene scene) where T : Node {
-			var instance = scene.Instantiate<T>();
-			node.AddChild(instance);
-			return instance;
-		}
-
-		public static T AddScene<T>(this Node node, string scene) where T : Node =>
-			node.AddScene<T>(GD.Load<PackedScene>(scene));
-
-		public static Node AddScene(this Node node, PackedScene scene) => node.AddScene<Node>(scene);
-		public static Node AddScene(this Node node, string scene) => node.AddScene<Node>(scene);
 	}
 }

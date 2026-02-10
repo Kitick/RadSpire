@@ -1,15 +1,15 @@
 [gd_scene format=3 uid="uid://clcndgxaty503"]
 
-[node name="Label" type="MarginContainer"]
+[node name="Label" type="MarginContainer" unique_id=2104886022]
 size_flags_vertical = 9
 mouse_filter = 0
 
-[node name="Back" type="Control" parent="."]
+[node name="Back" type="Control" parent="." unique_id=323974182]
 show_behind_parent = true
 layout_mode = 2
 mouse_filter = 2
 
-[node name="ColorRect" type="ColorRect" parent="Back"]
+[node name="ColorRect" type="ColorRect" parent="Back" unique_id=1212866709]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -23,23 +23,23 @@ grow_vertical = 2
 mouse_filter = 2
 color = Color(0.247059, 0.247059, 0.247059, 0.498039)
 
-[node name="Selected" type="ColorRect" parent="."]
+[node name="Selected" type="ColorRect" parent="." unique_id=983970065]
 visible = false
 layout_mode = 2
 mouse_filter = 2
 color = Color(1, 1, 1, 0.247059)
 
-[node name="Box" type="HBoxContainer" parent="."]
+[node name="Box" type="HBoxContainer" parent="." unique_id=1965684474]
 layout_mode = 2
 mouse_filter = 2
 
-[node name="Tex" type="TextureRect" parent="Box"]
+[node name="Tex" type="TextureRect" parent="Box" unique_id=817971363]
 layout_mode = 2
 mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Label" type="Label" parent="Box"]
+[node name="Label" type="Label" parent="Box" unique_id=681901238]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "res.tres"

@@ -2,7 +2,7 @@ using System;
 using Camera;
 using Core;
 using Godot;
-using SaveSystem;
+using Services;
 
 namespace Camera {
 	public sealed partial class CameraRig : Node3D, ISaveable<CameraRigData> {
@@ -71,11 +71,11 @@ namespace Camera {
 			return moved;
 		}
 
-		public CameraRigData Serialize() => new CameraRigData {
+		public CameraRigData Export() => new CameraRigData {
 			Pose = Pose,
 		};
 
-		public void Deserialize(in CameraRigData data) {
+		public void Import(CameraRigData data) {
 			Pose = data.Pose;
 		}
 	}
@@ -100,7 +100,7 @@ namespace Camera {
 		public readonly Vector3 AlignVector(Vector3 direction) => direction.Rotated(Vector3.Up, RadHDG);
 
 		public readonly Vector3 CalcPosition(Node3D space) {
-			Vector3 direction = Extensions.ToPolar(RadHDG, RadPIT);
+			Vector3 direction = MathExtensions.ToPolar(RadHDG, RadPIT);
 
 			float distance = Math.Min(Distance, space.IntersectRay(Anchor + direction * MinDistance, direction, MaxDistance) - BufferDistance);
 			distance = Math.Max(distance, MinDistance);
@@ -110,9 +110,7 @@ namespace Camera {
 			return Anchor + orbit;
 		}
 	}
-}
 
-namespace SaveSystem {
 	public readonly record struct CameraRigData : ISaveData {
 		public CameraPose Pose { get; init; }
 	}

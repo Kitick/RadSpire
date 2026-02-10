@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://c75reslb6ix7l"]
+
+[ext_resource type="Script" uid="uid://cnm5iegiuj4xu" path="res://Item/ItemDataBase/ItemDataBaseScripts/ItemComponentDefinition.cs" id="1_2x3ox"]
+[ext_resource type="Resource" uid="uid://ds7c545y5smpx" path="res://Item/ItemDataBase/ComponentDefinitions/HealItemDefinition/Level2FoodHeal.tres" id="2_8hmbt"]
+[ext_resource type="Texture2D" uid="uid://cv27nhwm8d28" path="res://Assets/scrimsy fruit icons/color/blue/blueberry.png" id="2_lu55d"]
+[ext_resource type="Script" uid="uid://bxmh4fd7kjvv1" path="res://Item/ItemDataBase/ItemDataBaseScripts/ItemDefinition.cs" id="3_lu55d"]
+
+[resource]
+script = ExtResource("3_lu55d")
+Id = "BlueberryBlue"
+Name = "Blueberry"
+Description = "A delicious blueberry."
+MaxStackSize = 64
+IconTexture = ExtResource("2_lu55d")
+ComponentsResources = Array[ExtResource("1_2x3ox")]([ExtResource("2_8hmbt")])
+metadata/_custom_type_script = "uid://3l5yftlfas15"

@@ -1,20 +1,13 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Systems.JSON {
-	public interface IJSONData;
-
-	public interface IJSONable<T> where T : IJSONData {
-		T Serialize();
-		void Deserialize(in T data);
-	}
-
-	public static class JSON {
+namespace Services {
+	public static class JsonService {
 		private static readonly JsonConverter[] Converters = [
 			new Vector3Converter()
 		];
 
-		private static JsonSerializerOptions InjectConverters(JsonSerializerOptions options) {
+		private static JsonSerializerOptions InjectConverters(this JsonSerializerOptions options) {
 			var newOptions = new JsonSerializerOptions(options);
 			foreach(var converter in Converters) {
 				newOptions.Converters.Add(converter);
@@ -22,12 +15,13 @@ namespace Systems.JSON {
 			return newOptions;
 		}
 
-		public static string Serialize<T>(in T data, JsonSerializerOptions options) where T : struct, IJSONData {
-			return JsonSerializer.Serialize(data, InjectConverters(options));
+		public static string Serialize<T>(in T data, JsonSerializerOptions options) {
+			return JsonSerializer.Serialize(data, options.InjectConverters());
 		}
 
-		public static T Deserialize<T>(string json, JsonSerializerOptions options) where T : struct, IJSONData {
-			return JsonSerializer.Deserialize<T>(json, InjectConverters(options));
+		public static T Deserialize<T>(string json, JsonSerializerOptions options) {
+			T? data = JsonSerializer.Deserialize<T>(json, options.InjectConverters());
+			return data ?? throw new JsonException("Deserialized data is null");
 		}
 	}
 }
