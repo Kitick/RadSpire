@@ -58,6 +58,13 @@ namespace UI.Settings {
 			SwitchToPanel(InitialPanel);
 		}
 
+		private WorldEnvironment worldEnv = null!;
+
+		private void FetchWorldEnviroment() {
+			worldEnv = GetNode<WorldEnvironment>("/root/SceneDirector/GameManager/WorldEnvironment");
+			DisplayPanel.SetWorldEnvironment(worldEnv);
+		}
+
 		public override void _ExitTree() {
 			OnExit?.Invoke();
 		}
@@ -94,6 +101,7 @@ namespace UI.Settings {
 
 		public void OpenMenu(Action? onClose = null) {
 			OnExit += onClose;
+			FetchWorldEnviroment();
 			LoadData();
 		}
 

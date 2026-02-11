@@ -11,7 +11,10 @@ namespace UI.Settings {
 		[Export] private CheckBox VSyncCheck = null!;
 		[Export] private HSlider BrightnessSlider = null!;
 		[Export] private OptionButton FramerateOption = null!;
-		[Export] public WorldEnvironment WorldEnv;
+		[Export] private WorldEnvironment worldEnv = null!;
+		public void SetWorldEnvironment(WorldEnvironment env) {
+			worldEnv = env;
+		}
 
 		// Options
 		private static readonly Resolution[] Resolutions = [
@@ -84,9 +87,9 @@ namespace UI.Settings {
 			set {
 				brightness = value;
 
-				if (WorldEnv ?.Environment != null) {
-					WorldEnv.Environment.AdjustmentEnabled = true;
-					WorldEnv.Environment.AdjustmentBrightness = value;
+				if (worldEnv ?.Environment != null) {
+					worldEnv.Environment.AdjustmentEnabled = true;
+					worldEnv.Environment.AdjustmentBrightness = value;
 				}
 			}
 		}
