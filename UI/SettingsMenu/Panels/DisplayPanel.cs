@@ -11,6 +11,7 @@ namespace UI.Settings {
 		[Export] private CheckBox VSyncCheck = null!;
 		[Export] private HSlider BrightnessSlider = null!;
 		[Export] private OptionButton FramerateOption = null!;
+		[Export] public WorldEnvironment WorldEnv;
 
 		// Options
 		private static readonly Resolution[] Resolutions = [
@@ -76,10 +77,18 @@ namespace UI.Settings {
 			}
 		}
 
+		private float brightness = 1.0f;
 		// Brightness
 		public float Brightness {
-			get;
-			set;
+			get => brightness;
+			set {
+				brightness = value;
+
+				if (WorldEnv ?.Environment != null) {
+					WorldEnv.Environment.AdjustmentEnabled = true;
+					WorldEnv.Environment.AdjustmentBrightness = value;
+				}
+			}
 		}
 
 		// FPS Cap
