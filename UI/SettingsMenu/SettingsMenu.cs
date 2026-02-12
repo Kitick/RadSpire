@@ -58,11 +58,10 @@ namespace UI.Settings {
 			SwitchToPanel(InitialPanel);
 		}
 
-		private WorldEnvironment worldEnv = null!;
+		private WorldEnvironment WorldEnv => GetNode<WorldEnvironment>("/root/SceneDirector/GameManager/WorldEnvironment");
 
 		private void FetchWorldEnviroment() {
-			worldEnv = GetNode<WorldEnvironment>("/root/SceneDirector/GameManager/WorldEnvironment");
-			DisplayPanel.SetWorldEnvironment(worldEnv);
+			DisplayPanel.SetWorldEnvironment(WorldEnv);
 		}
 
 		public override void _ExitTree() {
