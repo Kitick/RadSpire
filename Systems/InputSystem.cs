@@ -6,7 +6,8 @@ namespace Services {
 	public enum ActionEvent {
 		MoveForward, MoveBack, MoveLeft, MoveRight,
 		Jump, Sprint, Crouch, Interact, Consume, Inventory,
-		MenuBack, MenuExit,
+		MenuBack, MenuExit, MenuSelect, PageLeft, PageRight,
+		MenuUp, MenuDown, MenuLeft, MenuRight,
 		Hotbar1, Hotbar2, Hotbar3, Hotbar4, Hotbar5,
 		HotbarNext, HotbarPrev,
 	};

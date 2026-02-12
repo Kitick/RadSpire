@@ -1,9 +1,10 @@
+using System.Collections.Generic;
 using Core;
 using Godot;
 using Services;
 
 namespace UI.Settings {
-	public sealed partial class DisplayPanel : VBoxContainer, ISaveable<DisplaySettings> {
+	public sealed partial class DisplayPanel : VBoxContainer, INavigatable, ISaveable<DisplaySettings> {
 		private static readonly LogService Log = new(nameof(DisplayPanel), enabled: true);
 
 		[Export] private OptionButton ResolutionOption = null!;
@@ -13,6 +14,10 @@ namespace UI.Settings {
 		[Export] private OptionButton FramerateOption = null!;
 
 		private WorldEnvironment WorldEnv = null!;
+
+		public Control[] Order => [
+			ResolutionOption, FullscreenCheck, VSyncCheck, BrightnessSlider, FramerateOption
+		];
 
 		// Options
 		private static readonly Resolution[] Resolutions = [

@@ -3,7 +3,7 @@ using Godot;
 using Services;
 
 namespace UI.Settings {
-	public sealed partial class SettingsMenu : Control, ISaveable<SettingsData> {
+	public sealed partial class SettingsMenu : Control, INavigatable, ISaveable<SettingsData> {
 		private static readonly LogService Log = new(nameof(SettingsMenu), enabled: true);
 
 		private const string SAVEFILE = "settings";
@@ -35,6 +35,10 @@ namespace UI.Settings {
 		[ExportCategory("Accessibility")]
 		[Export] private Control AccessibilityPanel = null!;
 		[Export] private Button AccessibilityButton = null!;
+
+		public Control[] Order => [
+			GeneralPanel, DisplayPanel, SoundPanel, ControllerPanel, MKPanel, AccessibilityPanel
+		];
 
 		private (Control panel, Button button)[] Panels => [
 			(GeneralPanel, GeneralButton),
