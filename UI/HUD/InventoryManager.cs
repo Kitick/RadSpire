@@ -136,8 +136,15 @@ namespace ItemSystem {
 				int row = GetInventory(inventoryName).GetRow(slotIndex);
 				int column = GetInventory(inventoryName).GetColumn(slotIndex);
 				ItemSlot slot = GetInventory(inventoryName).GetItemSlot(row, column);
-				HeldItemSlot = new ItemSlot(slot.Item!, slot.Quantity / 2);
-				GetInventory(inventoryName).RemoveItem(row, column, slot.Quantity / 2);
+				if(slot.Quantity == 1) {
+					MouseHasItemSlot = false;
+					HandlePickupItemSlot(inventoryName, slotIndex);
+					return;
+				}
+				else {
+					HeldItemSlot = new ItemSlot(slot.Item!, slot.Quantity / 2);
+					GetInventory(inventoryName).RemoveItem(row, column, slot.Quantity / 2);
+				}
 				StartMoveItemEvent?.Invoke(HeldItemSlot);
 			}
 		}
