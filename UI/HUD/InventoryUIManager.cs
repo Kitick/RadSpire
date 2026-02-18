@@ -41,6 +41,7 @@ namespace UI {
 
 			HeldItemSlotUI = InvSlotTemplate!.Instantiate<InvSlotUI>();
 			AddChild(HeldItemSlotUI);
+			HeldItemSlotUI.UpdateSlotUI(itemSlot);
 
 			HeldItemSlotUI.MouseFilter = Control.MouseFilterEnum.Ignore;
 			foreach(var child in HeldItemSlotUI.GetChildren()) {

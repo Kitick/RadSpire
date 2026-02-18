@@ -31,8 +31,19 @@ namespace ItemSystem {
 			if(InventoryUIManagerTemplate == null) {
 				InventoryUIManagerTemplate = GD.Load<PackedScene>("res://UI/Inventory/InventoryUIManager.tscn");
 			}
+			if(InventoryUIManager != null && IsInstanceValid(InventoryUIManager)) {
+				return;
+			}
+			var player = GetParent<Player>();
+			var gameManager = player?.GetParent<GameManager>();
+			var hud = gameManager?.GetNodeOrNull<HUD>("HUD");
+			var inventoryUi = hud?.GetNodeOrNull<InventoryUI>("Inventory");
+			if(hud == null || inventoryUi == null) {
+				CallDeferred(nameof(LoadInventoryUIManager));
+				return;
+			}
 			InventoryUIManager = InventoryUIManagerTemplate.Instantiate<InventoryUIManager>();
-			GetParent<GameManager>().GetNode<HUD>("HUD").GetNode<InventoryUI>("Inventory").AddChild(InventoryUIManager);
+			inventoryUi.AddChild(InventoryUIManager);
 		}
 
 		public void RegisterInventory(Inventory inventory, IInventoryUI uiControl) {
@@ -96,8 +107,12 @@ namespace ItemSystem {
 				Log.Info("Picking up item from inventory:" + inventoryName + " slot index: " + slotIndex);
 
 				MouseHasItemSlot = true;
-				HeldItemSlot = GetInventory(inventoryName).GetItemSlot(GetInventory(inventoryName).GetRow(slotIndex), GetInventory(inventoryName).GetColumn(slotIndex));
-				GetInventory(inventoryName).RemoveItem(GetInventory(inventoryName).GetRow(slotIndex), GetInventory(inventoryName).GetColumn(slotIndex));
+				int row = GetInventory(inventoryName).GetRow(slotIndex);
+				int column = GetInventory(inventoryName).GetColumn(slotIndex);
+				ItemSlot slot = GetInventory(inventoryName).GetItemSlot(row, column);
+				HeldItemSlot = new ItemSlot(slot.Item!, slot.Quantity);
+				GetInventory(inventoryName).RemoveItem(row, column);
+				StartMoveItemEvent?.Invoke(HeldItemSlot);
 			}
 		}
 
@@ -144,15 +159,19 @@ namespace ItemSystem {
 
 		public void HandlePlaceItemSlotOnDifferentItem(string inventoryName, int slotIndex) {
 			if(HeldItemSlot == null) return;
-			Item targetItem = GetInventory(inventoryName).GetItem(GetInventory(inventoryName).GetRow(slotIndex), GetInventory(inventoryName).GetColumn(slotIndex));
+			int row = GetInventory(inventoryName).GetRow(slotIndex);
+			int column = GetInventory(inventoryName).GetColumn(slotIndex);
+			Item targetItem = GetInventory(inventoryName).GetItem(row, column);
 			if(targetItem == null) return;
 			if(!HeldItemSlot.SameItem(targetItem)) {
 				Log.Info("Placing held item onto different item type slot inventory:" + inventoryName + " index: " + slotIndex);
+				ItemSlot targetSlot = GetInventory(inventoryName).GetItemSlot(row, column);
+				ItemSlot newHeldSlot = new ItemSlot(targetSlot.Item!, targetSlot.Quantity);
 
-				GetInventory(inventoryName).RemoveItem(GetInventory(inventoryName).GetRow(slotIndex), GetInventory(inventoryName).GetColumn(slotIndex));
-				GetInventory(inventoryName).AddItem(HeldItemSlot, GetInventory(inventoryName).GetRow(slotIndex), GetInventory(inventoryName).GetColumn(slotIndex));
+				GetInventory(inventoryName).RemoveItem(row, column);
+				GetInventory(inventoryName).AddItem(HeldItemSlot, row, column);
 
-				EndMoveItemEvent?.Invoke();
+				HeldItemSlot = newHeldSlot;
 				StartMoveItemEvent?.Invoke(HeldItemSlot);
 			}
 		}
