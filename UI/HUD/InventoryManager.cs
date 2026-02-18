@@ -15,6 +15,9 @@ namespace ItemSystem {
 		public PackedScene? InventoryUIManagerTemplate = null!;
 		private bool MouseHasItemSlot = false;
 		public ItemSlot? HeldItemSlot = null;
+		private string? LastPickupInventoryName = null;
+		private int LastPickupSlotIndex = -1;
+		private bool IgnoreNextRightRelease = false;
 		public event Action<ItemSlot>? StartMoveItemEvent;
 		public event Action? EndMoveItemEvent;
 
@@ -100,6 +103,11 @@ namespace ItemSystem {
 			if(MouseHasItemSlot) {
 				Log.Info($"InventoryManager: Slot {slotIndex} released in inventory {inventoryName}.");
 				if(button == MouseButton.Right) {
+					if(IgnoreNextRightRelease == true && inventoryName == LastPickupInventoryName && slotIndex == LastPickupSlotIndex) {
+						IgnoreNextRightRelease = false;
+						return;
+					}
+					IgnoreNextRightRelease = false;
 					HandlePlaceSingleItemSlot(inventoryName, slotIndex);
 				}
 				else if(button == MouseButton.Left) {
@@ -135,6 +143,9 @@ namespace ItemSystem {
 				Log.Info("Picking up half of item stack from inventory:" + inventoryName + " slot index: " + slotIndex);
 
 				MouseHasItemSlot = true;
+				LastPickupInventoryName = inventoryName;
+				LastPickupSlotIndex = slotIndex;
+				IgnoreNextRightRelease = true;
 				int row = GetInventory(inventoryName).GetRow(slotIndex);
 				int column = GetInventory(inventoryName).GetColumn(slotIndex);
 				ItemSlot slot = GetInventory(inventoryName).GetItemSlot(row, column);
