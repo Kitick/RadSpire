@@ -85,12 +85,14 @@ namespace ItemSystem {
 		}
 
 		public void HandleOnSlotPressed(string inventoryName, int slotIndex, MouseButton button) {
-			if(button != MouseButton.Left) {
-				return;
-			}
 			if(!MouseHasItemSlot) {
 				Log.Info($"InventoryManager: Slot {slotIndex} pressed in inventory {inventoryName}.");
-				HandlePickupItemSlot(inventoryName, slotIndex);
+				if(button == MouseButton.Right) {
+					HandlePickupHalfItemSlot(inventoryName, slotIndex);
+				}
+				else if(button == MouseButton.Left) {
+					HandlePickupItemSlot(inventoryName, slotIndex);
+				}
 			}
 		}
 
@@ -118,6 +120,24 @@ namespace ItemSystem {
 				ItemSlot slot = GetInventory(inventoryName).GetItemSlot(row, column);
 				HeldItemSlot = new ItemSlot(slot.Item!, slot.Quantity);
 				GetInventory(inventoryName).RemoveItem(row, column);
+				StartMoveItemEvent?.Invoke(HeldItemSlot);
+			}
+		}
+
+		public void HandlePickupHalfItemSlot(string inventoryName, int slotIndex) {
+			if(!MouseHasItemSlot) {
+				if(IsItemSlotEmpty(inventoryName, slotIndex)) {
+					Log.Info("Clicked on empty slot, nothing to pick up.");
+					return;
+				}
+				Log.Info("Picking up half of item stack from inventory:" + inventoryName + " slot index: " + slotIndex);
+
+				MouseHasItemSlot = true;
+				int row = GetInventory(inventoryName).GetRow(slotIndex);
+				int column = GetInventory(inventoryName).GetColumn(slotIndex);
+				ItemSlot slot = GetInventory(inventoryName).GetItemSlot(row, column);
+				HeldItemSlot = new ItemSlot(slot.Item!, slot.Quantity / 2);
+				GetInventory(inventoryName).RemoveItem(row, column, slot.Quantity / 2);
 				StartMoveItemEvent?.Invoke(HeldItemSlot);
 			}
 		}
