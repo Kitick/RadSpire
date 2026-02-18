@@ -353,7 +353,18 @@ namespace ItemSystem {
 					Vector2 clickPos = mouseButton.GlobalPosition;
 					if(ClickedOutsideInventory(clickPos)) {
 						Log.Info("Clicked outside inventory, dropping held item.");
-						DropItemOutside();
+						if(mouseButton.ButtonIndex == MouseButton.Right) {
+							Log.Info("Right click outside inventory detected, dropping one item.");
+							if(IgnoreNextRightRelease == true) {
+								IgnoreNextRightRelease = false;
+								return;
+							}
+							DropSingleItemOutside();
+						}
+						else if(mouseButton.ButtonIndex == MouseButton.Left) {
+							Log.Info("Dropping item outside due to left click.");
+							DropItemOutside();
+						}
 					}
 				}
 			}
@@ -386,6 +397,26 @@ namespace ItemSystem {
 				EndMoveItemEvent?.Invoke();
 				MouseHasItemSlot = false;
 				HeldItemSlot = null;
+			}
+		}
+
+		public void DropSingleItemOutside() {
+			if(MouseHasItemSlot) {
+				Log.Info("Dropping single held item into the world.");
+				if(HeldItemSlot == null) {
+					Log.Error("HeldItemSlot is null in DropSingleItemOutside");
+					return;
+				}
+				DropItem(HeldItemSlot.Item!);
+				HeldItemSlot.Quantity -= 1;
+				EndMoveItemEvent?.Invoke();
+				if(HeldItemSlot.Quantity <= 0) {
+					MouseHasItemSlot = false;
+					HeldItemSlot = null;
+				}
+				else {
+					StartMoveItemEvent?.Invoke(HeldItemSlot);
+				}
 			}
 		}
 

@@ -108,7 +108,10 @@ namespace UI {
 					// Use InventoryManager to determine whether click is outside all inventory UIs
 					if(Player != null && Player.InventoryManager != null) {
 						if(Player.InventoryManager.ClickedOutsideInventory(clickPos)) {
-							Player.InventoryManager.DropItemOutside();
+							// Only handle left-click drops here; right-click is handled by InventoryManager
+							if(mouseButton.ButtonIndex == MouseButton.Left) {
+								Player.InventoryManager.DropItemOutside();
+							}
 						}
 					}
 				}
