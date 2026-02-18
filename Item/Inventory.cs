@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.InteropServices;
 using Services;
 
 namespace ItemSystem {
@@ -148,6 +149,21 @@ namespace ItemSystem {
 			remainingItem = ItemSlots[remainingItemSlot].combineItemSlot(remainingItem);
 			OnInventoryChanged?.Invoke();
 			return remainingItem;
+		}
+
+		public ItemSlot AddItem(int row, int column, int quantity) {
+			int index = GetIndex(row, column);
+			if(index == -1) {
+				return new ItemSlot();
+			}
+			if(ItemSlots[index].IsEmpty()) {
+				return new ItemSlot();
+			}
+			Item item = ItemSlots[index].Item!;
+			ItemSlot temp = new ItemSlot(item, quantity);
+			ItemSlot returnItem = ItemSlots[index].combineItemSlot(temp);
+			OnInventoryChanged?.Invoke();
+			return returnItem;
 		}
 
 		public ItemSlot AddItem(ItemSlot item) {

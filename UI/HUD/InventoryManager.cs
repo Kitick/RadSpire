@@ -97,12 +97,14 @@ namespace ItemSystem {
 		}
 
 		public void HandleOnSlotReleased(string inventoryName, int slotIndex, MouseButton button) {
-			if(button != MouseButton.Left) {
-				return;
-			}
 			if(MouseHasItemSlot) {
 				Log.Info($"InventoryManager: Slot {slotIndex} released in inventory {inventoryName}.");
-				HandlePlaceItemSlot(inventoryName, slotIndex);
+				if(button == MouseButton.Right) {
+					HandlePlaceSingleItemSlot(inventoryName, slotIndex);
+				}
+				else if(button == MouseButton.Left) {
+					HandlePlaceItemSlot(inventoryName, slotIndex);
+				}
 			}
 		}
 
@@ -164,6 +166,50 @@ namespace ItemSystem {
 			}
 		}
 
+		public void HandlePlaceSingleItemSlot(string inventoryName, int slotIndex) {
+			if(!MouseHasItemSlot || HeldItemSlot == null) {
+				return;
+			}
+			int row = GetInventory(inventoryName).GetRow(slotIndex);
+			int column = GetInventory(inventoryName).GetColumn(slotIndex);
+			ItemSlot targetSlot = GetInventory(inventoryName).GetItemSlot(row, column);
+
+			if(targetSlot.IsEmpty()) {
+				PlaceSingleItem(inventoryName, row, column);
+				return;
+			}
+			if(targetSlot.Item == null) {
+				return;
+			}
+			if(!HeldItemSlot.SameItem(targetSlot.Item)) {
+				return;
+			}
+			if(!targetSlot.Item.IsStackable || targetSlot.Quantity >= targetSlot.Item.MaxStackSize) {
+				return;
+			}
+			PlaceSingleItem(inventoryName, row, column);
+		}
+
+		private void PlaceSingleItem(string inventoryName, int row, int column) {
+			if(HeldItemSlot == null) {
+				return;
+			}
+			Log.Info("Placing held single item into slot inventory:" + inventoryName + " row: " + row + " column: " + column);
+			ItemSlot temp = new ItemSlot(HeldItemSlot.Item!, 1);
+			ItemSlot remainSlot = GetInventory(inventoryName).AddItem(temp, row, column);
+			if(remainSlot.IsEmpty()) {
+				HeldItemSlot.Quantity -= 1;
+			}
+			EndMoveItemEvent?.Invoke();
+			if(HeldItemSlot.Quantity <= 0) {
+				MouseHasItemSlot = false;
+				HeldItemSlot = null;
+			}
+			else {
+				StartMoveItemEvent?.Invoke(HeldItemSlot);
+			}
+		}
+
 		public void HandlePlaceItemSlotOnEmptySlot(string inventoryName, int slotIndex) {
 			if(IsItemSlotEmpty(inventoryName, slotIndex)) {
 				if(HeldItemSlot == null) {
@@ -178,6 +224,27 @@ namespace ItemSystem {
 			}
 		}
 
+		public void HandlePlaceSingleItemSlotOnEmptySlot(string inventoryName, int slotIndex) {
+			if(IsItemSlotEmpty(inventoryName, slotIndex)) {
+				if(HeldItemSlot == null) {
+					Log.Error("HeldItemSlot is null in HandlePlaceItemSlotOnEmptySlot");
+					return;
+				}
+				Log.Info("Placing held single item into empty slot inventory:" + inventoryName + " index: " + slotIndex);
+				ItemSlot temp = new ItemSlot(HeldItemSlot.Item!, 1);
+				GetInventory(inventoryName).AddItem(temp, GetInventory(inventoryName).GetRow(slotIndex), GetInventory(inventoryName).GetColumn(slotIndex));
+				HeldItemSlot.Quantity -= 1;
+				EndMoveItemEvent?.Invoke();
+				if(HeldItemSlot.Quantity <= 0) {
+					MouseHasItemSlot = false;
+					HeldItemSlot = null;
+				}
+				else {
+					StartMoveItemEvent?.Invoke(HeldItemSlot);
+				}
+			}
+		}
+
 		public void HandlePlaceItemSlotOnNonEmptySlot(string inventoryName, int slotIndex) {
 			if(!IsItemSlotEmpty(inventoryName, slotIndex)) {
 				if(HeldItemSlot == null) {
@@ -187,6 +254,17 @@ namespace ItemSystem {
 				Log.Info("Placing held item onto non-empty slot inventory:" + inventoryName + " index: " + slotIndex);
 				HandlePlaceItemSlotOnDifferentItem(inventoryName, slotIndex);
 				HandlePlaceItemSlotOnSameItem(inventoryName, slotIndex);
+			}
+		}
+
+		public void HandlePlaceSingleItemSlotOnNonEmptySlot(string inventoryName, int slotIndex) {
+			if(!IsItemSlotEmpty(inventoryName, slotIndex)) {
+				if(HeldItemSlot == null) {
+					Log.Error("HeldItemSlot is null in HandlePlaceItemSlotOnNonEmptySlot");
+					return;
+				}
+				Log.Info("Placing held single item onto non-empty slot inventory:" + inventoryName + " index: " + slotIndex);
+				HandlePlaceSingleItemSlotOnSameItem(inventoryName, slotIndex);
 			}
 		}
 
@@ -226,6 +304,33 @@ namespace ItemSystem {
 					Log.Info("Some held items remain after placing into slot inventory:" + inventoryName + " index: " + slotIndex);
 					HeldItemSlot = remainSlot;
 					EndMoveItemEvent?.Invoke();
+					StartMoveItemEvent?.Invoke(HeldItemSlot);
+				}
+			}
+		}
+
+		public void HandlePlaceSingleItemSlotOnSameItem(string inventoryName, int slotIndex) {
+			if(HeldItemSlot == null) return;
+			int row = GetInventory(inventoryName).GetRow(slotIndex);
+			int column = GetInventory(inventoryName).GetColumn(slotIndex);
+			ItemSlot targetSlot = GetInventory(inventoryName).GetItemSlot(row, column);
+			if(targetSlot.Item == null) return;
+			if(HeldItemSlot.SameItem(targetSlot.Item)) {
+				if(!targetSlot.Item.IsStackable || targetSlot.Quantity >= targetSlot.Item.MaxStackSize) {
+					return;
+				}
+				Log.Info("Placing held single item onto same item type slot inventory:" + inventoryName + " index: " + slotIndex);
+				ItemSlot temp = new ItemSlot(HeldItemSlot.Item!, 1);
+				ItemSlot remainSlot = GetInventory(inventoryName).AddItem(temp, row, column);
+				if(remainSlot.IsEmpty()) {
+					HeldItemSlot.Quantity -= 1;
+				}
+				EndMoveItemEvent?.Invoke();
+				if(HeldItemSlot.Quantity <= 0) {
+					MouseHasItemSlot = false;
+					HeldItemSlot = null;
+				}
+				else {
 					StartMoveItemEvent?.Invoke(HeldItemSlot);
 				}
 			}
