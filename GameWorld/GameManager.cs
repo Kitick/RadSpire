@@ -30,7 +30,7 @@ namespace Root {
 
 		private string? LoadFile;
 
-		private const int SpawnHeight = 4;
+		private const int SpawnHeight = 100;
 		private const int SpawnRadius = 50;
 
 		private static readonly Vector3 PlayerSpawnLocation = new Vector3(0, SpawnHeight, 0);
