@@ -10,8 +10,8 @@ namespace UI {
 		[Export] public int SlotIndex { get; set; } = -1;
 		[Export] public TextureRect IconTextureRect { get; set; } = null!;
 		[Export] public Label ItemCountLabel { get; set; } = null!;
-		public event Action<int>? OnSlotPressed;
-		public event Action<int>? OnSlotReleased;
+		public event Action<int, MouseButton>? OnSlotPressed;
+		public event Action<int, MouseButton>? OnSlotReleased;
 
 		public override void _Ready() {
 			base._Ready();
@@ -42,19 +42,20 @@ namespace UI {
 
 		public override void _GuiInput(InputEvent @event) {
 			if(@event is InputEventMouseButton mouseEvent) {
-				if(mouseEvent.ButtonIndex == MouseButton.Left) {
-					if(SlotIndex == -1) {
-						Log.Error("SlotIndex is -1, cannot handle click.");
-						return;
-					}
-					if(mouseEvent.Pressed) {
-						OnSlotPressed?.Invoke(SlotIndex);
-						Log.Info($"Slot {SlotIndex} pressed.");
-					}
-					else {
-						Log.Info($"Slot {SlotIndex} released.");
-						OnSlotReleased?.Invoke(SlotIndex);
-					}
+				if(SlotIndex == -1) {
+					Log.Error("SlotIndex is -1, cannot handle click.");
+					return;
+				}
+				if(mouseEvent.ButtonIndex != MouseButton.Left && mouseEvent.ButtonIndex != MouseButton.Right) {
+					return;
+				}
+				if(mouseEvent.Pressed) {
+					OnSlotPressed?.Invoke(SlotIndex, mouseEvent.ButtonIndex);
+					Log.Info($"Slot {SlotIndex} pressed.");
+				}
+				else {
+					Log.Info($"Slot {SlotIndex} released.");
+					OnSlotReleased?.Invoke(SlotIndex, mouseEvent.ButtonIndex);
 				}
 			}
 		}

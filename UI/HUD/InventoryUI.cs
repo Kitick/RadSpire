@@ -10,8 +10,8 @@ namespace UI {
 		Inventory Inventory { get; set; }
 		Rect2 GetGlobalRect();
 		void SetUpInventoryUI();
-		public event Action<string, int>? OnSlotPressed;
-		public event Action<string, int>? OnSlotReleased;
+		public event Action<string, int, MouseButton>? OnSlotPressed;
+		public event Action<string, int, MouseButton>? OnSlotReleased;
 		void UpdateInventoryUI();
 	}
 
@@ -26,8 +26,8 @@ namespace UI {
 		private PackedScene? InvSlotTemplate = null!;
 		private Control? GridContainer = null!;
 
-		public event Action<string, int>? OnSlotPressed;
-		public event Action<string, int>? OnSlotReleased;
+		public event Action<string, int, MouseButton>? OnSlotPressed;
+		public event Action<string, int, MouseButton>? OnSlotReleased;
 
 		public override void _Ready() {
 			base._Ready();
@@ -79,14 +79,14 @@ namespace UI {
 			UpdateInventoryUI();
 		}
 
-		public void HandleOnSlotPressed(int slotIndex) {
+		public void HandleOnSlotPressed(int slotIndex, MouseButton button) {
 			Log.Info($"InventoryUI: Slot {slotIndex} pressed.");
-			OnSlotPressed?.Invoke(Inventory.Name, slotIndex);
+			OnSlotPressed?.Invoke(Inventory.Name, slotIndex, button);
 		}
 
-		public void HandleOnSlotReleased(int slotIndex) {
+		public void HandleOnSlotReleased(int slotIndex, MouseButton button) {
 			Log.Info($"InventoryUI: Slot {slotIndex} released.");
-			OnSlotReleased?.Invoke(Inventory.Name, slotIndex);
+			OnSlotReleased?.Invoke(Inventory.Name, slotIndex, button);
 		}
 
 		public void UpdateInventoryUI() {

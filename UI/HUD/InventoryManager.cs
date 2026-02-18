@@ -84,14 +84,20 @@ namespace ItemSystem {
 			return null!;
 		}
 
-		public void HandleOnSlotPressed(string inventoryName, int slotIndex) {
+		public void HandleOnSlotPressed(string inventoryName, int slotIndex, MouseButton button) {
+			if(button != MouseButton.Left) {
+				return;
+			}
 			if(!MouseHasItemSlot) {
 				Log.Info($"InventoryManager: Slot {slotIndex} pressed in inventory {inventoryName}.");
 				HandlePickupItemSlot(inventoryName, slotIndex);
 			}
 		}
 
-		public void HandleOnSlotReleased(string inventoryName, int slotIndex) {
+		public void HandleOnSlotReleased(string inventoryName, int slotIndex, MouseButton button) {
+			if(button != MouseButton.Left) {
+				return;
+			}
 			if(MouseHasItemSlot) {
 				Log.Info($"InventoryManager: Slot {slotIndex} released in inventory {inventoryName}.");
 				HandlePlaceItemSlot(inventoryName, slotIndex);
