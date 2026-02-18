@@ -96,6 +96,7 @@ namespace ItemSystem {
 				Log.Info("Picking up item from inventory:" + inventoryName + " slot index: " + slotIndex);
 
 				MouseHasItemSlot = true;
+				HeldItemSlot = GetInventory(inventoryName).GetItemSlot(GetInventory(inventoryName).GetRow(slotIndex), GetInventory(inventoryName).GetColumn(slotIndex));
 				GetInventory(inventoryName).RemoveItem(GetInventory(inventoryName).GetRow(slotIndex), GetInventory(inventoryName).GetColumn(slotIndex));
 			}
 		}

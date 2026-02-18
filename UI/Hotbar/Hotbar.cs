@@ -71,6 +71,9 @@ namespace UI {
 
 		public override void _ExitTree() {
 			OnExit?.Invoke();
+			if(Player != null && Player.InventoryManager != null) {
+				Player.InventoryManager.UnregisterInventory(Inventory.Name);
+			}
 		}
 
 		public void SetUpInventoryUI() {
@@ -80,6 +83,7 @@ namespace UI {
 				return;
 			}
 			Inventory = Player.Hotbar;
+			Player.InventoryManager.RegisterInventory(Inventory, this);
 			GridContainer = GetNode<Control>("Background/GridBackground/HotbarSlots");
 			if(InvSlotTemplate == null) {
 				InvSlotTemplate = GD.Load<PackedScene>("res://UI/Inventory/InvSlotUITemplate.tscn");

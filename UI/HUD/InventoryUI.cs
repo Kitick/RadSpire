@@ -40,6 +40,12 @@ namespace UI {
 			}
 		}
 
+		public override void _ExitTree() {
+			if(Player != null && Player.InventoryManager != null) {
+				Player.InventoryManager.UnregisterInventory(Inventory.Name);
+			}
+		}
+
 		public void SetUpInventoryUI() {
 			Player = GetParent<HUD>().Player;
 			if(Player == null) {
@@ -47,6 +53,7 @@ namespace UI {
 				return;
 			}
 			Inventory = Player.Inventory;
+			Player.InventoryManager.RegisterInventory(Inventory, this);
 			GridContainer = GetNode<Control>("Background/GridBackground/GridContainer");
 			// Allow clicks to pass through non-interactive background so Hotbar can receive them
 			var background = GetNodeOrNull<Control>("Background");
