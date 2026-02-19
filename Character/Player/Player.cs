@@ -19,7 +19,7 @@ namespace Character {
 		protected override (int phys, int mag) InitialDamage => (InitialDamagePhysical, InitialDamageMagic);
 		protected override (int phys, int mag) InitialDefense => (InitialDefensePhysical, InitialDefenseMagic);
 
-		[Export] private float SprintMultiplier = 2.25f;
+		[Export] private float SprintMultiplier = 3.25f;
 		[Export] private float CrouchMultiplier = 0.5f;
 
 		// Inventories

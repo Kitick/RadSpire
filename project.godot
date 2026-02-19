@@ -56,7 +56,7 @@ project/assembly_name="RadSpire"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/godot_resource_groups/plugin.cfg", "res://addons/resources_spreadsheet_view/plugin.cfg", "res://addons/sprite_mesh/plugin.cfg", "res://addons/terrainy/plugin.cfg")
+enabled=PackedStringArray("res://addons/godot_resource_groups/plugin.cfg", "res://addons/resources_spreadsheet_view/plugin.cfg", "res://addons/sprite_mesh/plugin.cfg", "res://addons/terrain_3d/plugin.cfg", "res://addons/terrainy/plugin.cfg")
 
 [filesystem]
 
