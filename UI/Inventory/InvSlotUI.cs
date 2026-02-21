@@ -12,11 +12,13 @@ namespace UI {
 		[Export] public Label ItemCountLabel { get; set; } = null!;
 		public event Action<int, MouseButton>? OnSlotPressed;
 		public event Action<int, MouseButton>? OnSlotReleased;
+		public event Action<int>? OnSlotHovered;
 
 		public override void _Ready() {
 			base._Ready();
 			IconTextureRect = GetNode<TextureRect>("TextureRect");
 			ItemCountLabel = GetNode<Label>("ItemCountLabel");
+			MouseEntered += OnMouseEntered;
 		}
 
 		public void UpdateSlotUI(ItemSlot itemSlot) {
@@ -60,5 +62,13 @@ namespace UI {
 			}
 		}
 
+		public void OnMouseEntered(){
+			if(SlotIndex == -1) {
+				Log.Error("SlotIndex is -1, cannot handle hover.");
+				return;
+			}
+			OnSlotHovered?.Invoke(SlotIndex);
+			Log.Info($"Slot {SlotIndex} hovered.");
+		}
 	}
 }

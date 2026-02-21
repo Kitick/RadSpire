@@ -20,6 +20,7 @@ namespace ItemSystem {
 		private bool IgnoreNextRightRelease = false;
 		public event Action<ItemSlot>? StartMoveItemEvent;
 		public event Action? EndMoveItemEvent;
+		public bool InventoryUIOpen = false;
 
 		public override void _Ready() {
 			base._Ready();
@@ -47,6 +48,7 @@ namespace ItemSystem {
 			}
 			InventoryUIManager = InventoryUIManagerTemplate.Instantiate<InventoryUIManager>();
 			inventoryUi.AddChild(InventoryUIManager);
+			hud.InventoryRequested += OnInventoryRequested;
 		}
 
 		public void RegisterInventory(Inventory inventory, IInventoryUI uiControl) {
@@ -87,7 +89,16 @@ namespace ItemSystem {
 			return null!;
 		}
 
+		public void OnInventoryRequested(bool open) {
+			InventoryUIOpen = open;
+			Log.Info($"Inventory UI open: {InventoryUIOpen}");
+		}
+
 		public void HandleOnSlotPressed(string inventoryName, int slotIndex, MouseButton button) {
+			if(InventoryUIOpen == false) {
+				Log.Info("Inventory UI is not open, ignoring slot press.");
+				return;
+			}
 			if(!MouseHasItemSlot) {
 				Log.Info($"InventoryManager: Slot {slotIndex} pressed in inventory {inventoryName}.");
 				if(button == MouseButton.Right) {
@@ -100,6 +111,10 @@ namespace ItemSystem {
 		}
 
 		public void HandleOnSlotReleased(string inventoryName, int slotIndex, MouseButton button) {
+			if(InventoryUIOpen == false) {
+				Log.Info("Inventory UI is not open, ignoring slot release.");
+				return;
+			}
 			if(MouseHasItemSlot) {
 				Log.Info($"InventoryManager: Slot {slotIndex} released in inventory {inventoryName}.");
 				if(button == MouseButton.Right) {

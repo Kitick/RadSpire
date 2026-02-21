@@ -36,6 +36,7 @@ namespace UI {
 		public event Action? HostRequested;
 		public event Action? MainMenuRequested;
 		public event Action? RespawnRequested;
+		public event Action<bool>? InventoryRequested;
 		public event Action<string>? SaveRequested;
 
 		public void Init(Player player, StateMachine<MenuState> stateMachine) {
@@ -84,10 +85,12 @@ namespace UI {
 			stateMachine.OnEnter(MenuState.Inventory, () => {
 				Inventory.Visible = true;
 				Hotbar.Visible = true;
+				InventoryRequested?.Invoke(true);
 			});
 
 			stateMachine.OnExit(MenuState.Inventory, () => {
 				Inventory.Visible = false;
+				InventoryRequested?.Invoke(false);
 			});
 
 			// Host state
