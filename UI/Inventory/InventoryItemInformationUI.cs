@@ -7,8 +7,7 @@ namespace UI {
 
     public partial class InventoryItemInformationUI : Control {
         private static readonly LogService Log = new(nameof(InventoryItemInformationUI), enabled: true);
-        public PackedScene? InventoryItemInformationUITemplate = null!;
-        public PackedScene? AttributeLabelTemplate = null!;
+        public PackedScene? ComponentLabelTemplate = null!;
 
         public InventoryManager InventoryManager = null!;
 
