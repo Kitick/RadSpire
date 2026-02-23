@@ -13,6 +13,18 @@ namespace Components {
 		public float CriticalChance { get; set; } = 0f;
 		public float CriticalMultiplier { get; set; } = 1f;
 
+		public string[] getComponentDescription() {
+			string[] componentDescriptions = new string[] {
+				$"+{BaseAttack} Attack",
+				$"+{AttackSpeed} Attack Speed",
+				$"+{Range} Range",
+				$"+{Knockback} Knockback",
+				$"+{CriticalChance * 100}% Critical Chance",
+				$"+{CriticalMultiplier * 100}% Critical Multiplier"
+			};
+			return componentDescriptions;
+		}
+
 		public bool UseOnTarget<TEntity, TTarget>(TEntity user, TTarget target) {
 			// Weapon usage on target logic here
 			return false;

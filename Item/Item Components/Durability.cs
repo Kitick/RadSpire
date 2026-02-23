@@ -19,6 +19,11 @@ namespace Components {
 			}
 		}
 
+		public string[] getComponentDescription() {
+			string componentDescription = $"Durability: {Current}/{Max}";
+			return new string[] { componentDescription };
+		}
+
 		public bool Use<TEntity>(TEntity user) {
 			
 			return false;

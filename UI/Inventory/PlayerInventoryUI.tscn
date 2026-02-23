@@ -1,0 +1,28 @@
+[gd_scene format=3 uid="uid://46axah0l4ab8"]
+
+[ext_resource type="PackedScene" uid="uid://bffohbw4kmhwa" path="res://UI/Inventory/Inventory.tscn" id="1_hhsac"]
+[ext_resource type="PackedScene" uid="uid://n150xowq1ipg" path="res://UI/Inventory/InventoryItemInformationUITemplate.tscn" id="2_57lw6"]
+
+[node name="Control" type="Control" unique_id=1677681664]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Inventory" parent="." unique_id=162888265 instance=ExtResource("1_hhsac")]
+layout_mode = 0
+scale = Vector2(2, 2)
+
+[node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=1894760568]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Control" parent="." unique_id=1729341677 instance=ExtResource("2_57lw6")]
+layout_mode = 1
+offset_left = 710.0
+offset_top = 128.0
+offset_right = 710.0
+offset_bottom = 128.0

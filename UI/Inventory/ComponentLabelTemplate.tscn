@@ -1,0 +1,20 @@
+[gd_scene format=3 uid="uid://c1v3ulswhaxdt"]
+
+[node name="ComponentLabelTemplate" type="Control" unique_id=642645573]
+layout_mode = 3
+anchors_preset = 0
+
+[node name="Panel" type="Panel" parent="." unique_id=1353174624]
+custom_minimum_size = Vector2(115, 17)
+layout_mode = 0
+offset_right = 115.0
+offset_bottom = 17.0
+
+[node name="Label" type="Label" parent="Panel" unique_id=1349931952]
+custom_minimum_size = Vector2(110, 17)
+layout_mode = 0
+offset_left = 3.0
+offset_right = 113.0
+offset_bottom = 17.0
+theme_override_font_sizes/font_size = 11
+text = "+10 Healing"

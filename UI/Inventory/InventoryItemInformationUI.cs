@@ -24,25 +24,33 @@ namespace UI {
         }
 
         public void SetUpInventoryItemInformationUI() {
-
+            InventoryManager.
         }
         
         public void UpdateInventoryItemInformationUI(Item item) {
             CurrentItem = item;
-            ItemNameLabel.Text = item.Name;
-            ItemDescriptionLabel.Text = item.Description;
-            ItemIconTextureRect.Texture = item.IconTexture;
+            ItemNameLabel.Text = CurrentItem.Name;
+            ItemDescriptionLabel.Text = CurrentItem.Description;
+            ItemIconTextureRect.Texture = CurrentItem.IconTexture;
 
             foreach(Control label in ComponentsLabels) {
                 label.QueueFree();
             }
             ComponentsLabels.Clear();
+            ComponentsContainer.QueueFree();
 
-            foreach(IItemComponent component in item.Components) {
-                Control label = ComponentsContainer.GetNode<Control>("ComponentLabelTemplate");
-
-                ComponentsContainer.AddChild(label);
-                ComponentsLabels.Add(label);
+            foreach(IItemComponent component in CurrentItem.Components) {
+                if(ComponentLabelTemplate == null) {
+                    Log.Error("ComponentLabelTemplate is null.");
+                    return;
+                }
+                string[] componentDescriptions = component.getComponentDescription();
+                foreach(string componentDescription in componentDescriptions) {
+                    Control componentlabel = ComponentLabelTemplate.Instantiate<Control>();
+                    componentlabel.GetNode<Label>("Label").Text = componentDescription;
+                    ComponentsContainer.AddChild(componentlabel);
+                    ComponentsLabels.Add(componentlabel);
+                }
             }
         }
     }
