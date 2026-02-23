@@ -51,6 +51,7 @@ namespace ItemSystem {
 			InventoryUIManager = InventoryUIManagerTemplate.Instantiate<InventoryUIManager>();
 			inventoryUi.AddChild(InventoryUIManager);
 			hud.InventoryRequested += OnInventoryRequested;
+			hud.InventoryItemInformationUI.InventoryManager = this;
 		}
 
 		public void RegisterInventory(Inventory inventory, IInventoryUI uiControl) {
@@ -94,6 +95,14 @@ namespace ItemSystem {
 
 		public void OnInventoryRequested(bool open) {
 			InventoryUIOpen = open;
+			if(open){
+				if(GetInventoryUI("Hotbar") is Hotbar hotbar) {
+					ItemSlot temp = hotbar.GetSelectedItemSlot();
+					if(!temp.IsEmpty()) {
+						ItemSlotHovered?.Invoke(temp);
+					}
+				}
+			}
 			Log.Info($"Inventory UI open: {InventoryUIOpen}");
 		}
 
