@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://n150xowq1ipg"]
 
 [ext_resource type="Texture2D" uid="uid://8ykhw0g480u8" path="res://Assets/Images/Icons/sword.png" id="1_rcgbh"]
+[ext_resource type="PackedScene" uid="uid://c1v3ulswhaxdt" path="res://UI/Inventory/ComponentLabelTemplate.tscn" id="2_r1v4f"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_r1v4f"]
 bg_color = Color(0.6066884, 0.5630471, 0.49756545, 1)
@@ -22,12 +23,13 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="ColorRect" type="ColorRect" parent="." unique_id=2024211783]
+custom_minimum_size = Vector2(150, 0)
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 0.078
-anchor_bottom = 0.279
+anchor_bottom = 0.36400002
 offset_right = 0.23999023
-offset_bottom = -0.32000732
+offset_bottom = -0.120025635
 color = Color(0.4509804, 0.2627451, 0.1882353, 1)
 
 [node name="ColorRect2" type="ColorRect" parent="ColorRect" unique_id=640361303]
@@ -35,115 +37,85 @@ layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.053000003
 anchor_top = 0.027
-anchor_right = 0.95100003
-anchor_bottom = 0.96700007
+anchor_right = 0.938
+anchor_bottom = 0.97200006
 offset_left = 0.049999714
 offset_top = -0.12699986
-offset_right = -1.9550018
-offset_bottom = -3.0670166
+offset_right = -0.004989624
+offset_bottom = 0.003967285
 color = Color(1, 1, 1, 0.60784316)
 
-[node name="ItemNameLabel" type="Label" parent="ColorRect/ColorRect2" unique_id=1015296290]
+[node name="VBoxContainer" type="VBoxContainer" parent="ColorRect/ColorRect2" unique_id=487155514]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.060000002
-anchor_top = 0.446
-anchor_right = 0.919
-anchor_bottom = 0.52900004
-offset_left = 0.038299084
-offset_top = 0.11999512
-offset_right = 0.05328369
-offset_bottom = -0.120010376
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_font_sizes/font_size = 16
-text = "Sword"
+anchor_top = 0.009000001
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 0.17235565
+offset_right = -0.6950073
+offset_bottom = -1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 2
 
-[node name="ComponentsContainer" type="VBoxContainer" parent="ColorRect/ColorRect2" unique_id=188726548]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.060000002
-anchor_top = 0.757
-anchor_right = 0.934
-anchor_bottom = 0.975
-offset_left = 0.038299084
-offset_top = 0.039993286
-offset_right = 0.06285858
-
-[node name="Control" type="Control" parent="ColorRect/ColorRect2/ComponentsContainer" unique_id=505571741]
+[node name="GridContainer" type="GridContainer" parent="ColorRect/ColorRect2/VBoxContainer" unique_id=1012528812]
+custom_minimum_size = Vector2(125, 125)
 layout_mode = 2
-
-[node name="Panel" type="Panel" parent="ColorRect/ColorRect2/ComponentsContainer/Control" unique_id=960454567]
-custom_minimum_size = Vector2(115, 17)
-layout_mode = 0
-offset_right = 115.0
-offset_bottom = 17.0
-
-[node name="Label" type="Label" parent="ColorRect/ColorRect2/ComponentsContainer/Control/Panel" unique_id=701203945]
-custom_minimum_size = Vector2(110, 17)
-layout_mode = 0
-offset_left = 3.0
-offset_right = 113.0
-offset_bottom = 17.0
-theme_override_font_sizes/font_size = 11
-text = "+10 Healing"
-
-[node name="GridContainer" type="GridContainer" parent="ColorRect/ColorRect2" unique_id=1012528812]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.052
-anchor_top = 0.034
-anchor_right = 0.92600006
-anchor_bottom = 0.44400004
-offset_left = 1.0050001
-offset_top = -0.12000084
-offset_right = 0.029556274
-offset_bottom = 0.0799942
+size_flags_horizontal = 4
+size_flags_vertical = 4
 theme_override_constants/h_separation = 7
 theme_override_constants/v_separation = 5
 
-[node name="InvSlot1" type="Panel" parent="ColorRect/ColorRect2/GridContainer" unique_id=342073645]
+[node name="InvSlot1" type="Panel" parent="ColorRect/ColorRect2/VBoxContainer/GridContainer" unique_id=342073645]
+custom_minimum_size = Vector2(125, 125)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_r1v4f")
 
-[node name="ItemIconTextureRect" type="TextureRect" parent="ColorRect/ColorRect2/GridContainer/InvSlot1" unique_id=1426315598]
+[node name="ItemIconTextureRect" type="TextureRect" parent="ColorRect/ColorRect2/VBoxContainer/GridContainer/InvSlot1" unique_id=1426315598]
+custom_minimum_size = Vector2(125, 125)
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 5.0
-offset_top = 5.0
-offset_right = -5.0
-offset_bottom = -5.0
+offset_top = 1.0
+offset_bottom = 1.0
 texture = ExtResource("1_rcgbh")
 expand_mode = 1
 
-[node name="ItemCountLabel" type="Label" parent="ColorRect/ColorRect2/GridContainer/InvSlot1" unique_id=1053994550]
-layout_mode = 0
-offset_left = 57.09486
-offset_top = 88.600006
-offset_right = 112.094864
-offset_bottom = 111.600006
+[node name="ItemCountLabel" type="Label" parent="ColorRect/ColorRect2/VBoxContainer/GridContainer/InvSlot1" unique_id=1053994550]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.536
+anchor_top = 0.78400004
+anchor_right = 0.9760001
+anchor_bottom = 0.96800005
 text = "1"
 horizontal_alignment = 2
 
-[node name="ItemDescriptionLabel" type="Label" parent="ColorRect/ColorRect2" unique_id=1404991167]
-custom_minimum_size = Vector2(115, 66)
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.068
-anchor_top = 0.518
-anchor_right = 0.934
-anchor_bottom = 0.754
-offset_left = -0.02326107
-offset_top = -0.040008545
-offset_right = 0.06285858
-offset_bottom = -0.11999512
+[node name="ItemNameLabel" type="Label" parent="ColorRect/ColorRect2/VBoxContainer" unique_id=1015296290]
+custom_minimum_size = Vector2(125, 23)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 16
+text = "Default Item"
+
+[node name="ItemDescriptionLabel" type="Label" parent="ColorRect/ColorRect2/VBoxContainer" unique_id=1404991167]
+custom_minimum_size = Vector2(125, 10)
+layout_mode = 2
+size_flags_horizontal = 4
 theme_override_colors/font_color = Color(0.27, 0.27, 0.27, 1)
 theme_override_constants/line_spacing = 0
 theme_override_font_sizes/font_size = 9
-text = "An unripened apple. I guess it got picked too early ...
-fsafas
-dsfd"
+text = "Default Item Description"
 autowrap_mode = 2
+
+[node name="ComponentsContainer" type="VBoxContainer" parent="ColorRect/ColorRect2/VBoxContainer" unique_id=188726548]
+custom_minimum_size = Vector2(125, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="ComponentLabelTemplate" parent="ColorRect/ColorRect2/VBoxContainer/ComponentsContainer" unique_id=642645573 instance=ExtResource("2_r1v4f")]
+layout_mode = 2

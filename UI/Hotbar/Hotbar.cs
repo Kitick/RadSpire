@@ -44,6 +44,7 @@ namespace UI {
 		private Control? GridContainer = null!;
 		public event Action<string, int, MouseButton>? OnSlotPressed;
 		public event Action<string, int, MouseButton>? OnSlotReleased;
+		public event Action<string, int>? OnSlotHovered;
 
 		public override void _EnterTree() {
 			SetInputCallbacks();
@@ -94,6 +95,7 @@ namespace UI {
 				slotInstance.SlotIndex = i;
 				slotInstance.OnSlotPressed += HandleOnSlotPressed;
 				slotInstance.OnSlotReleased += HandleOnSlotReleased;
+				slotInstance.OnSlotHovered += HandleOnSlotHovered;
 				HotbarSlotUIs.Add(slotInstance);
 				HotbarSlots.Add(slotInstance);
 				GridContainer.AddChild(slotInstance);
@@ -161,6 +163,11 @@ namespace UI {
 			for(int i = 0; i < slotsToUpdate; i++) {
 				HotbarSlotUIs[i].UpdateSlotUI(Inventory.ItemSlots[i]);
 			}
+		}
+
+		public void HandleOnSlotHovered(int slotIndex) {
+			Log.Info($"Hotbar: Slot {slotIndex} hovered.");
+			OnSlotHovered?.Invoke(Inventory.Name, slotIndex);
 		}
 	}
 }

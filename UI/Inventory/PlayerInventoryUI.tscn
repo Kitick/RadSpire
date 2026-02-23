@@ -15,14 +15,9 @@ grow_vertical = 2
 layout_mode = 0
 scale = Vector2(2, 2)
 
-[node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=1894760568]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
-
 [node name="Control" parent="." unique_id=1729341677 instance=ExtResource("2_57lw6")]
 layout_mode = 1
-offset_left = 710.0
-offset_top = 128.0
-offset_right = 710.0
-offset_bottom = 128.0
+offset_left = 716.0
+offset_top = 80.0
+offset_right = 716.0
+offset_bottom = 80.0
