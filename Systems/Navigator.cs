@@ -59,15 +59,18 @@ namespace Services {
 
 		private void ClearStyles() {
 			foreach(var control in UIPanel!.Order) {
-				// Clear all styles
+				   // Reset visual style for all controls
+				   control.SelfModulate = Colors.White;
 			}
 		}
 
-		private void UpdateSelected() {
+		public void UpdateSelected() {
 			if(UIPanel is null) { return; }
 			ClearStyles();
 
-			// Apply Selected Styling
+			   // Highlight the selected control
+			   var selected = Selected;
+			   selected.SelfModulate = new Color(1f, 1f, 0.3f); // yellow highlight
 		}
 	}
 }
