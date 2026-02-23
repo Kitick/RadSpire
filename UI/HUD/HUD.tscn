@@ -11,6 +11,7 @@
 [ext_resource type="PackedScene" uid="uid://bffohbw4kmhwa" path="res://UI/Inventory/Inventory.tscn" id="6_785o0"]
 [ext_resource type="PackedScene" uid="uid://bjql4hi1q0ouh" path="res://UI/QuestLog/QuestLog.tscn" id="8_6ymr8"]
 [ext_resource type="PackedScene" uid="uid://2mdnsh082j66" path="res://UI/RespawnMenu/RespawnMenu.tscn" id="8_10ibt"]
+[ext_resource type="PackedScene" uid="uid://46axah0l4ab8" path="res://UI/Inventory/PlayerInventoryUI.tscn" id="12_i5ryk"]
 
 [node name="HUD" type="Control" unique_id=935922708 node_paths=PackedStringArray("PauseButton", "PauseMenu", "Inventory", "QuestLog", "Hotbar", "RespawnMenu", "HealthBar")]
 layout_mode = 3
@@ -115,3 +116,11 @@ offset_left = 264.0
 offset_top = 964.0
 offset_right = 537.0
 offset_bottom = 997.0
+
+[node name="PlayerInventoryUI" parent="." unique_id=1677681664 instance=ExtResource("12_i5ryk")]
+visible = false
+layout_mode = 1
+offset_left = 597.0
+offset_top = 258.0
+offset_right = 597.0
+offset_bottom = 258.0
