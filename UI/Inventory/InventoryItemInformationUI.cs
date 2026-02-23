@@ -10,14 +10,14 @@ namespace UI {
 		public PackedScene? ComponentLabelTemplate = null!;
 
 		public InventoryManager InventoryManager {
-            get;
-            set {
-                field = value;
-                if(InventoryManager != null) {
-                    SetUpInventoryItemInformationUI();
-                }
-            }
-        } = null!;
+			get;
+			set {
+				field = value;
+				if(InventoryManager != null) {
+					SetUpInventoryItemInformationUI();
+				}
+			}
+		} = null!;
 
 		public Item CurrentItem { get; set; } = null!;
 		[Export] private Label ItemNameLabel = null!;
@@ -33,24 +33,24 @@ namespace UI {
 		}
 
 		public void SetUpInventoryItemInformationUI() {
-            if(InventoryManager == null) {
-                Log.Error("InventoryManager is null in InventoryItemInformationUI.");
-                return;
-            }
-            InventoryManager.ItemSlotHovered += UpdateInventoryItemInformationUI;
-            ItemNameLabel = GetNode<Label>("ColorRect/ColorRect2/VBoxContainer/ItemNameLabel");
-            ItemDescriptionLabel = GetNode<Label>("ColorRect/ColorRect2/VBoxContainer/ItemDescriptionLabel");
-            ItemIconTextureRect = GetNode<TextureRect>("ColorRect/ColorRect2/VBoxContainer/GridContainer/InvSlot1/ItemIconTextureRect");
-            ItemCountLabel = GetNode<Label>("ColorRect/ColorRect2/VBoxContainer/GridContainer/InvSlot1/ItemCountLabel");
-            ComponentsContainer = GetNode<VBoxContainer>("ColorRect/ColorRect2/VBoxContainer/ComponentsContainer");
-            ComponentLabelTemplate = GD.Load<PackedScene>("res://UI/Inventory/ComponentLabelTemplate.tscn");
+			if(InventoryManager == null) {
+				Log.Error("InventoryManager is null in InventoryItemInformationUI.");
+				return;
+			}
+			InventoryManager.ItemSlotHovered += UpdateInventoryItemInformationUI;
+			ItemNameLabel = GetNode<Label>("ColorRect/ColorRect2/VBoxContainer/ItemNameLabel");
+			ItemDescriptionLabel = GetNode<Label>("ColorRect/ColorRect2/VBoxContainer/ItemDescriptionLabel");
+			ItemIconTextureRect = GetNode<TextureRect>("ColorRect/ColorRect2/VBoxContainer/GridContainer/InvSlot1/ItemIconTextureRect");
+			ItemCountLabel = GetNode<Label>("ColorRect/ColorRect2/VBoxContainer/GridContainer/InvSlot1/ItemCountLabel");
+			ComponentsContainer = GetNode<VBoxContainer>("ColorRect/ColorRect2/VBoxContainer/ComponentsContainer");
+			ComponentLabelTemplate = GD.Load<PackedScene>("res://UI/Inventory/ComponentLabelTemplate.tscn");
 		}
 		
 		public void UpdateInventoryItemInformationUI(ItemSlot itemSlot) {
-            if(InventoryManager == null) {
-                Log.Error("InventoryManager is null.");
-                return;
-            }
+			if(InventoryManager == null) {
+				Log.Error("InventoryManager is null.");
+				return;
+			}
 			if(itemSlot.IsEmpty()) {
 				return;
 			}
