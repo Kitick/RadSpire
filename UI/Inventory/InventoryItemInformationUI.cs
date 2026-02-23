@@ -60,11 +60,10 @@ namespace UI {
 			ItemIconTextureRect.Texture = CurrentItem.IconTexture;
 			ItemCountLabel.Text = itemSlot.Quantity.ToString();
 
-			foreach(Control label in ComponentsLabels) {
-				label.QueueFree();
+			foreach(Node child in ComponentsContainer.GetChildren()) {
+				child.QueueFree();
 			}
 			ComponentsLabels.Clear();
-			ComponentsContainer.QueueFree();
 
 			foreach(IItemComponent component in CurrentItem.Components) {
 				if(ComponentLabelTemplate == null) {
@@ -77,7 +76,7 @@ namespace UI {
 				}
 				foreach(string componentDescription in componentDescriptions) {
 					Control componentlabel = ComponentLabelTemplate.Instantiate<Control>();
-					componentlabel.GetNode<Label>("Label").Text = componentDescription;
+					componentlabel.GetNode<Label>("Panel/Label").Text = componentDescription;
 					ComponentsContainer.AddChild(componentlabel);
 					ComponentsLabels.Add(componentlabel);
 				}
