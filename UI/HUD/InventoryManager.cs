@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using Character;
 using Godot;
 using Root;
@@ -21,6 +22,7 @@ namespace ItemSystem {
 		public event Action<ItemSlot>? StartMoveItemEvent;
 		public event Action? EndMoveItemEvent;
 		public bool InventoryUIOpen = false;
+		public event Action<ItemSlot>? ItemSlotHovered;
 
 		public override void _Ready() {
 			base._Ready();
@@ -63,6 +65,7 @@ namespace ItemSystem {
 			Inventories.Add(inventory.Name, (inventory, uiControl));
 			uiControl.OnSlotPressed += HandleOnSlotPressed;
 			uiControl.OnSlotReleased += HandleOnSlotReleased;
+			uiControl.OnSlotHovered += OnItemSlotHovered;
 			Log.Info($"Registered inventory: {inventory.Name}");
 		}
 
@@ -489,6 +492,15 @@ namespace ItemSystem {
 				return false;
 			}
 			return hotbar.Inventory.RemoveItem(row, column, amount);
+		}
+
+		public void OnItemSlotHovered(string inventoryName, int slotIndex) {
+			Log.Info($"InventoryManager: Slot {slotIndex} hovered in inventory {inventoryName}.");
+			if(GetInventory(inventoryName).IsEmptySlot(GetInventory(inventoryName).GetRow(slotIndex), GetInventory(inventoryName).GetColumn(slotIndex))) {
+				return;
+			}
+			ItemSlot itemSlot = GetInventory(inventoryName).GetItemSlot(GetInventory(inventoryName).GetRow(slotIndex), GetInventory(inventoryName).GetColumn(slotIndex));
+			ItemSlotHovered?.Invoke(itemSlot);
 		}
 	}
 }

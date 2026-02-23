@@ -12,6 +12,7 @@ namespace UI {
 		void SetUpInventoryUI();
 		public event Action<string, int, MouseButton>? OnSlotPressed;
 		public event Action<string, int, MouseButton>? OnSlotReleased;
+		public event Action<string, int>? OnSlotHovered;
 		void UpdateInventoryUI();
 	}
 
@@ -28,6 +29,7 @@ namespace UI {
 
 		public event Action<string, int, MouseButton>? OnSlotPressed;
 		public event Action<string, int, MouseButton>? OnSlotReleased;
+		public event Action<string, int>? OnSlotHovered;
 
 		public override void _Ready() {
 			base._Ready();
@@ -73,6 +75,7 @@ namespace UI {
 				slotInstance.SlotIndex = i;
 				slotInstance.OnSlotPressed += HandleOnSlotPressed;
 				slotInstance.OnSlotReleased += HandleOnSlotReleased;
+				slotInstance.OnSlotHovered += HandleOnSlotHovered;
 				InvSlotUIs.Add(slotInstance);
 				GridContainer.AddChild(slotInstance);
 			}
@@ -87,6 +90,11 @@ namespace UI {
 		public void HandleOnSlotReleased(int slotIndex, MouseButton button) {
 			Log.Info($"InventoryUI: Slot {slotIndex} released.");
 			OnSlotReleased?.Invoke(Inventory.Name, slotIndex, button);
+		}
+
+		public void HandleOnSlotHovered(int slotIndex) {
+			Log.Info($"InventoryUI: Slot {slotIndex} hovered.");
+			OnSlotHovered?.Invoke(Inventory.Name, slotIndex);
 		}
 
 		public void UpdateInventoryUI() {

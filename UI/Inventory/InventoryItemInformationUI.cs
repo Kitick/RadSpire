@@ -15,6 +15,7 @@ namespace UI {
         [Export] private Label ItemNameLabel = null!;
         [Export] private Label ItemDescriptionLabel = null!;
         [Export] private TextureRect ItemIconTextureRect = null!;
+        [Export] private Label ItemCountLabel = null!;
         [Export] private VBoxContainer ComponentsContainer = null!;
         private List<Control> ComponentsLabels = new List<Control>();
 
@@ -24,14 +25,18 @@ namespace UI {
         }
 
         public void SetUpInventoryItemInformationUI() {
-            InventoryManager.
+            InventoryManager.ItemSlotHovered += UpdateInventoryItemInformationUI;
         }
         
-        public void UpdateInventoryItemInformationUI(Item item) {
-            CurrentItem = item;
+        public void UpdateInventoryItemInformationUI(ItemSlot itemSlot) {
+            if(itemSlot.IsEmpty()) {
+                return;
+            }
+            CurrentItem = itemSlot.Item!;
             ItemNameLabel.Text = CurrentItem.Name;
             ItemDescriptionLabel.Text = CurrentItem.Description;
             ItemIconTextureRect.Texture = CurrentItem.IconTexture;
+            ItemCountLabel.Text = itemSlot.Quantity.ToString();
 
             foreach(Control label in ComponentsLabels) {
                 label.QueueFree();
@@ -45,6 +50,9 @@ namespace UI {
                     return;
                 }
                 string[] componentDescriptions = component.getComponentDescription();
+                if(componentDescriptions == null || componentDescriptions.Length == 0) {
+                    continue;
+                }
                 foreach(string componentDescription in componentDescriptions) {
                     Control componentlabel = ComponentLabelTemplate.Instantiate<Control>();
                     componentlabel.GetNode<Label>("Label").Text = componentDescription;
