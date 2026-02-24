@@ -17,12 +17,13 @@ namespace Root {
 		[Export] private PackedScene HUDScene = null!;
 		[Export] private PackedScene PlayerScene = null!;
 		[Export] private PackedScene EnemyScene = null!;
+		[Export] private PackedScene Item3DIconManagerScene = null!;
 
 		private readonly KeyInput KeyInput = new();
 		private CameraRig CameraRig = null!;
 		private Player? LocalPlayer;
 		private HUD? HUD;
-
+		private Item3DIconManager? Item3DIconManager;
 		public Action? MainMenuRequested;
 
 		public enum MenuState { Game, Paused, Settings, Inventory, Host, Death }
@@ -42,6 +43,7 @@ namespace Root {
 			ProcessMode = ProcessModeEnum.Always;
 
 			CameraRig = this.AddScene<CameraRig>(CameraScene);
+			Item3DIconManager = this.AddScene<Item3DIconManager>(Item3DIconManagerScene);
 			ConfigureStateMachine();
 
 			StartGame();
