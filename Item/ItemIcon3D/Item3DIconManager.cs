@@ -38,16 +38,36 @@ namespace ItemSystem {
 			icon.QueueFree();
 		}
 
+		private void ClearActiveIcons() {
+			for(int i = 0; i < ActiveItem3DIcons.Count; i++) {
+				var icon = ActiveItem3DIcons[i];
+				if(IsInstanceValid(icon)) {
+					icon.QueueFree();
+				}
+			}
+
+			foreach(var child in GetChildren()) {
+				if(child is Item3DIcon icon && IsInstanceValid(icon)) {
+					icon.QueueFree();
+				}
+			}
+
+			ActiveItem3DIcons.Clear();
+		}
+
 		public Item3DIconManagerData Export() => new Item3DIconManagerData {
-			Item3DIconsData = ActiveItem3DIcons.ConvertAll(icon => icon.Export())
+			Item3DIconsData = ActiveItem3DIcons
+				.FindAll(icon => IsInstanceValid(icon))
+				.ConvertAll(icon => icon.Export())
 		};
 
 		public void Import(Item3DIconManagerData data) {
-			ActiveItem3DIcons.Clear();
+			ClearActiveIcons();
 			foreach (Item3DIconData Item3DIconData in data.Item3DIconsData) {
 				var icon = new Item3DIcon();
+				AddChild(icon);
 				icon.Import(Item3DIconData);
-				ActiveItem3DIcons.Add(icon);
+				AddItem3DIcon(icon);
 				
 			}
 		}

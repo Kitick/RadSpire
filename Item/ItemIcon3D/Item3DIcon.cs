@@ -28,6 +28,8 @@ namespace ItemSystem {
 				return;
 			}
 
+			GlobalPosition = position;
+
 			if(Item.IconTexture == null) {
 				Log.Info("Item has no IconTexture; skipping 3D icon spawn.");
 				return;
@@ -45,8 +47,8 @@ namespace ItemSystem {
 
 			CurrentItem3DScene = Item3DSceneTemplate.Instantiate<Node3D>();
 			AddChild(CurrentItem3DScene);
-			CurrentItem3DScene.GlobalPosition = position;
-			CurrentItem3DScene.GlobalRotation = GlobalRotation;
+			CurrentItem3DScene.Position = Vector3.Zero;
+			CurrentItem3DScene.Rotation = Vector3.Zero;
 
 			// ---- SpriteMeshInstance is a MeshInstance3D ----
 			var spriteMesh = CurrentItem3DScene.GetNodeOrNull<Node3D>("RigidBody3D/SpriteMeshInstance");
