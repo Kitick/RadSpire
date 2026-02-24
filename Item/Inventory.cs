@@ -256,8 +256,11 @@ namespace ItemSystem {
 			ItemSlots = new ItemSlot[MaxSlots];
 			for(int i = 0; i < ItemSlots.Length; i++) {
 				ItemSlots[i] = new ItemSlot();
-				ItemSlots[i].Import(data.ItemSlots[i]);
+				if(i < data.ItemSlots.Length) {
+					ItemSlots[i].Import(data.ItemSlots[i]);
+				}
 			}
+			OnInventoryChanged?.Invoke();
 		}
 	}
 

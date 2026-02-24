@@ -132,7 +132,8 @@ namespace ItemSystem {
 				return;
 			}
 
-			Item!.Import(data.Item.Value);
+			Item = new Item();
+			Item.Import(data.Item.Value);
 
 			Quantity = data.Quantity;
 		}
