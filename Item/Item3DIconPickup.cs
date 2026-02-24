@@ -14,6 +14,7 @@ namespace ItemSystem {
 		public Inventory PlayerInventory = null!;
 		public Inventory PlayerHotbar = null!;
 		public InteractionArea PlayerInteractionArea = null!;
+		public event Action<Item3DIcon>? DespawnItem3DIconRequested;
 		[Export] public PackedScene? Item3DIconPromptTemplate = null!;
 		[Export] public PackedScene? Item3DIconPickupScreenTemplate = null!;
 		public Control? Item3DIconPickupScreenInstance = null;
@@ -76,14 +77,24 @@ namespace ItemSystem {
 			if(PlayerHotbar.AddItem(itemIcon3D.Item)) {
 				Log.Info("Item added to Hotbar.");
 				RemoveItemIconPrompt(itemIcon3D);
-				itemIcon3D.QueueFree();
+				if(DespawnItem3DIconRequested != null) {
+					DespawnItem3DIconRequested.Invoke(itemIcon3D);
+				}
+				else {
+					itemIcon3D.QueueFree();
+				}
 				Log.Info("Item picked up and removed from the world.");
 				return;
 			}
 			else if(PlayerInventory.AddItem(itemIcon3D.Item)) {
 				Log.Info("Item added to Inventory.");
 				RemoveItemIconPrompt(itemIcon3D);
-				itemIcon3D.QueueFree();
+				if(DespawnItem3DIconRequested != null) {
+					DespawnItem3DIconRequested.Invoke(itemIcon3D);
+				}
+				else {
+					itemIcon3D.QueueFree();
+				}
 				Log.Info("Item picked up and removed from the world.");
 				return;
 			}

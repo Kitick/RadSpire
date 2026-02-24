@@ -23,6 +23,7 @@ namespace ItemSystem {
 		public event Action? EndMoveItemEvent;
 		public bool InventoryUIOpen = false;
 		public event Action<ItemSlot>? ItemSlotHovered;
+		public event Action<Item, Vector3>? SpawnItem3DIconRequested;
 
 		public override void _Ready() {
 			base._Ready();
@@ -457,6 +458,11 @@ namespace ItemSystem {
 
 		public void DropItem(Item item) {
 			Vector3 dropPosition = GetParent<Player>().GlobalPosition + GetParent<Player>().GlobalTransform.Basis.Z * 2 + Vector3.Up;
+			if(SpawnItem3DIconRequested != null) {
+				SpawnItem3DIconRequested.Invoke(item, dropPosition);
+				return;
+			}
+
 			Item3DIcon droppedItemIcon = new Item3DIcon();
 			droppedItemIcon.Item = item;
 			GetParent<Player>().GetParent().AddChild(droppedItemIcon);

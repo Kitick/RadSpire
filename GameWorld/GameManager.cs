@@ -68,6 +68,7 @@ namespace Root {
 		private void SpawnLocalPlayer() {
 			LocalPlayer = this.AddScene<Player>(PlayerScene);
 			LocalPlayer.GlobalPosition = PlayerSpawnLocation;
+			SubscribeToPlayerItem3DIconEvents(LocalPlayer);
 
 			CameraRig.Target = LocalPlayer;
 
@@ -103,6 +104,7 @@ namespace Root {
 			var inventoryData = LocalPlayer.Inventory.Export();
 			var hotbarData = LocalPlayer.Hotbar.Export();
 
+			UnsubscribeFromPlayerItem3DIconEvents(LocalPlayer);
 			LocalPlayer.QueueFree();
 			LocalPlayer = null;
 
@@ -199,6 +201,10 @@ namespace Root {
 		private void CleanupGame() {
 			HUD = null;
 
+			if(IsInstanceValid(LocalPlayer)) {
+				UnsubscribeFromPlayerItem3DIconEvents(LocalPlayer!);
+			}
+
 			Cleanup(LocalPlayer);
 			LocalPlayer = null;
 
@@ -234,6 +240,22 @@ namespace Root {
 			Item3DIconManager.SpawnItem(ItemID.StrawberryRed, RandomLocation());
 			Item3DIconManager.SpawnItem(ItemID.StrawberryRed, RandomLocation());
 			Item3DIconManager.SpawnItem(ItemID.StrawberryRed, new Vector3(40, SpawnHeight, 20), 3);
+		}
+
+		private void SubscribeToPlayerItem3DIconEvents(Player player) {
+			if(Item3DIconManager == null) {
+				return;
+			}
+			player.InventoryManager.SpawnItem3DIconRequested += (item, position) => Item3DIconManager.RequestSpawnItem(item, position);
+			player.PickupComponent.DespawnItem3DIconRequested += Item3DIconManager.RequestDespawnItem;
+		}
+
+		private void UnsubscribeFromPlayerItem3DIconEvents(Player player) {
+			if(Item3DIconManager == null) {
+				return;
+			}
+			player.InventoryManager.SpawnItem3DIconRequested -= (item, position) => Item3DIconManager.RequestSpawnItem(item, position);
+			player.PickupComponent.DespawnItem3DIconRequested -= Item3DIconManager.RequestDespawnItem;
 		}
 	}
 

@@ -18,6 +18,22 @@ namespace ItemSystem {
 
 		}
 
+		public void RequestSpawnItem(Item item, Vector3 position, float scaleFactor = 1.0f) {
+			if(item == null) {
+				return;
+			}
+
+			SpawnItem(item.Id, position, scaleFactor);
+		}
+
+		public void RequestDespawnItem(Item3DIcon icon) {
+			if(icon == null || !IsInstanceValid(icon)) {
+				return;
+			}
+
+			DespawnItem(icon);
+		}
+
 		public void SpawnItem(string itemID, Vector3 position, float scaleFactor = 1.0f) {
 			Item? item = ItemDataBaseManager.Instance.CreateItemInstanceById(itemID);
 			if(item == null) {
