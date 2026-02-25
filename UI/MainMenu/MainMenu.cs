@@ -6,7 +6,7 @@ using UI.Multiplayer;
 using UI.Settings;
 
 namespace UI {
-	public sealed partial class MainMenu : Control, INavigatable {
+	public sealed partial class MainMenu : Control {
 		private static readonly LogService Log = new(nameof(MainMenu), enabled: true);
 
 		[ExportCategory("Main Buttons")]
@@ -34,11 +34,11 @@ namespace UI {
 		[Export] private PackedScene HostPanelScene = null!;
 		[Export] private PackedScene JoinPanelScene = null!;
 
-		public Control[] Order => [
-			SingleplayerButton, MultiplayerButton, SettingsButton, ExtrasButton, QuitButton
-		];
+		private Control[] MainOrder => [SingleplayerButton, MultiplayerButton, SettingsButton, ExtrasButton, QuitButton];
+		private Control[] SingleplayerOrder => [ContinueButton, LoadSavedButton, StartNewButton];
+		private Control[] MultiplayerOrder => [HostNewButton, HostSavedButton, JoinGameButton];
 
-		enum MenuState { Normal, SinglePopup, MultiPopup }
+		private enum MenuState { Normal, SinglePopup, MultiPopup }
 
 		private const float HideDelay = 0.25f;
 
@@ -51,7 +51,7 @@ namespace UI {
 			UpdateContinueButtonState();
 			SetCallbacks();
 
-			Navigator.Instance.SetPanel(this);
+			Navigator.Instance.Order = MainOrder;
 		}
 
 		private void SetCallbacks() {
@@ -75,6 +75,19 @@ namespace UI {
 			MultiplayerButton.MouseEntered += () => SetPopupState(MenuState.MultiPopup);
 			MultiplayerButton.MouseExited += HidePopup;
 			MultiplayerPanel.MouseExited += HidePopup;
+
+			ActionEvent.MenuRight.WhenPressed(() => {
+				if(Navigator.Instance.Selected == SingleplayerButton) {
+					Navigator.Instance.Order = SingleplayerOrder;
+				}
+				else if(Navigator.Instance.Selected == MultiplayerButton) {
+					Navigator.Instance.Order = MultiplayerOrder;
+				}
+			});
+
+			ActionEvent.MenuLeft.WhenPressed(() => {
+				Navigator.Instance.Order = MainOrder;
+			});
 		}
 
 		private void SetPopupState(MenuState state) {
