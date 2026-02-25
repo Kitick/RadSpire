@@ -4,11 +4,7 @@ using Services;
 using Services.Settings;
 
 namespace UI.Settings {
-	public sealed partial class SettingsMenu : Control, ISaveable<SettingsData> {
-		private static readonly LogService Log = new(nameof(SettingsMenu), enabled: true);
-
-		private const string SAVEFILE = "settings";
-
+	public sealed partial class SettingsMenu : Control {
 		[ExportCategory("Buttons")]
 		[Export] private Button BackButton = null!;
 		[Export] private Button ResetButton = null!;
@@ -38,7 +34,7 @@ namespace UI.Settings {
 		[Export] private Button AccessibilityButton = null!;
 
 		public Control[] Order => [
-			GeneralPanel, DisplayPanel, SoundPanel, ControllerPanel, MKPanel, AccessibilityPanel
+			GeneralPanel, DisplayPanel, SoundPanel, ControllerPanel, MKPanel, AccessibilityPanel, ResetButton, BackButton
 		];
 
 		private (Control panel, Button button)[] Panels => [
@@ -51,6 +47,8 @@ namespace UI.Settings {
 		];
 
 		private Control InitialPanel => GeneralPanel;
+
+		private Control ActivePanel = null!;
 
 		private event Action? OnExit;
 
@@ -86,10 +84,20 @@ namespace UI.Settings {
 		}
 
 		private void OnResetSettingsButtonPressed() {
-			//Implementation Here should make it so what ever panel is open it can be reset
+			if(ActivePanel == DisplayPanel) {
+				DisplaySettings.Reset();
+				DisplaySettings.Apply();
+				DisplayPanel.Refresh();
+			}
+			else if(ActivePanel == SoundPanel) {
+				AudioSettings.Reset();
+				AudioSettings.Apply();
+				SoundPanel.Refresh();
+			}
 		}
 
 		private void SwitchToPanel(Control target) {
+			ActivePanel = target;
 			foreach(var (panel, button) in Panels) {
 				var isTarget = panel == target;
 				panel.Visible = isTarget;
@@ -108,33 +116,13 @@ namespace UI.Settings {
 		}
 
 		private void SaveData() {
-			this.Save(SAVEFILE);
-			Log.Info("Settings saved");
+			SettingSystem.Save();
 		}
 
 		private void LoadData() {
-			if(SaveService.Exists(SAVEFILE)) {
-				this.Load(SAVEFILE);
-				Log.Info("Settings loaded");
-			}
-			else {
-				Log.Info("No settings file found, using defaults");
-			}
+			SettingSystem.Load();
+			DisplayPanel.Refresh();
+			SoundPanel.Refresh();
 		}
-
-		public SettingsData Export() => new SettingsData {
-			Display = DisplayPanel.Export(),
-			Audio = SoundPanel.Export(),
-		};
-
-		public void Import(SettingsData data) {
-			DisplayPanel.Import(data.Display);
-			SoundPanel.Import(data.Audio);
-		}
-	}
-
-	public readonly record struct SettingsData : ISaveData {
-		public DisplayData Display { get; init; }
-		public AudioData Audio { get; init; }
 	}
 }

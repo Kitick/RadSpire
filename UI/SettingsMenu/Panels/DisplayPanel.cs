@@ -1,12 +1,10 @@
 using Core;
 using Godot;
-using Services;
 using Services.Settings;
 
 namespace UI.Settings {
-	public sealed partial class DisplayPanel : VBoxContainer, ISaveable<DisplayData> {
-		private static readonly LogService Log = new(nameof(DisplayPanel), enabled: true);
-
+	public sealed partial class DisplayPanel : VBoxContainer {
+		[ExportCategory("Display Settings")]
 		[Export] private OptionButton ResolutionOption = null!;
 		[Export] private CheckBox FullscreenCheck = null!;
 		[Export] private CheckBox VSyncCheck = null!;
@@ -45,41 +43,19 @@ namespace UI.Settings {
 
 		// Callbacks
 		private void SetCallbacks() {
-			ResolutionOption.ItemSelected += (index) => DisplaySettings.Resolution = Resolutions[(int) index];
-			FullscreenCheck.Toggled += (value) => DisplaySettings.IsFullscreen = value;
-			VSyncCheck.Toggled += (value) => DisplaySettings.IsVSync = value;
-			BrightnessSlider.ValueChanged += (value) => DisplaySettings.Brightness = (float) value;
-			FramerateOption.ItemSelected += (index) => DisplaySettings.MaxFps = Framerates[(int) index].Value;
+			ResolutionOption.ItemSelected += (index) => DisplaySettings.Resolution.Target = Resolutions[(int) index];
+			FullscreenCheck.Toggled += (value) => DisplaySettings.IsFullscreen.Target = value;
+			VSyncCheck.Toggled += (value) => DisplaySettings.IsVSync.Target = value;
+			BrightnessSlider.ValueChanged += (value) => DisplaySettings.Brightness.Target = (float) value;
+			FramerateOption.ItemSelected += (index) => DisplaySettings.MaxFps.Target = Framerates[(int) index].Value;
 		}
 
-		// ISaveable implementation
-		public DisplayData Export() {
-			Resolution selectedResolution = Resolutions[ResolutionOption.Selected];
-			Framerate selectedFPS = Framerates[FramerateOption.Selected];
-
-			return new DisplayData {
-				Resolution = selectedResolution,
-				IsFullscreen = FullscreenCheck.ButtonPressed,
-				IsVSyncEnabled = VSyncCheck.ButtonPressed,
-				Brightness = (float) BrightnessSlider.Value,
-				FPSCap = selectedFPS.Value
-			};
+		public void Refresh() {
+			ResolutionOption.Select(DisplaySettings.Resolution.Target);
+			FullscreenCheck.ButtonPressed = DisplaySettings.IsFullscreen.Target;
+			VSyncCheck.ButtonPressed = DisplaySettings.IsVSync.Target;
+			BrightnessSlider.Value = DisplaySettings.Brightness.Target;
+			FramerateOption.Select(new Framerate { Value = DisplaySettings.MaxFps.Target });
 		}
-
-		public void Import(DisplayData data) {
-			ResolutionOption.Select(data.Resolution);
-			FullscreenCheck.ButtonPressed = data.IsFullscreen;
-			VSyncCheck.ButtonPressed = data.IsVSyncEnabled;
-			BrightnessSlider.Value = data.Brightness;
-			FramerateOption.Select(new Framerate { Value = data.FPSCap });
-		}
-	}
-
-	public readonly record struct DisplayData : ISaveData {
-		public Resolution Resolution { get; init; }
-		public bool IsFullscreen { get; init; }
-		public bool IsVSyncEnabled { get; init; }
-		public float Brightness { get; init; }
-		public int FPSCap { get; init; }
 	}
 }
