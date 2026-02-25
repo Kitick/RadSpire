@@ -1,6 +1,7 @@
 using System;
 using Godot;
 using Services;
+using Services.Settings;
 
 namespace UI.Settings {
 	public sealed partial class SettingsMenu : Control, ISaveable<SettingsData> {
@@ -62,12 +63,6 @@ namespace UI.Settings {
 			SwitchToPanel(InitialPanel);
 		}
 
-		private WorldEnvironment WorldEnv => GetNode<WorldEnvironment>("/root/SceneDirector/GameManager/WorldEnvironment");
-
-		private void FetchWorldEnviroment() {
-			DisplayPanel.SetWorldEnvironment(WorldEnv);
-		}
-
 		public override void _ExitTree() {
 			OnExit?.Invoke();
 		}
@@ -104,7 +99,6 @@ namespace UI.Settings {
 
 		public void OpenMenu(Action? onClose = null) {
 			OnExit += onClose;
-			FetchWorldEnviroment();
 			LoadData();
 		}
 
@@ -129,18 +123,18 @@ namespace UI.Settings {
 		}
 
 		public SettingsData Export() => new SettingsData {
-			DisplaySettings = DisplayPanel.Export(),
-			SoundSettings = SoundPanel.Export(),
+			Display = DisplayPanel.Export(),
+			Audio = SoundPanel.Export(),
 		};
 
 		public void Import(SettingsData data) {
-			DisplayPanel.Import(data.DisplaySettings);
-			SoundPanel.Import(data.SoundSettings);
+			DisplayPanel.Import(data.Display);
+			SoundPanel.Import(data.Audio);
 		}
 	}
 
 	public readonly record struct SettingsData : ISaveData {
-		public DisplaySettings DisplaySettings { get; init; }
-		public SoundSettings SoundSettings { get; init; }
+		public DisplayData Display { get; init; }
+		public AudioData Audio { get; init; }
 	}
 }
