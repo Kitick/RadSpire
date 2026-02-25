@@ -34,10 +34,6 @@ namespace UI {
 		[Export] private PackedScene HostPanelScene = null!;
 		[Export] private PackedScene JoinPanelScene = null!;
 
-		private Control[] MainOrder => [SingleplayerButton, MultiplayerButton, SettingsButton, ExtrasButton, QuitButton];
-		private Control[] SingleplayerOrder => [ContinueButton, LoadSavedButton, StartNewButton];
-		private Control[] MultiplayerOrder => [HostNewButton, HostSavedButton, JoinGameButton];
-
 		private enum MenuState { Normal, SinglePopup, MultiPopup }
 
 		private const float HideDelay = 0.25f;
@@ -50,8 +46,6 @@ namespace UI {
 		public override void _Ready() {
 			UpdateContinueButtonState();
 			SetCallbacks();
-
-			Navigator.Instance.Order = MainOrder;
 		}
 
 		private void SetCallbacks() {
@@ -76,23 +70,6 @@ namespace UI {
 			MultiplayerButton.MouseExited += HidePopup;
 			MultiplayerPanel.MouseExited += HidePopup;
 
-			ActionEvent.MenuRight.WhenPressed(() => {
-				if(Navigator.Instance.Selected == SingleplayerButton) {
-					Navigator.Instance.Order = SingleplayerOrder;
-				}
-				else if(Navigator.Instance.Selected == MultiplayerButton) {
-					Navigator.Instance.Order = MultiplayerOrder;
-				}
-			});
-
-			ActionEvent.MenuLeft.WhenPressed(() => {
-				bool wasSingle = SingleplayerPanel.Visible;
-				bool wasMulti = MultiplayerPanel.Visible;
-
-				Navigator.Instance.Order = MainOrder;
-				if(wasSingle) { Navigator.Instance.Select(SingleplayerButton); }
-				else if(wasMulti) { Navigator.Instance.Select(MultiplayerButton); }
-			});
 		}
 
 		private void SetPopupState(MenuState state) {
@@ -101,16 +78,8 @@ namespace UI {
 		}
 
 		private void HidePopup() {
-			if(Navigator.Instance.IsActive) {
-				if(Navigator.Instance.Selected != SingleplayerButton && Navigator.Instance.Selected != MultiplayerButton) {
-					SetPopupState(MenuState.Normal);
-				}
-				return;
-			}
 			GetTree().CreateTimer(HideDelay).Timeout += () => {
-				if(!IsMouseInside(SingleplayerButton, SingleplayerPanel, MultiplayerButton, MultiplayerPanel)
-					&& Navigator.Instance.Selected != SingleplayerButton
-					&& Navigator.Instance.Selected != MultiplayerButton) {
+				if(!IsMouseInside(SingleplayerButton, SingleplayerPanel, MultiplayerButton, MultiplayerPanel)) {
 					SetPopupState(MenuState.Normal);
 				}
 			};
