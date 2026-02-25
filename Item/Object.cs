@@ -7,6 +7,7 @@ namespace Objects {
 
     public partial class ObjectNode : Node3D {
         public Object Data { get; private set; } = null!;
+        private Action? Unsubscribe;
 
         public void Bind(Object obj) {
             Data = obj;
@@ -14,23 +15,36 @@ namespace Objects {
             GlobalPosition = obj.WorldLocation.Position;
             GlobalRotation = obj.WorldLocation.Rotation;
 
-            obj.WorldLocation.When((from, to) => {
+            Unsubscribe = obj.WorldLocation.When((from, to) => {
                 GlobalPosition = to.Position;
                 GlobalRotation = to.Rotation;
             });
         }
+
+        public override void _ExitTree() {
+            Unsubscribe?.Invoke();
+        }
     }
 
-    public sealed class WorldObjectFactory {
+    public sealed class ObjectNodeFactory {
+        private static readonly LogService Log = new(nameof(ObjectNodeFactory), enabled: true);
         private readonly Node ParentNode;
 
-        public WorldObjectFactory(Node parent) {
+        public ObjectNodeFactory(Node parent) {
             ParentNode = parent;
         }
 
-        public ObjectNode Spawn(Object obj) {
-            ItemDefinition ItemDefinition = ItemDataBaseManager.Instance.GetItemDefinitionById(obj.ItemId);
-            PackedScene Scene = ItemDefinition.ItemScene;
+        public ObjectNode? Spawn(Object obj) {
+            ItemDefinition? ItemDefinition = ItemDataBaseManager.Instance.GetItemDefinitionById(obj.ItemId);
+            if(ItemDefinition == null) {
+                Log.Error($"Failed to spawn object. ItemDefinition with ID {obj.ItemId} not found.");
+                return null;
+            }
+            PackedScene? Scene = ItemDefinition.ItemScene;
+            if(Scene == null) {
+                Log.Error($"Failed to spawn object. ItemDefinition with ID {obj.ItemId} has no ItemScene assigned.");
+                return null;
+            }
             ObjectNode ChildNode = Scene.Instantiate<ObjectNode>();
 
             ParentNode.AddChild(ChildNode);
@@ -40,7 +54,7 @@ namespace Objects {
         }
     }
 
-    public sealed class Object : ISaveable<ObjectData> {
+    public partial class Object : IWorldLocation, ISaveable<ObjectData> {
         public string Id { get; private set; } = Guid.NewGuid().ToString();
         public string ItemId { get; private set; } = null!;
         public WorldLocation WorldLocation { get; private set; } = null!;
@@ -61,10 +75,13 @@ namespace Objects {
         public void Import(ObjectData data) {
             Id = data.Id;
             ItemId = data.ItemId;
-            WorldLocation = new WorldLocation(
-                data.WorldLocation.Position,
-                data.WorldLocation.Rotation
-            );
+
+            if (WorldLocation == null) {
+                WorldLocation = new WorldLocation(data.WorldLocation.Position, data.WorldLocation.Rotation);
+            }
+            else{
+                WorldLocation.Import(data.WorldLocation);
+            }
         }
     }
     
