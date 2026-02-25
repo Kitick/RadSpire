@@ -6,7 +6,10 @@ namespace Services.Settings {
 
 		public static void SetWorldEnvironment(WorldEnvironment? env) {
 			WorldEnv = env;
-			WorldEnv?.Environment.AdjustmentEnabled = true;
+			if(WorldEnv is not null) {
+				WorldEnv.Environment.AdjustmentEnabled = true;
+				Brightness.Apply();
+			}
 		}
 
 		public static readonly Setting<Resolution> Resolution = new(
@@ -34,7 +37,7 @@ namespace Services.Settings {
 			name: nameof(Brightness),
 			getActual: () => WorldEnv?.Environment.AdjustmentBrightness ?? 1f,
 			setActual: v => {
-				if(WorldEnv is null) { GD.PrintErr("Brightness: WorldEnvironment not set"); return; }
+				if(WorldEnv is null) { GD.PushWarning("Brightness: WorldEnvironment not set"); return; }
 				WorldEnv.Environment.AdjustmentBrightness = v;
 			},
 			defaultValue: 1f

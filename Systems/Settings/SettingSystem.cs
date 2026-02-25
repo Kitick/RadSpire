@@ -45,11 +45,15 @@ namespace Services.Settings {
 		private readonly Action<T> SetActual;
 
 		public T Default;
-		public T Target;
+
+		public T Target {
+			get;
+			set { Log.Info($"Set {value}"); field = value; }
+		}
 
 		public T Actual {
 			get => GetActual();
-			set { Log.Info($"Applying: {value}"); SetActual(value); }
+			set { Log.Info($"Set {value}"); SetActual(value); }
 		}
 
 		public Setting(string name, Func<T> getActual, Action<T> setActual, T defaultValue) {
@@ -61,6 +65,7 @@ namespace Services.Settings {
 		}
 
 		public void Apply() => Actual = Target;
+		public void Apply(T value) { Target = value; Apply(); }
 		public void Reset() => Target = Default;
 	}
 

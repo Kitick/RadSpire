@@ -17,11 +17,11 @@ namespace UI.Settings {
 		}
 
 		private void SetCallbacks() {
-			MasterSlider.ValueChanged += (value) => AudioSettings.MasterVolume.Target = (int) value;
-			MusicSlider.ValueChanged += (value) => AudioSettings.MusicVolume.Target = (int) value;
-			SFXSlider.ValueChanged += (value) => AudioSettings.SFXVolume.Target = (int) value;
-			MuteAllCheckBox.Toggled += (value) => AudioSettings.IsMuted.Target = value;
-			OutputDeviceOption.ItemSelected += (index) => AudioSettings.OutputDevice.Target = OutputDeviceOption.GetItemText((int) index);
+			MasterSlider.ValueChanged += (value) => AudioSettings.MasterVolume.Apply((int) value);
+			MusicSlider.ValueChanged += (value) => AudioSettings.MusicVolume.Apply((int) value);
+			SFXSlider.ValueChanged += (value) => AudioSettings.SFXVolume.Apply((int) value);
+			MuteAllCheckBox.Toggled += (value) => AudioSettings.IsMuted.Apply(value);
+			OutputDeviceOption.ItemSelected += (index) => AudioSettings.OutputDevice.Apply(OutputDeviceOption.GetItemText((int) index));
 		}
 
 		public void Refresh() {

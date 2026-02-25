@@ -115,13 +115,11 @@ namespace UI.Settings {
 			QueueFree();
 		}
 
-		private void SaveData() {
-			SettingSystem.Apply();
+		private static void SaveData() {
 			SettingSystem.Save();
 		}
 
 		private void LoadData() {
-			SettingSystem.Load();
 			DisplayPanel.Refresh();
 			SoundPanel.Refresh();
 		}

@@ -79,7 +79,9 @@ namespace Services {
 		}
 
 		private static void ClearStyles(Control control) {
-			control.SelfModulate = Colors.White;
+			if(IsInstanceValid(control)) {
+				control.SelfModulate = Colors.White;
+			}
 		}
 
 		// Highlight the selected control

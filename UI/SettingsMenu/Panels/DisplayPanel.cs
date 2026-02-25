@@ -43,11 +43,11 @@ namespace UI.Settings {
 
 		// Callbacks
 		private void SetCallbacks() {
-			ResolutionOption.ItemSelected += (index) => DisplaySettings.Resolution.Target = Resolutions[(int) index];
-			FullscreenCheck.Toggled += (value) => DisplaySettings.IsFullscreen.Target = value;
-			VSyncCheck.Toggled += (value) => DisplaySettings.IsVSync.Target = value;
-			BrightnessSlider.ValueChanged += (value) => DisplaySettings.Brightness.Target = (float) value;
-			FramerateOption.ItemSelected += (index) => DisplaySettings.MaxFps.Target = Framerates[(int) index].Value;
+			ResolutionOption.ItemSelected += (index) => DisplaySettings.Resolution.Apply(Resolutions[(int) index]);
+			FullscreenCheck.Toggled += value => DisplaySettings.IsFullscreen.Apply(value);
+			VSyncCheck.Toggled += value => DisplaySettings.IsVSync.Apply(value);
+			BrightnessSlider.ValueChanged += (value) => DisplaySettings.Brightness.Apply((float) value);
+			FramerateOption.ItemSelected += (index) => DisplaySettings.MaxFps.Apply(Framerates[(int) index].Value);
 		}
 
 		public void Refresh() {
