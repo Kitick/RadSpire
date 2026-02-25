@@ -5,65 +5,54 @@ namespace Objects {
     using ItemSystem;
     using Components;
 
-    public partial class ObjectNode : Node3D, ISaveable<ObjectNodeData> {
-        private static readonly LogService Log = new(nameof(ObjectNode), enabled: true);
-        public Object ObjectData { get; private set; } = null!;
+    public partial class ObjectNode : Node3D {
+        public Object Data { get; private set; } = null!;
 
-        public PackedScene GetItemScene() {
-            if(ObjectData == null) {
-                Log.Error("ObjectNode.GetItemScene called but ObjectData is null.");
-                return null!;
-            }
+        public void Bind(Object obj) {
+            Data = obj;
 
-            ItemDefinition ItemDefinition = ItemDataBaseManager.Instance.GetItemDefinitionById(ObjectData.ItemId);
-            if(ItemDefinition == null) {
-                Log.Error($"No ItemDefinition found for ItemId '{ObjectData.ItemId}'.");
-                return null!;
-            }
-            else if(ItemDefinition.ItemScene == null) {
-                Log.Error($"No ItemScene found for '{ObjectData.ItemId}'.");
-                return null!;
-            }
-            return ItemDefinition.ItemScene;
-        }
+            GlobalPosition = obj.WorldLocation.Position;
+            GlobalRotation = obj.WorldLocation.Rotation;
 
-        public Item GetItem() {
-            if(ObjectData == null) {
-                Log.Error("ObjectNode.GetItemScene called but ObjectData is null.");
-                return null!;
-            }
-            
-            Item Item = ItemDataBaseManager.Instance.CreateItemInstanceById(ObjectData.ItemId);
-            if(Item == null) {
-                Log.Error($"Failed to create item instance for ItemId '{ObjectData.ItemId}'.");
-                return null!;
-            }
-            return Item;
-        }
-
-        public ObjectNodeData Export() => new ObjectNodeData {
-            ObjectData = ObjectData.Export()
-        };
-        
-        public void Import(ObjectNodeData data) {
-            ObjectData = new Object();
-            ObjectData.Import(data.ObjectData);
+            obj.WorldLocation.When((from, to) => {
+                GlobalPosition = to.Position;
+                GlobalRotation = to.Rotation;
+            });
         }
     }
-    
-    public readonly record struct ObjectNodeData: ISaveData {
-        public ObjectData ObjectData { get; init; }
+
+    public sealed class WorldObjectFactory {
+        private readonly Node ParentNode;
+
+        public WorldObjectFactory(Node parent) {
+            ParentNode = parent;
+        }
+
+        public ObjectNode Spawn(Object obj) {
+            ItemDefinition ItemDefinition = ItemDataBaseManager.Instance.GetItemDefinitionById(obj.ItemId);
+            PackedScene Scene = ItemDefinition.ItemScene;
+            ObjectNode ChildNode = Scene.Instantiate<ObjectNode>();
+
+            ParentNode.AddChild(ChildNode);
+            ChildNode.Bind(obj);
+
+            return ChildNode;
+        }
     }
 
-	public partial class Object : IWorldLocation, ISaveable<ObjectData> {
-        private static readonly LogService Log = new(nameof(Object), enabled: true);
-        public string Id { get; set; } = Guid.NewGuid().ToString();
-        public string ItemId { get; set; } = null!;
-        public WorldLocation WorldLocation { get; set; } = null!;
+    public sealed class Object : ISaveable<ObjectData> {
+        public string Id { get; private set; } = Guid.NewGuid().ToString();
+        public string ItemId { get; private set; } = null!;
+        public WorldLocation WorldLocation { get; private set; } = null!;
 
-        public Object() { }
+        public Object(string itemId, Vector3 pos, Vector3 rot){
+            ItemId = itemId;
+            WorldLocation = new WorldLocation(pos, rot);
+        }
 
-        public ObjectData Export() => new ObjectData{
+        public Object() {}
+
+        public ObjectData Export() => new ObjectData {
             Id = Id,
             ItemId = ItemId,
             WorldLocation = WorldLocation.Export()
@@ -72,7 +61,10 @@ namespace Objects {
         public void Import(ObjectData data) {
             Id = data.Id;
             ItemId = data.ItemId;
-            WorldLocation = new WorldLocation(data.WorldLocation.Position, data.WorldLocation.Rotation);
+            WorldLocation = new WorldLocation(
+                data.WorldLocation.Position,
+                data.WorldLocation.Rotation
+            );
         }
     }
     

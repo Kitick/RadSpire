@@ -11,16 +11,16 @@ namespace Components {
             set => SetData(Data with { Position = value });
         }
 
-		public Quaternion Rotation {
+		public Vector3 Rotation {
             get => Data.Rotation;
             set => SetData(Data with { Rotation = value });
         }
 
-		public WorldLocation(Vector3 position, Quaternion rotation) : base(new WorldLocationData { Position = position, Rotation = rotation }) { }
+		public WorldLocation(Vector3 position, Vector3 rotation) : base(new WorldLocationData { Position = position, Rotation = rotation }) { }
 	}
 
 	public readonly record struct WorldLocationData : Services.ISaveData {
 		public Vector3 Position { get; init; }
-		public Quaternion Rotation { get; init; }
+		public Vector3 Rotation { get; init; }
 	}
 }
