@@ -116,6 +116,7 @@ namespace UI.Settings {
 		}
 
 		private void SaveData() {
+			SettingSystem.Apply();
 			SettingSystem.Save();
 		}
 
