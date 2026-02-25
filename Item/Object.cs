@@ -9,7 +9,7 @@ namespace Objects {
         public Object Data { get; private set; } = null!;
         private Action? Unsubscribe;
 
-        public void Bind(Object obj) {
+        public virtual void Bind(Object obj) {
             Data = obj;
 
             GlobalPosition = obj.WorldLocation.Position;
