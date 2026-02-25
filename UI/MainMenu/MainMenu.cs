@@ -6,7 +6,7 @@ using UI.Multiplayer;
 using UI.Settings;
 
 namespace UI {
-	public sealed partial class MainMenu : Control {
+	public sealed partial class MainMenu : Control, INavigatable {
 		private static readonly LogService Log = new(nameof(MainMenu), enabled: true);
 
 		[ExportCategory("Main Buttons")]
@@ -34,6 +34,10 @@ namespace UI {
 		[Export] private PackedScene HostPanelScene = null!;
 		[Export] private PackedScene JoinPanelScene = null!;
 
+		public Control[] Order => [
+			SingleplayerButton, MultiplayerButton, SettingsButton, ExtrasButton, QuitButton
+		];
+
 		enum MenuState { Normal, SinglePopup, MultiPopup }
 
 		private const float HideDelay = 0.25f;
@@ -46,6 +50,8 @@ namespace UI {
 		public override void _Ready() {
 			UpdateContinueButtonState();
 			SetCallbacks();
+
+			Navigator.Instance.SetPanel(this);
 		}
 
 		private void SetCallbacks() {

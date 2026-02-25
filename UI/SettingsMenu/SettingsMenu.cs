@@ -60,9 +60,6 @@ namespace UI.Settings {
 			SetInputCallbacks();
 
 			SwitchToPanel(InitialPanel);
-
-			Navigator.Instance.UIPanel = this;
-			Navigator.Instance.UpdateSelected();
 		}
 
 		private WorldEnvironment WorldEnv => GetNode<WorldEnvironment>("/root/SceneDirector/GameManager/WorldEnvironment");
