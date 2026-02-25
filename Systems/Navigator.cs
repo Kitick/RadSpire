@@ -2,22 +2,25 @@ namespace Services {
 	using System;
 	using Godot;
 
-	public interface INavigatable {
-		Control[] Order { get; }
-	}
-
 	public sealed partial class Navigator : Node {
 		public static readonly LogService Log = new(nameof(InputSystem), enabled: true);
 
 		public static Navigator Instance { get; private set; } = null!;
 
-		public INavigatable? UIPanel { get; private set; } = null;
-
-		public Control Selected => UIPanel!.Order[SelectedIndex];
-
-		public int SelectedIndex {
+		public Control[] Order {
 			get;
-			private set {
+			set {
+				ClearStyles(Order);
+				field = value;
+				StyleSelected(Selected);
+			}
+		} = [];
+
+		public Control Selected => Order[SelectedIndex];
+
+		private int SelectedIndex {
+			get;
+			set {
 				Selected.EmitSignal("mouse_exited");
 				ClearStyles(Selected);
 
@@ -29,24 +32,13 @@ namespace Services {
 		} = 0;
 
 		private int WrapIndex(int index) {
-			int count = UIPanel!.Order.Length;
+			int count = Order.Length;
 			return (index % count + count) % count;
 		}
 
 		public override void _Ready() {
 			Instance = this;
 			SetActions();
-		}
-
-		public void SetPanel(INavigatable panel) {
-			if(UIPanel != null){
-				ClearStyles(UIPanel);
-			}
-
-			UIPanel = panel;
-			SelectedIndex = 0;
-
-			StyleSelected(Selected);
 		}
 
 		private void SetActions() {
@@ -80,8 +72,8 @@ namespace Services {
 		}
 
 		// Reset visual style for all controls
-		private static void ClearStyles(INavigatable panel) {
-			foreach(var control in panel.Order) {
+		private static void ClearStyles(Control[] panel) {
+			foreach(var control in panel) {
 				ClearStyles(control);
 			}
 		}

@@ -4,7 +4,7 @@ using Godot;
 using Services;
 
 namespace UI.Settings {
-	public sealed partial class DisplayPanel : VBoxContainer, INavigatable, ISaveable<DisplaySettings> {
+	public sealed partial class DisplayPanel : VBoxContainer, ISaveable<DisplaySettings> {
 		private static readonly LogService Log = new(nameof(DisplayPanel), enabled: true);
 
 		[Export] private OptionButton ResolutionOption = null!;

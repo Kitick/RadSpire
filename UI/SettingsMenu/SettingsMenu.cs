@@ -3,7 +3,7 @@ using Godot;
 using Services;
 
 namespace UI.Settings {
-	public sealed partial class SettingsMenu : Control, INavigatable, ISaveable<SettingsData> {
+	public sealed partial class SettingsMenu : Control, ISaveable<SettingsData> {
 		private static readonly LogService Log = new(nameof(SettingsMenu), enabled: true);
 
 		private const string SAVEFILE = "settings";
