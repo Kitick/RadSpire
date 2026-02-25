@@ -12,6 +12,11 @@ namespace Components {
 			set => SetData(Data with { HealAmount = value });
 		}
 
+		public string[] getComponentDescription() {
+			string componentDescription = $"+{HealAmount} Healing";
+			return new string[] { componentDescription };
+		}
+
 		public bool Use<TEntity>(TEntity user) {
 			Log.Info($"Attempt using HealItem with HealAmount {HealAmount} on user");
 			if(user is IHealth healthEntity) {

@@ -1,8 +1,11 @@
-using Godot;
-using Services;
-
 namespace ItemSystem {
-	public partial class Item3DIcon : Node3D {
+	using System;
+	using Godot;
+	using Services;
+	using Objects;
+	using System.Collections;
+
+	public partial class Item3DIcon : Entity, ISaveable<Item3DIconData> {
 		private static readonly LogService Log = new(nameof(Item3DIcon), enabled: true);
 
 		public Item? Item { get; set; }
@@ -25,6 +28,8 @@ namespace ItemSystem {
 				return;
 			}
 
+			GlobalPosition = position;
+
 			if(Item.IconTexture == null) {
 				Log.Info("Item has no IconTexture; skipping 3D icon spawn.");
 				return;
@@ -42,7 +47,8 @@ namespace ItemSystem {
 
 			CurrentItem3DScene = Item3DSceneTemplate.Instantiate<Node3D>();
 			AddChild(CurrentItem3DScene);
-			CurrentItem3DScene.GlobalPosition = position;
+			CurrentItem3DScene.Position = Vector3.Zero;
+			CurrentItem3DScene.Rotation = Vector3.Zero;
 
 			// ---- SpriteMeshInstance is a MeshInstance3D ----
 			var spriteMesh = CurrentItem3DScene.GetNodeOrNull<Node3D>("RigidBody3D/SpriteMeshInstance");
@@ -103,5 +109,28 @@ namespace ItemSystem {
 			collisionShape.Position = rawBounds.GetCenter() * meshInstance.Scale;
 
 		}
+
+		public new Item3DIconData Export() => new Item3DIconData {
+			EntityData = base.Export(),
+			ItemData = Item?.Export()
+		};
+
+		public void Import(Item3DIconData data) {
+			if(data.ItemData is null) {
+				QueueFree();
+				return;
+			}
+			else {
+				base.Import(data.EntityData);
+				Item = new Item();
+				Item.Import(data.ItemData.Value);
+				SpawnItem3D(GlobalPosition);
+			}
+		}
+	}
+
+	public readonly record struct Item3DIconData : ISaveData {
+		public EntityData EntityData { get; init; }
+		public ItemData? ItemData { get; init; }
 	}
 }

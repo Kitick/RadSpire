@@ -42,8 +42,9 @@ namespace UI {
 		private int NumHotbarSlots = 0;
 		private PackedScene? InvSlotTemplate = null!;
 		private Control? GridContainer = null!;
-		public event Action<string, int>? OnSlotPressed;
-		public event Action<string, int>? OnSlotReleased;
+		public event Action<string, int, MouseButton>? OnSlotPressed;
+		public event Action<string, int, MouseButton>? OnSlotReleased;
+		public event Action<string, int>? OnSlotHovered;
 
 		public override void _EnterTree() {
 			SetInputCallbacks();
@@ -71,6 +72,9 @@ namespace UI {
 
 		public override void _ExitTree() {
 			OnExit?.Invoke();
+			if(Player != null && Player.InventoryManager != null) {
+				Player.InventoryManager.UnregisterInventory(Inventory.Name);
+			}
 		}
 
 		public void SetUpInventoryUI() {
@@ -80,6 +84,7 @@ namespace UI {
 				return;
 			}
 			Inventory = Player.Hotbar;
+			Player.InventoryManager.RegisterInventory(Inventory, this);
 			GridContainer = GetNode<Control>("Background/GridBackground/HotbarSlots");
 			if(InvSlotTemplate == null) {
 				InvSlotTemplate = GD.Load<PackedScene>("res://UI/Inventory/InvSlotUITemplate.tscn");
@@ -90,6 +95,7 @@ namespace UI {
 				slotInstance.SlotIndex = i;
 				slotInstance.OnSlotPressed += HandleOnSlotPressed;
 				slotInstance.OnSlotReleased += HandleOnSlotReleased;
+				slotInstance.OnSlotHovered += HandleOnSlotHovered;
 				HotbarSlotUIs.Add(slotInstance);
 				HotbarSlots.Add(slotInstance);
 				GridContainer.AddChild(slotInstance);
@@ -99,14 +105,14 @@ namespace UI {
 			}
 		}
 
-		public void HandleOnSlotPressed(int slotIndex) {
+		public void HandleOnSlotPressed(int slotIndex, MouseButton button) {
 			Log.Info($"Hotbar: Slot {slotIndex} pressed.");
-			OnSlotPressed?.Invoke(Inventory.Name, slotIndex);
+			OnSlotPressed?.Invoke(Inventory.Name, slotIndex, button);
 		}
 
-		public void HandleOnSlotReleased(int slotIndex) {
+		public void HandleOnSlotReleased(int slotIndex, MouseButton button) {
 			Log.Info($"Hotbar: Slot {slotIndex} released.");
-			OnSlotReleased?.Invoke(Inventory.Name, slotIndex);
+			OnSlotReleased?.Invoke(Inventory.Name, slotIndex, button);
 		}
 
 		private void SetInputCallbacks() {
@@ -157,6 +163,11 @@ namespace UI {
 			for(int i = 0; i < slotsToUpdate; i++) {
 				HotbarSlotUIs[i].UpdateSlotUI(Inventory.ItemSlots[i]);
 			}
+		}
+
+		public void HandleOnSlotHovered(int slotIndex) {
+			Log.Info($"Hotbar: Slot {slotIndex} hovered.");
+			OnSlotHovered?.Invoke(Inventory.Name, slotIndex);
 		}
 	}
 }

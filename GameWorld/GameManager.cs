@@ -17,12 +17,13 @@ namespace Root {
 		[Export] private PackedScene HUDScene = null!;
 		[Export] private PackedScene PlayerScene = null!;
 		[Export] private PackedScene EnemyScene = null!;
+		[Export] private PackedScene Item3DIconManagerScene = null!;
 
 		private readonly KeyInput KeyInput = new();
 		private CameraRig CameraRig = null!;
 		private Player? LocalPlayer;
 		private HUD? HUD;
-
+		private Item3DIconManager? Item3DIconManager;
 		public Action? MainMenuRequested;
 
 		public enum MenuState { Game, Paused, Settings, Inventory, Host, Death }
@@ -42,6 +43,7 @@ namespace Root {
 			ProcessMode = ProcessModeEnum.Always;
 
 			CameraRig = this.AddScene<CameraRig>(CameraScene);
+			Item3DIconManager = this.AddScene<Item3DIconManager>(Item3DIconManagerScene);
 			ConfigureStateMachine();
 
 			StartGame();
@@ -66,6 +68,7 @@ namespace Root {
 		private void SpawnLocalPlayer() {
 			LocalPlayer = this.AddScene<Player>(PlayerScene);
 			LocalPlayer.GlobalPosition = PlayerSpawnLocation;
+			SubscribeToPlayerItem3DIconEvents(LocalPlayer);
 
 			CameraRig.Target = LocalPlayer;
 
@@ -101,6 +104,7 @@ namespace Root {
 			var inventoryData = LocalPlayer.Inventory.Export();
 			var hotbarData = LocalPlayer.Hotbar.Export();
 
+			UnsubscribeFromPlayerItem3DIconEvents(LocalPlayer);
 			LocalPlayer.QueueFree();
 			LocalPlayer = null;
 
@@ -143,6 +147,7 @@ namespace Root {
 			var data = new GameState {
 				Player = LocalPlayer.Export(),
 				CameraRig = CameraRig.Export(),
+				Item3DIconManager = Item3DIconManager!.Export(),
 			};
 
 			data.Save(fileName);
@@ -179,6 +184,7 @@ namespace Root {
 
 			LocalPlayer!.Import(data.Player);
 			CameraRig!.Import(data.CameraRig);
+			Item3DIconManager!.Import(data.Item3DIconManager);
 		}
 
 		public void ReturnToMainMenu() {
@@ -195,26 +201,19 @@ namespace Root {
 		private void CleanupGame() {
 			HUD = null;
 
+			if(IsInstanceValid(LocalPlayer)) {
+				UnsubscribeFromPlayerItem3DIconEvents(LocalPlayer!);
+			}
+
 			Cleanup(LocalPlayer);
 			LocalPlayer = null;
+
+			Cleanup(Item3DIconManager);
+			Item3DIconManager = null;
 
 			// Reset spawn state
 			EnemyCount = 0;
 			SpawnTimer = 5.0f;
-		}
-
-		private void SpawnTestItem(string itemID, Vector3 position, float scaleFactor = 1.0f) {
-			Item? item = ItemDataBaseManager.Instance.CreateItemInstanceById(itemID);
-			if(item == null) {
-				Log.Error($"Failed to load item with ID: {itemID}");
-				return;
-			}
-			Item3DIcon item3DIcon = new Item3DIcon();
-			item3DIcon.Item = item;
-			item3DIcon.Name = item.Name + "3DIcon";
-			AddChild(item3DIcon);
-			item3DIcon.ScaleFactor = scaleFactor;
-			item3DIcon.SpawnItem3D(position);
 		}
 
 		private static Vector3 RandomLocation() {
@@ -226,23 +225,43 @@ namespace Root {
 		}
 
 		private void SpawnTestItems() {
-			SpawnTestItem(ItemID.AppleRed, RandomLocation());
-			SpawnTestItem(ItemID.AppleYellow, RandomLocation());
-			SpawnTestItem(ItemID.AppleGreen, RandomLocation());
-			SpawnTestItem(ItemID.BananaYellow, RandomLocation());
-			SpawnTestItem(ItemID.BananaGreen, RandomLocation());
-			SpawnTestItem(ItemID.StrawberryGreen, RandomLocation());
-			SpawnTestItem(ItemID.StrawberryRed, RandomLocation());
-			SpawnTestItem(ItemID.StrawberryRed, RandomLocation());
-			SpawnTestItem(ItemID.StrawberryRed, RandomLocation());
-			SpawnTestItem(ItemID.StrawberryRed, RandomLocation());
-			SpawnTestItem(ItemID.StrawberryRed, RandomLocation());
-			SpawnTestItem(ItemID.StrawberryRed, new Vector3(40, SpawnHeight, 20), 3);
+			if(Item3DIconManager == null) {
+				Log.Error("Cannot spawn test items: Item3DIconManager is not initialized");
+				return;
+			}
+			Item3DIconManager.SpawnItem(ItemID.AppleRed, RandomLocation());
+			Item3DIconManager.SpawnItem(ItemID.AppleYellow, RandomLocation());
+			Item3DIconManager.SpawnItem(ItemID.AppleGreen, RandomLocation());
+			Item3DIconManager.SpawnItem(ItemID.BananaYellow, RandomLocation());
+			Item3DIconManager.SpawnItem(ItemID.BananaGreen, RandomLocation());
+			Item3DIconManager.SpawnItem(ItemID.StrawberryGreen, RandomLocation());
+			Item3DIconManager.SpawnItem(ItemID.StrawberryRed, RandomLocation());
+			Item3DIconManager.SpawnItem(ItemID.StrawberryRed, RandomLocation());
+			Item3DIconManager.SpawnItem(ItemID.StrawberryRed, RandomLocation());
+			Item3DIconManager.SpawnItem(ItemID.StrawberryRed, RandomLocation());
+			Item3DIconManager.SpawnItem(ItemID.StrawberryRed, new Vector3(40, SpawnHeight, 20), 3);
+		}
+
+		private void SubscribeToPlayerItem3DIconEvents(Player player) {
+			if(Item3DIconManager == null) {
+				return;
+			}
+			player.InventoryManager.SpawnItem3DIconRequested += (item, position) => Item3DIconManager.RequestSpawnItem(item, position);
+			player.PickupComponent.DespawnItem3DIconRequested += Item3DIconManager.RequestDespawnItem;
+		}
+
+		private void UnsubscribeFromPlayerItem3DIconEvents(Player player) {
+			if(Item3DIconManager == null) {
+				return;
+			}
+			player.InventoryManager.SpawnItem3DIconRequested -= (item, position) => Item3DIconManager.RequestSpawnItem(item, position);
+			player.PickupComponent.DespawnItem3DIconRequested -= Item3DIconManager.RequestDespawnItem;
 		}
 	}
 
 	public readonly struct GameState : ISaveData {
 		public PlayerData Player { get; init; }
 		public CameraRigData CameraRig { get; init; }
+		public Item3DIconManagerData Item3DIconManager { get; init; }
 	}
 }

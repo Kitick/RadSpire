@@ -15,6 +15,7 @@ namespace UI {
 		[Export] private Button PauseButton = null!;
 		[Export] private PauseMenu PauseMenu = null!;
 		[Export] private InventoryUI Inventory = null!;
+		[Export] public InventoryItemInformationUI InventoryItemInformationUI = null!;
 		[Export] private Control QuestLog = null!;
 		[Export] private Hotbar Hotbar = null!;
 		[Export] private RespawnMenu RespawnMenu = null!;
@@ -36,6 +37,7 @@ namespace UI {
 		public event Action? HostRequested;
 		public event Action? MainMenuRequested;
 		public event Action? RespawnRequested;
+		public event Action<bool>? InventoryRequested;
 		public event Action<string>? SaveRequested;
 
 		public void Init(Player player, StateMachine<MenuState> stateMachine) {
@@ -71,6 +73,7 @@ namespace UI {
 				PauseMenu.CloseMenu();
 				RespawnMenu.CloseMenu();
 				Inventory.Visible = false;
+				InventoryItemInformationUI.Visible = false;
 			});
 
 			// Paused state
@@ -84,10 +87,14 @@ namespace UI {
 			stateMachine.OnEnter(MenuState.Inventory, () => {
 				Inventory.Visible = true;
 				Hotbar.Visible = true;
+				InventoryItemInformationUI.Visible = true;
+				InventoryRequested?.Invoke(true);
 			});
 
 			stateMachine.OnExit(MenuState.Inventory, () => {
 				Inventory.Visible = false;
+				InventoryItemInformationUI.Visible = false;
+				InventoryRequested?.Invoke(false);
 			});
 
 			// Host state

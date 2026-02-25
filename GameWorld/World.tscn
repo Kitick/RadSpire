@@ -13,6 +13,7 @@
 [ext_resource type="PackedScene" uid="uid://depb51jl62dp6" path="res://Character/Enemy/Enemy.tscn" id="4_twhtb"]
 [ext_resource type="PackedScene" uid="uid://ckt8qpan7su6e" path="res://Assets/Models/Medieval Village Pack/Structures/House_4.fbx" id="5_lmiwq"]
 [ext_resource type="Texture2D" uid="uid://bfebagd01x6u7" path="res://Assets/Textures/Terrain/rocky_terrain_02_rough_2k.png" id="5_xxpmp"]
+[ext_resource type="PackedScene" uid="uid://daq87poi5sslo" path="res://Item/ItemIcon3D/Item3DIconManagerTemplate.tscn" id="6_twhtb"]
 [ext_resource type="PackedScene" uid="uid://cxl1oqrbo14fc" path="res://Assets/Models/Medieval Village Pack/Props/Bonfire.fbx" id="10_lmiwq"]
 [ext_resource type="PackedScene" uid="uid://hpeblfbxgvbw" path="res://Assets/Models/Medieval Village Pack/Structures/Well.fbx" id="11_40j5v"]
 [ext_resource type="PackedScene" uid="uid://ddhspmucvvxe4" path="res://Assets/Models/Medieval Village Pack/Scenery/Rock_2.fbx" id="12_mf5tq"]
@@ -123,6 +124,7 @@ CameraScene = ExtResource("2_n82x7")
 HUDScene = ExtResource("3_twhtb")
 PlayerScene = ExtResource("3_julfq")
 EnemyScene = ExtResource("4_twhtb")
+Item3DIconManagerScene = ExtResource("6_twhtb")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=348874314]
 environment = SubResource("Environment_lmiwq")
