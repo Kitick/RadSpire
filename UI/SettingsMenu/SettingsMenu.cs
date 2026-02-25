@@ -10,7 +10,7 @@ namespace UI.Settings {
 		[Export] private Button ResetButton = null!;
 
 		[ExportCategory("General")]
-		[Export] private Control GeneralPanel = null!;
+		[Export] private GeneralPanel GeneralPanel = null!;
 		[Export] private Button GeneralButton = null!;
 
 		[ExportCategory("Display")]
@@ -22,15 +22,15 @@ namespace UI.Settings {
 		[Export] private Button SoundButton = null!;
 
 		[ExportCategory("Controls")]
-		[Export] private Control ControllerPanel = null!;
+		[Export] private ControllerPanel ControllerPanel = null!;
 		[Export] private Button ControllerButton = null!;
 
 		[ExportCategory("Mouse & Keyboard")]
-		[Export] private Control MKPanel = null!;
+		[Export] private MkPanel MKPanel = null!;
 		[Export] private Button MKButton = null!;
 
 		[ExportCategory("Accessibility")]
-		[Export] private Control AccessibilityPanel = null!;
+		[Export] private AccessibilityPanel AccessibilityPanel = null!;
 		[Export] private Button AccessibilityButton = null!;
 
 		public Control[] Order => [
@@ -94,6 +94,26 @@ namespace UI.Settings {
 				AudioSettings.Apply();
 				SoundPanel.Refresh();
 			}
+			else if(ActivePanel == GeneralPanel) {
+				GeneralSettings.Reset();
+				GeneralSettings.Apply();
+				GeneralPanel.Refresh();
+			}
+			else if(ActivePanel == AccessibilityPanel) {
+				AccessibilitySettings.Reset();
+				AccessibilitySettings.Apply();
+				AccessibilityPanel.Refresh();
+			}
+			else if(ActivePanel == ControllerPanel) {
+				ControllerSettings.Reset();
+				ControllerSettings.Apply();
+				ControllerPanel.Refresh();
+			}
+			else if(ActivePanel == MKPanel) {
+				MouseKeyboardSettings.Reset();
+				MouseKeyboardSettings.Apply();
+				MKPanel.Refresh();
+			}
 		}
 
 		private void SwitchToPanel(Control target) {
@@ -122,6 +142,10 @@ namespace UI.Settings {
 		private void LoadData() {
 			DisplayPanel.Refresh();
 			SoundPanel.Refresh();
+			GeneralPanel.Refresh();
+			AccessibilityPanel.Refresh();
+			ControllerPanel.Refresh();
+			MKPanel.Refresh();
 		}
 	}
 }

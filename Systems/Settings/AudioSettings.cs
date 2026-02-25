@@ -38,21 +38,10 @@ namespace Services.Settings {
 			defaultValue: "Default"
 		);
 
-		public static void Apply() {
-			MasterVolume.Apply();
-			MusicVolume.Apply();
-			SFXVolume.Apply();
-			IsMuted.Apply();
-			OutputDevice.Apply();
-		}
+		private static readonly ISetting[] All = [MasterVolume, MusicVolume, SFXVolume, IsMuted, OutputDevice];
 
-		public static void Reset() {
-			MasterVolume.Reset();
-			MusicVolume.Reset();
-			SFXVolume.Reset();
-			IsMuted.Reset();
-			OutputDevice.Reset();
-		}
+		public static void Apply() => All.Apply();
+		public static void Reset() => All.Reset();
 
 		public static AudioData Export() => new AudioData {
 			MasterVolume = MasterVolume.Target,

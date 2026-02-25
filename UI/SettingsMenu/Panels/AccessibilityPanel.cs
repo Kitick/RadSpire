@@ -1,5 +1,6 @@
+using Core;
 using Godot;
-using Services;
+using Services.Settings;
 
 namespace UI.Settings {
 	public sealed partial class AccessibilityPanel : VBoxContainer {
@@ -14,42 +15,20 @@ namespace UI.Settings {
 			SetCallbacks();
 		}
 
-		// Set Callbacks
-		public void SetCallbacks() {
-			SubtitlesCheckBox.Toggled += OnSubtitlesCheckBox;
-			SubtitleSizeSlider.ValueChanged += OnSubtitleSizeChanged;
-			ColorblindModeOption.ItemSelected += OnColorblindSelected;
-			TextToSpeechCheckBox.Toggled += OnTextToSpeechCheckBox;
-			HighContrastUICheckBox.Toggled += OnHighContrastUICheckBox;
+		private void SetCallbacks() {
+			SubtitlesCheckBox.Toggled += AccessibilitySettings.Subtitles.Apply;
+			SubtitleSizeSlider.ValueChanged += (value) => AccessibilitySettings.SubtitleSize.Apply((float) value);
+			ColorblindModeOption.ItemSelected += (index) => AccessibilitySettings.ColorblindMode.Apply(ColorblindModeOption.GetItemText((int) index));
+			TextToSpeechCheckBox.Toggled += AccessibilitySettings.TextToSpeech.Apply;
+			HighContrastUICheckBox.Toggled += AccessibilitySettings.HighContrastUI.Apply;
 		}
 
-		// Callbacks
-		private void OnSubtitlesCheckBox(bool check) {
-			//Implementation Here
+		public void Refresh() {
+			SubtitlesCheckBox.ButtonPressed = AccessibilitySettings.Subtitles.Target;
+			SubtitleSizeSlider.Value = AccessibilitySettings.SubtitleSize.Target;
+			ColorblindModeOption.SelectItem(AccessibilitySettings.ColorblindMode.Target);
+			TextToSpeechCheckBox.ButtonPressed = AccessibilitySettings.TextToSpeech.Target;
+			HighContrastUICheckBox.ButtonPressed = AccessibilitySettings.HighContrastUI.Target;
 		}
-
-		private void OnSubtitleSizeChanged(double value) {
-			//Implementation Here
-		}
-
-		private void OnColorblindSelected(long selected) {
-			//Implementation Here
-		}
-
-		private void OnTextToSpeechCheckBox(bool check) {
-			//Implementation Here
-		}
-
-		private void OnHighContrastUICheckBox(bool check) {
-			//Implementation Here
-		}
-
-		//ISaveable Implementation Goes Here
-
-	}
-
-	// Update as needed
-	public readonly record struct AccessibilitySettings : ISaveData {
-
 	}
 }

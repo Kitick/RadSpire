@@ -50,21 +50,10 @@ namespace Services.Settings {
 			defaultValue: 0
 		);
 
-		public static void Apply() {
-			Resolution.Apply();
-			IsFullscreen.Apply();
-			IsVSync.Apply();
-			Brightness.Apply();
-			MaxFps.Apply();
-		}
+		private static readonly ISetting[] All = [Resolution, IsFullscreen, IsVSync, Brightness, MaxFps];
 
-		public static void Reset() {
-			Resolution.Reset();
-			IsFullscreen.Reset();
-			IsVSync.Reset();
-			Brightness.Reset();
-			MaxFps.Reset();
-		}
+		public static void Apply() => All.Apply();
+		public static void Reset() => All.Reset();
 
 		public static DisplayData Export() => new DisplayData {
 			Resolution = Resolution.Target,

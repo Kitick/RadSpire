@@ -1,5 +1,5 @@
 using Godot;
-using Services;
+using Services.Settings;
 
 namespace UI.Settings {
 	public sealed partial class ControllerPanel : VBoxContainer {
@@ -13,37 +13,21 @@ namespace UI.Settings {
 			SetCallbacks();
 		}
 
-		// Set Callbacks
-		public void SetCallbacks() {
-			EnableControllerCheckBox.Toggled += OnEnableControllerCheckBox;
-			VibrationCheckBox.Toggled += OnVibrationCheckbox;
-			DeadzoneSlider.ValueChanged += OnDeadzoneChanged;
+		private void SetCallbacks() {
+			EnableControllerCheckBox.Toggled += ControllerSettings.EnableController.Apply;
+			VibrationCheckBox.Toggled += ControllerSettings.Vibration.Apply;
+			DeadzoneSlider.ValueChanged += (value) => ControllerSettings.Deadzone.Apply((float) value);
 			RemapButtonsButton.Pressed += OnRemapButtonsPressed;
-		}
-
-		// Callbacks
-		private void OnEnableControllerCheckBox(bool check) {
-			//Implementation Here
-		}
-
-		private void OnVibrationCheckbox(bool check) {
-			//Implementation Here
-		}
-
-		private void OnDeadzoneChanged(double value) {
-			//Implementation Here
 		}
 
 		private void OnRemapButtonsPressed() {
 			//Implementation Here
 		}
 
-		//ISaveable Implementation Goes Here
-
-	}
-
-	// Update as Needed
-	public readonly record struct ControllerSettings : ISaveData {
-
+		public void Refresh() {
+			EnableControllerCheckBox.ButtonPressed = ControllerSettings.EnableController.Target;
+			VibrationCheckBox.ButtonPressed = ControllerSettings.Vibration.Target;
+			DeadzoneSlider.Value = ControllerSettings.Deadzone.Target;
+		}
 	}
 }

@@ -44,18 +44,18 @@ namespace UI.Settings {
 		// Callbacks
 		private void SetCallbacks() {
 			ResolutionOption.ItemSelected += (index) => DisplaySettings.Resolution.Apply(Resolutions[(int) index]);
-			FullscreenCheck.Toggled += value => DisplaySettings.IsFullscreen.Apply(value);
-			VSyncCheck.Toggled += value => DisplaySettings.IsVSync.Apply(value);
+			FullscreenCheck.Toggled += DisplaySettings.IsFullscreen.Apply;
+			VSyncCheck.Toggled += DisplaySettings.IsVSync.Apply;
 			BrightnessSlider.ValueChanged += (value) => DisplaySettings.Brightness.Apply((float) value);
 			FramerateOption.ItemSelected += (index) => DisplaySettings.MaxFps.Apply(Framerates[(int) index].Value);
 		}
 
 		public void Refresh() {
-			ResolutionOption.Select(DisplaySettings.Resolution.Target);
+			ResolutionOption.SelectItem(DisplaySettings.Resolution.Target);
 			FullscreenCheck.ButtonPressed = DisplaySettings.IsFullscreen.Target;
 			VSyncCheck.ButtonPressed = DisplaySettings.IsVSync.Target;
 			BrightnessSlider.Value = DisplaySettings.Brightness.Target;
-			FramerateOption.Select(new Framerate { Value = DisplaySettings.MaxFps.Target });
+			FramerateOption.SelectItem(new Framerate { Value = DisplaySettings.MaxFps.Target });
 		}
 	}
 }

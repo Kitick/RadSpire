@@ -20,7 +20,7 @@ namespace UI.Settings {
 			MasterSlider.ValueChanged += (value) => AudioSettings.MasterVolume.Apply((int) value);
 			MusicSlider.ValueChanged += (value) => AudioSettings.MusicVolume.Apply((int) value);
 			SFXSlider.ValueChanged += (value) => AudioSettings.SFXVolume.Apply((int) value);
-			MuteAllCheckBox.Toggled += (value) => AudioSettings.IsMuted.Apply(value);
+			MuteAllCheckBox.Toggled += AudioSettings.IsMuted.Apply;
 			OutputDeviceOption.ItemSelected += (index) => AudioSettings.OutputDevice.Apply(OutputDeviceOption.GetItemText((int) index));
 		}
 
@@ -29,7 +29,7 @@ namespace UI.Settings {
 			MusicSlider.Value = AudioSettings.MusicVolume.Target;
 			SFXSlider.Value = AudioSettings.SFXVolume.Target;
 			MuteAllCheckBox.ButtonPressed = AudioSettings.IsMuted.Target;
-			OutputDeviceOption.Select(AudioSettings.OutputDevice.Target);
+			OutputDeviceOption.SelectItem(AudioSettings.OutputDevice.Target);
 		}
 	}
 }
