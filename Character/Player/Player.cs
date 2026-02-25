@@ -34,6 +34,8 @@ namespace Character {
 
 		public Player() {
 			Movement = new Movement(this);
+			Inventory.Name = "Inventory";
+			Hotbar.Name = "Hotbar";
 		}
 
 		public override void _Ready() {

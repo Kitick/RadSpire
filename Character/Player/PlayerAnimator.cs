@@ -3,7 +3,7 @@ using Services;
 
 namespace Character {
 	public sealed partial class PlayerAnimator : AnimationPlayer {
-		private static readonly LogService Log = new(nameof(PlayerAnimator), enabled: true);
+		private static readonly LogService Log = new(nameof(PlayerAnimator), enabled: false);
 
 		private static readonly StringName IDLE = "Idle";
 		private static readonly StringName WALKING = "Walking_B";

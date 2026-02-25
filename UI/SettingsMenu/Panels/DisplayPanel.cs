@@ -1,9 +1,10 @@
+using System.Collections.Generic;
 using Core;
 using Godot;
 using Services;
 
 namespace UI.Settings {
-	public sealed partial class DisplayPanel : VBoxContainer, ISaveable<DisplaySettings> {
+	public sealed partial class DisplayPanel : VBoxContainer, INavigatable, ISaveable<DisplaySettings> {
 		private static readonly LogService Log = new(nameof(DisplayPanel), enabled: true);
 
 		[Export] private OptionButton ResolutionOption = null!;
@@ -11,6 +12,12 @@ namespace UI.Settings {
 		[Export] private CheckBox VSyncCheck = null!;
 		[Export] private HSlider BrightnessSlider = null!;
 		[Export] private OptionButton FramerateOption = null!;
+
+		private WorldEnvironment WorldEnv = null!;
+
+		public Control[] Order => [
+			ResolutionOption, FullscreenCheck, VSyncCheck, BrightnessSlider, FramerateOption
+		];
 
 		// Options
 		private static readonly Resolution[] Resolutions = [
@@ -36,6 +43,11 @@ namespace UI.Settings {
 			FramerateOption.Populate(Framerates);
 
 			SetCallbacks();
+		}
+
+		public void SetWorldEnvironment(WorldEnvironment env) {
+			WorldEnv = env;
+			WorldEnv.Environment.AdjustmentEnabled = true;
 		}
 
 		// Callbacks
@@ -78,8 +90,11 @@ namespace UI.Settings {
 
 		// Brightness
 		public float Brightness {
-			get;
-			set;
+			get => WorldEnv.Environment.AdjustmentBrightness;
+			set {
+				Log.Info($"Setting brightness to: {value}");
+				WorldEnv.Environment.AdjustmentBrightness = value;
+			}
 		}
 
 		// FPS Cap

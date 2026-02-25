@@ -11,8 +11,10 @@
 [ext_resource type="PackedScene" uid="uid://bffohbw4kmhwa" path="res://UI/Inventory/Inventory.tscn" id="6_785o0"]
 [ext_resource type="PackedScene" uid="uid://bjql4hi1q0ouh" path="res://UI/QuestLog/QuestLog.tscn" id="8_6ymr8"]
 [ext_resource type="PackedScene" uid="uid://2mdnsh082j66" path="res://UI/RespawnMenu/RespawnMenu.tscn" id="8_10ibt"]
+[ext_resource type="PackedScene" uid="uid://n150xowq1ipg" path="res://UI/Inventory/InventoryItemInformationUITemplate.tscn" id="9_2y2n3"]
+[ext_resource type="Script" uid="uid://cl6aplc7wunof" path="res://UI/Inventory/InventoryItemInformationUI.cs" id="10_y8qxg"]
 
-[node name="HUD" type="Control" unique_id=935922708 node_paths=PackedStringArray("PauseButton", "PauseMenu", "Inventory", "QuestLog", "Hotbar", "RespawnMenu", "HealthBar")]
+[node name="HUD" type="Control" unique_id=935922708 node_paths=PackedStringArray("PauseButton", "PauseMenu", "Inventory", "InventoryItemInformationUI", "QuestLog", "Hotbar", "RespawnMenu", "HealthBar")]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 1920.0
@@ -21,6 +23,7 @@ script = ExtResource("1_10ibt")
 PauseButton = NodePath("PauseButton")
 PauseMenu = NodePath("PauseMenu")
 Inventory = NodePath("Inventory")
+InventoryItemInformationUI = NodePath("ItemInformationUI")
 QuestLog = NodePath("QuestLog")
 Hotbar = NodePath("Hotbar")
 RespawnMenu = NodePath("RespawnMenu")
@@ -64,11 +67,20 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -175.0
-offset_top = -125.0
+offset_top = -139.0
 offset_right = 175.0
-offset_bottom = 125.0
+offset_bottom = 111.0
 grow_horizontal = 2
 script = ExtResource("5_q8dl0")
+
+[node name="ItemInformationUI" parent="." unique_id=1729341677 instance=ExtResource("9_2y2n3")]
+visible = false
+layout_mode = 1
+offset_left = 1146.0
+offset_top = 458.0
+offset_right = 1146.0
+offset_bottom = 458.0
+script = ExtResource("10_y8qxg")
 
 [node name="QuestLog" parent="." unique_id=1556372553 instance=ExtResource("8_6ymr8")]
 visible = false

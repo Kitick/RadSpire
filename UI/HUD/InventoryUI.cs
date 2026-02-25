@@ -10,8 +10,9 @@ namespace UI {
 		Inventory Inventory { get; set; }
 		Rect2 GetGlobalRect();
 		void SetUpInventoryUI();
-		public event Action<string, int>? OnSlotPressed;
-		public event Action<string, int>? OnSlotReleased;
+		public event Action<string, int, MouseButton>? OnSlotPressed;
+		public event Action<string, int, MouseButton>? OnSlotReleased;
+		public event Action<string, int>? OnSlotHovered;
 		void UpdateInventoryUI();
 	}
 
@@ -26,8 +27,9 @@ namespace UI {
 		private PackedScene? InvSlotTemplate = null!;
 		private Control? GridContainer = null!;
 
-		public event Action<string, int>? OnSlotPressed;
-		public event Action<string, int>? OnSlotReleased;
+		public event Action<string, int, MouseButton>? OnSlotPressed;
+		public event Action<string, int, MouseButton>? OnSlotReleased;
+		public event Action<string, int>? OnSlotHovered;
 
 		public override void _Ready() {
 			base._Ready();
@@ -40,6 +42,12 @@ namespace UI {
 			}
 		}
 
+		public override void _ExitTree() {
+			if(Player != null && Player.InventoryManager != null) {
+				Player.InventoryManager.UnregisterInventory(Inventory.Name);
+			}
+		}
+
 		public void SetUpInventoryUI() {
 			Player = GetParent<HUD>().Player;
 			if(Player == null) {
@@ -47,6 +55,7 @@ namespace UI {
 				return;
 			}
 			Inventory = Player.Inventory;
+			Player.InventoryManager.RegisterInventory(Inventory, this);
 			GridContainer = GetNode<Control>("Background/GridBackground/GridContainer");
 			// Allow clicks to pass through non-interactive background so Hotbar can receive them
 			var background = GetNodeOrNull<Control>("Background");
@@ -66,20 +75,26 @@ namespace UI {
 				slotInstance.SlotIndex = i;
 				slotInstance.OnSlotPressed += HandleOnSlotPressed;
 				slotInstance.OnSlotReleased += HandleOnSlotReleased;
+				slotInstance.OnSlotHovered += HandleOnSlotHovered;
 				InvSlotUIs.Add(slotInstance);
 				GridContainer.AddChild(slotInstance);
 			}
 			UpdateInventoryUI();
 		}
 
-		public void HandleOnSlotPressed(int slotIndex) {
+		public void HandleOnSlotPressed(int slotIndex, MouseButton button) {
 			Log.Info($"InventoryUI: Slot {slotIndex} pressed.");
-			OnSlotPressed?.Invoke(Inventory.Name, slotIndex);
+			OnSlotPressed?.Invoke(Inventory.Name, slotIndex, button);
 		}
 
-		public void HandleOnSlotReleased(int slotIndex) {
+		public void HandleOnSlotReleased(int slotIndex, MouseButton button) {
 			Log.Info($"InventoryUI: Slot {slotIndex} released.");
-			OnSlotReleased?.Invoke(Inventory.Name, slotIndex);
+			OnSlotReleased?.Invoke(Inventory.Name, slotIndex, button);
+		}
+
+		public void HandleOnSlotHovered(int slotIndex) {
+			Log.Info($"InventoryUI: Slot {slotIndex} hovered.");
+			OnSlotHovered?.Invoke(Inventory.Name, slotIndex);
 		}
 
 		public void UpdateInventoryUI() {
@@ -101,7 +116,10 @@ namespace UI {
 					// Use InventoryManager to determine whether click is outside all inventory UIs
 					if(Player != null && Player.InventoryManager != null) {
 						if(Player.InventoryManager.ClickedOutsideInventory(clickPos)) {
-							Player.InventoryManager.DropItemOutside();
+							// Only handle left-click drops here; right-click is handled by InventoryManager
+							if(mouseButton.ButtonIndex == MouseButton.Left) {
+								Player.InventoryManager.DropItemOutside();
+							}
 						}
 					}
 				}

@@ -3,7 +3,7 @@ using Godot;
 using Services;
 
 namespace UI.Settings {
-	public sealed partial class SettingsMenu : Control, ISaveable<SettingsData> {
+	public sealed partial class SettingsMenu : Control, INavigatable, ISaveable<SettingsData> {
 		private static readonly LogService Log = new(nameof(SettingsMenu), enabled: true);
 
 		private const string SAVEFILE = "settings";
@@ -36,6 +36,10 @@ namespace UI.Settings {
 		[Export] private Control AccessibilityPanel = null!;
 		[Export] private Button AccessibilityButton = null!;
 
+		public Control[] Order => [
+			GeneralPanel, DisplayPanel, SoundPanel, ControllerPanel, MKPanel, AccessibilityPanel
+		];
+
 		private (Control panel, Button button)[] Panels => [
 			(GeneralPanel, GeneralButton),
 			(DisplayPanel, DisplayButton),
@@ -56,6 +60,15 @@ namespace UI.Settings {
 			SetInputCallbacks();
 
 			SwitchToPanel(InitialPanel);
+
+			Navigator.Instance.UIPanel = this;
+			Navigator.Instance.UpdateSelected();
+		}
+
+		private WorldEnvironment WorldEnv => GetNode<WorldEnvironment>("/root/SceneDirector/GameManager/WorldEnvironment");
+
+		private void FetchWorldEnviroment() {
+			DisplayPanel.SetWorldEnvironment(WorldEnv);
 		}
 
 		public override void _ExitTree() {
@@ -94,6 +107,7 @@ namespace UI.Settings {
 
 		public void OpenMenu(Action? onClose = null) {
 			OnExit += onClose;
+			FetchWorldEnviroment();
 			LoadData();
 		}
 

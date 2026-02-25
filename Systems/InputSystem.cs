@@ -6,13 +6,14 @@ namespace Services {
 	public enum ActionEvent {
 		MoveForward, MoveBack, MoveLeft, MoveRight,
 		Jump, Sprint, Crouch, Interact, Consume, Inventory,
-		MenuBack, MenuExit,
+		MenuBack, MenuExit, MenuSelect, PageLeft, PageRight,
+		MenuUp, MenuDown, MenuLeft, MenuRight,
 		Hotbar1, Hotbar2, Hotbar3, Hotbar4, Hotbar5,
 		HotbarNext, HotbarPrev,
 	};
 
 	public sealed partial class InputSystem : Node {
-		public static readonly LogService Log = new(nameof(InputSystem), enabled: true);
+		public static readonly LogService Log = new(nameof(InputSystem), enabled: false);
 
 		public static InputSystem Instance { get; private set; } = null!;
 

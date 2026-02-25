@@ -5,7 +5,7 @@ layout_mode = 3
 anchors_preset = 0
 offset_right = 350.0
 offset_bottom = 250.0
-mouse_filter = 1
+mouse_filter = 2
 
 [node name="Background" type="ColorRect" parent="." unique_id=1713365477]
 layout_mode = 1
