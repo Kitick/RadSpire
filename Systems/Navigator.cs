@@ -11,12 +11,15 @@ namespace Services {
 			get;
 			set {
 				ClearStyles(Order);
+				IsActive = false;
 				field = value;
-				StyleSelected(Selected);
+				SelectedIndex = 0;
 			}
 		} = [];
 
 		public Control Selected => Order[SelectedIndex];
+
+		public bool IsActive { get; private set; } = false;
 
 		private int SelectedIndex {
 			get;
@@ -36,6 +39,11 @@ namespace Services {
 			return (index % count + count) % count;
 		}
 
+		public void Select(Control control) {
+			int index = Array.IndexOf(Order, control);
+			if(index >= 0) { SelectedIndex = index; }
+		}
+
 		public override void _Ready() {
 			Instance = this;
 			SetActions();
@@ -43,26 +51,31 @@ namespace Services {
 
 		private void SetActions() {
 			ActionEvent.MenuSelect.WhenPressed(() => {
+				IsActive = true;
 				if(Selected is Button button) {
 					button.EmitSignal("pressed");
 				}
 			});
 
 			ActionEvent.MenuUp.WhenPressed(() => {
+				IsActive = true;
 				SelectedIndex--;
 			});
 
 			ActionEvent.MenuDown.WhenPressed(() => {
+				IsActive = true;
 				SelectedIndex++;
 			});
 
 			ActionEvent.MenuLeft.WhenPressed(() => {
+				IsActive = true;
 				if(Selected is HSlider slider) {
 					slider.Value -= slider.Step;
 				}
 			});
 
 			ActionEvent.MenuRight.WhenPressed(() => {
+				IsActive = true;
 				if(Selected is HSlider slider) {
 					slider.Value += slider.Step;
 				}

@@ -86,7 +86,12 @@ namespace UI {
 			});
 
 			ActionEvent.MenuLeft.WhenPressed(() => {
+				bool wasSingle = SingleplayerPanel.Visible;
+				bool wasMulti = MultiplayerPanel.Visible;
+
 				Navigator.Instance.Order = MainOrder;
+				if(wasSingle) { Navigator.Instance.Select(SingleplayerButton); }
+				else if(wasMulti) { Navigator.Instance.Select(MultiplayerButton); }
 			});
 		}
 
@@ -96,8 +101,16 @@ namespace UI {
 		}
 
 		private void HidePopup() {
+			if(Navigator.Instance.IsActive) {
+				if(Navigator.Instance.Selected != SingleplayerButton && Navigator.Instance.Selected != MultiplayerButton) {
+					SetPopupState(MenuState.Normal);
+				}
+				return;
+			}
 			GetTree().CreateTimer(HideDelay).Timeout += () => {
-				if(!IsMouseInside(SingleplayerButton, SingleplayerPanel, MultiplayerButton, MultiplayerPanel)) {
+				if(!IsMouseInside(SingleplayerButton, SingleplayerPanel, MultiplayerButton, MultiplayerPanel)
+					&& Navigator.Instance.Selected != SingleplayerButton
+					&& Navigator.Instance.Selected != MultiplayerButton) {
 					SetPopupState(MenuState.Normal);
 				}
 			};
