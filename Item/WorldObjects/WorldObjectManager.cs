@@ -54,7 +54,7 @@ namespace Objects {
         }
 
         private void HandleOnWorldObjectAdded(Object obj) {
-            ObjectNode? node = new ObjectNodeFactory(this).Spawn(obj);
+            ObjectNode? node = ObjectNodeFactory.Spawn(obj);
             if(node == null) {
                 Log.Error($"Failed to spawn world object with ID {obj.Id} and ItemId {obj.ItemId}");
                 return;
