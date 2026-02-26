@@ -5,8 +5,32 @@ namespace Objects {
     using ItemSystem;
 	using System.Collections.Generic;
 
-    public partial class WorldObjectManager : Node {
+    public partial class WorldObjectManager : Node, ISaveable<WorldObjectManagerData> {
+        private static readonly LogService Log = new(nameof(WorldObjectManager), enabled: true);
+        public WorldObjects WorldObjects { get; private set; } = new WorldObjects();
+        public WorldObjectNodes WorldObjectNodes { get; private set; } = null!;
 
+        public override void _Ready() {
+            WorldObjectNodes = new WorldObjectNodes(this);
+            foreach(ObjectNode node in GetChildren()) {
+                if(node is ObjectNode objNode) {
+                    WorldObjectNodes.AddObjectNode(objNode);
+                }
+            }
+        }
+
+        public WorldObjectManagerData Export() => new WorldObjectManagerData {
+            WorldObjects = WorldObjects.Export()
+        };
+
+        public void Import(WorldObjectManagerData data) {
+
+            WorldObjects.Import(data.WorldObjects);
+        }
+    }
+
+    public readonly record struct WorldObjectManagerData: ISaveData {
+        public WorldObjectsData WorldObjects { get; init; }
     }
 
     public partial class WorldObjectNodes {
@@ -76,6 +100,7 @@ namespace Objects {
         }
 
         public void Import(WorldObjectsData data) {
+            Objects.Clear();
             foreach(ObjectData objData in data.Objects.Values) {
                 Object obj = new Object();
                 obj.Import(objData);
