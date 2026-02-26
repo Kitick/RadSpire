@@ -4,19 +4,42 @@ namespace Objects {
     using Services;
     using ItemSystem;
 	using System.Collections.Generic;
+	using System.Reflection.Metadata;
 
-    public partial class WorldObjectManager : Node, ISaveable<WorldObjectManagerData> {
+	public partial class WorldObjectManager : Node, ISaveable<WorldObjectManagerData> {
         private static readonly LogService Log = new(nameof(WorldObjectManager), enabled: true);
         public WorldObjects WorldObjects { get; private set; } = new WorldObjects();
-        public WorldObjectNodes WorldObjectNodes { get; private set; } = null!;
+        public WorldObjectNodes WorldObjectNodes { get; private set; } = new WorldObjectNodes();
+        private ObjectNodeFactory ObjectNodeFactory = null!;
 
         public override void _Ready() {
-            WorldObjectNodes = new WorldObjectNodes(this);
             foreach(ObjectNode node in GetChildren()) {
                 if(node is ObjectNode objNode) {
+                    WorldObjects.RegisterWorldObject(objNode.Data);
                     WorldObjectNodes.AddObjectNode(objNode);
                 }
             }
+            ObjectNodeFactory = new ObjectNodeFactory(this);
+            WorldObjects.OnWorldObjectAdded += HandleOnWorldObjectAdded;
+            WorldObjects.OnWorldObjectRemoved += HandleOnWorldObjectRemoved;
+        }
+
+        public override void _ExitTree() {
+            WorldObjects.OnWorldObjectAdded -= HandleOnWorldObjectAdded;
+            WorldObjects.OnWorldObjectRemoved -= HandleOnWorldObjectRemoved;
+        }
+
+        private void HandleOnWorldObjectAdded(Object obj) {
+            ObjectNode? node = new ObjectNodeFactory(this).Spawn(obj);
+            if(node == null) {
+                Log.Error($"Failed to spawn world object with ID {obj.Id} and ItemId {obj.ItemId}");
+                return;
+            }
+            WorldObjectNodes.AddObjectNode(node);
+        }
+
+        private void HandleOnWorldObjectRemoved(string objectId) {
+            WorldObjectNodes.RemoveObjectNode(objectId);
         }
 
         public WorldObjectManagerData Export() => new WorldObjectManagerData {
@@ -35,19 +58,13 @@ namespace Objects {
 
     public partial class WorldObjectNodes {
         private static readonly LogService Log = new(nameof(WorldObjectNodes), enabled: true);
-        private readonly Node ParentNode;
         private readonly Dictionary<string, ObjectNode> ObjectNodes = new Dictionary<string, ObjectNode>();
-
-        public WorldObjectNodes(Node parent) {
-            ParentNode = parent;
-        }
 
         public bool AddObjectNode(ObjectNode node) {
             if(node == null || ObjectNodes.ContainsKey(node.Data.Id)) {
                 return false;
             }
             ObjectNodes.Add(node.Data.Id, node);
-            ParentNode.AddChild(node);
             return true;
         }
 
@@ -56,8 +73,8 @@ namespace Objects {
                 return false;
             }
             ObjectNode node = ObjectNodes[objectId];
-            ParentNode.RemoveChild(node);
             ObjectNodes.Remove(objectId);
+            node.QueueFree();
             return true;
         }
     }
