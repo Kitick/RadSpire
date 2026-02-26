@@ -8,8 +8,8 @@ namespace Objects {
 
 	public partial class WorldObjectManager : Node, ISaveable<WorldObjectManagerData> {
         private static readonly LogService Log = new(nameof(WorldObjectManager), enabled: true);
-        public WorldObjects WorldObjects { get; private set; } = new WorldObjects();
-        public WorldObjectNodes WorldObjectNodes { get; private set; } = new WorldObjectNodes();
+        private WorldObjects WorldObjects { get; set; } = new WorldObjects();
+        private WorldObjectNodes WorldObjectNodes { get; set; } = new WorldObjectNodes();
         private ObjectNodeFactory ObjectNodeFactory = null!;
 
         public override void _Ready() {
@@ -27,6 +27,30 @@ namespace Objects {
         public override void _ExitTree() {
             WorldObjects.OnWorldObjectAdded -= HandleOnWorldObjectAdded;
             WorldObjects.OnWorldObjectRemoved -= HandleOnWorldObjectRemoved;
+        }
+
+        public bool CreateWorldObject(string itemId, Vector3 position, Vector3 rotation) {
+            Object obj = new Object(itemId, position, rotation);
+            return WorldObjects.RegisterWorldObject(obj);
+        }
+
+        public bool RemoveWorldObject(string objectId) {
+            return WorldObjects.UnregisterWorldObject(objectId);
+        }
+
+        public Object? GetWorldObject(string objectId) {
+            if(WorldObjects.Objects.ContainsKey(objectId)) {
+                return WorldObjects.Objects[objectId];
+            }
+            return null;
+        }
+
+        public ObjectNode? GetWorldObjectNode(string objectId) {
+            ObjectNode? temp = WorldObjectNodes.GetObjectNode(objectId);
+            if(temp != null) {
+                return temp;
+            }
+            return null;
         }
 
         private void HandleOnWorldObjectAdded(Object obj) {
@@ -76,6 +100,13 @@ namespace Objects {
             ObjectNodes.Remove(objectId);
             node.QueueFree();
             return true;
+        }
+
+        public ObjectNode? GetObjectNode(string objectId) {
+            if(ObjectNodes.ContainsKey(objectId)) {
+                return ObjectNodes[objectId];
+            }
+            return null;
         }
     }
 
