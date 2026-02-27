@@ -96,7 +96,7 @@ namespace ItemSystem {
 
 		public void OnInventoryRequested(bool open) {
 			InventoryUIOpen = open;
-			if(open){
+			if(open) {
 				if(GetInventoryUI("Hotbar") is Hotbar hotbar) {
 					ItemSlot temp = hotbar.GetSelectedItemSlot();
 					if(!temp.IsEmpty()) {
@@ -516,6 +516,25 @@ namespace ItemSystem {
 			}
 			ItemSlot itemSlot = GetInventory(inventoryName).GetItemSlot(GetInventory(inventoryName).GetRow(slotIndex), GetInventory(inventoryName).GetColumn(slotIndex));
 			ItemSlotHovered?.Invoke(itemSlot);
+		}
+
+		public ItemSlot AddItemSlotToInventory(string inventoryName, ItemSlot itemSlot) {
+			if(!Inventories.ContainsKey(inventoryName)) {
+				Log.Error($"AddItemSlotToInventory: Inventory with name {inventoryName} not found.");
+				return itemSlot;
+			}
+			return GetInventory(inventoryName).AddItem(itemSlot);
+		}
+
+		public ItemSlot AddItemSlotToPlayerInventory(ItemSlot itemSlot) {
+			ItemSlot remainSlot = itemSlot;
+			if(Inventories.ContainsKey("Hotbar")) {
+				remainSlot = GetInventory("Hotbar").AddItem(remainSlot);
+			}
+			if(!remainSlot.IsEmpty() && Inventories.ContainsKey("Inventory")) {
+				remainSlot = GetInventory("Inventory").AddItem(remainSlot);
+			}
+			return remainSlot;
 		}
 	}
 }
