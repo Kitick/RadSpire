@@ -8,6 +8,7 @@ namespace Root {
 	using ItemSystem;
 	using Services;
 	using UI;
+	using Objects;
 
 	public sealed partial class GameManager : Node {
 		private static readonly LogService Log = new(nameof(GameManager), enabled: true);
@@ -18,12 +19,15 @@ namespace Root {
 		[Export] private PackedScene PlayerScene = null!;
 		[Export] private PackedScene EnemyScene = null!;
 		[Export] private PackedScene Item3DIconManagerScene = null!;
+		[Export] private PackedScene WorldObjectManageScene = null!;
+		[Export] private Node WorldObjectParentNode = null!;
 
 		private readonly KeyInput KeyInput = new();
 		private CameraRig CameraRig = null!;
 		private Player? LocalPlayer;
 		private HUD? HUD;
 		private Item3DIconManager? Item3DIconManager;
+		private WorldObjectManager? WorldObjectManager;
 		public Action? MainMenuRequested;
 
 		public enum MenuState { Game, Paused, Settings, Inventory, Host, Death }
@@ -44,6 +48,8 @@ namespace Root {
 
 			CameraRig = this.AddScene<CameraRig>(CameraScene);
 			Item3DIconManager = this.AddScene<Item3DIconManager>(Item3DIconManagerScene);
+			WorldObjectManager = this.AddScene<WorldObjectManager>(WorldObjectManageScene);
+			WorldObjectManager.SetUpWorldObjectManager(WorldObjectParentNode);
 			ConfigureStateMachine();
 
 			StartGame();

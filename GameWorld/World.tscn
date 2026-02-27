@@ -497,3 +497,5 @@ transform = Transform3D(14.355722, 0, -13.925274, 0, 20, 0, 13.925274, 0, 14.355
 
 [node name="Resource_Rock_18" parent="Rocks" unique_id=1857288249 instance=ExtResource("30_v85xl")]
 transform = Transform3D(17.369343, 0, -9.914934, 0, 20, 0, 9.914934, 0, 17.369343, -25.229115, 1.7926826, 69.01773)
+
+[node name="WorldObjects" type="Node" parent="." unique_id=1217641063]

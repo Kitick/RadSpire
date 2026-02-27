@@ -4,16 +4,18 @@ namespace Objects {
     using Services;
     using ItemSystem;
 	using System.Collections.Generic;
-	using System.Reflection.Metadata;
 
 	public partial class WorldObjectManager : Node, ISaveable<WorldObjectManagerData> {
         private static readonly LogService Log = new(nameof(WorldObjectManager), enabled: true);
         private WorldObjects WorldObjects { get; set; } = new WorldObjects();
         private WorldObjectNodes WorldObjectNodes { get; set; } = new WorldObjectNodes();
         private ObjectNodeFactory ObjectNodeFactory = null!;
+        private Node WorldObjectParentNode = null!;
+        private bool SetUpComplete = false;
 
-        public override void _Ready() {
-            foreach(ObjectNode node in GetChildren()) {
+        public void SetUpWorldObjectManager(Node parentNode) {
+            WorldObjectParentNode = parentNode;
+            foreach(ObjectNode node in WorldObjectParentNode.GetChildren()) {
                 if(node is ObjectNode objNode) {
                     WorldObjects.RegisterWorldObject(objNode.Data);
                     WorldObjectNodes.AddObjectNode(objNode);
@@ -22,23 +24,39 @@ namespace Objects {
             ObjectNodeFactory = new ObjectNodeFactory(this);
             WorldObjects.OnWorldObjectAdded += HandleOnWorldObjectAdded;
             WorldObjects.OnWorldObjectRemoved += HandleOnWorldObjectRemoved;
+            SetUpComplete = true;
         }
 
         public override void _ExitTree() {
+            if(!SetUpComplete) {
+                return;
+            }
             WorldObjects.OnWorldObjectAdded -= HandleOnWorldObjectAdded;
             WorldObjects.OnWorldObjectRemoved -= HandleOnWorldObjectRemoved;
         }
 
         public bool CreateWorldObject(string itemId, Vector3 position, Vector3 rotation) {
+            if(!SetUpComplete) {
+                Log.Error("Attempted to create world object before WorldObjectManager was set up.");
+                return false;
+            }
             Object obj = new Object(itemId, position, rotation);
             return WorldObjects.RegisterWorldObject(obj);
         }
 
         public bool RemoveWorldObject(string objectId) {
+            if(!SetUpComplete) {
+                Log.Error("Attempted to remove world object before WorldObjectManager was set up.");
+                return false;
+            }
             return WorldObjects.UnregisterWorldObject(objectId);
         }
 
         public Object? GetWorldObject(string objectId) {
+            if(!SetUpComplete) {
+                Log.Error("Attempted to get world object before WorldObjectManager was set up.");
+                return null;
+            }
             if(WorldObjects.Objects.ContainsKey(objectId)) {
                 return WorldObjects.Objects[objectId];
             }
@@ -46,6 +64,10 @@ namespace Objects {
         }
 
         public ObjectNode? GetWorldObjectNode(string objectId) {
+            if(!SetUpComplete) {
+                Log.Error("Attempted to get world object node before WorldObjectManager was set up.");
+                return null;
+            }
             ObjectNode? temp = WorldObjectNodes.GetObjectNode(objectId);
             if(temp != null) {
                 return temp;
@@ -67,17 +89,24 @@ namespace Objects {
         }
 
         public WorldObjectManagerData Export() => new WorldObjectManagerData {
-            WorldObjects = WorldObjects.Export()
+            WorldObjects = WorldObjects.Export(),
+            SetUpComplete = SetUpComplete,
+            ParentNodePath = WorldObjectParentNode.GetPath()
         };
 
         public void Import(WorldObjectManagerData data) {
-
             WorldObjects.Import(data.WorldObjects);
+            SetUpComplete = data.SetUpComplete;
+            if(SetUpComplete) {
+                WorldObjectParentNode = GetNode(data.ParentNodePath);
+            }
         }
     }
 
     public readonly record struct WorldObjectManagerData: ISaveData {
         public WorldObjectsData WorldObjects { get; init; }
+        public bool SetUpComplete { get; init; }
+        public NodePath ParentNodePath { get; init; }
     }
 
     public partial class WorldObjectNodes {
