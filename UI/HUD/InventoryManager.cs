@@ -519,6 +519,10 @@ namespace ItemSystem {
 		}
 
 		public ItemSlot AddItemSlotToInventory(string inventoryName, ItemSlot itemSlot) {
+			if(itemSlot.IsEmpty()) {
+				Log.Info("AddItemSlotToInventory called with empty item slot, nothing to add.");
+				return itemSlot;
+			}
 			if(!Inventories.ContainsKey(inventoryName)) {
 				Log.Error($"AddItemSlotToInventory: Inventory with name {inventoryName} not found.");
 				return itemSlot;
@@ -528,12 +532,8 @@ namespace ItemSystem {
 
 		public ItemSlot AddItemSlotToPlayerInventory(ItemSlot itemSlot) {
 			ItemSlot remainSlot = itemSlot;
-			if(Inventories.ContainsKey("Hotbar")) {
-				remainSlot = GetInventory("Hotbar").AddItem(remainSlot);
-			}
-			if(!remainSlot.IsEmpty() && Inventories.ContainsKey("Inventory")) {
-				remainSlot = GetInventory("Inventory").AddItem(remainSlot);
-			}
+			remainSlot = AddItemSlotToInventory("Hotbar", remainSlot);
+			remainSlot = AddItemSlotToInventory("Inventory", remainSlot);
 			return remainSlot;
 		}
 	}
