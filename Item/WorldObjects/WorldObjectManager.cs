@@ -145,6 +145,16 @@ namespace Objects {
         };
 
         public void Import(WorldObjectManagerData data) {
+            if(SetUpComplete) {
+                WorldObjectNodes.ClearAll();
+                WorldObjects.Clear();
+                foreach(ObjectData objData in data.WorldObjects.Objects.Values) {
+                    Object obj = new Object();
+                    obj.Import(objData);
+                    WorldObjects.RegisterWorldObject(obj);
+                }
+                return;
+            }
             WorldObjects.Import(data.WorldObjects);
             SetUpComplete = data.SetUpComplete;
             if(SetUpComplete) {
@@ -187,6 +197,15 @@ namespace Objects {
             }
             return null;
         }
+
+        public void ClearAll() {
+            foreach(ObjectNode node in ObjectNodes.Values) {
+                if(GodotObject.IsInstanceValid(node)) {
+                    node.QueueFree();
+                }
+            }
+            ObjectNodes.Clear();
+        }
     }
 
     public partial class WorldObjects : ISaveable<WorldObjectsData> {
@@ -214,6 +233,10 @@ namespace Objects {
             return true;
         }
 
+        public void Clear() {
+            Objects.Clear();
+        }
+
         public WorldObjectsData Export() => new WorldObjectsData {
             Objects = ExportObjects()
         };
@@ -228,6 +251,9 @@ namespace Objects {
 
         public void Import(WorldObjectsData data) {
             Objects.Clear();
+            if(data.Objects == null) {
+                return;
+            }
             foreach(ObjectData objData in data.Objects.Values) {
                 Object obj = new Object();
                 obj.Import(objData);

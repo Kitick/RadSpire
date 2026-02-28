@@ -157,6 +157,7 @@ namespace Root {
 				Player = LocalPlayer.Export(),
 				CameraRig = CameraRig.Export(),
 				Item3DIconManager = Item3DIconManager!.Export(),
+				WorldObjectManager = WorldObjectManager!.Export(),
 			};
 
 			data.Save(fileName);
@@ -194,6 +195,7 @@ namespace Root {
 			LocalPlayer!.Import(data.Player);
 			CameraRig!.Import(data.CameraRig);
 			Item3DIconManager!.Import(data.Item3DIconManager);
+			WorldObjectManager!.Import(data.WorldObjectManager);
 		}
 
 		public void ReturnToMainMenu() {
@@ -272,5 +274,6 @@ namespace Root {
 		public PlayerData Player { get; init; }
 		public CameraRigData CameraRig { get; init; }
 		public Item3DIconManagerData Item3DIconManager { get; init; }
+		public WorldObjectManagerData WorldObjectManager { get; init; }
 	}
 }

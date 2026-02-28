@@ -506,3 +506,6 @@ transform = Transform3D(17.369343, 0, -9.914934, 0, 20, 0, 9.914934, 0, 17.36934
 
 [node name="Bonfire" parent="WorldObjects" unique_id=656427922 instance=ExtResource("38_n4vcc")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.1161804, 0)
+
+[node name="Bonfire2" parent="WorldObjects" unique_id=146355287 instance=ExtResource("38_n4vcc")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.6808095, 2.112596, 7.726801)
