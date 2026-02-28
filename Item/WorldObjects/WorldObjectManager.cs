@@ -14,11 +14,35 @@ namespace Objects {
         private bool SetUpComplete = false;
 
         public void SetUpWorldObjectManager(Node parentNode) {
+            if(SetUpComplete) {
+                Log.Warn("SetUpWorldObjectManager called more than once. Ignoring duplicate call.");
+                return;
+            }
+            if(parentNode == null) {
+                Log.Error("SetUpWorldObjectManager called with null parent node.");
+                return;
+            }
+
             WorldObjectParentNode = parentNode;
-            foreach(WorldObjectSpawnPoint node in WorldObjectParentNode.GetChildren()) {
-                if(node is WorldObjectSpawnPoint objNode) {
-                    Object obj = new Object(objNode.ItemDefinition.Id, objNode.GlobalPosition, objNode.GlobalRotation);
-                    WorldObjects.RegisterWorldObject(obj);
+            List<WorldObjectSpawnPoint> spawnPoints = GetSpawnPointsRecursive(WorldObjectParentNode);
+            foreach(WorldObjectSpawnPoint objNode in spawnPoints) {
+                if(!GodotObject.IsInstanceValid(objNode)) {
+                    continue;
+                }
+
+                string itemId = objNode.ItemId;
+                if(string.IsNullOrWhiteSpace(itemId)) {
+                    Log.Warn($"Skipping spawn point '{objNode.Name}' because ItemId is empty.");
+                    continue;
+                }
+
+                if(ItemDataBaseManager.Instance.GetItemDefinitionById(itemId) == null) {
+                    Log.Warn($"Skipping spawn point '{objNode.Name}' because ItemId '{itemId}' is not registered.");
+                    continue;
+                }
+                Object obj = new Object(itemId, objNode.GlobalPosition, objNode.GlobalRotation);
+                if(!WorldObjects.RegisterWorldObject(obj)) {
+                    Log.Warn($"Skipping spawn point '{objNode.Name}' because world object registration failed.");
                 }
             }
             foreach(var child in WorldObjectParentNode.GetChildren()) {
@@ -45,6 +69,21 @@ namespace Objects {
             }
             WorldObjects.OnWorldObjectAdded -= HandleOnWorldObjectAdded;
             WorldObjects.OnWorldObjectRemoved -= HandleOnWorldObjectRemoved;
+        }
+
+        private static List<WorldObjectSpawnPoint> GetSpawnPointsRecursive(Node root) {
+            List<WorldObjectSpawnPoint> results = new List<WorldObjectSpawnPoint>();
+            CollectSpawnPoints(root, results);
+            return results;
+        }
+
+        private static void CollectSpawnPoints(Node node, List<WorldObjectSpawnPoint> results) {
+            foreach(Node child in node.GetChildren()) {
+                if(child is WorldObjectSpawnPoint spawnPoint) {
+                    results.Add(spawnPoint);
+                }
+                CollectSpawnPoints(child, results);
+            }
         }
 
         public bool CreateWorldObject(string itemId, Vector3 position, Vector3 rotation) {

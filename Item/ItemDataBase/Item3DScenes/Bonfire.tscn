@@ -20,3 +20,4 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0052490234, 0.0069351196, -
 shape = SubResource("BoxShape3D_n1odn")
 
 [node name="WorldObjectSpawnPoint" parent="." unique_id=2064846928 instance=ExtResource("3_5vv3f")]
+ItemId = "Bonfire"

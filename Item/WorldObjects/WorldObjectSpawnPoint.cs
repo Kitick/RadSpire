@@ -1,11 +1,8 @@
 namespace Objects{
+    using Core;
     using Godot;
-    using System;
-    using Services;
-    using ItemSystem;
-    using Components;
+
     public partial class WorldObjectSpawnPoint : Node3D {
-        private static readonly LogService Log = new(nameof(WorldObjectSpawnPoint), enabled: true);
-        [Export] public ItemDefinition ItemDefinition = null!;
+        [Export] public string ItemId { get; set; } = ItemID.AppleRed;
     }
 }
