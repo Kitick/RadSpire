@@ -1,5 +1,5 @@
 using Godot;
-using Services;
+using Services.Settings;
 
 namespace UI.Settings {
 	public sealed partial class MkPanel : VBoxContainer {
@@ -13,36 +13,21 @@ namespace UI.Settings {
 			SetCallbacks();
 		}
 
-		public void SetCallbacks() {
-			MouseSenseSlider.ValueChanged += OnMouseSenseChanged;
-			InvertedYAxisCheckBox.Toggled += OnInvertedYAxisCheckBox;
-			RawInputCheckBox.Toggled += OnRawInputCheckbox;
+		private void SetCallbacks() {
+			MouseSenseSlider.ValueChanged += (value) => MouseKeyboardSettings.MouseSensitivity.Apply((float) value);
+			InvertedYAxisCheckBox.Toggled += MouseKeyboardSettings.InvertedYAxis.Apply;
+			RawInputCheckBox.Toggled += MouseKeyboardSettings.RawInput.Apply;
 			RemapKeysButton.Pressed += OnRemapKeysPressed;
-		}
-
-		// Callbacks
-		private void OnMouseSenseChanged(double value) {
-			//Implementation Here
-		}
-
-		private void OnInvertedYAxisCheckBox(bool check) {
-			//Implmentation Here
-		}
-
-		private void OnRawInputCheckbox(bool check) {
-			//Implementation Here
 		}
 
 		private void OnRemapKeysPressed() {
 			//Implementation Here
 		}
 
-		//ISaveable Implmentation Goes Here
-
-	}
-
-	//Update as Needed
-	public readonly record struct MkSettings : ISaveData {
-
+		public void Refresh() {
+			MouseSenseSlider.Value = MouseKeyboardSettings.MouseSensitivity.Target;
+			InvertedYAxisCheckBox.ButtonPressed = MouseKeyboardSettings.InvertedYAxis.Target;
+			RawInputCheckBox.ButtonPressed = MouseKeyboardSettings.RawInput.Target;
+		}
 	}
 }

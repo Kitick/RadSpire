@@ -7,11 +7,14 @@ namespace Root {
 	using Godot;
 	using ItemSystem;
 	using Services;
+	using Services.Settings;
 	using UI;
 	using Objects;
 
 	public sealed partial class GameManager : Node {
 		private static readonly LogService Log = new(nameof(GameManager), enabled: true);
+
+		[Export] private WorldEnvironment WorldEnvironment = null!;
 
 		[ExportCategory("Scene References")]
 		[Export] private PackedScene CameraScene = null!;
@@ -46,6 +49,8 @@ namespace Root {
 		public override void _Ready() {
 			ProcessMode = ProcessModeEnum.Always;
 
+			DisplaySettings.SetWorldEnvironment(WorldEnvironment);
+
 			CameraRig = this.AddScene<CameraRig>(CameraScene);
 			Item3DIconManager = this.AddScene<Item3DIconManager>(Item3DIconManagerScene);
 			WorldObjectManager = this.AddScene<WorldObjectManager>(WorldObjectManageScene);
@@ -53,6 +58,10 @@ namespace Root {
 			ConfigureStateMachine();
 
 			StartGame();
+		}
+
+		public override void _ExitTree() {
+			DisplaySettings.SetWorldEnvironment(null);
 		}
 
 		public override void _PhysicsProcess(double delta) {

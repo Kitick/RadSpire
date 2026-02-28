@@ -1,19 +1,16 @@
 using System;
 using Godot;
 using Services;
+using Services.Settings;
 
 namespace UI.Settings {
-	public sealed partial class SettingsMenu : Control, ISaveable<SettingsData> {
-		private static readonly LogService Log = new(nameof(SettingsMenu), enabled: true);
-
-		private const string SAVEFILE = "settings";
-
+	public sealed partial class SettingsMenu : Control {
 		[ExportCategory("Buttons")]
 		[Export] private Button BackButton = null!;
 		[Export] private Button ResetButton = null!;
 
 		[ExportCategory("General")]
-		[Export] private Control GeneralPanel = null!;
+		[Export] private GeneralPanel GeneralPanel = null!;
 		[Export] private Button GeneralButton = null!;
 
 		[ExportCategory("Display")]
@@ -25,16 +22,20 @@ namespace UI.Settings {
 		[Export] private Button SoundButton = null!;
 
 		[ExportCategory("Controls")]
-		[Export] private Control ControllerPanel = null!;
+		[Export] private ControllerPanel ControllerPanel = null!;
 		[Export] private Button ControllerButton = null!;
 
 		[ExportCategory("Mouse & Keyboard")]
-		[Export] private Control MKPanel = null!;
+		[Export] private MkPanel MKPanel = null!;
 		[Export] private Button MKButton = null!;
 
 		[ExportCategory("Accessibility")]
-		[Export] private Control AccessibilityPanel = null!;
+		[Export] private AccessibilityPanel AccessibilityPanel = null!;
 		[Export] private Button AccessibilityButton = null!;
+
+		public Control[] Order => [
+			GeneralPanel, DisplayPanel, SoundPanel, ControllerPanel, MKPanel, AccessibilityPanel, ResetButton, BackButton
+		];
 
 		private (Control panel, Button button)[] Panels => [
 			(GeneralPanel, GeneralButton),
@@ -46,6 +47,8 @@ namespace UI.Settings {
 		];
 
 		private Control InitialPanel => GeneralPanel;
+
+		private Control ActivePanel = null!;
 
 		private event Action? OnExit;
 
@@ -81,10 +84,40 @@ namespace UI.Settings {
 		}
 
 		private void OnResetSettingsButtonPressed() {
-			//Implementation Here should make it so what ever panel is open it can be reset
+			if(ActivePanel == DisplayPanel) {
+				DisplaySettings.Reset();
+				DisplaySettings.Apply();
+				DisplayPanel.Refresh();
+			}
+			else if(ActivePanel == SoundPanel) {
+				AudioSettings.Reset();
+				AudioSettings.Apply();
+				SoundPanel.Refresh();
+			}
+			else if(ActivePanel == GeneralPanel) {
+				GeneralSettings.Reset();
+				GeneralSettings.Apply();
+				GeneralPanel.Refresh();
+			}
+			else if(ActivePanel == AccessibilityPanel) {
+				AccessibilitySettings.Reset();
+				AccessibilitySettings.Apply();
+				AccessibilityPanel.Refresh();
+			}
+			else if(ActivePanel == ControllerPanel) {
+				ControllerSettings.Reset();
+				ControllerSettings.Apply();
+				ControllerPanel.Refresh();
+			}
+			else if(ActivePanel == MKPanel) {
+				MouseKeyboardSettings.Reset();
+				MouseKeyboardSettings.Apply();
+				MKPanel.Refresh();
+			}
 		}
 
 		private void SwitchToPanel(Control target) {
+			ActivePanel = target;
 			foreach(var (panel, button) in Panels) {
 				var isTarget = panel == target;
 				panel.Visible = isTarget;
@@ -102,34 +135,17 @@ namespace UI.Settings {
 			QueueFree();
 		}
 
-		private void SaveData() {
-			this.Save(SAVEFILE);
-			Log.Info("Settings saved");
+		private static void SaveData() {
+			SettingSystem.Save();
 		}
 
 		private void LoadData() {
-			if(SaveService.Exists(SAVEFILE)) {
-				this.Load(SAVEFILE);
-				Log.Info("Settings loaded");
-			}
-			else {
-				Log.Info("No settings file found, using defaults");
-			}
+			DisplayPanel.Refresh();
+			SoundPanel.Refresh();
+			GeneralPanel.Refresh();
+			AccessibilityPanel.Refresh();
+			ControllerPanel.Refresh();
+			MKPanel.Refresh();
 		}
-
-		public SettingsData Export() => new SettingsData {
-			DisplaySettings = DisplayPanel.Export(),
-			SoundSettings = SoundPanel.Export(),
-		};
-
-		public void Import(SettingsData data) {
-			DisplayPanel.Import(data.DisplaySettings);
-			SoundPanel.Import(data.SoundSettings);
-		}
-	}
-
-	public readonly record struct SettingsData : ISaveData {
-		public DisplaySettings DisplaySettings { get; init; }
-		public SoundSettings SoundSettings { get; init; }
 	}
 }
