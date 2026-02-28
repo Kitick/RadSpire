@@ -33,7 +33,7 @@ namespace Root {
 		private WorldObjectManager? WorldObjectManager;
 		public Action? MainMenuRequested;
 
-		public enum MenuState { Game, Paused, Settings, Inventory, Host, Death }
+		public enum MenuState { Game, Paused, Settings, Inventory, Chest, Host, Death }
 		private readonly StateMachine<MenuState> StateMachine = new(MenuState.Game);
 
 		private string? LoadFile;

@@ -70,6 +70,7 @@ namespace Core {
 		public const string CoconutGreenOpen = "CoconutGreenOpen";
 		public const string StrawberryGreen = "StrawberryGreen";
 		public const string StrawberryRed = "StrawberryRed";
+		public const string Bonfire = "Bonfire";
 	}
 
 }
