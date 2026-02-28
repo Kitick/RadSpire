@@ -38,7 +38,7 @@ namespace Objects {
 
         private Inventory CreateInventory(int rows, int columns) {
             Inventory chestInventory = new Inventory(rows, columns);
-            chestInventory.Name = Id;
+            chestInventory.Name = "Chest";
             return chestInventory;
         }
 

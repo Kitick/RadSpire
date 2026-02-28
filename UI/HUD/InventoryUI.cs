@@ -26,6 +26,7 @@ namespace UI {
 		private int InventorySlots = 0;
 		private PackedScene? InvSlotTemplate = null!;
 		private Control? GridContainer = null!;
+		private Label? Label = null!;
 
 		public event Action<string, int, MouseButton>? OnSlotPressed;
 		public event Action<string, int, MouseButton>? OnSlotReleased;
@@ -80,6 +81,10 @@ namespace UI {
 				GridContainer.AddChild(slotInstance);
 			}
 			UpdateInventoryUI();
+			Label = GetNode<Label>("TabBackground/Label");
+			if(Label != null) {
+				Label.Text = Inventory.Name;
+			}
 		}
 
 		public void HandleOnSlotPressed(int slotIndex, MouseButton button) {
