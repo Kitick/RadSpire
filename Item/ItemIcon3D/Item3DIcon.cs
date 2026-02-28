@@ -7,6 +7,8 @@ namespace ItemSystem {
 
 	public partial class Item3DIcon : Entity, ISaveable<Item3DIconData> {
 		private static readonly LogService Log = new(nameof(Item3DIcon), enabled: true);
+		private const float BaseTargetSize = 0.7f;
+		private const float BaseTargetThickness = 0.15f;
 
 		public Item? Item { get; set; }
 		[Export] public PackedScene? Item3DSceneTemplate { get; set; }
@@ -64,20 +66,30 @@ namespace ItemSystem {
 			// Generate mesh + material
 			spriteMesh.Call("update_sprite_mesh");
 
-			float targetSize = 0.7f * ScaleFactor;
+			float targetSize = BaseTargetSize * ScaleFactor;
+			float targetThickness = BaseTargetThickness * ScaleFactor;
 
 			MeshInstance3D meshInstance = (spriteMesh as MeshInstance3D)!;
 			if(meshInstance != null && meshInstance.Mesh != null) {
 				Aabb bounds = meshInstance.Mesh.GetAabb();
 				Vector3 size = bounds.Size;
 
-				float largestAxis = Mathf.Max(size.X, Mathf.Max(size.Y, size.Z));
-
-				if(largestAxis > 0.001f) {
-					float scaleFactor = targetSize / largestAxis;
-
-					meshInstance.Scale = new Vector3(scaleFactor, scaleFactor, scaleFactor);
+				float largestVisualAxis = Mathf.Max(size.X, size.Y);
+				if(largestVisualAxis <= 0.001f) {
+					largestVisualAxis = Mathf.Max(size.X, Mathf.Max(size.Y, size.Z));
 				}
+
+				float xyScale = 1.0f;
+				if(largestVisualAxis > 0.001f) {
+					xyScale = targetSize / largestVisualAxis;
+				}
+
+				float zScale = xyScale;
+				if(size.Z > 0.001f) {
+					zScale = targetThickness / size.Z;
+				}
+
+				meshInstance.Scale = new Vector3(xyScale, xyScale, zScale);
 			}
 
 			Log.Info("Item 3D mesh generated successfully.");

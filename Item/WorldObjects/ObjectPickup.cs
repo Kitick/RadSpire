@@ -29,27 +29,45 @@ namespace Objects {
         }
 
         public void HandleBodyEntered(Node objectNode) {
-            if(objectNode is ObjectNode objNode) {
-                ObjectNodesInRange.Add(objNode.Data.Id, objNode);
-                if(currentTargetObjectNode == null) {
-                    currentTargetObjectNode = objNode;
-                    AddedTargetObjectNode?.Invoke(currentTargetObjectNode);
-                }
+            ObjectNode? objNode = FindAncestorObjectNode(objectNode);
+            if(objNode == null) {
+                return;
+            }
+            if(ObjectNodesInRange.ContainsKey(objNode.Data.Id)) {
+                return;
+            }
+            ObjectNodesInRange.Add(objNode.Data.Id, objNode);
+            if(currentTargetObjectNode == null) {
+                currentTargetObjectNode = objNode;
+                AddedTargetObjectNode?.Invoke(currentTargetObjectNode);
             }
         }
 
         public void HandleBodyExited(Node objectNode) {
-            if(objectNode is ObjectNode objNode) {
-                if(currentTargetObjectNode != null && currentTargetObjectNode.Data.Id == objNode.Data.Id) {
-                    currentTargetObjectNode = null;
-                    RemovedTargetObjectNode?.Invoke(objNode);
-                    if(ObjectNodesInRange.Count > 0) {
-                        currentTargetObjectNode = ObjectNodesInRange[GetClosestObjectNodeId()];
-                        AddedTargetObjectNode?.Invoke(currentTargetObjectNode);
-                    }
-                }
-                ObjectNodesInRange.Remove(objNode.Data.Id);
+            ObjectNode? objNode = FindAncestorObjectNode(objectNode);
+            if(objNode == null) {
+                return;
             }
+            if(currentTargetObjectNode != null && currentTargetObjectNode.Data.Id == objNode.Data.Id) {
+                currentTargetObjectNode = null;
+                RemovedTargetObjectNode?.Invoke(objNode);
+                if(ObjectNodesInRange.Count > 0) {
+                    currentTargetObjectNode = ObjectNodesInRange[GetClosestObjectNodeId()];
+                    AddedTargetObjectNode?.Invoke(currentTargetObjectNode);
+                }
+            }
+            ObjectNodesInRange.Remove(objNode.Data.Id);
+        }
+
+        private static ObjectNode? FindAncestorObjectNode(Node node) {
+            Node? current = node;
+            while(current != null) {
+                if(current is ObjectNode objectNode) {
+                    return objectNode;
+                }
+                current = current.GetParent();
+            }
+            return null;
         }
         
         private string GetClosestObjectNodeId() {

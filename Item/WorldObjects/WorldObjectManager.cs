@@ -48,7 +48,7 @@ namespace Objects {
             foreach(var child in WorldObjectParentNode.GetChildren()) {
                 child.QueueFree();
             }
-            ObjectNodeFactory = new ObjectNodeFactory(this);
+            ObjectNodeFactory = new ObjectNodeFactory(WorldObjectParentNode);
             foreach(Object obj in WorldObjects.Objects.Values) {
                 ObjectNode? node = ObjectNodeFactory.Spawn(obj);
                 if(node == null) {
@@ -56,7 +56,6 @@ namespace Objects {
                     continue;
                 }
                 WorldObjectNodes.AddObjectNode(node);
-                WorldObjectParentNode.AddChild(node);
             }
             WorldObjects.OnWorldObjectAdded += HandleOnWorldObjectAdded;
             WorldObjects.OnWorldObjectRemoved += HandleOnWorldObjectRemoved;

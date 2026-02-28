@@ -29,6 +29,8 @@ offset_left = 19.0
 offset_top = 4.0
 offset_right = 94.0
 offset_bottom = 71.0
+expand_mode = 1
+stretch_mode = 5
 
 [node name="Label" type="Label" parent="GlassPanel" unique_id=1515137808]
 z_index = 2
