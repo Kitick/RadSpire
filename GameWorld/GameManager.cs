@@ -74,6 +74,9 @@ namespace Root {
 		private void SpawnLocalPlayer() {
 			LocalPlayer = this.AddScene<Player>(PlayerScene);
 			LocalPlayer.GlobalPosition = PlayerSpawnLocation;
+			if(WorldObjectManager != null) {
+				LocalPlayer.ConfigureObjectPickup(WorldObjectManager);
+			}
 			SubscribeToPlayerItem3DIconEvents(LocalPlayer);
 
 			CameraRig.Target = LocalPlayer;
