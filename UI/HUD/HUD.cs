@@ -45,6 +45,7 @@ namespace UI {
 		public void Init(Player player, StateMachine<MenuState> stateMachine) {
 			Player = player;
 			StateMachineRef = stateMachine;
+			Inventory.Initialize(player.Inventory, player);
 			ConfigureStateMachine(stateMachine);
 		}
 

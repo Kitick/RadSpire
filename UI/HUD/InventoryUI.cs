@@ -20,6 +20,10 @@ namespace UI {
 		private static readonly LogService Log = new(nameof(InventoryUI), enabled: true);
 
 		private Player Player = null!;
+		private bool IsReady = false;
+		private bool IsInitialized = false;
+		private bool IsRegisteredToInventory = false;
+		private bool IsSubscribedToMoveEvents = false;
 		private bool MouseHasItemSlot = false;
 		public Inventory Inventory { get; set; } = null!;
 		private List<InvSlotUI> InvSlotUIs = new List<InvSlotUI>();
@@ -32,31 +36,80 @@ namespace UI {
 		public event Action<string, int, MouseButton>? OnSlotReleased;
 		public event Action<string, int>? OnSlotHovered;
 
+		public InventoryUI() {
+		}
+
+		public InventoryUI(Inventory inventory, Player player) {
+			Initialize(inventory, player);
+		}
+
+		public void Initialize(Inventory inventory, Player player) {
+			if(inventory == null) {
+				Log.Error("Inventory is null.");
+				return;
+			}
+			if(player == null) {
+				Log.Error("Player is null.");
+				return;
+			}
+
+			Inventory = inventory;
+			Player = player;
+			IsInitialized = true;
+
+			if(IsReady) {
+				SetUpInventoryUI();
+			}
+		}
+
 		public override void _Ready() {
 			base._Ready();
-			SetUpInventoryUI();
-			Inventory.OnInventoryChanged += UpdateInventoryUI;
-			// Track when an item is being moved so UI can forward outside clicks to drop
-			if(Player != null && Player.InventoryManager != null) {
-				Player.InventoryManager.StartMoveItemEvent += (_) => MouseHasItemSlot = true;
-				Player.InventoryManager.EndMoveItemEvent += () => MouseHasItemSlot = false;
+			IsReady = true;
+			if(IsInitialized) {
+				SetUpInventoryUI();
 			}
 		}
 
 		public override void _ExitTree() {
-			if(Player != null && Player.InventoryManager != null) {
+			if(IsRegisteredToInventory && Inventory != null) {
+				Inventory.OnInventoryChanged -= UpdateInventoryUI;
+				IsRegisteredToInventory = false;
+			}
+			if(IsSubscribedToMoveEvents && Player != null && Player.InventoryManager != null) {
+				Player.InventoryManager.StartMoveItemEvent -= HandleStartMoveItemEvent;
+				Player.InventoryManager.EndMoveItemEvent -= HandleEndMoveItemEvent;
+				IsSubscribedToMoveEvents = false;
+			}
+			if(IsInitialized && Player != null && Player.InventoryManager != null && Inventory != null) {
 				Player.InventoryManager.UnregisterInventory(Inventory.Name);
 			}
 		}
 
 		public void SetUpInventoryUI() {
-			Player = GetParent<HUD>().Player;
-			if(Player == null) {
-				Log.Error("InventoryUI SetUpInventoryUI: Player is null.");
+			if(!IsInitialized) {
 				return;
 			}
-			Inventory = Player.Inventory;
-			Player.InventoryManager.RegisterInventory(Inventory, this);
+			if(!IsReady) {
+				return;
+			}
+			if(Player == null || Inventory == null) {
+				Log.Error("Missing required Player or Inventory.");
+				return;
+			}
+			if(!IsRegisteredToInventory) {
+				Player.InventoryManager.RegisterInventory(Inventory, this);
+				Inventory.OnInventoryChanged += UpdateInventoryUI;
+				IsRegisteredToInventory = true;
+			}
+			if(!IsSubscribedToMoveEvents && Player.InventoryManager != null) {
+				Player.InventoryManager.StartMoveItemEvent += HandleStartMoveItemEvent;
+				Player.InventoryManager.EndMoveItemEvent += HandleEndMoveItemEvent;
+				IsSubscribedToMoveEvents = true;
+			}
+			if(InvSlotUIs.Count > 0) {
+				UpdateInventoryUI();
+				return;
+			}
 			GridContainer = GetNode<Control>("Background/GridBackground/GridContainer");
 			// Allow clicks to pass through non-interactive background so Hotbar can receive them
 			var background = GetNodeOrNull<Control>("Background");
@@ -87,6 +140,14 @@ namespace UI {
 			}
 		}
 
+		private void HandleStartMoveItemEvent(ItemSlot _) {
+			MouseHasItemSlot = true;
+		}
+
+		private void HandleEndMoveItemEvent() {
+			MouseHasItemSlot = false;
+		}
+
 		public void HandleOnSlotPressed(int slotIndex, MouseButton button) {
 			Log.Info($"InventoryUI: Slot {slotIndex} pressed.");
 			OnSlotPressed?.Invoke(Inventory.Name, slotIndex, button);
@@ -103,12 +164,9 @@ namespace UI {
 		}
 
 		public void UpdateInventoryUI() {
-			Player = GetParent<HUD>().Player;
-			if(Player == null) {
-				Log.Error("InventoryUI SetUpInventoryUI: Player is null.");
+			if(!IsInitialized || Inventory == null) {
 				return;
 			}
-			Inventory = Player.Inventory;
 			for(int i = 0; i < InventorySlots; i++) {
 				InvSlotUIs[i].UpdateSlotUI(Inventory.ItemSlots[i]);
 			}
