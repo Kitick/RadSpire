@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://dojv70ngg64cw"]
+
+[ext_resource type="PackedScene" uid="uid://cknyx8qv60d2t" path="res://UI/HUD/Item3DIconPickupPrompt.tscn" id="1_k47gb"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_ygqbh"]
+viewport_path = NodePath("SubViewport")
+
+[node name="ObjectPickupUINode" type="Node3D" unique_id=555272964]
+
+[node name="SubViewport" type="SubViewport" parent="." unique_id=277959088]
+disable_3d = true
+transparent_bg = true
+render_target_update_mode = 4
+
+[node name="Item3DIconPickupPrompt" parent="SubViewport" unique_id=162595653 instance=ExtResource("1_k47gb")]
+
+[node name="Sprite3D" type="Sprite3D" parent="." unique_id=683033260]
+billboard = 1
+texture = SubResource("ViewportTexture_ygqbh")
