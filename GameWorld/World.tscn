@@ -37,6 +37,7 @@
 [ext_resource type="PackedScene" uid="uid://bo6qi4t0w0lib" path="res://Assets/Models/Medieval Village Pack/Scenery/Resource_Rock_1.fbx" id="28_dhdln"]
 [ext_resource type="PackedScene" uid="uid://dfmv1jvwu8c5r" path="res://Assets/Models/Medieval Village Pack/Scenery/Resource_Rock_2.fbx" id="29_iraqr"]
 [ext_resource type="PackedScene" uid="uid://bfl6vuwyyysqy" path="res://Assets/Models/Medieval Village Pack/Scenery/Resource_Rock_3.fbx" id="30_v85xl"]
+[ext_resource type="PackedScene" uid="uid://biwkp42fo758r" path="res://Item/ItemDataBase/Item3DScenes/Bonfire.tscn" id="38_n4vcc"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_lmiwq"]
 
@@ -502,3 +503,6 @@ transform = Transform3D(14.355722, 0, -13.925274, 0, 20, 0, 13.925274, 0, 14.355
 transform = Transform3D(17.369343, 0, -9.914934, 0, 20, 0, 9.914934, 0, 17.369343, -25.229115, 1.7926826, 69.01773)
 
 [node name="WorldObjects" type="Node" parent="." unique_id=1217641063]
+
+[node name="Bonfire" parent="WorldObjects" unique_id=656427922 instance=ExtResource("38_n4vcc")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.1161804, 0)

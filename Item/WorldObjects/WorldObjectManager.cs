@@ -15,13 +15,25 @@ namespace Objects {
 
         public void SetUpWorldObjectManager(Node parentNode) {
             WorldObjectParentNode = parentNode;
-            foreach(ObjectNode node in WorldObjectParentNode.GetChildren()) {
-                if(node is ObjectNode objNode) {
-                    WorldObjects.RegisterWorldObject(objNode.Data);
-                    WorldObjectNodes.AddObjectNode(objNode);
+            foreach(WorldObjectSpawnPoint node in WorldObjectParentNode.GetChildren()) {
+                if(node is WorldObjectSpawnPoint objNode) {
+                    Object obj = new Object(objNode.ItemDefinition.Id, objNode.GlobalPosition, objNode.GlobalRotation);
+                    WorldObjects.RegisterWorldObject(obj);
                 }
             }
+            foreach(var child in WorldObjectParentNode.GetChildren()) {
+                child.QueueFree();
+            }
             ObjectNodeFactory = new ObjectNodeFactory(this);
+            foreach(Object obj in WorldObjects.Objects.Values) {
+                ObjectNode? node = ObjectNodeFactory.Spawn(obj);
+                if(node == null) {
+                    Log.Error($"Failed to spawn world object with ID {obj.Id} and ItemId {obj.ItemId}");
+                    continue;
+                }
+                WorldObjectNodes.AddObjectNode(node);
+                WorldObjectParentNode.AddChild(node);
+            }
             WorldObjects.OnWorldObjectAdded += HandleOnWorldObjectAdded;
             WorldObjects.OnWorldObjectRemoved += HandleOnWorldObjectRemoved;
             SetUpComplete = true;

@@ -39,6 +39,17 @@
         "visibility": 1.0
       }
     },
+    "res://Item/ItemDataBase/ItemDefinitions/": {
+      "metadata/_custom_type_script": {
+        "visibility": 0.0
+      },
+      "resource_local_to_scene": {
+        "visibility": 0.0
+      },
+      "resource_name": {
+        "visibility": 0.0
+      }
+    },
     "res://Item/ItemDataBase/ItemDefinitions/Food/": {
       "metadata/_custom_type_script": {
         "visibility": 0.0
@@ -55,7 +66,8 @@
     "res://Item/ItemDataBase/",
     "res://Item/ItemDataBase/Food/",
     "res://Item/ItemDataBase/ComponentDefinitions/",
-    "res://Item/ItemDataBase/ItemDefinitions/Food/"
+    "res://Item/ItemDataBase/ItemDefinitions/Food/",
+    "res://Item/ItemDataBase/ItemDefinitions/"
   ],
   "table_functions": {
     "filter": [
