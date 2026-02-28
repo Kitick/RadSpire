@@ -18,6 +18,8 @@ namespace Objects {
         public WorldObjectManager WorldObjectManager = null!;
         public Dictionary<string, ObjectNode> ObjectNodesInRange = new Dictionary<string, ObjectNode>();
         public ObjectNode? currentTargetObjectNode = null;
+        public event Action<ObjectNode>? AddedTargetObjectNode;
+        public event Action<ObjectNode>? RemovedTargetObjectNode;
 
         public ObjectPickup(InteractionArea interactionArea, InventoryManager inventoryManager) {
             InteractionArea = interactionArea;
@@ -31,6 +33,7 @@ namespace Objects {
                 ObjectNodesInRange.Add(objNode.Data.Id, objNode);
                 if(currentTargetObjectNode == null) {
                     currentTargetObjectNode = objNode;
+                    AddedTargetObjectNode?.Invoke(currentTargetObjectNode);
                 }
             }
         }
@@ -39,8 +42,10 @@ namespace Objects {
             if(objectNode is ObjectNode objNode) {
                 if(currentTargetObjectNode != null && currentTargetObjectNode.Data.Id == objNode.Data.Id) {
                     currentTargetObjectNode = null;
+                    RemovedTargetObjectNode?.Invoke(objNode);
                     if(ObjectNodesInRange.Count > 0) {
                         currentTargetObjectNode = ObjectNodesInRange[GetClosestObjectNodeId()];
+                        AddedTargetObjectNode?.Invoke(currentTargetObjectNode);
                     }
                 }
                 ObjectNodesInRange.Remove(objNode.Data.Id);
@@ -91,14 +96,4 @@ namespace Objects {
             InteractionArea.BodyExited -= HandleBodyExited;
         }
     }
-
-    public partial class ObjectPickupUIManager {
-        private static readonly LogService Log = new(nameof(ObjectPickupUIManager), enabled: true);
-
-    }
-    
-    public partial class ObjectPickupUI : Control {
-        private static readonly LogService Log = new(nameof(ObjectPickupUI), enabled: true);
-    }
-
 }
