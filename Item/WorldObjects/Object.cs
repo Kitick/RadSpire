@@ -37,6 +37,7 @@ namespace Objects {
 		public string Id { get; private set; } = Guid.NewGuid().ToString();
 		public string ItemId { get; private set; } = null!;
 		public WorldLocation WorldLocation { get; private set; } = null!;
+		public ComponentDictionary<IObjectComponent> ComponentDictionary { get; } = new();
 
 		public Object(string itemId, Vector3 pos, Vector3 rot){
 			ItemId = itemId;

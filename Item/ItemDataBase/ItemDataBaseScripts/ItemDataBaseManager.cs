@@ -5,6 +5,7 @@ namespace ItemSystem {
 	using System.Collections.Generic;
 	using GodotResourceGroups;
 	using Components;
+	using Objects;
 
 	public partial class ItemDataBaseManager : Node {
 		private static readonly LogService Log = new(nameof(ItemDataBaseManager), enabled: true);
@@ -56,7 +57,7 @@ namespace ItemSystem {
 
 			return item;
 		}
-		
+
 		public void BuildComponents(Item item, ItemDefinition itemDef) {
 			item.ClearComponents();
 			if(itemDef.ComponentsResources.Count == 0) {
@@ -75,5 +76,20 @@ namespace ItemSystem {
 				}
 			}
 		}
+		
+		public void BuildObjectComponents(Objects.Object obj, ItemDefinition itemDef) {
+			obj.ComponentDictionary.Clear();
+			if(itemDef.ComponentsResources.Count == 0) {
+				return;
+			}
+			foreach(var resource in itemDef.ComponentsResources) {
+				if(resource is ItemComponentDefinition comp) {
+					if(comp is InventoryDefinition invDef) {
+						IObjectComponent objComp = new InventoryComponent(invDef.Rows, invDef.Columns, obj);
+						obj.ComponentDictionary.Add(objComp);
+					}
+				}
+			}
+		 }
 	}
 }
