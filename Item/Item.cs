@@ -1,6 +1,7 @@
 namespace ItemSystem {
+	using System;
 	using System.Collections.Generic;
-	using System.Runtime.CompilerServices;
+	using System.Linq;
 	using Components;
 	using Godot;
 	using Services;
@@ -56,16 +57,25 @@ namespace ItemSystem {
 		[Export] public bool IsConsumable { get; set; } = false;
 
 		[Export] public Texture2D IconTexture { get; set; } = null!;
+		public ComponentDictionary<IItemComponent> ComponentDictionary { get; } = new();
 
-		[Export] public List<IItemComponent> Components { get; set; } = new();
+		public IEnumerable<IItemComponent> GetComponentsOrdered() {
+			return ComponentDictionary.All.Values.OrderBy(component => component.priority);
+		}
 
-		public void SortComponents() {
-			Components.Sort((left, right) => left.priority.CompareTo(right.priority));
+		public void ClearComponents() {
+			ComponentDictionary.Clear();
+		}
+
+		private void CopyComponentsFrom(Item other) {
+			ClearComponents();
+			foreach(IItemComponent component in other.ComponentDictionary.All.Values) {
+				this.AddComponent(component);
+			}
 		}
 
 		public Item() {
-			Components = new List<IItemComponent>();
-			SortComponents();
+			ClearComponents();
 		}
 
 		public Item(Item other) {
@@ -75,33 +85,21 @@ namespace ItemSystem {
 			MaxStackSize = other.MaxStackSize;
 			IsConsumable = other.IsConsumable;
 			IconTexture = other.IconTexture;
-
-			Components = new List<IItemComponent>(other.Components);
-			SortComponents();
+			CopyComponentsFrom(other);
 		}
 
 		public ItemData Export() {
 			DurabilityData? DurabilityData = null;
-			HealItemData? HealItemData = null;
-			WeaponBaseData? WeaponBaseData = null;
 			// Additional component data can be declared here
-			foreach(IItemComponent component in Components) {
+			foreach(IItemComponent component in ComponentDictionary.All.Values) {
 				if(component is Durability durabilityComp) {
 					DurabilityData = durabilityComp.Export();
 				}
-				else if(component is HealItem healComp) {
-					HealItemData = healComp.Export();
-				}
-				else if(component is WeaponBase weaponComp) {
-					WeaponBaseData = weaponComp.Export();
-				}
-				// Additional components can be exported here
+				// Additional components that has run-time data can be exported here
 			}
 			return new ItemData {
 				Id = Id,
 				DurabilityData = DurabilityData,
-				HealItemData = HealItemData,
-				WeaponBaseData = WeaponBaseData,
 				// Additional component data can be added here
 			};
 		}
@@ -114,24 +112,16 @@ namespace ItemSystem {
 			MaxStackSize = item.MaxStackSize;
 			IsConsumable = item.IsConsumable;
 			IconTexture = item.IconTexture;
-			Components = new List<IItemComponent>();
+			CopyComponentsFrom(item);
 			if(data.DurabilityData != null) {
+				if(ComponentDictionary.Has<Durability>()) {
+					this.RemoveComponent(ComponentDictionary.Get<Durability>());
+				}
 				Durability durabilityComp = new Durability(1);
 				durabilityComp.Import(data.DurabilityData.Value);
-				Components.Add(durabilityComp);
+				this.AddComponent(durabilityComp);
 			}
-			if(data.HealItemData != null) {
-				HealItem healComp = new HealItem(1);
-				healComp.Import(data.HealItemData.Value);
-				Components.Add(healComp);
-			}
-			if(data.WeaponBaseData != null) {
-				WeaponBase weaponComp = new WeaponBase(1, 1f, 1f, 1f, 0f, 1f);
-				weaponComp.Import(data.WeaponBaseData.Value);
-				Components.Add(weaponComp);
-			}
-			// Additional components can be imported here
-			SortComponents();
+			// Additional components with run time data can be imported here
 		}
 	}
 
@@ -140,7 +130,7 @@ namespace ItemSystem {
 
 		public static bool Use<TEntity>(this Item item, TEntity user) {
 			bool sucess = false;
-			foreach(IItemComponent component in item.Components) {
+			foreach(IItemComponent component in item.GetComponentsOrdered()) {
 				if(component is IItemUseable useable) {
 					sucess |= useable.Use(user);
 				}
@@ -150,7 +140,7 @@ namespace ItemSystem {
 
 		public static bool Equip<TEntity>(this Item item, TEntity user) {
 			bool sucess = false;
-			foreach(IItemComponent component in item.Components) {
+			foreach(IItemComponent component in item.GetComponentsOrdered()) {
 				if(component is IItemEquipable equipable) {
 					sucess |= equipable.Equip(user);
 				}
@@ -160,7 +150,7 @@ namespace ItemSystem {
 
 		public static bool Unequip<TEntity>(this Item item, TEntity user) {
 			bool sucess = false;
-			foreach(IItemComponent component in item.Components) {
+			foreach(IItemComponent component in item.GetComponentsOrdered()) {
 				if(component is IItemEquipable equipable) {
 					sucess |= equipable.Unequip(user);
 				}
@@ -170,7 +160,7 @@ namespace ItemSystem {
 
 		public static bool UseOnTarget<TEntity, TTarget>(this Item item, TEntity user, TTarget target) {
 			bool sucess = false;
-			foreach(IItemComponent component in item.Components) {
+			foreach(IItemComponent component in item.GetComponentsOrdered()) {
 				if(component is IItemUseableOnTarget useableOnTarget) {
 					sucess |= useableOnTarget.UseOnTarget(user, target);
 				}
@@ -185,73 +175,32 @@ namespace ItemSystem {
 			return item.Id == other.Id;
 		}
 
-		public static bool IsIHealItem(this Item item) {
-			foreach(IItemComponent component in item.Components) {
-				if(component is HealItem) {
-					return true;
-				}
-			}
-			return false;
+		public static bool HasComponent(this Item item, Type componentType) {
+			return item.ComponentDictionary.All.ContainsKey(componentType);
 		}
-
-		public static bool IsIDurability(this Item item) {
-			foreach(IItemComponent component in item.Components) {
-				if(component is Durability) {
-					return true;
-				}
-			}
-			return false;
-		}
-
-		public static bool IsIWeaponBase(this Item item) {
-			foreach(IItemComponent component in item.Components) {
-				if(component is WeaponBase) {
-					return true;
-				}
-			}
-			return false;
-		}
-
-		//Add component to item
 
 		public static bool AddComponent(this Item item, IItemComponent component) {
 			if(component == null) {
 				return false;
 			}
-			if(!(component is IItemComponent comp)) {
-				return false;
-			}
-			foreach(IItemComponent c in item.Components) {
-				if(component.GetType() == c.GetType()) {
-					Log.Info($"Item already has a component of type {component.GetType().Name}.");
-					return false;
-				}
-			}
-			item.Components.Add(component);
-			item.SortComponents();
-			return true;
+			Type componentType = component.GetType();
+			bool success = false;
+			success = item.ComponentDictionary.Add(componentType, component);
+			return success;
 		}
 
 		public static bool RemoveComponent(this Item item, IItemComponent component) {
 			if(component == null) {
 				return false;
 			}
-			foreach(IItemComponent comp in item.Components) {
-				if(component.GetType() == comp.GetType()) {
-					item.Components.Remove(component);
-					item.SortComponents();
-					return true;
-				}
-			}
-			return false;
+			Type componentType = component.GetType();
+			return item.ComponentDictionary.Remove(componentType);
 		}
 	}
 
 	public readonly record struct ItemData : ISaveData {
 		public string Id { get; init; }
 		public DurabilityData? DurabilityData { get; init; }
-		public HealItemData? HealItemData { get; init; }
-		public WeaponBaseData? WeaponBaseData { get; init; }
 		// Additional component data can be added here
 	}
 }

@@ -11,17 +11,28 @@ namespace Components {
 
 		public IReadOnlyDictionary<Type, TComponent> All => Components;
 
-		public bool Add<T>(T component) where T : class, TComponent {
-			if(component == null) {
-				return false;
-			}
-			Type key = typeof(T);
-			if(Components.ContainsKey(key)) {
-				return false;
-			}
-			Components[key] = component;
-			return true;
-		}
+        public bool Add<T>(T component) where T : class, TComponent {
+            if(component == null) {
+                return false;
+            }
+            Type key = typeof(T);
+            if(Components.ContainsKey(key)) {
+                return false;
+            }
+            Components[key] = component;
+            return true;
+        }
+        
+        public bool Add(Type type, TComponent component) {
+            if(component == null || type == null) {
+                return false;
+            }
+            if(Components.ContainsKey(type)) {
+                return false;
+            }
+            Components[type] = component;
+            return true;
+        }
 
 		public bool Has<T>() where T : class, TComponent {
 			return Components.ContainsKey(typeof(T));
@@ -37,9 +48,13 @@ namespace Components {
             }
         }
 
-		public bool Remove<T>() where T : class, TComponent {
-			return Components.Remove(typeof(T));
-		}
+        public bool Remove<T>() where T : class, TComponent {
+            return Components.Remove(typeof(T));
+        }
+        
+        public bool Remove(Type type) {
+            return Components.Remove(type);
+        }
 
 		public void Clear() {
 			Components.Clear();
