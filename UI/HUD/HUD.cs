@@ -46,6 +46,7 @@ namespace UI {
 			Player = player;
 			StateMachineRef = stateMachine;
 			Inventory.Initialize(player.Inventory, player);
+			Hotbar.Initialize(player.Hotbar, player);
 			ConfigureStateMachine(stateMachine);
 		}
 
