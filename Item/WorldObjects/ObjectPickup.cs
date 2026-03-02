@@ -101,6 +101,7 @@ namespace Objects {
             ItemSlot targetItemSlot = new ItemSlot(targetItem, 1);
             ItemSlot remainSlot = InventoryManager.AddItemSlotToPlayerInventory(targetItemSlot);
             if(remainSlot.IsEmpty()) {
+                HandleChestPickup();
                 Log.Info("Successfully picked up item.");
                 string removedId = currentTargetObjectNode.Data.Id;
                 HandleBodyExited(currentTargetObjectNode);
@@ -108,6 +109,29 @@ namespace Objects {
             }
             else {
                 Log.Info("Failed to pick up item, not enough inventory space.");
+            }
+        }
+
+        public void HandleChestPickup(){
+            if(currentTargetObjectNode == null) {
+                return;
+            }
+            if(currentTargetObjectNode.Data.ComponentDictionary.Has<InventoryComponent>()) {
+                Inventory chestInventory = currentTargetObjectNode.Data.ComponentDictionary.Get<InventoryComponent>().Inventory;
+                foreach(ItemSlot slot in chestInventory.ItemSlots) {
+                    if(slot.IsEmpty()) {
+                        continue;
+                    }
+                    ItemSlot remainSlot = InventoryManager.AddItemSlotToPlayerInventory(slot);
+                    if(remainSlot.IsEmpty()) {
+                        slot.ClearSlot();
+                    }
+                    else {
+                        InventoryManager.DropItemSlot(remainSlot);
+                        slot.ClearSlot();
+                    }
+                }
+                return;
             }
         }
 
