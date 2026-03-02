@@ -48,15 +48,18 @@ namespace Objects {
             if(objNode == null) {
                 return;
             }
+            ObjectNodesInRange.Remove(objNode.Data.Id);
             if(currentTargetObjectNode != null && currentTargetObjectNode.Data.Id == objNode.Data.Id) {
                 currentTargetObjectNode = null;
                 RemovedTargetObjectNode?.Invoke(objNode);
-                if(ObjectNodesInRange.Count > 0) {
-                    currentTargetObjectNode = ObjectNodesInRange[GetClosestObjectNodeId()];
+
+                string nextId = GetClosestObjectNodeId();
+                if(!string.IsNullOrEmpty(nextId)) {
+                    ObjectNode nextTarget = ObjectNodesInRange[nextId];
+                    currentTargetObjectNode = nextTarget;
                     AddedTargetObjectNode?.Invoke(currentTargetObjectNode);
                 }
             }
-            ObjectNodesInRange.Remove(objNode.Data.Id);
         }
 
         private static ObjectNode? FindAncestorObjectNode(Node node) {
