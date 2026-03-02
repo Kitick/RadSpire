@@ -20,6 +20,7 @@ namespace Objects {
 				return null;
 			}
 			ItemDataBaseManager.Instance.BuildObjectComponents(obj, ItemDefinition);
+			obj.ApplyComponentData();
 			PackedScene? Scene = ItemDefinition.ItemScene;
 			if(Scene == null) {
 				Log.Error($"Failed to spawn object. ItemDefinition with ID {obj.ItemId} has no ItemScene assigned.");
@@ -39,6 +40,7 @@ namespace Objects {
 		public string ItemId { get; private set; } = null!;
 		public WorldLocation WorldLocation { get; private set; } = null!;
 		public ComponentDictionary<IObjectComponent> ComponentDictionary { get; } = new();
+		private InventoryComponentData? InventoryComponentData;
 
 		public Object(string itemId, Vector3 pos, Vector3 rot){
 			ItemId = itemId;
@@ -50,18 +52,40 @@ namespace Objects {
 		public ObjectData Export() => new ObjectData {
 			Id = Id,
 			ItemId = ItemId,
-			WorldLocation = WorldLocation.Export()
+			WorldLocation = WorldLocation.Export(),
+			InventoryComponentData = ExportInventoryComponent(),
 		};
+
+		public InventoryComponentData? ExportInventoryComponent() {
+			if(ComponentDictionary.Has<InventoryComponent>()) {
+				return ComponentDictionary.Get<InventoryComponent>().Export();
+			}
+			return null;
+		}
 
 		public void Import(ObjectData data) {
 			Id = data.Id;
 			ItemId = data.ItemId;
 
-			if (WorldLocation == null) {
+			if(WorldLocation == null) {
 				WorldLocation = new WorldLocation(data.WorldLocation.Position, data.WorldLocation.Rotation);
 			}
-			else{
+			else {
 				WorldLocation.Import(data.WorldLocation);
+			}
+
+			InventoryComponentData = data.InventoryComponentData;
+			ApplyComponentData();
+		}
+
+		public void ApplyComponentData() {
+			if(InventoryComponentData == null) {
+				return;
+			}
+
+			if(ComponentDictionary.Has<InventoryComponent>()) {
+				ComponentDictionary.Get<InventoryComponent>().Import(InventoryComponentData.Value);
+				InventoryComponentData = null;
 			}
 		}
 	}
@@ -70,6 +94,7 @@ namespace Objects {
 		public string Id { get; init; }
 		public string ItemId { get; init; }
 		public WorldLocationData WorldLocation { get; init; }
+		public InventoryComponentData? InventoryComponentData { get; init; }
 
 	}
 }

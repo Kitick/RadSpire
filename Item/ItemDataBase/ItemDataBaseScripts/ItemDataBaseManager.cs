@@ -85,7 +85,7 @@ namespace ItemSystem {
 			foreach(var resource in itemDef.ComponentsResources) {
 				if(resource is ItemComponentDefinition comp) {
 					if(comp is InventoryDefinition invDef) {
-						IObjectComponent objComp = new InventoryComponent(invDef.Rows, invDef.Columns, obj);
+						InventoryComponent objComp = new InventoryComponent(invDef.Rows, invDef.Columns, obj);
 						obj.ComponentDictionary.Add(objComp);
 					}
 				}
