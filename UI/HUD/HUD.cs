@@ -3,6 +3,7 @@ namespace UI {
 	using Character;
 	using Core;
 	using Godot;
+	using ItemSystem;
 	using Services;
 	using UI.Multiplayer;
 	using UI.Settings;
@@ -183,7 +184,11 @@ namespace UI {
 				StateMachineRef.Start(MenuState.Game);
 			}
 
-			if(StateMachineRef.CurrentState == MenuState.Inventory) {
+			if(StateMachineRef.CurrentState == MenuState.Chest) {
+				Log.Info("Toggling Inventory: Closing Chest");
+				StateMachineRef.TransitionTo(MenuState.Game);
+			}
+			else if(StateMachineRef.CurrentState == MenuState.Inventory) {
 				Log.Info("Toggling Inventory: Closing Inventory");
 				StateMachineRef.TransitionTo(MenuState.Game);
 			}
@@ -211,6 +216,27 @@ namespace UI {
 			else {
 				Log.Info("Toggling Chest: Opening Chest");
 				StateMachineRef.TransitionTo(MenuState.Chest);
+			}
+		}
+
+		public void OpenChest(Inventory chestInventory, Player player) {
+			if(StateMachineRef == null) {
+				Log.Error("OpenChest: StateMachineRef is null");
+				return;
+			}
+			if(chestInventory == null || player == null) {
+				Log.Error("OpenChest: chestInventory or player is null");
+				return;
+			}
+
+			Chest.Initialize(chestInventory, player);
+
+			if(!StateMachineRef.IsSettled) {
+				StateMachineRef.Start(MenuState.Game);
+			}
+
+			if(StateMachineRef.CurrentState != MenuState.Chest) {
+				ToggleChest();
 			}
 		}
 	}

@@ -5,16 +5,35 @@ namespace Components {
     using Services;
     using Godot;
     using Core;
+	using Character;
+	using UI;
 
-    public interface IInventoryComponent { InventoryComponent InventoryComponent { get; set; } }
+	public interface IInventoryComponent { InventoryComponent InventoryComponent { get; set; } }
 
-    public sealed class InventoryComponent : ISaveable<InventoryComponentData>, IObjectComponent {
+    public sealed class InventoryComponent : ISaveable<InventoryComponentData>, IObjectComponent, IInteract {
         public Objects.Object ComponentOwner { get; init; }
         public Inventory Inventory { get; private set; }
 
         public InventoryComponent(int rows, int columns, Objects.Object owner) {
             Inventory = new Inventory(rows, columns);
+			Inventory.Name = "Chest";
             ComponentOwner = owner;
+        }
+
+        public bool Interact<TEntity>(TEntity interactor) {
+            if(interactor is Player player) {
+                Node? gameManager = player.GetParent();
+                HUD? hud = gameManager?.GetNodeOrNull<HUD>("HUD");
+                if(hud == null) {
+                    return false;
+                }
+
+                hud.OpenChest(Inventory, player);
+                return true;
+            }
+            else {
+                return false;
+            }
         }
 
         public InventoryComponentData Export() => new InventoryComponentData {
@@ -29,11 +48,8 @@ namespace Components {
                 Inventory = new Inventory(data.InventoryData.MaxSlotsRows, data.InventoryData.MaxSlotsColumns);
             }
             Inventory.Import(data.InventoryData);
+			Inventory.Name = "Chest";
         }
-    }
-
-    public static class InventoryComponentExtensions {
-
     }
     
     public readonly record struct InventoryComponentData : ISaveData {

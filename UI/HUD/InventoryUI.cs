@@ -54,6 +54,14 @@ namespace UI {
 				return;
 			}
 
+			if(IsInitialized && Inventory != null && Player != null && Player.InventoryManager != null) {
+				if(IsRegisteredToInventory) {
+					Inventory.OnInventoryChanged -= UpdateInventoryUI;
+					Player.InventoryManager.UnregisterInventory(Inventory.Name);
+					IsRegisteredToInventory = false;
+				}
+			}
+
 			Inventory = inventory;
 			Player = player;
 			IsInitialized = true;
@@ -108,6 +116,10 @@ namespace UI {
 				IsSubscribedToMoveEvents = true;
 			}
 			if(InvSlotUIs.Count > 0) {
+				Label = GetNodeOrNull<Label>("TabBackground/Label");
+				if(Label != null) {
+					Label.Text = Inventory.Name;
+				}
 				UpdateInventoryUI();
 				return;
 			}

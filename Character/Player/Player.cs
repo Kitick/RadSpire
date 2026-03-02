@@ -35,6 +35,7 @@ namespace Character {
 		public ObjectPickup? ObjectPickup { get; private set; }
 		private ObjectPickupUI? ObjectPickupUI;
 		private Action? UnsubscribeInteract;
+		private Action? UnsubscribeInteract2;
 
 		public Player() {
 			Movement = new Movement(this);
@@ -55,6 +56,7 @@ namespace Character {
 		public override void _ExitTree() {
 			base._ExitTree();
 			UnsubscribeInteract?.Invoke();
+			UnsubscribeInteract2?.Invoke();
 			ObjectPickupUI?.Dispose();
 			ObjectPickup = null;
 		}
@@ -115,6 +117,13 @@ namespace Character {
 					return;
 				}
 				ObjectPickup.AttemptPickup();
+			});
+
+			UnsubscribeInteract2 = ActionEvent.Interact2.WhenPressed(() => {
+				if(ObjectPickup.currentTargetObjectNode == null) {
+					return;
+				}
+				ObjectPickup.currentTargetObjectNode.Interact(this);
 			});
 		}
 
