@@ -22,6 +22,16 @@ namespace Objects {
 			});
 		}
 
+		public bool Interact<TEntity>(TEntity interactor) {
+			bool success = false;
+			foreach (var component in Data.ComponentDictionary.All.Values) {
+				if (component is IInteract interactComponent) {
+					success |= interactComponent.Interact(interactor);
+				}
+			}
+			return success;
+		}
+
 		public override void _ExitTree() {
 			Unsubscribe?.Invoke();
 		}

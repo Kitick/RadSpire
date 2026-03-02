@@ -5,6 +5,10 @@ namespace Objects {
     using ItemSystem;
 
     public interface IObjectComponent {
-        Object ComponentOwner { get; init; } 
+        Object ComponentOwner { get; init; }
+    }
+
+    public interface IInteract {
+        public bool Interact<TEntity>(TEntity interactor);
     }
 }
