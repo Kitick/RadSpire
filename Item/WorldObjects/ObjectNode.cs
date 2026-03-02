@@ -7,6 +7,7 @@ namespace Objects {
 	using Components;
 
 	public partial class ObjectNode : Node3D {
+		private static readonly LogService Log = new(nameof(ObjectNode), enabled: true);
 		public Object Data { get; private set; } = null!;
 		private Action? Unsubscribe;
 

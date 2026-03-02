@@ -31,7 +31,7 @@ namespace UI {
 		private int InventorySlots = 0;
 		private PackedScene? InvSlotTemplate = null!;
 		private Control? GridContainer = null!;
-		private Label? Label = null!;
+		private RichTextLabel? Label = null!;
 
 		public event Action<string, int, MouseButton>? OnSlotPressed;
 		public event Action<string, int, MouseButton>? OnSlotReleased;
@@ -116,7 +116,7 @@ namespace UI {
 				IsSubscribedToMoveEvents = true;
 			}
 			if(InvSlotUIs.Count > 0) {
-				Label = GetNodeOrNull<Label>("TabBackground/Label");
+				Label = GetNodeOrNull<RichTextLabel>("TabBackground/Label");
 				if(Label != null) {
 					Label.Text = Inventory.Name;
 				}
@@ -147,7 +147,7 @@ namespace UI {
 				GridContainer.AddChild(slotInstance);
 			}
 			UpdateInventoryUI();
-			Label = GetNode<Label>("TabBackground/Label");
+			Label = GetNodeOrNull<RichTextLabel>("TabBackground/Label");
 			if(Label != null) {
 				Label.Text = Inventory.Name;
 			}
@@ -182,6 +182,13 @@ namespace UI {
 			}
 			for(int i = 0; i < InventorySlots; i++) {
 				InvSlotUIs[i].UpdateSlotUI(Inventory.ItemSlots[i]);
+			}
+		}
+
+		public void SetLabelText(string text) {
+			Label = GetNodeOrNull<RichTextLabel>("TabBackground/Label");
+			if(Label != null) {
+				Label.Text = text;
 			}
 		}
 

@@ -11,6 +11,7 @@ namespace Components {
 	public interface IInventoryComponent { InventoryComponent InventoryComponent { get; set; } }
 
     public sealed class InventoryComponent : ISaveable<InventoryComponentData>, IObjectComponent, IInteract {
+		private static readonly LogService Log = new(nameof(InventoryComponent), enabled: true);
         public Objects.Object ComponentOwner { get; init; }
         public Inventory Inventory { get; private set; }
 
@@ -25,6 +26,7 @@ namespace Components {
                 Node? gameManager = player.GetParent();
                 HUD? hud = gameManager?.GetNodeOrNull<HUD>("HUD");
                 if(hud == null) {
+					Log.Error("Interact failed: HUD not found.");
                     return false;
                 }
 

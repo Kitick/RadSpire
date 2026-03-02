@@ -108,7 +108,7 @@ namespace UI {
 				ChestRequested?.Invoke(true);
 				Inventory.Visible = true;
 				InventoryItemInformationUI.Visible = false;
-				Hotbar.Visible = false;
+				Hotbar.Visible = true;
 				InventoryRequested?.Invoke(true);
 			});
 
@@ -229,7 +229,10 @@ namespace UI {
 				return;
 			}
 
+			chestInventory.Name = "Chest";
+
 			Chest.Initialize(chestInventory, player);
+			Chest.SetLabelText("Chest");
 
 			if(!StateMachineRef.IsSettled) {
 				StateMachineRef.Start(MenuState.Game);

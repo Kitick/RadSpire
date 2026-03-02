@@ -19,6 +19,7 @@ namespace Objects {
 				Log.Error($"Failed to spawn object. ItemDefinition with ID {obj.ItemId} not found.");
 				return null;
 			}
+			ItemDataBaseManager.Instance.BuildObjectComponents(obj, ItemDefinition);
 			PackedScene? Scene = ItemDefinition.ItemScene;
 			if(Scene == null) {
 				Log.Error($"Failed to spawn object. ItemDefinition with ID {obj.ItemId} has no ItemScene assigned.");
