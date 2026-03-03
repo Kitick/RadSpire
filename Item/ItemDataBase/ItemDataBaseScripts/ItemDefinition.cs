@@ -58,6 +58,8 @@ namespace ItemSystem {
 
         [Export] public Texture2D IconTexture { get; set; } = null!;
 
+        [Export] public PackedScene? ItemScene { get; set; } = null;
+
         //Components
         [Export] public Godot.Collections.Array<ItemComponentDefinition> ComponentsResources { get; set; } = new();
     }

@@ -65,7 +65,7 @@ namespace UI {
 			}
 			ComponentsLabels.Clear();
 
-			foreach(IItemComponent component in CurrentItem.Components) {
+			foreach(IItemComponent component in CurrentItem.GetComponentsOrdered()) {
 				if(ComponentLabelTemplate == null) {
 					Log.Error("ComponentLabelTemplate is null.");
 					return;

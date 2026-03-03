@@ -1,0 +1,24 @@
+[gd_scene format=3 uid="uid://daitp4ui7bvx5"]
+
+[ext_resource type="Script" uid="uid://klsonhpw4auo" path="res://Item/WorldObjects/ObjectNode.cs" id="1_pd47m"]
+[ext_resource type="PackedScene" uid="uid://bitlbmpqswfyy" path="res://Assets/Models/Medieval Village Pack/Props/Barrel.fbx" id="2_qpfww"]
+[ext_resource type="PackedScene" uid="uid://b7gv62rlbjt5l" path="res://Item/WorldObjects/WorldObjectSpawnPoint.tscn" id="3_rby6q"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_d8rp4"]
+height = 0.19384766
+radius = 0.072265625
+
+[node name="Barrel" type="Node3D" unique_id=144624852]
+script = ExtResource("1_pd47m")
+
+[node name="Barrel" parent="." unique_id=549575545 instance=ExtResource("2_qpfww")]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 0)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Barrel" unique_id=1757906967]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Barrel/StaticBody3D" unique_id=889502083]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.09741211, 0)
+shape = SubResource("CylinderShape3D_d8rp4")
+
+[node name="WorldObjectSpawnPoint" parent="." unique_id=2064846928 instance=ExtResource("3_rby6q")]
+ItemId = "Barrel"

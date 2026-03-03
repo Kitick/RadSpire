@@ -3,6 +3,8 @@ using System.Runtime.InteropServices;
 using Services;
 
 namespace ItemSystem {
+	public interface IInventory { Inventory Inventory { get; } }
+
 	public sealed partial class Inventory : ISaveable<InventoryData> {
 		public event Action? OnInventoryChanged;
 

@@ -9,6 +9,7 @@ namespace Root {
 	using Services;
 	using Services.Settings;
 	using UI;
+	using Objects;
 
 	public sealed partial class GameManager : Node {
 		private static readonly LogService Log = new(nameof(GameManager), enabled: true);
@@ -21,15 +22,18 @@ namespace Root {
 		[Export] private PackedScene PlayerScene = null!;
 		[Export] private PackedScene EnemyScene = null!;
 		[Export] private PackedScene Item3DIconManagerScene = null!;
+		[Export] private PackedScene WorldObjectManageScene = null!;
+		[Export] private Node WorldObjectParentNode = null!;
 
 		private readonly KeyInput KeyInput = new();
 		private CameraRig CameraRig = null!;
 		private Player? LocalPlayer;
 		private HUD? HUD;
 		private Item3DIconManager? Item3DIconManager;
+		private WorldObjectManager? WorldObjectManager;
 		public Action? MainMenuRequested;
 
-		public enum MenuState { Game, Paused, Settings, Inventory, Host, Death }
+		public enum MenuState { Game, Paused, Settings, Inventory, Chest, Host, Death }
 		private readonly StateMachine<MenuState> StateMachine = new(MenuState.Game);
 
 		private string? LoadFile;
@@ -49,6 +53,8 @@ namespace Root {
 
 			CameraRig = this.AddScene<CameraRig>(CameraScene);
 			Item3DIconManager = this.AddScene<Item3DIconManager>(Item3DIconManagerScene);
+			WorldObjectManager = this.AddScene<WorldObjectManager>(WorldObjectManageScene);
+			WorldObjectManager.SetUpWorldObjectManager(WorldObjectParentNode);
 			ConfigureStateMachine();
 
 			StartGame();
@@ -77,6 +83,9 @@ namespace Root {
 		private void SpawnLocalPlayer() {
 			LocalPlayer = this.AddScene<Player>(PlayerScene);
 			LocalPlayer.GlobalPosition = PlayerSpawnLocation;
+			if(WorldObjectManager != null) {
+				LocalPlayer.ConfigureObjectPickup(WorldObjectManager);
+			}
 			SubscribeToPlayerItem3DIconEvents(LocalPlayer);
 
 			CameraRig.Target = LocalPlayer;
@@ -157,6 +166,7 @@ namespace Root {
 				Player = LocalPlayer.Export(),
 				CameraRig = CameraRig.Export(),
 				Item3DIconManager = Item3DIconManager!.Export(),
+				WorldObjectManager = WorldObjectManager!.Export(),
 			};
 
 			data.Save(fileName);
@@ -194,6 +204,7 @@ namespace Root {
 			LocalPlayer!.Import(data.Player);
 			CameraRig!.Import(data.CameraRig);
 			Item3DIconManager!.Import(data.Item3DIconManager);
+			WorldObjectManager!.Import(data.WorldObjectManager);
 		}
 
 		public void ReturnToMainMenu() {
@@ -272,5 +283,6 @@ namespace Root {
 		public PlayerData Player { get; init; }
 		public CameraRigData CameraRig { get; init; }
 		public Item3DIconManagerData Item3DIconManager { get; init; }
+		public WorldObjectManagerData WorldObjectManager { get; init; }
 	}
 }

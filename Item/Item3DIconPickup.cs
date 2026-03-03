@@ -15,11 +15,13 @@ namespace ItemSystem {
 		public Inventory PlayerHotbar = null!;
 		public InteractionArea PlayerInteractionArea = null!;
 		public event Action<Item3DIcon>? DespawnItem3DIconRequested;
+		public bool HandleInteractInput { get; set; } = true;
 		[Export] public PackedScene? Item3DIconPromptTemplate = null!;
 		[Export] public PackedScene? Item3DIconPickupScreenTemplate = null!;
 		public Control? Item3DIconPickupScreenInstance = null;
 		private Action? UnsubscribeInteraction;
 		OrderedDictionary<Item3DIcon, Control> ItemsInRange = new OrderedDictionary<Item3DIcon, Control>();
+		public bool HasItemsInRange => ItemsInRange.Count > 0;
 
 		public override void _Ready() {
 			base._Ready();
@@ -39,7 +41,9 @@ namespace ItemSystem {
 			if(Item3DIconPickupScreenTemplate == null) {
 				Item3DIconPickupScreenTemplate = GD.Load<PackedScene>("res://UI/HUD/Item3DIconPickupScreen.tscn");
 			}
-			SetInputCallbacks();
+			if(HandleInteractInput) {
+				SetInputCallbacks();
+			}
 		}
 
 		public override void _ExitTree() {
@@ -60,22 +64,19 @@ namespace ItemSystem {
 			});
 		}
 
-		public void PickupItem() {
+		public bool TryPickupItem() {
+			if(ItemsInRange.Count == 0) {
+				return false;
+			}
 			Player = GetParent<Player>();
 			PlayerInventory = Player.Inventory;
 			PlayerHotbar = Player.Hotbar;
-			if(ItemsInRange.Count == 0) {
-				Log.Info("No item icons in range to pick up.");
-				return;
-			}
 			Item3DIcon itemIcon3D = ItemsInRange.Keys.First();
 			if(itemIcon3D.Item == null) {
-				Log.Error("PickupItem: Item is null.");
-				return;
+				Log.Error("TryPickupItem: Item is null.");
+				return false;
 			}
-			Log.Info($"Picking up item: {itemIcon3D.Item.Name}");
-			if(PlayerHotbar.AddItem(itemIcon3D.Item)) {
-				Log.Info("Item added to Hotbar.");
+			if(PlayerHotbar.AddItem(itemIcon3D.Item) || PlayerInventory.AddItem(itemIcon3D.Item)) {
 				RemoveItemIconPrompt(itemIcon3D);
 				if(DespawnItem3DIconRequested != null) {
 					DespawnItem3DIconRequested.Invoke(itemIcon3D);
@@ -83,26 +84,22 @@ namespace ItemSystem {
 				else {
 					itemIcon3D.QueueFree();
 				}
+				return true;
+			}
+			return false;
+		}
+
+		public void PickupItem() {
+			if(TryPickupItem()) {
 				Log.Info("Item picked up and removed from the world.");
 				return;
 			}
-			else if(PlayerInventory.AddItem(itemIcon3D.Item)) {
-				Log.Info("Item added to Inventory.");
-				RemoveItemIconPrompt(itemIcon3D);
-				if(DespawnItem3DIconRequested != null) {
-					DespawnItem3DIconRequested.Invoke(itemIcon3D);
-				}
-				else {
-					itemIcon3D.QueueFree();
-				}
-				Log.Info("Item picked up and removed from the world.");
-				return;
+			if(ItemsInRange.Count == 0) {
+				Log.Info("No item icons in range to pick up.");
 			}
 			else {
 				Log.Info("Inventory and Hotbar full, cannot pick up item.");
-				return;
 			}
-
 		}
 
 		public void HandleOnBodyEnteredArea(Node3D node) {

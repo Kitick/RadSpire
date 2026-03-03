@@ -37,6 +37,9 @@ namespace UI {
 		private event Action? OnExit;
 
 		private Player Player = null!;
+		private bool IsReady = false;
+		private bool IsInitialized = false;
+		private bool IsRegisteredToInventory = false;
 		public Inventory Inventory { get; set; } = null!;
 		private List<InvSlotUI> HotbarSlotUIs = new List<InvSlotUI>();
 		private int NumHotbarSlots = 0;
@@ -46,45 +49,70 @@ namespace UI {
 		public event Action<string, int, MouseButton>? OnSlotReleased;
 		public event Action<string, int>? OnSlotHovered;
 
+		public Hotbar() {
+		}
+
+		public Hotbar(Inventory inventory, Player player) {
+			Initialize(inventory, player);
+		}
+
+		public void Initialize(Inventory inventory, Player player) {
+			if(inventory == null) {
+				Log.Error("Inventory is null.");
+				return;
+			}
+			if(player == null) {
+				Log.Error("Player is null.");
+				return;
+			}
+			Inventory = inventory;
+			Player = player;
+			IsInitialized = true;
+			if(IsReady) {
+				SetUpInventoryUI();
+			}
+		}
+
 		public override void _EnterTree() {
 			SetInputCallbacks();
 			RequestReady();
 		}
 
 		public override void _Ready() {
-			SetUpInventoryUI();
-			GetPlayer();
-
-			UpdateInventoryUI();
-		}
-
-		private void GetPlayer() {
-			Player = GetParent<HUD>().Player;
-			Inventory = Player.Hotbar;
-			if(Player == null) {
-				Log.Error("Hotbar could not find Player node in parent HUD.");
-				return;
+			IsReady = true;
+			if(IsInitialized) {
+				SetUpInventoryUI();
 			}
-			Log.Info("Hotbar successfully found Player node in parent HUD.");
-
-			Inventory.OnInventoryChanged += UpdateInventoryUI;
 		}
 
 		public override void _ExitTree() {
 			OnExit?.Invoke();
-			if(Player != null && Player.InventoryManager != null) {
+			if(IsRegisteredToInventory && Inventory != null) {
+				Inventory.OnInventoryChanged -= UpdateInventoryUI;
+				IsRegisteredToInventory = false;
+			}
+			if(IsInitialized && Player != null && Player.InventoryManager != null && Inventory != null) {
 				Player.InventoryManager.UnregisterInventory(Inventory.Name);
 			}
 		}
 
 		public void SetUpInventoryUI() {
-			Player = GetParent<HUD>().Player;
-			if(Player == null) {
-				Log.Error("InventoryUI SetUpInventoryUI: Player is null.");
+			if(!IsInitialized || !IsReady) {
 				return;
 			}
-			Inventory = Player.Hotbar;
-			Player.InventoryManager.RegisterInventory(Inventory, this);
+			if(Player == null || Inventory == null) {
+				Log.Error("Missing required Player or Inventory.");
+				return;
+			}
+			if(!IsRegisteredToInventory) {
+				Player.InventoryManager.RegisterInventory(Inventory, this);
+				Inventory.OnInventoryChanged += UpdateInventoryUI;
+				IsRegisteredToInventory = true;
+			}
+			if(HotbarSlotUIs.Count > 0) {
+				UpdateInventoryUI();
+				return;
+			}
 			GridContainer = GetNode<Control>("Background/GridBackground/HotbarSlots");
 			if(InvSlotTemplate == null) {
 				InvSlotTemplate = GD.Load<PackedScene>("res://UI/Inventory/InvSlotUITemplate.tscn");
@@ -153,12 +181,9 @@ namespace UI {
 		}
 
 		public void UpdateInventoryUI() {
-			Player = GetParent<HUD>().Player;
-			if(Player == null) {
-				Log.Error("InventoryUI SetUpInventoryUI: Player is null.");
+			if(!IsInitialized || Inventory == null) {
 				return;
 			}
-			Inventory = Player.Hotbar;
 			int slotsToUpdate = Math.Min(NumHotbarSlots, Inventory.ItemSlots.Length);
 			for(int i = 0; i < slotsToUpdate; i++) {
 				HotbarSlotUIs[i].UpdateSlotUI(Inventory.ItemSlots[i]);

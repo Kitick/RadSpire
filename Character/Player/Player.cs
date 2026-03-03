@@ -1,11 +1,12 @@
-using Components;
-using Core;
-using Godot;
-using Services;
-using ItemSystem;
-using System;
-
 namespace Character {
+	using Components;
+	using Core;
+	using Godot;
+	using Services;
+	using ItemSystem;
+	using System;
+	using Objects;
+
 	public sealed partial class Player : CharacterBase, ISaveable<PlayerData> {
 		private static readonly LogService Log = new(nameof(Player), enabled: true);
 
@@ -31,6 +32,10 @@ namespace Character {
 		public readonly Movement Movement;
 		public readonly Item3DIconPickup PickupComponent = new Item3DIconPickup();
 		public readonly UseItem UseItemComponent = new UseItem();
+		public ObjectPickup? ObjectPickup { get; private set; }
+		private ObjectPickupUI? ObjectPickupUI;
+		private Action? UnsubscribeInteract;
+		private Action? UnsubscribeInteract2;
 
 		public Player() {
 			Movement = new Movement(this);
@@ -40,11 +45,20 @@ namespace Character {
 
 		public override void _Ready() {
 			base._Ready();
+			PickupComponent.HandleInteractInput = false;
 			AddChild(PickupComponent);
 			AddChild(InventoryManager);
 			AddChild(UseItemComponent);
 			SetupChildren();
 			this.Hurt(50); // For testing purposes, start the player hurt.
+		}
+
+		public override void _ExitTree() {
+			base._ExitTree();
+			UnsubscribeInteract?.Invoke();
+			UnsubscribeInteract2?.Invoke();
+			ObjectPickupUI?.Dispose();
+			ObjectPickup = null;
 		}
 
 		public void Update(float dt, KeyInput keyInput) {
@@ -89,6 +103,36 @@ namespace Character {
 
 		private void SetupChildren() {
 			UseItemComponent.User = this;
+
+			InteractionArea? interactionArea = GetNodeOrNull<InteractionArea>("InteractionArea");
+			if(interactionArea == null) {
+				Log.Error("Player InteractionArea not found. ObjectPickup not initialized.");
+				return;
+			}
+			ObjectPickup = new ObjectPickup(interactionArea, InventoryManager);
+			ObjectPickupUI = new ObjectPickupUI(ObjectPickup);
+			UnsubscribeInteract = ActionEvent.Interact.WhenPressed(() => {
+				if(PickupComponent.HasItemsInRange) {
+					PickupComponent.PickupItem();
+					return;
+				}
+				ObjectPickup.AttemptPickup();
+			});
+
+			UnsubscribeInteract2 = ActionEvent.Interact2.WhenPressed(() => {
+				if(ObjectPickup.currentTargetObjectNode == null) {
+					return;
+				}
+				ObjectPickup.currentTargetObjectNode.Interact(this);
+			});
+		}
+
+		public void ConfigureObjectPickup(WorldObjectManager worldObjectManager) {
+			if(ObjectPickup == null) {
+				Log.Error("ConfigureObjectPickup called before ObjectPickup was initialized.");
+				return;
+			}
+			ObjectPickup.WorldObjectManager = worldObjectManager;
 		}
 
 		public PlayerData Export() => new PlayerData {

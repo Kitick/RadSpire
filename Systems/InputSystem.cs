@@ -5,7 +5,7 @@ namespace Services {
 	// Name must match action name
 	public enum ActionEvent {
 		MoveForward, MoveBack, MoveLeft, MoveRight,
-		Jump, Sprint, Crouch, Interact, Consume, Inventory,
+		Jump, Sprint, Crouch, Interact, Interact2, Consume, Inventory,
 		MenuBack, MenuExit, MenuSelect, PageLeft, PageRight,
 		MenuUp, MenuDown, MenuLeft, MenuRight,
 		Hotbar1, Hotbar2, Hotbar3, Hotbar4, Hotbar5,
