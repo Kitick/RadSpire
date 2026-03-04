@@ -18,6 +18,9 @@ namespace Camera {
 			if(input is InputEventMouseMotion mouseMotion) {
 				HandleMouseMotion(mouseMotion);
 			}
+			else if(input is InputEventJoypadMotion joyMotion) {
+				HandleJoypadMotion(joyMotion);
+			}
 			else {
 				if(input.IsAction(Actions.CameraPan)) {
 					HandlePan(input.IsPressed());
@@ -26,6 +29,20 @@ namespace Camera {
 					HandleRotate(input.IsPressed());
 				}
 				HandleZoom(input);
+			}
+		}
+
+		private void HandleJoypadMotion(InputEventJoypadMotion motion) {
+			const float deadzone = 0.2f;
+			float value = motion.AxisValue;
+			if(System.Math.Abs(value) < deadzone) { return; }
+
+			// Right stick: adjust heading (X) and pitch (Y).
+			if(motion.Axis == JoyAxis.RightX) {
+				Pose.Heading -= value * RotateSensitivity * 5f;
+			}
+			else if(motion.Axis == JoyAxis.RightY) {
+				Pose.Pitch += value * RotateSensitivity * 5f;
 			}
 		}
 

@@ -40,6 +40,18 @@ namespace Services {
 			}
 		}
 
+		// maps our custom menu actions to Godot's built-in UI navigation actions
+		private static readonly System.Collections.Generic.Dictionary<ActionEvent,string> UiMap =
+			new() {
+				{ ActionEvent.MenuUp, "ui_up" },
+				{ ActionEvent.MenuDown, "ui_down" },
+				{ ActionEvent.MenuLeft, "ui_left" },
+				{ ActionEvent.MenuRight, "ui_right" },
+				{ ActionEvent.MenuSelect, "ui_accept" },
+				{ ActionEvent.MenuBack, "ui_cancel" },
+				{ ActionEvent.MenuExit, "ui_cancel" },
+			};
+			
 		private void CheckActionEvents(InputEvent input) {
 			foreach(var action in Actions) {
 				string name = action.ToString();
@@ -48,10 +60,17 @@ namespace Services {
 					Log.Info($"Pressed {name}");
 					OnActionPressed?.Invoke(action);
 
+					if(UiMap.TryGetValue(action, out var ui)) {
+						Input.ActionPress(ui);
+					}
 				}
 				else if(input.IsActionReleased(name)) {
 					Log.Info($"Released {name}");
 					OnActionReleased?.Invoke(action);
+
+					if(UiMap.TryGetValue(action, out var ui)) {
+						Input.ActionRelease(ui);
+					}
 				}
 			}
 		}
