@@ -17,7 +17,7 @@ public abstract partial class BaseUIControl : Control {
         
     }
 
-    private void ApplyHoverFocus(Control root) {
+    protected void ApplyHoverFocus(Control root) {
         foreach (Node child in root.GetChildren()) {
             if (child is Control control) {
                 if(control.FocusMode != FocusModeEnum.None) {
