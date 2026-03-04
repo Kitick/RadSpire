@@ -2,6 +2,7 @@ using System;
 using Core;
 using Godot;
 using Services;
+using Services.Settings;
 using UI.Multiplayer;
 using UI.Settings;
 
@@ -46,6 +47,8 @@ namespace UI {
 		public override void _Ready() {
 			UpdateContinueButtonState();
 			SetCallbacks();
+
+			SingleplayerButton.GrabFocus();
 		}
 
 		private void SetCallbacks() {
@@ -69,7 +72,6 @@ namespace UI {
 			MultiplayerButton.MouseEntered += () => SetPopupState(MenuState.MultiPopup);
 			MultiplayerButton.MouseExited += HidePopup;
 			MultiplayerPanel.MouseExited += HidePopup;
-
 		}
 
 		private void SetPopupState(MenuState state) {
@@ -121,5 +123,31 @@ namespace UI {
 			var join = this.AddScene<JoinPanel>(JoinPanelScene);
 			join.OpenMenu();
 		}
+
+		public override void _Process(double delta) {
+			var focused = GetViewport().GuiGetFocusOwner();
+
+			if(focused == SingleplayerButton) {
+				SetPopupState(MenuState.SinglePopup);
+			}
+
+			else if(focused == MultiplayerButton) {
+				SetPopupState(MenuState.MultiPopup);
+			}
+		}
+
+		public override void _UnhandledInput(InputEvent @event) {
+			if (@event.IsActionPressed("ui_accept")){
+				if (GetViewport().GuiGetFocusOwner() is Button btn)
+				{
+					btn.EmitSignal(Button.SignalName.Pressed);
+				}
+
+				if (@event.IsActionPressed("ui_cancel")) {
+					 SetPopupState(MenuState.Normal);
+				}
+			}
+		}
+
 	}
 }
