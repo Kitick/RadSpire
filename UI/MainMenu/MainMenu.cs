@@ -7,7 +7,7 @@ using UI.Multiplayer;
 using UI.Settings;
 
 namespace UI {
-	public sealed partial class MainMenu : Control {
+	public sealed partial class MainMenu : BaseUIControl {
 		private static readonly LogService Log = new(nameof(MainMenu), enabled: true);
 
 		[ExportCategory("Main Buttons")]
@@ -133,19 +133,6 @@ namespace UI {
 
 			else if(focused == MultiplayerButton) {
 				SetPopupState(MenuState.MultiPopup);
-			}
-		}
-
-		public override void _UnhandledInput(InputEvent @event) {
-			if (@event.IsActionPressed("ui_accept")){
-				if (GetViewport().GuiGetFocusOwner() is Button btn)
-				{
-					btn.EmitSignal(Button.SignalName.Pressed);
-				}
-
-				if (@event.IsActionPressed("ui_cancel")) {
-					 SetPopupState(MenuState.Normal);
-				}
 			}
 		}
 
