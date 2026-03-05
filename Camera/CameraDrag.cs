@@ -1,7 +1,7 @@
-using System;
-using Godot;
-
 namespace Camera {
+	using System;
+	using Godot;
+
 	public sealed class CameraDrag {
 		public enum DragState { Idle, Dragging, Cooldown };
 		public DragState State { get; private set; } = DragState.Idle;
