@@ -9,7 +9,7 @@ data = PackedVector3Array(266.67, 5.3424, -18.2649, 266.427, 5.495, -16.0799, 26
 [node name="Tunnel" unique_id=1077204980 instance=ExtResource("1_1sr0i")]
 collision_mask = 3
 
-[node name="Tunnel2" parent="." index="0" unique_id=1807358884]
+[node name="Tunnel2" parent="." index="0" unique_id=1121701622]
 surface_material_override/0 = ExtResource("2_lkb1r")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." index="1" unique_id=529360873]

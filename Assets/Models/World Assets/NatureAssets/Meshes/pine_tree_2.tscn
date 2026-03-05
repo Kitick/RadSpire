@@ -67,7 +67,7 @@ points = PackedVector3Array(-1.6088237, 5.6862993, 0.8092475, 0.77234447, 5.4702
 
 [node name="Pine_Tree_2" unique_id=1517121918 instance=ExtResource("1_f86rj")]
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Pine_Tree_2" parent_id_path=PackedInt32Array(2018047413) index="0" unique_id=1877972033]
+[node name="StaticBody3D" type="StaticBody3D" parent="Pine_Tree_2" parent_id_path=PackedInt32Array(1802947817) index="0" unique_id=1877972033]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Pine_Tree_2/StaticBody3D" index="0" unique_id=1921027324]
 shape = SubResource("ConvexPolygonShape3D_f86rj")

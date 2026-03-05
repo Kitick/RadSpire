@@ -9,7 +9,7 @@ data = PackedVector3Array(0.8507, -2.8222, -2.0706, 0.5747, -2.1329, -3.01, 0.00
 [node name="RockA" unique_id=38785188 instance=ExtResource("1_nu743")]
 collision_mask = 3
 
-[node name="Rock1" parent="." index="0" unique_id=1145500232]
+[node name="Rock1" parent="." index="0" unique_id=1034897737]
 surface_material_override/0 = ExtResource("2_pmd5x")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." index="1" unique_id=1589056605]

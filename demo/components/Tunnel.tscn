@@ -100,19 +100,19 @@ transform = Transform3D(-0.536793, -0.0213862, -0.199931, -0.116106, 0.498308, 0
 [node name="CrystalC" parent="CrystalGroup2" unique_id=43131368 instance=ExtResource("5_bb2w0")]
 transform = Transform3D(0.704558, -0.579782, 0.130258, 0.554941, 0.56972, -0.465804, 0.212495, 0.434496, 0.784585, 0.815979, 1.24854, 2.5437)
 
-[node name="Rock3" parent="CrystalGroup2/CrystalC" index="0" unique_id=1954424980]
+[node name="Rock3" parent="CrystalGroup2/CrystalC" index="0" unique_id=1140216767]
 surface_material_override/0 = ExtResource("6_s6twx")
 
 [node name="CrystalC3" parent="CrystalGroup2" unique_id=1376591727 instance=ExtResource("5_bb2w0")]
 transform = Transform3D(0.127208, -0.0568556, -1.06836, -0.317718, 1.02534, -0.0923969, 1.02161, 0.32596, 0.104294, 4.00861, 3.69458, -0.617188)
 
-[node name="Rock3" parent="CrystalGroup2/CrystalC3" index="0" unique_id=1954424980]
+[node name="Rock3" parent="CrystalGroup2/CrystalC3" index="0" unique_id=1140216767]
 surface_material_override/0 = ExtResource("6_s6twx")
 
 [node name="CrystalC2" parent="CrystalGroup2" unique_id=928315924 instance=ExtResource("5_bb2w0")]
 transform = Transform3D(-0.642172, -0.213226, 0.774009, 0.484154, 0.687794, 0.591163, -0.640428, 0.733767, -0.329203, 7.28876, 1.71277, 4.52783)
 
-[node name="Rock3" parent="CrystalGroup2/CrystalC2" index="0" unique_id=1954424980]
+[node name="Rock3" parent="CrystalGroup2/CrystalC2" index="0" unique_id=1140216767]
 surface_material_override/0 = ExtResource("6_s6twx")
 
 [node name="OmniLight3D" type="OmniLight3D" parent="CrystalGroup2" unique_id=1707172704]
@@ -128,19 +128,19 @@ transform = Transform3D(-0.536793, -0.0213862, -0.199931, 0.0789312, -0.546626, 
 [node name="CrystalC" parent="CrystalGroup3" unique_id=1605663353 instance=ExtResource("5_bb2w0")]
 transform = Transform3D(0.898105, -0.188271, 0.0864646, 0.196692, 0.654036, -0.618921, 0.0650697, 0.621535, 0.677476, 0.589844, 2.22089, 3.04785)
 
-[node name="Rock3" parent="CrystalGroup3/CrystalC" index="0" unique_id=1954424980]
+[node name="Rock3" parent="CrystalGroup3/CrystalC" index="0" unique_id=1140216767]
 surface_material_override/0 = ExtResource("7_7fkm2")
 
 [node name="CrystalC3" parent="CrystalGroup3" unique_id=1207308571 instance=ExtResource("5_bb2w0")]
 transform = Transform3D(0.15544, 0.0752453, -1.06348, -0.370935, 1.01139, 0.0173435, 0.999527, 0.363637, 0.171821, 4.00867, 3.69458, -0.617432)
 
-[node name="Rock3" parent="CrystalGroup3/CrystalC3" index="0" unique_id=1954424980]
+[node name="Rock3" parent="CrystalGroup3/CrystalC3" index="0" unique_id=1140216767]
 surface_material_override/0 = ExtResource("7_7fkm2")
 
 [node name="CrystalC2" parent="CrystalGroup3" unique_id=1253817231 instance=ExtResource("5_bb2w0")]
 transform = Transform3D(-0.573134, -0.100696, 0.847536, 0.285048, 0.939695, 0.304405, -0.804489, 0.404691, -0.495942, 7.2887, 1.71283, 4.52771)
 
-[node name="Rock3" parent="CrystalGroup3/CrystalC2" index="0" unique_id=1954424980]
+[node name="Rock3" parent="CrystalGroup3/CrystalC2" index="0" unique_id=1140216767]
 surface_material_override/0 = ExtResource("7_7fkm2")
 
 [node name="OmniLight3D" type="OmniLight3D" parent="CrystalGroup3" unique_id=385474595]
