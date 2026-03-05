@@ -49,13 +49,6 @@ namespace UI {
 			SetCallbacks();
 
 			SingleplayerButton.GrabFocus();
-
-			//Inputing the TestBaseUIControl code here
-			base._Ready(); // Ensure BaseUIControl logic runs first
-
-			var tester = new TestBaseUIControl(); // Add it to the tree
-			AddChild(tester);
-			tester.RunTests(GetTree()); // Call the function
 		}
 
 		private void SetCallbacks() {
