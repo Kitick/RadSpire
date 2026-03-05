@@ -26,7 +26,7 @@ namespace Character {
 				switch(value) {
 					case AnimState.Idle: Play(IDLE); break;
 					case AnimState.Walking: Play(WALKING); break;
-					case AnimState.Sprinting: Play(SPRINTING); break;
+					case AnimState.Sprinting: Play(SPRINTING, 0.1f, 1.5f); break;
 					case AnimState.Crouching: Play(CROUCHING); break;
 					case AnimState.Jumping: Play(JUMPING); break;
 					case AnimState.Falling: Play(FALLING); break;
