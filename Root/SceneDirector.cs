@@ -1,6 +1,7 @@
 using Core;
 using Godot;
 using Services;
+using Services.Settings;
 using UI;
 
 namespace Root {
@@ -14,6 +15,9 @@ namespace Root {
 		private Node? CurrentScene;
 
 		public override void _Ready() {
+			SettingSystem.Load();
+			SettingSystem.Apply();
+
 			SwitchMainMenu();
 		}
 

@@ -78,7 +78,7 @@ namespace Core {
 			}
 		}
 
-		public static bool Select<T>(this OptionButton button, T value) where T : notnull {
+		public static bool SelectItem<T>(this OptionButton button, T value) where T : notnull {
 			string target = value.ToString()!;
 			int count = button.GetItemCount();
 

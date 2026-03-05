@@ -1,5 +1,6 @@
+using Core;
 using Godot;
-using Services;
+using Services.Settings;
 
 namespace UI.Settings {
 	public sealed partial class GeneralPanel : VBoxContainer {
@@ -8,37 +9,20 @@ namespace UI.Settings {
 		[Export] private HSlider UIScaleSlider = null!;
 		[Export] private OptionButton ThemeOption = null!;
 
-		// Main
 		public override void _Ready() {
 			SetCallbacks();
 		}
 
-		// Set Callbacks
 		private void SetCallbacks() {
-			LanguageOption.ItemSelected += OnLanguageOptionSelected;
-			UIScaleSlider.ValueChanged += OnUIScaleChanged;
-			ThemeOption.ItemSelected += OnThemeOptionSelected;
+			LanguageOption.ItemSelected += (index) => GeneralSettings.Language.Apply(LanguageOption.GetItemText((int) index));
+			UIScaleSlider.ValueChanged += (value) => GeneralSettings.UIScale.Apply((float) value);
+			ThemeOption.ItemSelected += (index) => GeneralSettings.Theme.Apply(ThemeOption.GetItemText((int) index));
 		}
 
-		// Callbacks
-		private void OnLanguageOptionSelected(long selected) {
-			//Implementation Here
+		public void Refresh() {
+			LanguageOption.SelectItem(GeneralSettings.Language.Target);
+			UIScaleSlider.Value = GeneralSettings.UIScale.Target;
+			ThemeOption.SelectItem(GeneralSettings.Theme.Target);
 		}
-
-		private void OnUIScaleChanged(double value) {
-			//Implementation Here
-		}
-
-		private void OnThemeOptionSelected(long selected) {
-			//Implementation Here
-		}
-
-		// ISaveable Implementation Goes Here
-
-	}
-
-	// Update As Needed
-	public readonly record struct GeneralSettings : ISaveData {
-
 	}
 }

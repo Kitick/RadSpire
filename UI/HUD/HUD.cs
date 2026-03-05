@@ -3,6 +3,7 @@ namespace UI {
 	using Character;
 	using Core;
 	using Godot;
+	using ItemSystem;
 	using Services;
 	using UI.Multiplayer;
 	using UI.Settings;
@@ -16,6 +17,7 @@ namespace UI {
 		[Export] private PauseMenu PauseMenu = null!;
 		[Export] private InventoryUI Inventory = null!;
 		[Export] public InventoryItemInformationUI InventoryItemInformationUI = null!;
+		[Export] private InventoryUI Chest = null!;
 		[Export] private Control QuestLog = null!;
 		[Export] private Hotbar Hotbar = null!;
 		[Export] private RespawnMenu RespawnMenu = null!;
@@ -38,11 +40,14 @@ namespace UI {
 		public event Action? MainMenuRequested;
 		public event Action? RespawnRequested;
 		public event Action<bool>? InventoryRequested;
+		public event Action<bool>? ChestRequested;
 		public event Action<string>? SaveRequested;
 
 		public void Init(Player player, StateMachine<MenuState> stateMachine) {
 			Player = player;
 			StateMachineRef = stateMachine;
+			Inventory.Initialize(player.Inventory, player);
+			Hotbar.Initialize(player.Hotbar, player);
 			ConfigureStateMachine(stateMachine);
 		}
 
@@ -94,6 +99,25 @@ namespace UI {
 			stateMachine.OnExit(MenuState.Inventory, () => {
 				Inventory.Visible = false;
 				InventoryItemInformationUI.Visible = false;
+				InventoryRequested?.Invoke(false);
+			});
+
+			// Chest state
+			stateMachine.OnEnter(MenuState.Chest, () => {
+				Chest.Visible = true;
+				ChestRequested?.Invoke(true);
+				Inventory.Visible = true;
+				InventoryItemInformationUI.Visible = false;
+				Hotbar.Visible = true;
+				InventoryRequested?.Invoke(true);
+			});
+
+			stateMachine.OnExit(MenuState.Chest, () => {
+				Chest.Visible = false;
+				ChestRequested?.Invoke(false);
+				Inventory.Visible = false;
+				InventoryItemInformationUI.Visible = false;
+				Hotbar.Visible = true;
 				InventoryRequested?.Invoke(false);
 			});
 
@@ -160,13 +184,62 @@ namespace UI {
 				StateMachineRef.Start(MenuState.Game);
 			}
 
-			if(StateMachineRef.CurrentState == MenuState.Inventory) {
+			if(StateMachineRef.CurrentState == MenuState.Chest) {
+				Log.Info("Toggling Inventory: Closing Chest");
+				StateMachineRef.TransitionTo(MenuState.Game);
+			}
+			else if(StateMachineRef.CurrentState == MenuState.Inventory) {
 				Log.Info("Toggling Inventory: Closing Inventory");
 				StateMachineRef.TransitionTo(MenuState.Game);
 			}
 			else {
 				Log.Info("Toggling Inventory: Opening Inventory");
 				StateMachineRef.TransitionTo(MenuState.Inventory);
+			}
+		}
+
+		public void ToggleChest() {
+			if(StateMachineRef == null) {
+				Log.Error("ToggleChest: StateMachineRef is null");
+				return;
+			}
+
+			if(!StateMachineRef.IsSettled) {
+				Log.Info("ToggleChest: state machine not started, starting at Game");
+				StateMachineRef.Start(MenuState.Game);
+			}
+
+			if(StateMachineRef.CurrentState == MenuState.Chest) {
+				Log.Info("Toggling Chest: Closing Chest");
+				StateMachineRef.TransitionTo(MenuState.Game);
+			}
+			else {
+				Log.Info("Toggling Chest: Opening Chest");
+				StateMachineRef.TransitionTo(MenuState.Chest);
+			}
+		}
+
+		public void OpenChest(Inventory chestInventory, Player player) {
+			if(StateMachineRef == null) {
+				Log.Error("OpenChest: StateMachineRef is null");
+				return;
+			}
+			if(chestInventory == null || player == null) {
+				Log.Error("OpenChest: chestInventory or player is null");
+				return;
+			}
+
+			chestInventory.Name = "Chest";
+
+			Chest.Initialize(chestInventory, player);
+			Chest.SetLabelText("Chest");
+
+			if(!StateMachineRef.IsSettled) {
+				StateMachineRef.Start(MenuState.Game);
+			}
+
+			if(StateMachineRef.CurrentState != MenuState.Chest) {
+				ToggleChest();
 			}
 		}
 	}

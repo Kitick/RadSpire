@@ -19,6 +19,7 @@ namespace Core {
 		public const string Crouch = "Crouch";
 		public const string Attack = "Attack";
 		public const string Interact = "Interact";
+		public const string Interact2 = "Interact2";
 		public const string Inventory = "Inventory";
 
 		public const string MenuBack = "MenuBack";
@@ -70,6 +71,7 @@ namespace Core {
 		public const string CoconutGreenOpen = "CoconutGreenOpen";
 		public const string StrawberryGreen = "StrawberryGreen";
 		public const string StrawberryRed = "StrawberryRed";
+		public const string Bonfire = "Bonfire";
 	}
 
 }

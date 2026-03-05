@@ -5,6 +5,7 @@ namespace ItemSystem {
 	using System.Collections.Generic;
 	using GodotResourceGroups;
 	using Components;
+	using Objects;
 
 	public partial class ItemDataBaseManager : Node {
 		private static readonly LogService Log = new(nameof(ItemDataBaseManager), enabled: true);
@@ -56,9 +57,9 @@ namespace ItemSystem {
 
 			return item;
 		}
-		
+
 		public void BuildComponents(Item item, ItemDefinition itemDef) {
-			item.Components = new List<IItemComponent>();
+			item.ClearComponents();
 			if(itemDef.ComponentsResources.Count == 0) {
 				return;
 			}
@@ -66,14 +67,29 @@ namespace ItemSystem {
 				if(resource is ItemComponentDefinition comp) {
 					if(comp is HealItemDefinition healDef) {
 						HealItem healComp = new HealItem(healDef.HealAmount);
-						item.Components.Add(healComp);
+						item.AddComponent(healComp);
 					}
 					else if(comp is DurabilityDefinition durabilityDef) {
 						Durability durabilityComp = new Durability(durabilityDef.MaxDurability);
-						item.Components.Add(durabilityComp);
+						item.AddComponent(durabilityComp);
 					}
 				}
 			}
 		}
+		
+		public void BuildObjectComponents(Objects.Object obj, ItemDefinition itemDef) {
+			obj.ComponentDictionary.Clear();
+			if(itemDef.ComponentsResources.Count == 0) {
+				return;
+			}
+			foreach(var resource in itemDef.ComponentsResources) {
+				if(resource is ItemComponentDefinition comp) {
+					if(comp is InventoryDefinition invDef) {
+						InventoryComponent objComp = new InventoryComponent(invDef.Rows, invDef.Columns, obj);
+						obj.ComponentDictionary.Add(objComp);
+					}
+				}
+			}
+		 }
 	}
 }
