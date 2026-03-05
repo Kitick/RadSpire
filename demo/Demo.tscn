@@ -1,6 +1,6 @@
-[gd_scene load_steps=12 format=3 uid="uid://chol2xlfbq7cu"]
+[gd_scene format=3 uid="uid://chol2xlfbq7cu"]
 
-[ext_resource type="Script" path="res://demo/src/DemoScene.gd" id="1_k7qca"]
+[ext_resource type="Script" uid="uid://5godo13ybmic" path="res://demo/src/DemoScene.gd" id="1_k7qca"]
 [ext_resource type="PackedScene" uid="uid://d2jihfohphuue" path="res://demo/components/UI.tscn" id="2_nqak5"]
 [ext_resource type="PackedScene" uid="uid://dwnhqfjq7v1pq" path="res://demo/components/Borders.tscn" id="3_cw38j"]
 [ext_resource type="PackedScene" uid="uid://domhm87hbhbg1" path="res://demo/components/Player.tscn" id="3_ht63y"]
@@ -25,9 +25,9 @@ domain_warp_fractal_lacunarity = 1.5
 domain_warp_fractal_gain = 1.0
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_bov7h"]
-seamless = true
-color_ramp = SubResource("Gradient_vr1m7")
 noise = SubResource("FastNoiseLite_d8lcj")
+color_ramp = SubResource("Gradient_vr1m7")
+seamless = true
 
 [sub_resource type="Terrain3DMaterial" id="Terrain3DMaterial_jrc01"]
 _shader_parameters = {
@@ -73,23 +73,23 @@ world_background = 2
 auto_shader = true
 dual_scaling = true
 
-[node name="Demo" type="Node"]
+[node name="Demo" type="Node" unique_id=2092519480]
 script = ExtResource("1_k7qca")
 
-[node name="UI" parent="." instance=ExtResource("2_nqak5")]
+[node name="UI" parent="." unique_id=1662083462 instance=ExtResource("2_nqak5")]
 
-[node name="Environment" parent="." instance=ExtResource("3_yqldq")]
+[node name="Environment" parent="." unique_id=2029131281 instance=ExtResource("3_yqldq")]
 
-[node name="Borders" parent="." instance=ExtResource("3_cw38j")]
+[node name="Borders" parent="." unique_id=1950253353 instance=ExtResource("3_cw38j")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 512, -3, 512)
 collision_mask = 3
 
-[node name="Tunnel" parent="." instance=ExtResource("3_kdh0b")]
+[node name="Tunnel" parent="." unique_id=672004132 instance=ExtResource("3_kdh0b")]
 
-[node name="Player" parent="." instance=ExtResource("3_ht63y")]
+[node name="Player" parent="." unique_id=150256018 instance=ExtResource("3_ht63y")]
 transform = Transform3D(0.176947, 0, -0.98422, 0, 1, 0, 0.98422, 0, 0.176947, 223.143, 105.348, -1833.08)
 
-[node name="Terrain3D" type="Terrain3D" parent="."]
+[node name="Terrain3D" type="Terrain3D" parent="." unique_id=239788061]
 data_directory = "res://demo/data"
 material = SubResource("Terrain3DMaterial_jrc01")
 assets = ExtResource("8_g2of2")

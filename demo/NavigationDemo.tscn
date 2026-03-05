@@ -1,6 +1,6 @@
-[gd_scene load_steps=14 format=3 uid="uid://x34e4v60vdmy"]
+[gd_scene format=3 uid="uid://x34e4v60vdmy"]
 
-[ext_resource type="Script" path="res://demo/src/DemoScene.gd" id="1_po4vw"]
+[ext_resource type="Script" uid="uid://5godo13ybmic" path="res://demo/src/DemoScene.gd" id="1_po4vw"]
 [ext_resource type="PackedScene" uid="uid://bb2lp50sjndus" path="res://demo/components/Environment.tscn" id="2_i74wg"]
 [ext_resource type="PackedScene" uid="uid://dwnhqfjq7v1pq" path="res://demo/components/Borders.tscn" id="3_3upu0"]
 [ext_resource type="PackedScene" uid="uid://domhm87hbhbg1" path="res://demo/components/Player.tscn" id="4_fk3ul"]
@@ -27,9 +27,9 @@ domain_warp_fractal_lacunarity = 1.5
 domain_warp_fractal_gain = 1.0
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_bov7h"]
-seamless = true
-color_ramp = SubResource("Gradient_vr1m7")
 noise = SubResource("FastNoiseLite_d8lcj")
+color_ramp = SubResource("Gradient_vr1m7")
+seamless = true
 
 [sub_resource type="Terrain3DMaterial" id="Terrain3DMaterial_s5mq5"]
 _shader_parameters = {
@@ -60,35 +60,36 @@ _shader_parameters = {
 "noise_texture": SubResource("NoiseTexture2D_bov7h"),
 "projection_angular_division": 1.436,
 "projection_threshold": 0.8,
-"tri_scale_reduction": 0.3
+"tri_scale_reduction": 0.3,
+&"world_space_normal_blend": true
 }
 world_background = 0
 auto_shader = true
 dual_scaling = true
 
-[node name="Demo" type="Node"]
+[node name="Demo" type="Node" unique_id=221845268]
 script = ExtResource("1_po4vw")
 
-[node name="UI" parent="." instance=ExtResource("5_rc7e2")]
+[node name="UI" parent="." unique_id=363278392 instance=ExtResource("5_rc7e2")]
 
-[node name="Environment" parent="." instance=ExtResource("2_i74wg")]
+[node name="Environment" parent="." unique_id=1957539845 instance=ExtResource("2_i74wg")]
 
-[node name="Borders" parent="." instance=ExtResource("3_3upu0")]
+[node name="Borders" parent="." unique_id=324049372 instance=ExtResource("3_3upu0")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 512, -2.5, 512)
 
-[node name="Tunnel" parent="." instance=ExtResource("5_2lvlr")]
+[node name="Tunnel" parent="." unique_id=1692468033 instance=ExtResource("5_2lvlr")]
 
-[node name="Player" parent="." instance=ExtResource("4_fk3ul")]
+[node name="Player" parent="." unique_id=2118134909 instance=ExtResource("4_fk3ul")]
 transform = Transform3D(0.0774673, 0, -0.996995, 0, 1, 0, 0.996995, 0, 0.0774673, 229.418, 104.956, -1838.16)
 
-[node name="Enemy" parent="." node_paths=PackedStringArray("target") instance=ExtResource("12_b2xl8")]
+[node name="Enemy" parent="." unique_id=279182235 node_paths=PackedStringArray("target") instance=ExtResource("12_b2xl8")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 192.727, 105.171, -1787.81)
 target = NodePath("../Player")
 
-[node name="NavigationRegion3D" type="NavigationRegion3D" parent="."]
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="." unique_id=449894430]
 navigation_mesh = ExtResource("8_6jfdr")
 
-[node name="Terrain3D" type="Terrain3D" parent="NavigationRegion3D"]
+[node name="Terrain3D" type="Terrain3D" parent="NavigationRegion3D" unique_id=1472492100]
 data_directory = "res://demo/data"
 material = SubResource("Terrain3DMaterial_s5mq5")
 assets = ExtResource("10_qmhh8")
