@@ -15,7 +15,7 @@ namespace Character {
 		private static readonly StringName DEATH = "Death_A";
 		private static readonly StringName SLASH = "1H_Melee_Attack_Slice_Diagonal";
 
-		public enum AnimState { Idle, Walking, Sprinting, Crouching, Jumping, Falling, Landing, ATTACKING, DYING }
+		public enum AnimState { Idle, Walking, Sprinting, Crouching, Jumping, Falling, Landing, Attacking, Dying }
 
 		[Export] private Player Player = null!;
 
@@ -31,8 +31,6 @@ namespace Character {
 					case AnimState.Jumping: Play(JUMPING); break;
 					case AnimState.Falling: Play(FALLING); break;
 					case AnimState.Landing: Play(LANDING); break;
-					case AnimState.ATTACKING: Play(SLASH); break;
-					case AnimState.DYING: Play(DEATH); break;
 				}
 			}
 		}
