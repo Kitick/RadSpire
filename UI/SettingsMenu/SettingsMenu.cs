@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Godot;
 using Services;
 using Services.Settings;
@@ -128,6 +129,18 @@ namespace UI.Settings {
 		public void OpenMenu(Action? onClose = null) {
 			OnExit += onClose;
 			LoadData();
+			
+			if(ActivePanel == null) {
+				GeneralButton.GrabFocus();
+			} 
+			else {
+				foreach(var (panel, button) in Panels) {
+					if(panel == ActivePanel) {
+						button.GrabFocus();
+						break;
+					}
+				}
+			}
 		}
 
 		private void CloseMenu() {

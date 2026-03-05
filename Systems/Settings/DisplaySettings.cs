@@ -37,7 +37,10 @@ namespace Services.Settings {
 			name: nameof(Brightness),
 			getActual: () => WorldEnv?.Environment.AdjustmentBrightness ?? 1f,
 			setActual: v => {
-				if(WorldEnv is null) { GD.PushWarning("Brightness: WorldEnvironment not set"); return; }
+				if(WorldEnv == null || WorldEnv.Environment == null) { 
+					GD.PushWarning("Brightness: WorldEnvironment not set"); 
+					return; 
+				}
 				WorldEnv.Environment.AdjustmentBrightness = v;
 			},
 			defaultValue: 1f

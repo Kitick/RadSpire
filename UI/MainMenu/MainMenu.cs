@@ -2,11 +2,12 @@ using System;
 using Core;
 using Godot;
 using Services;
+using Services.Settings;
 using UI.Multiplayer;
 using UI.Settings;
 
 namespace UI {
-	public sealed partial class MainMenu : Control {
+	public sealed partial class MainMenu : BaseUIControl {
 		private static readonly LogService Log = new(nameof(MainMenu), enabled: true);
 
 		[ExportCategory("Main Buttons")]
@@ -34,10 +35,6 @@ namespace UI {
 		[Export] private PackedScene HostPanelScene = null!;
 		[Export] private PackedScene JoinPanelScene = null!;
 
-		private Control[] MainOrder => [SingleplayerButton, MultiplayerButton, SettingsButton, ExtrasButton, QuitButton];
-		private Control[] SingleplayerOrder => [ContinueButton, LoadSavedButton, StartNewButton];
-		private Control[] MultiplayerOrder => [HostNewButton, HostSavedButton, JoinGameButton];
-
 		private enum MenuState { Normal, SinglePopup, MultiPopup }
 
 		private const float HideDelay = 0.25f;
@@ -51,7 +48,14 @@ namespace UI {
 			UpdateContinueButtonState();
 			SetCallbacks();
 
-			Navigator.Instance.Order = MainOrder;
+			SingleplayerButton.GrabFocus();
+
+			//Inputing the TestBaseUIControl code here
+			base._Ready(); // Ensure BaseUIControl logic runs first
+
+			var tester = new TestBaseUIControl(); // Add it to the tree
+			AddChild(tester);
+			tester.RunTests(GetTree()); // Call the function
 		}
 
 		private void SetCallbacks() {
@@ -75,24 +79,6 @@ namespace UI {
 			MultiplayerButton.MouseEntered += () => SetPopupState(MenuState.MultiPopup);
 			MultiplayerButton.MouseExited += HidePopup;
 			MultiplayerPanel.MouseExited += HidePopup;
-
-			ActionEvent.MenuRight.WhenPressed(() => {
-				if(Navigator.Instance.Selected == SingleplayerButton) {
-					Navigator.Instance.Order = SingleplayerOrder;
-				}
-				else if(Navigator.Instance.Selected == MultiplayerButton) {
-					Navigator.Instance.Order = MultiplayerOrder;
-				}
-			});
-
-			ActionEvent.MenuLeft.WhenPressed(() => {
-				bool wasSingle = SingleplayerPanel.Visible;
-				bool wasMulti = MultiplayerPanel.Visible;
-
-				Navigator.Instance.Order = MainOrder;
-				if(wasSingle) { Navigator.Instance.Select(SingleplayerButton); }
-				else if(wasMulti) { Navigator.Instance.Select(MultiplayerButton); }
-			});
 		}
 
 		private void SetPopupState(MenuState state) {
@@ -101,16 +87,8 @@ namespace UI {
 		}
 
 		private void HidePopup() {
-			if(Navigator.Instance.IsActive) {
-				if(Navigator.Instance.Selected != SingleplayerButton && Navigator.Instance.Selected != MultiplayerButton) {
-					SetPopupState(MenuState.Normal);
-				}
-				return;
-			}
 			GetTree().CreateTimer(HideDelay).Timeout += () => {
-				if(!IsMouseInside(SingleplayerButton, SingleplayerPanel, MultiplayerButton, MultiplayerPanel)
-					&& Navigator.Instance.Selected != SingleplayerButton
-					&& Navigator.Instance.Selected != MultiplayerButton) {
+				if(!IsMouseInside(SingleplayerButton, SingleplayerPanel, MultiplayerButton, MultiplayerPanel)) {
 					SetPopupState(MenuState.Normal);
 				}
 			};
@@ -152,5 +130,18 @@ namespace UI {
 			var join = this.AddScene<JoinPanel>(JoinPanelScene);
 			join.OpenMenu();
 		}
+
+		public override void _Process(double delta) {
+			var focused = GetViewport().GuiGetFocusOwner();
+
+			if(focused == SingleplayerButton) {
+				SetPopupState(MenuState.SinglePopup);
+			}
+
+			else if(focused == MultiplayerButton) {
+				SetPopupState(MenuState.MultiPopup);
+			}
+		}
+
 	}
 }
