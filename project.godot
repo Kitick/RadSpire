@@ -38,7 +38,6 @@ InputSystem="*res://Systems/InputSystem.cs"
 Navigator="*res://Systems/Navigator.cs"
 Server="*res://Systems/Network/Server.cs"
 ItemDataBaseManager="*res://Item/ItemDataBase/ItemDataBaseScripts/ItemDataBaseManager.cs"
-TerrainRebuildCoordinator="*uid://brautlco0ivx3"
 
 [display]
 
