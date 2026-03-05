@@ -1,49 +1,31 @@
-using Core;
-using Godot;
-
 namespace Camera {
+	using System;
+	using Godot;
+	using Services;
+
 	public sealed partial class CameraRig {
-		public float PanSensitivity = 0.1f;
-		public float RotateSensitivity = 0.5f;
-		public float ZoomSpeed = 1.0f;
+		[Export] public float PanSensitivity = 0.1f;
+		[Export] public float RotateSensitivity = 0.5f;
+		[Export] public float FollowSpeed = 5.0f;
+		[Export] public float ZoomSpeed = 1.0f;
 
 		private bool IsPanning = false;
 		private bool IsRotating = false;
 
-		public override void _Input(InputEvent input) {
-			if(input.IsActionPressed(Actions.CameraReset)) {
-				Reset();
-			}
+		private Action? Unsubscribe;
 
-			if(input is InputEventMouseMotion mouseMotion) {
-				HandleMouseMotion(mouseMotion);
-			}
-			else if(input is InputEventJoypadMotion joyMotion) {
-				HandleJoypadMotion(joyMotion);
-			}
-			else {
-				if(input.IsAction(Actions.CameraPan)) {
-					HandlePan(input.IsPressed());
-				}
-				if(input.IsAction(Actions.CameraRotate)) {
-					HandleRotate(input.IsPressed());
-				}
-				HandleZoom(input);
-			}
-		}
+		void InitInput() {
+			Unsubscribe =
+				ActionEvent.CameraPan.WhenPressed(() => HandlePan(true))
+				+ ActionEvent.CameraPan.WhenReleased(() => HandlePan(false))
+				+ ActionEvent.CameraRotate.WhenPressed(() => HandleRotate(true))
+				+ ActionEvent.CameraRotate.WhenReleased(() => HandleRotate(false))
+				+ ActionEvent.ZoomIn.WhenPressed(() => Pose.Distance -= ZoomSpeed)
+				+ ActionEvent.ZoomOut.WhenPressed(() => Pose.Distance += ZoomSpeed)
+				+ ActionEvent.CameraReset.WhenPressed(Reset)
+				+ (() => InputSystem.Instance.OnMouseMoved -= HandleMouseMotion);
 
-		private void HandleJoypadMotion(InputEventJoypadMotion motion) {
-			const float deadzone = 0.2f;
-			float value = motion.AxisValue;
-			if(System.Math.Abs(value) < deadzone) { return; }
-
-			// Right stick: adjust heading (X) and pitch (Y).
-			if(motion.Axis == JoyAxis.RightX) {
-				Pose.Heading -= value * RotateSensitivity * 5f;
-			}
-			else if(motion.Axis == JoyAxis.RightY) {
-				Pose.Pitch += value * RotateSensitivity * 5f;
-			}
+			InputSystem.Instance.OnMouseMoved += HandleMouseMotion;
 		}
 
 		private void HandlePan(bool pressed) {
@@ -66,26 +48,14 @@ namespace Camera {
 			}
 		}
 
-		private void HandleZoom(InputEvent input) {
-			if(input.IsActionPressed(Actions.ZoomIn)) {
-				Pose.Distance -= ZoomSpeed;
-			}
-			else if(input.IsActionPressed(Actions.ZoomOut)) {
-				Pose.Distance += ZoomSpeed;
-			}
-		}
-
 		private void HandleMouseMotion(InputEventMouseMotion motion) {
 			if(IsPanning) {
 				Vector2 relative = -motion.ScreenRelative * PanSensitivity;
-
 				Vector2 delta = Pose.AlignVector(relative);
-
 				Drag.Move(new Vector3(delta.X, 0, delta.Y));
 			}
 			if(IsRotating) {
 				Vector2 delta = motion.ScreenRelative * RotateSensitivity;
-
 				Pose.Heading -= delta.X;
 				Pose.Pitch += delta.Y;
 			}

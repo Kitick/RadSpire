@@ -1,0 +1,540 @@
+[gd_scene format=3 uid="uid://nud6dwjcnj5v"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ysabf"]
+bg_color = Color(0.211765, 0.239216, 0.290196, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lcvna"]
+bg_color = Color(0.168627, 0.211765, 0.266667, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.270588, 0.435294, 0.580392, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cb0xf"]
+bg_color = Color(0.137255, 0.137255, 0.137255, 1)
+draw_center = false
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.784314, 0.784314, 0.784314, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7qdas"]
+
+[sub_resource type="ButtonGroup" id="ButtonGroup_wnxik"]
+
+[sub_resource type="ButtonGroup" id="ButtonGroup_bs6ki"]
+
+[node name="Window" type="Window" unique_id=1469908265]
+oversampling_override = 1.0
+title = "Terrain3D Channel Packer"
+initial_position = 1
+size = Vector2i(583, 891)
+wrap_controls = true
+always_on_top = true
+
+[node name="PanelContainer" type="PanelContainer" parent="." unique_id=135128959]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ysabf")
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer" unique_id=1067063018]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer" unique_id=2018108793]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="AlbedoHeightPanel" type="PanelContainer" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1476531597]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_lcvna")
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer/AlbedoHeightPanel" unique_id=1294884661]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/AlbedoHeightPanel/MarginContainer" unique_id=1072111011]
+layout_mode = 2
+
+[node name="AlbedoVBox" type="VBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/AlbedoHeightPanel/MarginContainer/HBoxContainer" unique_id=633284127]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="AlbedoLabel" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/AlbedoHeightPanel/MarginContainer/HBoxContainer/AlbedoVBox" unique_id=581247643]
+layout_mode = 2
+text = "Albedo texture"
+
+[node name="AlbedoHBox" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/AlbedoHeightPanel/MarginContainer/HBoxContainer/AlbedoVBox" unique_id=1151303666]
+layout_mode = 2
+
+[node name="LineEdit" type="LineEdit" parent="PanelContainer/MarginContainer/VBoxContainer/AlbedoHeightPanel/MarginContainer/HBoxContainer/AlbedoVBox/AlbedoHBox" unique_id=1908951616]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PickButton" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer/AlbedoHeightPanel/MarginContainer/HBoxContainer/AlbedoVBox/AlbedoHBox" unique_id=274824000]
+layout_mode = 2
+
+[node name="ClearButton" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer/AlbedoHeightPanel/MarginContainer/HBoxContainer/AlbedoVBox/AlbedoHBox" unique_id=1094307612]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer/AlbedoHeightPanel/MarginContainer/HBoxContainer/AlbedoVBox" unique_id=1380523165]
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_constants/margin_top = 10
+
+[node name="Panel" type="Panel" parent="PanelContainer/MarginContainer/VBoxContainer/AlbedoHeightPanel/MarginContainer/HBoxContainer/AlbedoVBox/MarginContainer" unique_id=405478986]
+custom_minimum_size = Vector2(110, 110)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_cb0xf")
+
+[node name="TextureRect" type="TextureRect" parent="PanelContainer/MarginContainer/VBoxContainer/AlbedoHeightPanel/MarginContainer/HBoxContainer/AlbedoVBox/MarginContainer/Panel" unique_id=671136183]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -50.0
+offset_top = -50.0
+offset_right = 50.0
+offset_bottom = 50.0
+grow_horizontal = 2
+grow_vertical = 2
+expand_mode = 1
+
+[node name="TextureButton" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer/AlbedoHeightPanel/MarginContainer/HBoxContainer/AlbedoVBox/MarginContainer/Panel" unique_id=1719885062]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/normal = SubResource("StyleBoxEmpty_7qdas")
+
+[node name="AlbedoWHHBox" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/AlbedoHeightPanel/MarginContainer/HBoxContainer/AlbedoVBox" unique_id=615476095]
+layout_mode = 2
+alignment = 1
+
+[node name="AlbedoW" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/AlbedoHeightPanel/MarginContainer/HBoxContainer/AlbedoVBox/AlbedoWHHBox" unique_id=1713135597]
+layout_mode = 2
+horizontal_alignment = 1
+
+[node name="AlbedoH" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/AlbedoHeightPanel/MarginContainer/HBoxContainer/AlbedoVBox/AlbedoWHHBox" unique_id=610339066]
+layout_mode = 2
+horizontal_alignment = 1
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/AlbedoHeightPanel/MarginContainer/HBoxContainer/AlbedoVBox" unique_id=1996399456]
+layout_mode = 2
+alignment = 1
+
+[node name="LuminanceAsHeightButton" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer/AlbedoHeightPanel/MarginContainer/HBoxContainer/AlbedoVBox/HBoxContainer2" unique_id=1816633923]
+layout_mode = 2
+text = " Generate Height from Luminance"
+icon_alignment = 2
+
+[node name="HeightVBox" type="VBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/AlbedoHeightPanel/MarginContainer/HBoxContainer" unique_id=543546048]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HeightLabel" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/AlbedoHeightPanel/MarginContainer/HBoxContainer/HeightVBox" unique_id=2105292762]
+layout_mode = 2
+text = "Height texture"
+
+[node name="HeightHBox" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/AlbedoHeightPanel/MarginContainer/HBoxContainer/HeightVBox" unique_id=994125983]
+layout_mode = 2
+
+[node name="LineEdit" type="LineEdit" parent="PanelContainer/MarginContainer/VBoxContainer/AlbedoHeightPanel/MarginContainer/HBoxContainer/HeightVBox/HeightHBox" unique_id=1465246227]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PickButton" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer/AlbedoHeightPanel/MarginContainer/HBoxContainer/HeightVBox/HeightHBox" unique_id=596748949]
+layout_mode = 2
+
+[node name="ClearButton" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer/AlbedoHeightPanel/MarginContainer/HBoxContainer/HeightVBox/HeightHBox" unique_id=1113213674]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer/AlbedoHeightPanel/MarginContainer/HBoxContainer/HeightVBox" unique_id=1863085037]
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_constants/margin_top = 10
+
+[node name="Panel" type="Panel" parent="PanelContainer/MarginContainer/VBoxContainer/AlbedoHeightPanel/MarginContainer/HBoxContainer/HeightVBox/MarginContainer" unique_id=1495639784]
+custom_minimum_size = Vector2(110, 110)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_cb0xf")
+
+[node name="TextureRect" type="TextureRect" parent="PanelContainer/MarginContainer/VBoxContainer/AlbedoHeightPanel/MarginContainer/HBoxContainer/HeightVBox/MarginContainer/Panel" unique_id=2098474]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -50.0
+offset_top = -50.0
+offset_right = 50.0
+offset_bottom = 50.0
+grow_horizontal = 2
+grow_vertical = 2
+expand_mode = 1
+
+[node name="TextureButton" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer/AlbedoHeightPanel/MarginContainer/HBoxContainer/HeightVBox/MarginContainer/Panel" unique_id=2074026468]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/normal = SubResource("StyleBoxEmpty_7qdas")
+
+[node name="HeightWHHBox" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/AlbedoHeightPanel/MarginContainer/HBoxContainer/HeightVBox" unique_id=1451989335]
+layout_mode = 2
+alignment = 1
+
+[node name="HeightW" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/AlbedoHeightPanel/MarginContainer/HBoxContainer/HeightVBox/HeightWHHBox" unique_id=690782353]
+layout_mode = 2
+horizontal_alignment = 1
+
+[node name="HeightH" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/AlbedoHeightPanel/MarginContainer/HBoxContainer/HeightVBox/HeightWHHBox" unique_id=17339113]
+layout_mode = 2
+horizontal_alignment = 1
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/AlbedoHeightPanel/MarginContainer/HBoxContainer/HeightVBox" unique_id=363253612]
+layout_mode = 2
+alignment = 1
+
+[node name="ConvertDepthToHeight" type="CheckBox" parent="PanelContainer/MarginContainer/VBoxContainer/AlbedoHeightPanel/MarginContainer/HBoxContainer/HeightVBox/HBoxContainer2" unique_id=1744736495]
+layout_mode = 2
+text = " Convert Depth to Height"
+icon_alignment = 2
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/AlbedoHeightPanel/MarginContainer/HBoxContainer/HeightVBox" unique_id=583697076]
+layout_mode = 2
+alignment = 1
+
+[node name="NormalizeHeight" type="CheckBox" parent="PanelContainer/MarginContainer/VBoxContainer/AlbedoHeightPanel/MarginContainer/HBoxContainer/HeightVBox/HBoxContainer3" unique_id=1101566474]
+layout_mode = 2
+text = "Normalize Height"
+icon_alignment = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/AlbedoHeightPanel/MarginContainer/HBoxContainer/HeightVBox" unique_id=874850293]
+layout_mode = 2
+alignment = 1
+
+[node name="HeightChannelLabel" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/AlbedoHeightPanel/MarginContainer/HBoxContainer/HeightVBox/HBoxContainer" unique_id=1256509905]
+layout_mode = 2
+text = " Source Channel: "
+horizontal_alignment = 2
+
+[node name="HeightChannelR" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer/AlbedoHeightPanel/MarginContainer/HBoxContainer/HeightVBox/HBoxContainer" unique_id=1141454287]
+layout_mode = 2
+toggle_mode = true
+button_pressed = true
+button_group = SubResource("ButtonGroup_wnxik")
+text = "R"
+
+[node name="HeightChannelB" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer/AlbedoHeightPanel/MarginContainer/HBoxContainer/HeightVBox/HBoxContainer" unique_id=775549659]
+layout_mode = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_wnxik")
+text = "G"
+
+[node name="HeightChannelG" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer/AlbedoHeightPanel/MarginContainer/HBoxContainer/HeightVBox/HBoxContainer" unique_id=616481294]
+layout_mode = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_wnxik")
+text = "B"
+
+[node name="HeightChannelA" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer/AlbedoHeightPanel/MarginContainer/HBoxContainer/HeightVBox/HBoxContainer" unique_id=1124797229]
+layout_mode = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_wnxik")
+text = "A"
+
+[node name="NormalRoughnessPanel" type="PanelContainer" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=272104429]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_lcvna")
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer/NormalRoughnessPanel" unique_id=244057497]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/NormalRoughnessPanel/MarginContainer" unique_id=578673351]
+layout_mode = 2
+
+[node name="NormalVBox" type="VBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/NormalRoughnessPanel/MarginContainer/HBoxContainer" unique_id=1423959806]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="NormalLabel" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/NormalRoughnessPanel/MarginContainer/HBoxContainer/NormalVBox" unique_id=1162170549]
+layout_mode = 2
+text = "Normal texture"
+
+[node name="NormalHBox" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/NormalRoughnessPanel/MarginContainer/HBoxContainer/NormalVBox" unique_id=458742861]
+layout_mode = 2
+
+[node name="LineEdit" type="LineEdit" parent="PanelContainer/MarginContainer/VBoxContainer/NormalRoughnessPanel/MarginContainer/HBoxContainer/NormalVBox/NormalHBox" unique_id=1508780527]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PickButton" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer/NormalRoughnessPanel/MarginContainer/HBoxContainer/NormalVBox/NormalHBox" unique_id=768900131]
+layout_mode = 2
+
+[node name="ClearButton" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer/NormalRoughnessPanel/MarginContainer/HBoxContainer/NormalVBox/NormalHBox" unique_id=1396333725]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer/NormalRoughnessPanel/MarginContainer/HBoxContainer/NormalVBox" unique_id=288813803]
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_constants/margin_top = 10
+
+[node name="Panel" type="Panel" parent="PanelContainer/MarginContainer/VBoxContainer/NormalRoughnessPanel/MarginContainer/HBoxContainer/NormalVBox/MarginContainer" unique_id=1922813256]
+custom_minimum_size = Vector2(110, 110)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_cb0xf")
+
+[node name="TextureRect" type="TextureRect" parent="PanelContainer/MarginContainer/VBoxContainer/NormalRoughnessPanel/MarginContainer/HBoxContainer/NormalVBox/MarginContainer/Panel" unique_id=243165649]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -50.0
+offset_top = -50.0
+offset_right = 50.0
+offset_bottom = 50.0
+grow_horizontal = 2
+grow_vertical = 2
+expand_mode = 1
+
+[node name="TextureButton" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer/NormalRoughnessPanel/MarginContainer/HBoxContainer/NormalVBox/MarginContainer/Panel" unique_id=385275197]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/normal = SubResource("StyleBoxEmpty_7qdas")
+
+[node name="NormalWHHBox" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/NormalRoughnessPanel/MarginContainer/HBoxContainer/NormalVBox" unique_id=319615634]
+layout_mode = 2
+alignment = 1
+
+[node name="NormalW" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/NormalRoughnessPanel/MarginContainer/HBoxContainer/NormalVBox/NormalWHHBox" unique_id=997411845]
+layout_mode = 2
+horizontal_alignment = 1
+
+[node name="NormalH" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/NormalRoughnessPanel/MarginContainer/HBoxContainer/NormalVBox/NormalWHHBox" unique_id=2111764892]
+layout_mode = 2
+horizontal_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/NormalRoughnessPanel/MarginContainer/HBoxContainer/NormalVBox" unique_id=1558079910]
+layout_mode = 2
+alignment = 1
+
+[node name="InvertGreenChannelCheckBox" type="CheckBox" parent="PanelContainer/MarginContainer/VBoxContainer/NormalRoughnessPanel/MarginContainer/HBoxContainer/NormalVBox/HBoxContainer" unique_id=769353890]
+layout_mode = 2
+text = " Convert DirectX to OpenGL"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/NormalRoughnessPanel/MarginContainer/HBoxContainer/NormalVBox" unique_id=1711493460]
+layout_mode = 2
+alignment = 1
+
+[node name="AlignNormalsCheckBox" type="CheckBox" parent="PanelContainer/MarginContainer/VBoxContainer/NormalRoughnessPanel/MarginContainer/HBoxContainer/NormalVBox/HBoxContainer2" unique_id=595633145]
+layout_mode = 2
+text = " Orthoganolise Normals"
+
+[node name="RoughnessVBox" type="VBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/NormalRoughnessPanel/MarginContainer/HBoxContainer" unique_id=875581449]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="RoughnessLabel" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/NormalRoughnessPanel/MarginContainer/HBoxContainer/RoughnessVBox" unique_id=1564598879]
+layout_mode = 2
+text = "Roughness texture"
+
+[node name="RoughnessHBox" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/NormalRoughnessPanel/MarginContainer/HBoxContainer/RoughnessVBox" unique_id=1850042770]
+layout_mode = 2
+
+[node name="LineEdit" type="LineEdit" parent="PanelContainer/MarginContainer/VBoxContainer/NormalRoughnessPanel/MarginContainer/HBoxContainer/RoughnessVBox/RoughnessHBox" unique_id=1567416403]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PickButton" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer/NormalRoughnessPanel/MarginContainer/HBoxContainer/RoughnessVBox/RoughnessHBox" unique_id=1383812117]
+layout_mode = 2
+
+[node name="ClearButton" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer/NormalRoughnessPanel/MarginContainer/HBoxContainer/RoughnessVBox/RoughnessHBox" unique_id=1402460826]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer/NormalRoughnessPanel/MarginContainer/HBoxContainer/RoughnessVBox" unique_id=998791180]
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_constants/margin_top = 10
+
+[node name="Panel" type="Panel" parent="PanelContainer/MarginContainer/VBoxContainer/NormalRoughnessPanel/MarginContainer/HBoxContainer/RoughnessVBox/MarginContainer" unique_id=1782929865]
+custom_minimum_size = Vector2(110, 110)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_cb0xf")
+
+[node name="TextureRect" type="TextureRect" parent="PanelContainer/MarginContainer/VBoxContainer/NormalRoughnessPanel/MarginContainer/HBoxContainer/RoughnessVBox/MarginContainer/Panel" unique_id=1264779161]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -50.0
+offset_top = -50.0
+offset_right = 50.0
+offset_bottom = 50.0
+grow_horizontal = 2
+grow_vertical = 2
+expand_mode = 1
+
+[node name="TextureButton" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer/NormalRoughnessPanel/MarginContainer/HBoxContainer/RoughnessVBox/MarginContainer/Panel" unique_id=1793383661]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/normal = SubResource("StyleBoxEmpty_7qdas")
+
+[node name="RoughnessWHHBox" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/NormalRoughnessPanel/MarginContainer/HBoxContainer/RoughnessVBox" unique_id=1835521083]
+layout_mode = 2
+alignment = 1
+
+[node name="RoughnessW" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/NormalRoughnessPanel/MarginContainer/HBoxContainer/RoughnessVBox/RoughnessWHHBox" unique_id=138737355]
+layout_mode = 2
+horizontal_alignment = 1
+
+[node name="RoughnessH" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/NormalRoughnessPanel/MarginContainer/HBoxContainer/RoughnessVBox/RoughnessWHHBox" unique_id=916243389]
+layout_mode = 2
+horizontal_alignment = 1
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/NormalRoughnessPanel/MarginContainer/HBoxContainer/RoughnessVBox" unique_id=954512105]
+layout_mode = 2
+alignment = 1
+
+[node name="InvertSmoothCheckBox" type="CheckBox" parent="PanelContainer/MarginContainer/VBoxContainer/NormalRoughnessPanel/MarginContainer/HBoxContainer/RoughnessVBox/HBoxContainer2" unique_id=1563943136]
+layout_mode = 2
+text = " Convert Smoothness to Roughness"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/NormalRoughnessPanel/MarginContainer/HBoxContainer/RoughnessVBox" unique_id=1301071490]
+layout_mode = 2
+alignment = 1
+
+[node name="RoughnessChannelLabel" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/NormalRoughnessPanel/MarginContainer/HBoxContainer/RoughnessVBox/HBoxContainer" unique_id=394562371]
+layout_mode = 2
+text = " Source Channel: "
+horizontal_alignment = 2
+
+[node name="RoughnessChannelR" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer/NormalRoughnessPanel/MarginContainer/HBoxContainer/RoughnessVBox/HBoxContainer" unique_id=835129255]
+layout_mode = 2
+toggle_mode = true
+button_pressed = true
+button_group = SubResource("ButtonGroup_bs6ki")
+text = "R"
+
+[node name="RoughnessChannelG" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer/NormalRoughnessPanel/MarginContainer/HBoxContainer/RoughnessVBox/HBoxContainer" unique_id=1614654637]
+layout_mode = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_bs6ki")
+text = "G"
+
+[node name="RoughnessChannelB" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer/NormalRoughnessPanel/MarginContainer/HBoxContainer/RoughnessVBox/HBoxContainer" unique_id=1968513231]
+layout_mode = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_bs6ki")
+text = "B"
+
+[node name="RoughnessChannelA" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer/NormalRoughnessPanel/MarginContainer/HBoxContainer/RoughnessVBox/HBoxContainer" unique_id=1566220336]
+layout_mode = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_bs6ki")
+text = "A"
+
+[node name="GeneralOptionsLabel" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1458065160]
+layout_mode = 2
+text = "General Options"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="GeneralOptionsHBox" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1918923723]
+layout_mode = 2
+alignment = 1
+
+[node name="ResizeToggle" type="CheckBox" parent="PanelContainer/MarginContainer/VBoxContainer/GeneralOptionsHBox" unique_id=223237733]
+layout_mode = 2
+text = " Resize Packed Image"
+
+[node name="ResizeOptionButton" type="SpinBox" parent="PanelContainer/MarginContainer/VBoxContainer/GeneralOptionsHBox" unique_id=1547443319]
+visible = false
+layout_mode = 2
+tooltip_text = "A value of 0 disables resizing."
+min_value = 128.0
+max_value = 4096.0
+step = 128.0
+value = 1024.0
+
+[node name="VSeparator" type="VSeparator" parent="PanelContainer/MarginContainer/VBoxContainer/GeneralOptionsHBox" unique_id=2043646873]
+layout_mode = 2
+
+[node name="GenerateMipmapsCheckBox" type="CheckBox" parent="PanelContainer/MarginContainer/VBoxContainer/GeneralOptionsHBox" unique_id=405596894]
+layout_mode = 2
+button_pressed = true
+text = "Generate Mipmaps"
+
+[node name="HighQualityCheckBox" type="CheckBox" parent="PanelContainer/MarginContainer/VBoxContainer/GeneralOptionsHBox" unique_id=591248585]
+layout_mode = 2
+text = "Import High Quality"
+
+[node name="PackButton" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1910203403]
+layout_mode = 2
+text = "Pack textures as..."
+
+[node name="StatusLabel" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1919269235]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1719926200]
+layout_mode = 2
+alignment = 1
+
+[node name="CloseButton" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" unique_id=473651050]
+layout_mode = 2
+text = "Close"
+
+[connection signal="toggled" from="PanelContainer/MarginContainer/VBoxContainer/GeneralOptionsHBox/ResizeToggle" to="PanelContainer/MarginContainer/VBoxContainer/GeneralOptionsHBox/ResizeOptionButton" method="set_visible"]
