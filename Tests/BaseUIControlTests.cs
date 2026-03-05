@@ -18,10 +18,10 @@ namespace Radspire.Tests {
             service.HandleHover(mockControl);
 
             if(!mockControl.WasFocusedCalled) {
-                Assert.Fail("HoverFocusLogic did not set focus on the control.");
+                Assert.Fail("Hover Focus did not set focus on the control.");
             }
             else {
-                Assert.Pass("HoverFocusLogic correctly set focus on the control.");
+                Assert.Pass("Hover Focus correctly set focus on the control.");
             }
         }
     }
