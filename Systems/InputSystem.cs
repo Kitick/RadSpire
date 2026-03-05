@@ -4,12 +4,15 @@ namespace Services {
 	using Godot;
 
 	public sealed partial class InputSystem : Node {
-		public static readonly LogService Log = new(nameof(InputSystem), enabled: false);
+		public static readonly LogService Log = new(nameof(InputSystem), enabled: true);
 
 		public static InputSystem Instance { get; private set; } = null!;
 
 		public event Action<ActionEvent>? OnActionPressed;
 		public event Action<ActionEvent>? OnActionReleased;
+
+		public event Action<InputEventMouseMotion>? OnMouseMoved;
+		public event Action<InputEventJoypadMotion>? OnJoypadMoved;
 
 		public override void _Ready() {
 			Instance = this;
@@ -20,9 +23,11 @@ namespace Services {
 		public override void _Input(InputEvent input) {
 			if(input is InputEventMouseMotion mouse) {
 				Log.Info($"Mouse moved {mouse.Relative}");
+				OnMouseMoved?.Invoke(mouse);
 			}
 			else if(input is InputEventJoypadMotion joypad) {
 				Log.Info($"Joypad moved {joypad.Axis} : {joypad.AxisValue}");
+				OnJoypadMoved?.Invoke(joypad);
 			}
 			else {
 				CheckActionEvents(input);
@@ -108,6 +113,12 @@ namespace Services {
 		public static readonly ActionEvent HotbarNext = new("HotbarNext");
 		public static readonly ActionEvent HotbarPrev = new("HotbarPrev");
 
+		public static readonly ActionEvent CameraReset = new("CameraReset");
+		public static readonly ActionEvent CameraPan = new("PanCamera");
+		public static readonly ActionEvent CameraRotate = new("RotateCamera");
+		public static readonly ActionEvent ZoomIn = new("ZoomIn");
+		public static readonly ActionEvent ZoomOut = new("ZoomOut");
+
 		public static IEnumerable<ActionEvent> Actions() {
 			yield return MoveForward;
 			yield return MoveBack;
@@ -141,6 +152,12 @@ namespace Services {
 			yield return Hotbar5;
 			yield return HotbarNext;
 			yield return HotbarPrev;
+
+			yield return CameraReset;
+			yield return CameraPan;
+			yield return CameraRotate;
+			yield return ZoomIn;
+			yield return ZoomOut;
 		}
 	}
 }

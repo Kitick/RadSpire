@@ -1,10 +1,9 @@
-using System;
-using Camera;
-using Core;
-using Godot;
-using Services;
-
 namespace Camera {
+	using System;
+	using Core;
+	using Godot;
+	using Services;
+
 	public sealed partial class CameraRig : Node3D, ISaveable<CameraRigData> {
 		public enum CameraState { Idle, Following };
 		public CameraState State { get; private set; } = CameraState.Following;
@@ -15,20 +14,20 @@ namespace Camera {
 			Pitch = 45f,
 		};
 
+		[Export] private Camera3D Camera = null!;
+		private readonly CameraDrag Drag = new();
+
 		public Node3D? Target;
-		private Camera3D camera = null!;
-
-		private readonly CameraDrag Drag = new CameraDrag();
-
-		public float FollowSpeed = 5.0f;
-
-		private const string Camera3D = "Camera3D";
 
 		public override void _Ready() {
 			Drag.ResetTimer.Timeout += Reset;
 			AddChild(Drag.ResetTimer);
 
-			camera = GetNode<Camera3D>(Camera3D);
+			InitInput();
+		}
+
+		public override void _ExitTree() {
+			Unsubscribe?.Invoke();
 		}
 
 		public override void _PhysicsProcess(double delta) {
