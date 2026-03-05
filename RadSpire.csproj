@@ -9,4 +9,7 @@
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
 	</PropertyGroup>
+	<ItemGroup>
+		<Compile Remove="Tests\**" />
+	</ItemGroup>
 </Project>
