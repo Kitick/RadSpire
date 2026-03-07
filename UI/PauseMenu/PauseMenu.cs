@@ -1,8 +1,10 @@
+using Core;
 using Godot;
 using Services.Network;
 
 namespace UI {
 	public sealed partial class PauseMenu : Control {
+		[ExportCategory("Buttons")]
 		[Export] public Button ResumeButton = null!;
 		[Export] public Button SaveButton = null!;
 		[Export] public Button HostButton = null!;
@@ -10,6 +12,7 @@ namespace UI {
 		[Export] public Button MainMenuButton = null!;
 
 		public override void _Ready() {
+			this.ValidateExports();
 			ProcessMode = ProcessModeEnum.WhenPaused;
 		}
 

@@ -1,3 +1,4 @@
+using Core;
 using Godot;
 using Services;
 
@@ -36,6 +37,8 @@ namespace Character {
 		}
 
 		public override void _Ready() {
+			this.ValidateExports();
+
 			Player.OnStateChanged += OnPlayerMovement;
 			SetupAnimations();
 			SyncAnimation(Player.CurrentState);

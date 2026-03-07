@@ -1,4 +1,5 @@
 using System;
+using Core;
 using Godot;
 using Services;
 
@@ -31,6 +32,7 @@ namespace UI {
 		public static string SlotFile(int slot) => $"slot{slot}";
 
 		public override void _Ready() {
+			this.ValidateExports();
 			ProcessMode = ProcessModeEnum.Always;
 
 			GenerateSlots();

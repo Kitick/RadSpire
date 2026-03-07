@@ -1,5 +1,5 @@
 using System;
-using System.Linq;
+using Core;
 using Godot;
 using Services;
 using Services.Settings;
@@ -54,6 +54,7 @@ namespace UI.Settings {
 		private event Action? OnExit;
 
 		public override void _Ready() {
+			this.ValidateExports();
 			ProcessMode = ProcessModeEnum.Always;
 
 			SetCallbacks();

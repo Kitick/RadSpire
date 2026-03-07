@@ -35,6 +35,8 @@ namespace UI.Settings {
 
 		// Main
 		public override void _Ready() {
+			this.ValidateExports();
+
 			ResolutionOption.Populate(Resolutions);
 			FramerateOption.Populate(Framerates);
 

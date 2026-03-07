@@ -52,6 +52,7 @@ namespace UI {
 		}
 
 		public override void _Ready() {
+			this.ValidateExports();
 			ProcessMode = ProcessModeEnum.Always;
 
 			SetCallbacks();

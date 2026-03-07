@@ -58,6 +58,8 @@ namespace UI {
 		public event Action? OnQuit;
 
 		public override void _Ready() {
+			this.ValidateExports();
+
 			UpdateContinueButtonState();
 			SetCallbacks();
 		}

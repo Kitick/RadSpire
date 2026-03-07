@@ -1,3 +1,4 @@
+using Core;
 using Godot;
 using Services.Settings;
 
@@ -10,6 +11,7 @@ namespace UI.Settings {
 		[Export] private Button RemapButtonsButton = null!;
 
 		public override void _Ready() {
+			this.ValidateExports();
 			SetCallbacks();
 		}
 
