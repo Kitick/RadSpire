@@ -6,6 +6,7 @@ namespace Camera {
 	public sealed partial class CameraRig {
 		[Export] public float PanSensitivity = 0.1f;
 		[Export] public float RotateSensitivity = 0.5f;
+		[Export] public float JoystickRotateSensitivity = 150f;
 		[Export] public float FollowSpeed = 5.0f;
 		[Export] public float ZoomSpeed = 1.0f;
 
@@ -59,6 +60,14 @@ namespace Camera {
 				Pose.Heading -= delta.X;
 				Pose.Pitch += delta.Y;
 			}
+		}
+
+		public void HandleJoystickRotation(float dt) {
+			float x = Input.GetJoyAxis(0, JoyAxis.RightX);
+			float y = Input.GetJoyAxis(0, JoyAxis.RightY);
+
+			if(Mathf.Abs(x) > 0.1f) { Pose.Heading -= x * JoystickRotateSensitivity * dt; }
+			if(Mathf.Abs(y) > 0.1f) { Pose.Pitch += y * JoystickRotateSensitivity * dt; }
 		}
 	}
 }
