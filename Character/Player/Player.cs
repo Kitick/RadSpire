@@ -1,6 +1,5 @@
 namespace Character {
 	using Components;
-	using Core;
 	using Godot;
 	using Services;
 	using ItemSystem;
@@ -50,7 +49,6 @@ namespace Character {
 			AddChild(InventoryManager);
 			AddChild(UseItemComponent);
 			SetupChildren();
-			this.Hurt(50); // For testing purposes, start the player hurt.
 		}
 
 		public override void _ExitTree() {
