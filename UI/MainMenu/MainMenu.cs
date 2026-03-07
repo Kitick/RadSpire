@@ -1,12 +1,11 @@
-using System;
-using Core;
-using Godot;
-using Services;
-using Services.Settings;
-using UI.Multiplayer;
-using UI.Settings;
-
 namespace UI {
+	using System;
+	using Core;
+	using Godot;
+	using Services;
+	using UI.Multiplayer;
+	using UI.Settings;
+
 	public sealed partial class MainMenu : BaseUIControl {
 		private static readonly LogService Log = new(nameof(MainMenu), enabled: true);
 
@@ -128,7 +127,7 @@ namespace UI {
 		private void OpenSaveMenu() {
 			var saveMenu = this.AddScene<SaveMenu>(SaveMenuScene);
 			saveMenu.OnLoad += fileName => OnLoadGame?.Invoke(fileName);
-			saveMenu.OpenMenu(SaveMenuMode.Load);
+			saveMenu.OpenMenu(SaveMenu.SaveMode.Load);
 		}
 
 		private void OpenHostPanel() {
@@ -165,7 +164,7 @@ namespace UI {
 				SetPopupState(MenuState.SinglePopup);
 			}
 			else if(focused == MultiplayerButton || focused == HostNewButton ||
-			        focused == HostSavedButton || focused == JoinGameButton) {
+					focused == HostSavedButton || focused == JoinGameButton) {
 				SetPopupState(MenuState.MultiPopup);
 			}
 			else {

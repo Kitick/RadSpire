@@ -2,6 +2,7 @@ namespace Components {
 	using Camera;
 	using Core;
 	using Godot;
+	using Services;
 
 	public sealed class KeyInput {
 		public Vector3 HorizontalInput { get; private set; }
@@ -15,14 +16,14 @@ namespace Components {
 
 		public void Update(CameraRig camera) {
 			HorizontalInput = GetHorizontalMovement(camera);
-			JumpPressed = Input.IsActionJustPressed(Actions.Jump);
-			SprintHeld = Input.IsActionPressed(Actions.Sprint);
-			CrouchHeld = Input.IsActionPressed(Actions.Crouch);
-			AttackPressed = Input.IsActionPressed(Actions.Attack);
+			JumpPressed = Input.IsActionJustPressed(ActionEvent.Jump.Name);
+			SprintHeld = Input.IsActionPressed(ActionEvent.Sprint.Name);
+			CrouchHeld = Input.IsActionPressed(ActionEvent.Crouch.Name);
+			AttackPressed = Input.IsActionPressed(ActionEvent.Attack.Name);
 		}
 
 		private static Vector3 GetHorizontalMovement(CameraRig camera) {
-			Vector2 inputVector = Input.GetVector(Actions.MoveLeft, Actions.MoveRight, Actions.MoveForward, Actions.MoveBack);
+			Vector2 inputVector = Input.GetVector(ActionEvent.MoveLeft.Name, ActionEvent.MoveRight.Name, ActionEvent.MoveForward.Name, ActionEvent.MoveBack.Name);
 
 			Vector3 direction = new Vector3(inputVector.X, 0, inputVector.Y);
 
