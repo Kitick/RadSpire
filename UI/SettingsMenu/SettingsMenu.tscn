@@ -372,7 +372,7 @@ offset_top = -16.0
 offset_bottom = 16.0
 theme_override_font_sizes/font_size = 20
 
-[node name="Controller" type="VBoxContainer" parent="." unique_id=1706615415 node_paths=PackedStringArray("VibrationCheckBox", "DeadzoneSlider", "RemapButtonsButton")]
+[node name="Controller" type="VBoxContainer" parent="." unique_id=1706615415 node_paths=PackedStringArray("VibrationCheckBox", "DeadzoneSlider", "ControllerSensitivitySlider", "RemapButtonsButton")]
 layout_mode = 1
 anchors_preset = 14
 anchor_top = 0.5
@@ -388,6 +388,7 @@ theme_override_constants/separation = 0
 script = ExtResource("5_jh1wv")
 VibrationCheckBox = NodePath("Vibration/CheckBox")
 DeadzoneSlider = NodePath("Deadzone/HSlider")
+ControllerSensitivitySlider = NodePath("Controller_Sense/HSlider")
 RemapButtonsButton = NodePath("Remap_Buttons")
 
 [node name="Controller_Sense" type="Label" parent="Controller" unique_id=1958249126]
@@ -406,6 +407,7 @@ offset_left = 6.0
 offset_top = -16.0
 offset_right = 231.0
 offset_bottom = 16.0
+max_value = 300.0
 
 [node name="Vibration" type="Label" parent="Controller" unique_id=765539001]
 layout_mode = 2
@@ -484,6 +486,8 @@ offset_left = 6.0
 offset_top = -16.0
 offset_right = 231.0
 offset_bottom = 16.0
+max_value = 2.0
+step = 0.1
 
 [node name="Invert_Y-Axis" type="Label" parent="MK" unique_id=648042255]
 layout_mode = 2

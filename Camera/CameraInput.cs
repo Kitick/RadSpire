@@ -65,8 +65,12 @@ namespace Camera {
 		}
 
 		public void HandleJoystickRotation(float dt) {
-			float x = Input.GetJoyAxis(0, JoyAxis.RightX);
-			float y = Input.GetJoyAxis(0, JoyAxis.RightY);
+			var joypads = Input.GetConnectedJoypads();
+			if(joypads.Count == 0) { return; }
+
+			int device = joypads[0];
+			float x = Input.GetJoyAxis(device, JoyAxis.RightX);
+			float y = Input.GetJoyAxis(device, JoyAxis.RightY);
 
 			if(Mathf.Abs(x) > 0.1f) { Pose.Heading -= x * JoystickRotateSensitivity * dt; }
 			if(Mathf.Abs(y) > 0.1f) { Pose.Pitch += y * JoystickRotateSensitivity * dt; }

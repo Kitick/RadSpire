@@ -16,7 +16,7 @@ namespace Services.Settings {
 
 		public static readonly Setting<float> ControllerSensitivity = new(
 			name: nameof(ControllerSensitivity),
-			getActual: () => default,
+			getActual: () => ControllerSensitivity!.Target,
 			setActual: v => { },
 			defaultValue: 150f
 		);
