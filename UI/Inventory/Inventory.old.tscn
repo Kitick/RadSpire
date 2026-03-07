@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://m00q7guersgc"]
 
-[ext_resource type="Texture2D" uid="uid://8ykhw0g480u8" path="res://Assets/Images/Icons/sword.png" id="1_ck2mn"]
+[ext_resource type="Texture2D" uid="uid://8ykhw0g480u8" path="res://Assets/Images/Icons/sword.png" id="1_v2lg7"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7pfaa"]
 bg_color = Color(0.6066884, 0.5630471, 0.49756545, 1)
@@ -62,7 +62,7 @@ offset_left = 5.0
 offset_top = 5.0
 offset_right = -5.0
 offset_bottom = -5.0
-texture = ExtResource("1_ck2mn")
+texture = ExtResource("1_v2lg7")
 expand_mode = 1
 
 [node name="ItemCountLabel" type="Label" parent="Background/GridBackground/GridContainer/InvSlot1" unique_id=1988963731]
