@@ -83,13 +83,20 @@ namespace Character {
 		private void UpdateMovementState(KeyInput keyInput) {
 			if(keyInput.AttackPressed) {
 				StateMachine.TransitionTo(State.Attacking);
+				return;
 			}
+
+			if(StateMachine.CurrentState == State.Attacking) { return; }
 
 			if(!IsOnFloor()) { StateMachine.TransitionTo(State.Falling); }
 			else if(!keyInput.IsMoving) { StateMachine.TransitionTo(State.Idle); }
 			else if(keyInput.SprintHeld) { StateMachine.TransitionTo(State.Sprinting); }
 			else if(keyInput.CrouchHeld) { StateMachine.TransitionTo(State.Crouching); }
 			else { StateMachine.TransitionTo(State.Walking); }
+		}
+
+		public void OnAttackFinished() {
+			StateMachine.TransitionTo(State.Idle);
 		}
 
 		private float GetMultiplier() {

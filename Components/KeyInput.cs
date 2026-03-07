@@ -16,10 +16,10 @@ namespace Components {
 
 		public void Update(CameraRig camera) {
 			HorizontalInput = GetHorizontalMovement(camera);
-			JumpPressed = Input.IsActionJustPressed(ActionEvent.Jump.Name);
-			SprintHeld = Input.IsActionPressed(ActionEvent.Sprint.Name);
-			CrouchHeld = Input.IsActionPressed(ActionEvent.Crouch.Name);
-			AttackPressed = Input.IsActionPressed(ActionEvent.Attack.Name);
+			JumpPressed = ActionEvent.Jump.IsJustPressed();
+			SprintHeld = ActionEvent.Sprint.IsPressed();
+			CrouchHeld = ActionEvent.Crouch.IsPressed();
+			AttackPressed = ActionEvent.Attack.IsJustPressed();
 		}
 
 		private static Vector3 GetHorizontalMovement(CameraRig camera) {

@@ -71,6 +71,10 @@ namespace Services {
 			return Input.IsActionPressed(keyEvent.Name);
 		}
 
+		public static bool IsJustPressed(this ActionEvent keyEvent) {
+			return Input.IsActionJustPressed(keyEvent.Name);
+		}
+
 		public static bool IsReleased(this ActionEvent keyEvent) {
 			return !IsPressed(keyEvent);
 		}
