@@ -4,9 +4,9 @@ using Services.Settings;
 namespace UI.Settings {
 	public sealed partial class ControllerPanel : VBoxContainer {
 
-		[Export] private CheckBox EnableControllerCheckBox = null!;
 		[Export] private CheckBox VibrationCheckBox = null!;
 		[Export] private HSlider DeadzoneSlider = null!;
+		[Export] private HSlider ControllerSensitivitySlider = null!;
 		[Export] private Button RemapButtonsButton = null!;
 
 		public override void _Ready() {
@@ -14,9 +14,9 @@ namespace UI.Settings {
 		}
 
 		private void SetCallbacks() {
-			EnableControllerCheckBox.Toggled += ControllerSettings.EnableController.Apply;
 			VibrationCheckBox.Toggled += ControllerSettings.Vibration.Apply;
 			DeadzoneSlider.ValueChanged += (value) => ControllerSettings.Deadzone.Apply((float) value);
+			ControllerSensitivitySlider.ValueChanged += (value) => ControllerSettings.ControllerSensitivity.Apply((float) value);
 			RemapButtonsButton.Pressed += OnRemapButtonsPressed;
 		}
 
@@ -25,9 +25,9 @@ namespace UI.Settings {
 		}
 
 		public void Refresh() {
-			EnableControllerCheckBox.ButtonPressed = ControllerSettings.EnableController.Target;
 			VibrationCheckBox.ButtonPressed = ControllerSettings.Vibration.Target;
 			DeadzoneSlider.Value = ControllerSettings.Deadzone.Target;
+			ControllerSensitivitySlider.Value = ControllerSettings.ControllerSensitivity.Target;
 		}
 	}
 }

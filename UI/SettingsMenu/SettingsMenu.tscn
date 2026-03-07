@@ -90,9 +90,9 @@ anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
 offset_left = 64.0
-offset_top = -444.0
+offset_top = -440.0
 offset_right = -1688.0
-offset_bottom = -309.0
+offset_bottom = -305.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 0
@@ -163,9 +163,9 @@ anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
 offset_left = 64.0
-offset_top = -444.0
+offset_top = -440.0
 offset_right = -1688.0
-offset_bottom = -219.0
+offset_bottom = -215.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 0
@@ -273,10 +273,10 @@ anchors_preset = 14
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
-offset_left = 64.0
-offset_top = -444.0
-offset_right = -1622.0
-offset_bottom = -219.0
+offset_left = 63.5
+offset_top = -440.0
+offset_right = -1621.5
+offset_bottom = -215.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 0
@@ -372,32 +372,30 @@ offset_top = -16.0
 offset_bottom = 16.0
 theme_override_font_sizes/font_size = 20
 
-[node name="Controller" type="VBoxContainer" parent="." unique_id=1706615415 node_paths=PackedStringArray("EnableControllerCheckBox", "VibrationCheckBox", "DeadzoneSlider", "RemapButtonsButton")]
-visible = false
+[node name="Controller" type="VBoxContainer" parent="." unique_id=1706615415 node_paths=PackedStringArray("VibrationCheckBox", "DeadzoneSlider", "RemapButtonsButton")]
 layout_mode = 1
 anchors_preset = 14
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
-offset_left = 58.0
-offset_top = -444.0
-offset_right = -1594.0
-offset_bottom = -256.0
+offset_left = 65.0
+offset_top = -440.0
+offset_right = -1586.0
+offset_bottom = -207.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 0
 script = ExtResource("5_jh1wv")
-EnableControllerCheckBox = NodePath("Enable_Controller/CheckBox")
 VibrationCheckBox = NodePath("Vibration/CheckBox")
 DeadzoneSlider = NodePath("Deadzone/HSlider")
 RemapButtonsButton = NodePath("Remap_Buttons")
 
-[node name="Enable_Controller" type="Label" parent="Controller" unique_id=554200959]
+[node name="Controller_Sense" type="Label" parent="Controller" unique_id=1958249126]
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
-text = "Enable Controller"
+text = "Joystick Sense"
 
-[node name="CheckBox" type="CheckBox" parent="Controller/Enable_Controller" unique_id=398049958]
+[node name="HSlider" type="HSlider" parent="Controller/Controller_Sense" unique_id=1178069278]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 1.0
@@ -405,9 +403,9 @@ anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
 offset_left = 6.0
-offset_top = -24.0
-offset_bottom = 8.0
-scale = Vector2(1.5, 1.5)
+offset_top = -16.0
+offset_right = 231.0
+offset_bottom = 16.0
 
 [node name="Vibration" type="Label" parent="Controller" unique_id=765539001]
 layout_mode = 2
@@ -447,6 +445,7 @@ offset_bottom = 16.0
 layout_mode = 2
 size_flags_horizontal = 0
 theme_override_font_sizes/font_size = 32
+disabled = true
 text = "Remap Buttons"
 
 [node name="MK" type="VBoxContainer" parent="." unique_id=1252852007 node_paths=PackedStringArray("MouseSenseSlider", "InvertedYAxisCheckBox", "RawInputCheckBox", "RemapKeysButton")]
@@ -457,9 +456,9 @@ anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
 offset_left = 64.0
-offset_top = -444.0
+offset_top = -440.0
 offset_right = -1588.0
-offset_bottom = -256.0
+offset_bottom = -252.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 0
@@ -525,6 +524,7 @@ scale = Vector2(1.5, 1.5)
 layout_mode = 2
 size_flags_horizontal = 0
 theme_override_font_sizes/font_size = 32
+disabled = true
 text = "Remap Keys"
 
 [node name="Accessibility" type="VBoxContainer" parent="." unique_id=229276971 node_paths=PackedStringArray("SubtitlesCheckBox", "SubtitleSizeSlider", "ColorblindModeOption", "TextToSpeechCheckBox", "HighContrastUICheckBox")]
@@ -535,9 +535,9 @@ anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
 offset_left = 64.0
-offset_top = -444.0
+offset_top = -440.0
 offset_right = -1600.0
-offset_bottom = -219.0
+offset_bottom = -215.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 0

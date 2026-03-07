@@ -2,13 +2,15 @@ namespace Camera {
 	using System;
 	using Godot;
 	using Services;
+	using Services.Settings;
 
 	public sealed partial class CameraRig {
 		[Export] public float PanSensitivity = 0.1f;
-		[Export] public float RotateSensitivity = 0.5f;
-		[Export] public float JoystickRotateSensitivity = 150f;
 		[Export] public float FollowSpeed = 5.0f;
 		[Export] public float ZoomSpeed = 1.0f;
+
+		private float MouseRotateSensitivity => MouseKeyboardSettings.MouseSensitivity.Target;
+		private float JoystickRotateSensitivity => ControllerSettings.ControllerSensitivity.Target;
 
 		private bool IsPanning = false;
 		private bool IsRotating = false;
@@ -56,7 +58,7 @@ namespace Camera {
 				Drag.Move(new Vector3(delta.X, 0, delta.Y));
 			}
 			if(IsRotating) {
-				Vector2 delta = motion.ScreenRelative * RotateSensitivity;
+				Vector2 delta = motion.ScreenRelative * MouseRotateSensitivity;
 				Pose.Heading -= delta.X;
 				Pose.Pitch += delta.Y;
 			}

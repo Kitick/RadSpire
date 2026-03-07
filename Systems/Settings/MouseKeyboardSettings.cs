@@ -6,7 +6,7 @@ namespace Services.Settings {
 			name: nameof(MouseSensitivity),
 			getActual: () => default,
 			setActual: v => { },
-			defaultValue: 1.0f
+			defaultValue: 0.5f
 		);
 
 		public static readonly Setting<bool> InvertedYAxis = new(
