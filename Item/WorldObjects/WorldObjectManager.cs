@@ -11,10 +11,11 @@ namespace Objects {
 		private readonly WorldObjects WorldObjects = new WorldObjects();
 		private readonly WorldObjectNodes WorldObjectNodes = new WorldObjectNodes();
 		private ObjectNodeFactory ObjectNodeFactory = null!;
+		private Node GameWorldNode = null!;
 		private Node WorldObjectParentNode = null!;
 		private bool SetUpComplete = false;
 
-		public void SetUpWorldObjectManager(Node parentNode) {
+		public void SetUpWorldObjectManager(Node parentNode, Node gameWorldNode) {
 			if(SetUpComplete) {
 				Log.Warn("SetUpWorldObjectManager called more than once. Ignoring duplicate call.");
 				return;
@@ -23,9 +24,13 @@ namespace Objects {
 				Log.Error("SetUpWorldObjectManager called with null parent node.");
 				return;
 			}
-
+			if(gameWorldNode == null) {
+				Log.Error("SetUpWorldObjectManager called with null game world node.");
+				return;
+			}
+			GameWorldNode = gameWorldNode;
 			WorldObjectParentNode = parentNode;
-			List<WorldObjectSpawnPoint> spawnPoints = GetSpawnPointsRecursive(WorldObjectParentNode);
+			List<WorldObjectSpawnPoint> spawnPoints = GetSpawnPointsRecursive(GameWorldNode);
 			foreach(WorldObjectSpawnPoint objNode in spawnPoints) {
 				if(!GodotObject.IsInstanceValid(objNode)) {
 					continue;
@@ -46,8 +51,15 @@ namespace Objects {
 					Log.Warn($"Skipping spawn point '{objNode.Name}' because world object registration failed.");
 				}
 			}
-			foreach(var child in WorldObjectParentNode.GetChildren()) {
-				child.QueueFree();
+			foreach(WorldObjectSpawnPoint spawnPoint in spawnPoints) {
+				ObjectNode? node = spawnPoint.GetParent<ObjectNode>();
+				if(node != null) {
+					node.QueueFree();
+				}
+				else {
+					Log.Warn($"Spawn point '{spawnPoint.Name}' does not have an ObjectNode parent.");
+					spawnPoint.QueueFree();
+				}
 			}
 			ObjectNodeFactory = new ObjectNodeFactory(WorldObjectParentNode);
 			foreach(Object obj in WorldObjects.Objects.Values) {
