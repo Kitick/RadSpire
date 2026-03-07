@@ -60,6 +60,7 @@ text = "SAVE"
 [node name="Host" type="Button" parent="PanelArea/Buttons" unique_id=715289411]
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
+disabled = true
 text = "HOST"
 
 [node name="Settings" type="Button" parent="PanelArea/Buttons" unique_id=305439042]
