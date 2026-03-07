@@ -1,268 +1,266 @@
 namespace Objects {
-    using System;
-    using Godot;
-    using Services;
-    using ItemSystem;
+	using System;
 	using System.Collections.Generic;
+	using Godot;
+	using ItemSystem;
+	using Services;
 
 	public partial class WorldObjectManager : Node, ISaveable<WorldObjectManagerData> {
-        private static readonly LogService Log = new(nameof(WorldObjectManager), enabled: true);
-        private WorldObjects WorldObjects { get; set; } = new WorldObjects();
-        private WorldObjectNodes WorldObjectNodes { get; set; } = new WorldObjectNodes();
-        private ObjectNodeFactory ObjectNodeFactory = null!;
-        private Node WorldObjectParentNode = null!;
-        private bool SetUpComplete = false;
+		private static readonly LogService Log = new(nameof(WorldObjectManager), enabled: true);
 
-        public void SetUpWorldObjectManager(Node parentNode) {
-            if(SetUpComplete) {
-                Log.Warn("SetUpWorldObjectManager called more than once. Ignoring duplicate call.");
-                return;
-            }
-            if(parentNode == null) {
-                Log.Error("SetUpWorldObjectManager called with null parent node.");
-                return;
-            }
+		private readonly WorldObjects WorldObjects = new WorldObjects();
+		private readonly WorldObjectNodes WorldObjectNodes = new WorldObjectNodes();
+		private ObjectNodeFactory ObjectNodeFactory = null!;
+		private Node WorldObjectParentNode = null!;
+		private bool SetUpComplete = false;
 
-            WorldObjectParentNode = parentNode;
-            List<WorldObjectSpawnPoint> spawnPoints = GetSpawnPointsRecursive(WorldObjectParentNode);
-            foreach(WorldObjectSpawnPoint objNode in spawnPoints) {
-                if(!GodotObject.IsInstanceValid(objNode)) {
-                    continue;
-                }
+		public void SetUpWorldObjectManager(Node parentNode) {
+			if(SetUpComplete) {
+				Log.Warn("SetUpWorldObjectManager called more than once. Ignoring duplicate call.");
+				return;
+			}
+			if(parentNode == null) {
+				Log.Error("SetUpWorldObjectManager called with null parent node.");
+				return;
+			}
 
-                string itemId = objNode.ItemId;
-                if(string.IsNullOrWhiteSpace(itemId)) {
-                    Log.Warn($"Skipping spawn point '{objNode.Name}' because ItemId is empty.");
-                    continue;
-                }
+			WorldObjectParentNode = parentNode;
+			List<WorldObjectSpawnPoint> spawnPoints = GetSpawnPointsRecursive(WorldObjectParentNode);
+			foreach(WorldObjectSpawnPoint objNode in spawnPoints) {
+				if(!GodotObject.IsInstanceValid(objNode)) {
+					continue;
+				}
 
-                if(ItemDataBaseManager.Instance.GetItemDefinitionById(itemId) == null) {
-                    Log.Warn($"Skipping spawn point '{objNode.Name}' because ItemId '{itemId}' is not registered.");
-                    continue;
-                }
-                Object obj = new Object(itemId, objNode.GlobalPosition, objNode.GlobalRotation);
-                if(!WorldObjects.RegisterWorldObject(obj)) {
-                    Log.Warn($"Skipping spawn point '{objNode.Name}' because world object registration failed.");
-                }
-            }
-            foreach(var child in WorldObjectParentNode.GetChildren()) {
-                child.QueueFree();
-            }
-            ObjectNodeFactory = new ObjectNodeFactory(WorldObjectParentNode);
-            foreach(Object obj in WorldObjects.Objects.Values) {
-                ObjectNode? node = ObjectNodeFactory.Spawn(obj);
-                if(node == null) {
-                    Log.Error($"Failed to spawn world object with ID {obj.Id} and ItemId {obj.ItemId}");
-                    continue;
-                }
-                WorldObjectNodes.AddObjectNode(node);
-            }
-            WorldObjects.OnWorldObjectAdded += HandleOnWorldObjectAdded;
-            WorldObjects.OnWorldObjectRemoved += HandleOnWorldObjectRemoved;
-            SetUpComplete = true;
-        }
+				string itemId = objNode.ItemId;
+				if(string.IsNullOrWhiteSpace(itemId)) {
+					Log.Warn($"Skipping spawn point '{objNode.Name}' because ItemId is empty.");
+					continue;
+				}
 
-        public override void _ExitTree() {
-            if(!SetUpComplete) {
-                return;
-            }
-            WorldObjects.OnWorldObjectAdded -= HandleOnWorldObjectAdded;
-            WorldObjects.OnWorldObjectRemoved -= HandleOnWorldObjectRemoved;
-        }
+				if(ItemDataBaseManager.Instance.GetItemDefinitionById(itemId) == null) {
+					Log.Warn($"Skipping spawn point '{objNode.Name}' because ItemId '{itemId}' is not registered.");
+					continue;
+				}
+				Object obj = new Object(itemId, objNode.GlobalPosition, objNode.GlobalRotation);
+				if(!WorldObjects.RegisterWorldObject(obj)) {
+					Log.Warn($"Skipping spawn point '{objNode.Name}' because world object registration failed.");
+				}
+			}
+			foreach(var child in WorldObjectParentNode.GetChildren()) {
+				child.QueueFree();
+			}
+			ObjectNodeFactory = new ObjectNodeFactory(WorldObjectParentNode);
+			foreach(Object obj in WorldObjects.Objects.Values) {
+				ObjectNode? node = ObjectNodeFactory.Spawn(obj);
+				if(node == null) {
+					Log.Error($"Failed to spawn world object with ID {obj.Id} and ItemId {obj.ItemId}");
+					continue;
+				}
+				WorldObjectNodes.AddObjectNode(node);
+			}
+			WorldObjects.OnWorldObjectAdded += HandleOnWorldObjectAdded;
+			WorldObjects.OnWorldObjectRemoved += HandleOnWorldObjectRemoved;
+			SetUpComplete = true;
+		}
 
-        private static List<WorldObjectSpawnPoint> GetSpawnPointsRecursive(Node root) {
-            List<WorldObjectSpawnPoint> results = new List<WorldObjectSpawnPoint>();
-            CollectSpawnPoints(root, results);
-            return results;
-        }
+		public override void _ExitTree() {
+			if(!SetUpComplete) {
+				return;
+			}
+			WorldObjects.OnWorldObjectAdded -= HandleOnWorldObjectAdded;
+			WorldObjects.OnWorldObjectRemoved -= HandleOnWorldObjectRemoved;
+		}
 
-        private static void CollectSpawnPoints(Node node, List<WorldObjectSpawnPoint> results) {
-            foreach(Node child in node.GetChildren()) {
-                if(child is WorldObjectSpawnPoint spawnPoint) {
-                    results.Add(spawnPoint);
-                }
-                CollectSpawnPoints(child, results);
-            }
-        }
+		private static List<WorldObjectSpawnPoint> GetSpawnPointsRecursive(Node root) {
+			List<WorldObjectSpawnPoint> results = new List<WorldObjectSpawnPoint>();
+			CollectSpawnPoints(root, results);
+			return results;
+		}
 
-        public bool CreateWorldObject(string itemId, Vector3 position, Vector3 rotation) {
-            if(!SetUpComplete) {
-                Log.Error("Attempted to create world object before WorldObjectManager was set up.");
-                return false;
-            }
-            Object obj = new Object(itemId, position, rotation);
-            return WorldObjects.RegisterWorldObject(obj);
-        }
+		private static void CollectSpawnPoints(Node node, List<WorldObjectSpawnPoint> results) {
+			foreach(Node child in node.GetChildren()) {
+				if(child is WorldObjectSpawnPoint spawnPoint) {
+					results.Add(spawnPoint);
+				}
+				CollectSpawnPoints(child, results);
+			}
+		}
 
-        public bool RemoveWorldObject(string objectId) {
-            if(!SetUpComplete) {
-                Log.Error("Attempted to remove world object before WorldObjectManager was set up.");
-                return false;
-            }
-            return WorldObjects.UnregisterWorldObject(objectId);
-        }
+		public bool CreateWorldObject(string itemId, Vector3 position, Vector3 rotation) {
+			if(!SetUpComplete) {
+				Log.Error("Attempted to create world object before WorldObjectManager was set up.");
+				return false;
+			}
+			Object obj = new Object(itemId, position, rotation);
+			return WorldObjects.RegisterWorldObject(obj);
+		}
 
-        public Object? GetWorldObject(string objectId) {
-            if(!SetUpComplete) {
-                Log.Error("Attempted to get world object before WorldObjectManager was set up.");
-                return null;
-            }
-            if(WorldObjects.Objects.ContainsKey(objectId)) {
-                return WorldObjects.Objects[objectId];
-            }
-            return null;
-        }
+		public bool RemoveWorldObject(string objectId) {
+			if(!SetUpComplete) {
+				Log.Error("Attempted to remove world object before WorldObjectManager was set up.");
+				return false;
+			}
+			return WorldObjects.UnregisterWorldObject(objectId);
+		}
 
-        public ObjectNode? GetWorldObjectNode(string objectId) {
-            if(!SetUpComplete) {
-                Log.Error("Attempted to get world object node before WorldObjectManager was set up.");
-                return null;
-            }
-            ObjectNode? temp = WorldObjectNodes.GetObjectNode(objectId);
-            if(temp != null) {
-                return temp;
-            }
-            return null;
-        }
+		public Object? GetWorldObject(string objectId) {
+			if(!SetUpComplete) {
+				Log.Error("Attempted to get world object before WorldObjectManager was set up.");
+				return null;
+			}
+			if(WorldObjects.Objects.ContainsKey(objectId)) {
+				return WorldObjects.Objects[objectId];
+			}
+			return null;
+		}
 
-        private void HandleOnWorldObjectAdded(Object obj) {
-            ObjectNode? node = ObjectNodeFactory.Spawn(obj);
-            if(node == null) {
-                Log.Error($"Failed to spawn world object with ID {obj.Id} and ItemId {obj.ItemId}");
-                return;
-            }
-            WorldObjectNodes.AddObjectNode(node);
-        }
+		public ObjectNode? GetWorldObjectNode(string objectId) {
+			if(!SetUpComplete) {
+				Log.Error("Attempted to get world object node before WorldObjectManager was set up.");
+				return null;
+			}
+			ObjectNode? temp = WorldObjectNodes.GetObjectNode(objectId);
+			if(temp != null) {
+				return temp;
+			}
+			return null;
+		}
 
-        private void HandleOnWorldObjectRemoved(string objectId) {
-            WorldObjectNodes.RemoveObjectNode(objectId);
-        }
+		private void HandleOnWorldObjectAdded(Object obj) {
+			ObjectNode? node = ObjectNodeFactory.Spawn(obj);
+			if(node == null) {
+				Log.Error($"Failed to spawn world object with ID {obj.Id} and ItemId {obj.ItemId}");
+				return;
+			}
+			WorldObjectNodes.AddObjectNode(node);
+		}
 
-        public WorldObjectManagerData Export() => new WorldObjectManagerData {
-            WorldObjects = WorldObjects.Export(),
-            SetUpComplete = SetUpComplete,
-            ParentNodePath = WorldObjectParentNode.GetPath()
-        };
+		private void HandleOnWorldObjectRemoved(string objectId) {
+			WorldObjectNodes.RemoveObjectNode(objectId);
+		}
 
-        public void Import(WorldObjectManagerData data) {
-            if(SetUpComplete) {
-                WorldObjectNodes.ClearAll();
-                WorldObjects.Clear();
-                foreach(ObjectData objData in data.WorldObjects.Objects.Values) {
-                    Object obj = new Object();
-                    obj.Import(objData);
-                    WorldObjects.RegisterWorldObject(obj);
-                }
-                return;
-            }
-            WorldObjects.Import(data.WorldObjects);
-            SetUpComplete = data.SetUpComplete;
-            if(SetUpComplete) {
-                WorldObjectParentNode = GetNode(data.ParentNodePath);
-            }
-        }
-    }
+		public WorldObjectManagerData Export() => new WorldObjectManagerData {
+			WorldObjects = WorldObjects.Export(),
+			SetUpComplete = SetUpComplete,
+			ParentNodePath = WorldObjectParentNode.GetPath()
+		};
 
-    public readonly record struct WorldObjectManagerData: ISaveData {
-        public WorldObjectsData WorldObjects { get; init; }
-        public bool SetUpComplete { get; init; }
-        public NodePath ParentNodePath { get; init; }
-    }
+		public void Import(WorldObjectManagerData data) {
+			if(SetUpComplete) {
+				WorldObjectNodes.ClearAll();
+				WorldObjects.Clear();
+				foreach(ObjectData objData in data.WorldObjects.Objects.Values) {
+					Object obj = new Object();
+					obj.Import(objData);
+					WorldObjects.RegisterWorldObject(obj);
+				}
+				return;
+			}
+			WorldObjects.Import(data.WorldObjects);
+			SetUpComplete = data.SetUpComplete;
+			if(SetUpComplete) {
+				WorldObjectParentNode = GetNode(data.ParentNodePath);
+			}
+		}
+	}
 
-    public partial class WorldObjectNodes {
-        private static readonly LogService Log = new(nameof(WorldObjectNodes), enabled: true);
-        private readonly Dictionary<string, ObjectNode> ObjectNodes = new Dictionary<string, ObjectNode>();
+	public readonly record struct WorldObjectManagerData : ISaveData {
+		public WorldObjectsData WorldObjects { get; init; }
+		public bool SetUpComplete { get; init; }
+		public NodePath ParentNodePath { get; init; }
+	}
 
-        public bool AddObjectNode(ObjectNode node) {
-            if(node == null || ObjectNodes.ContainsKey(node.Data.Id)) {
-                return false;
-            }
-            ObjectNodes.Add(node.Data.Id, node);
-            return true;
-        }
+	public sealed class WorldObjectNodes {
+		private readonly Dictionary<StringName, ObjectNode> ObjectNodes = [];
 
-        public bool RemoveObjectNode(string objectId) {
-            if(!ObjectNodes.ContainsKey(objectId)) {
-                return false;
-            }
-            ObjectNode node = ObjectNodes[objectId];
-            ObjectNodes.Remove(objectId);
-            node.QueueFree();
-            return true;
-        }
+		public bool AddObjectNode(ObjectNode node) {
+			if(node == null || ObjectNodes.ContainsKey(node.Data.Id)) {
+				return false;
+			}
+			ObjectNodes.Add(node.Data.Id, node);
+			return true;
+		}
 
-        public ObjectNode? GetObjectNode(string objectId) {
-            if(ObjectNodes.ContainsKey(objectId)) {
-                return ObjectNodes[objectId];
-            }
-            return null;
-        }
+		public bool RemoveObjectNode(StringName objectId) {
+			ObjectNodes.TryGetValue(objectId, out ObjectNode? node);
 
-        public void ClearAll() {
-            foreach(ObjectNode node in ObjectNodes.Values) {
-                if(GodotObject.IsInstanceValid(node)) {
-                    node.QueueFree();
-                }
-            }
-            ObjectNodes.Clear();
-        }
-    }
+			if(node == null){ return false; }
 
-    public partial class WorldObjects : ISaveable<WorldObjectsData> {
-        private static readonly LogService Log = new(nameof(WorldObjects), enabled: true);
+			ObjectNodes.Remove(objectId);
+			node.QueueFree();
 
-        public Dictionary<string, Object> Objects { get; private set; } = new Dictionary<string, Object>();
-        public event Action<Object>? OnWorldObjectAdded;
-        public event Action<string>? OnWorldObjectRemoved;
+			return true;
+		}
 
-        public bool RegisterWorldObject(Object obj) {
-            if(obj == null || Objects.ContainsKey(obj.Id)) {
-                return false;
-            }
-            Objects.Add(obj.Id, obj);
-            OnWorldObjectAdded?.Invoke(obj);
-            return true;
-        }
+		public ObjectNode? GetObjectNode(StringName objectId) {
+			ObjectNodes.TryGetValue(objectId, out ObjectNode? node);
+			return node;
+		}
 
-        public bool UnregisterWorldObject(string objectId) {
-            if(!Objects.ContainsKey(objectId)) {
-                return false;
-            }
-            Objects.Remove(objectId);
-            OnWorldObjectRemoved?.Invoke(objectId);
-            return true;
-        }
+		public void ClearAll() {
+			foreach(ObjectNode node in ObjectNodes.Values) {
+				if(GodotObject.IsInstanceValid(node)) {
+					node.QueueFree();
+				}
+			}
+			ObjectNodes.Clear();
+		}
+	}
 
-        public void Clear() {
-            Objects.Clear();
-        }
+	public partial class WorldObjects : ISaveable<WorldObjectsData> {
+		public Dictionary<string, Object> Objects { get; private set; } = [];
 
-        public WorldObjectsData Export() => new WorldObjectsData {
-            Objects = ExportObjects()
-        };
+		public event Action<Object>? OnWorldObjectAdded;
+		public event Action<string>? OnWorldObjectRemoved;
 
-        public Dictionary<string, ObjectData> ExportObjects() {
-            Dictionary<string, ObjectData> data = new Dictionary<string, ObjectData>();
-            foreach((string id, Object obj) in Objects) {
-                data.Add(id, obj.Export());
-            }
-            return data;
-        }
+		public bool RegisterWorldObject(Object obj) {
+			if(obj == null || Objects.ContainsKey(obj.Id)) {
+				return false;
+			}
+			Objects.Add(obj.Id, obj);
+			OnWorldObjectAdded?.Invoke(obj);
+			return true;
+		}
 
-        public void Import(WorldObjectsData data) {
-            Objects.Clear();
-            if(data.Objects == null) {
-                return;
-            }
-            foreach(ObjectData objData in data.Objects.Values) {
-                Object obj = new Object();
-                obj.Import(objData);
-                RegisterWorldObject(obj);
-            }
-        }
-    }
-    
-    public readonly record struct WorldObjectsData: ISaveData {
-        public Dictionary<string, ObjectData> Objects { get; init; }
-    }
+		public bool UnregisterWorldObject(string objectId) {
+			if(!Objects.ContainsKey(objectId)) {
+				return false;
+			}
+			Objects.Remove(objectId);
+			OnWorldObjectRemoved?.Invoke(objectId);
+			return true;
+		}
+
+		public void Clear() {
+			Objects.Clear();
+		}
+
+		public WorldObjectsData Export() => new WorldObjectsData {
+			Objects = ExportObjects()
+		};
+
+		public Dictionary<string, ObjectData> ExportObjects() {
+			Dictionary<string, ObjectData> data = new Dictionary<string, ObjectData>();
+			foreach((string id, Object obj) in Objects) {
+				data.Add(id, obj.Export());
+			}
+			return data;
+		}
+
+		public void Import(WorldObjectsData data) {
+			Objects.Clear();
+			if(data.Objects == null) {
+				return;
+			}
+			foreach(ObjectData objData in data.Objects.Values) {
+				Object obj = new Object();
+				obj.Import(objData);
+				RegisterWorldObject(obj);
+			}
+		}
+	}
+
+	public readonly record struct WorldObjectsData : ISaveData {
+		public Dictionary<string, ObjectData> Objects { get; init; }
+	}
 }
