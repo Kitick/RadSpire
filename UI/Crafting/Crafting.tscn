@@ -1,0 +1,51 @@
+[gd_scene format=3 uid="uid://bmo8vs5v4lyqv"]
+
+[node name="Crafting" type="Control" unique_id=2111148912]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MainBackground" type="ColorRect" parent="." unique_id=29192493]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -84.0
+offset_right = -1760.0
+offset_bottom = -831.0
+mouse_filter = 1
+color = Color(0.45054996, 0.2622559, 0.190151, 1)
+
+[node name="LightBackground" type="ColorRect" parent="MainBackground" unique_id=850420720]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.025
+anchor_top = 0.035
+anchor_right = 0.975
+anchor_bottom = 0.965
+mouse_filter = 1
+color = Color(1, 1, 1, 0.60784316)
+
+[node name="TabBackground" type="ColorRect" parent="." unique_id=342495999]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.3
+anchor_bottom = 0.1
+offset_right = -471.0
+offset_bottom = -82.0
+mouse_filter = 1
+color = Color(0.4509804, 0.2627451, 0.1882353, 1)
+
+[node name="Label" type="RichTextLabel" parent="TabBackground" unique_id=1824951502]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 1
+text = "Crafting"
+horizontal_alignment = 1
+vertical_alignment = 1
