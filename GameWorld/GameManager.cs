@@ -23,6 +23,7 @@ namespace Root {
 		[Export] private PackedScene EnemyScene = null!;
 		[Export] private PackedScene Item3DIconManagerScene = null!;
 		[Export] private PackedScene WorldObjectManageScene = null!;
+		[Export] private PackedScene NPCScene = null!;
 		[Export] private Node WorldObjectParentNode = null!;
 
 		private readonly KeyInput KeyInput = new();
@@ -42,6 +43,7 @@ namespace Root {
 		private const int SpawnRadius = 10;
 
 		private static readonly Vector3 PlayerSpawnLocation = new Vector3(-280, SpawnHeight, 40);
+		private static readonly Vector3 NPCSpawnLocation = new Vector3(-324, 0,-7);
 
 		private float SpawnTimer = 5.0f;
 		private int EnemyCount;
@@ -77,6 +79,11 @@ namespace Root {
 		private void ConfigureStateMachine() {
 			StateMachine.OnEnter(MenuState.Game, () => GetTree().Paused = false);
 			StateMachine.OnExit(MenuState.Game, () => GetTree().Paused = true);
+		}
+		
+		private void SpawnNPC() {
+			var npc = this.AddScene<NPC>(NPCScene);
+			npc.GlobalPosition = NPCSpawnLocation;
 		}
 
 		private void SpawnLocalPlayer() {
@@ -191,6 +198,7 @@ namespace Root {
 
 		private void StartGame() {
 			SpawnLocalPlayer();
+			SpawnNPC();
 			if(LoadFile != null) {
 				LoadData(LoadFile);
 				LoadFile = null;

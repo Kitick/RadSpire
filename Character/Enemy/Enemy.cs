@@ -1,10 +1,9 @@
+namespace Character {
 using Components;
 using Core;
 using Godot;
 using Root;
 using Services;
-
-namespace Character {
 	public sealed partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 		private static readonly LogService Log = new(nameof(Enemy), enabled: true);
 

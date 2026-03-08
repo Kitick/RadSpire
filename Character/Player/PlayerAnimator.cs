@@ -32,7 +32,7 @@ namespace Character {
 					case AnimState.Jumping: Play(JUMPING); break;
 					case AnimState.Falling: Play(FALLING); break;
 					case AnimState.Landing: Play(LANDING); break;
-					case AnimState.Attacking: Play(SLASH); break;				}
+					case AnimState.Attacking: Play(SLASH, 0.1f, 1.5f); break;				}
 			}
 		}
 
