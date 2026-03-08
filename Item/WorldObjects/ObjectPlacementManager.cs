@@ -11,9 +11,10 @@ namespace Objects {
     public partial class ObjectPlacementManager : Node {
         private static readonly LogService Log = new(nameof(ObjectPlacementManager), enabled: true);
         private const float DefaultPlaceDistance = 2.0f;
-        private const float PlaceHeightMaxDifference = 5.0f;
+        private const float PlaceHeightMaxDifference = 2.0f;
         private const float RayLength = 100.0f;
         private const float MinPlaceSurfaceNormalY = 0.6f;
+        private const float PlacementLinecastHeight = 1.0f;
         private bool _isInitialized;
 
         public WorldObjectManager? WorldObjectManager { get; private set; }
@@ -194,7 +195,32 @@ namespace Objects {
             Vector3 position = player.GlobalPosition + (forward * placeDistance);
             position.Y = player.GlobalPosition.Y;
             Vector3 groundPosition = GetPositionOnGround(position, out success);
+            if(success && IsPlacementObstructedByWall(player, groundPosition)) {
+                success = false;
+            }
             return groundPosition;
+        }
+
+        private bool IsPlacementObstructedByWall(Player player, Vector3 targetPosition) {
+            if(GameManager == null) {
+                return false;
+            }
+            Viewport? viewport = GameManager.GetViewport();
+            if(viewport?.World3D == null) {
+                return false;
+            }
+            var spaceState = viewport.World3D.DirectSpaceState;
+            Vector3 from = player.GlobalPosition + Vector3.Up * PlacementLinecastHeight;
+            Vector3 to = targetPosition + Vector3.Up * PlacementLinecastHeight;
+            var query = PhysicsRayQueryParameters3D.Create(from, to);
+            query.CollideWithAreas = false;
+            query.Exclude = new Godot.Collections.Array<Rid> { player.GetRid() };
+            var result = spaceState.IntersectRay(query);
+            if(result.Count == 0 || !result.ContainsKey("normal")) {
+                return false;
+            }
+            Vector3 hitNormal = (Vector3) result["normal"];
+            return hitNormal.Y < MinPlaceSurfaceNormalY;
         }
 
         public Vector3 GetRotationFacingPlayer(Player player, Vector3 objectPosition) {
@@ -222,6 +248,9 @@ namespace Objects {
             var end = position + Vector3.Down * RayLength;
             var query = PhysicsRayQueryParameters3D.Create(origin, end);
             query.CollideWithAreas = false;
+            if(Player != null && GodotObject.IsInstanceValid(Player)) {
+                query.Exclude = new Godot.Collections.Array<Rid> { Player.GetRid() };
+            }
             var result = spaceState.IntersectRay(query);
             if(result.Count > 0 && result.ContainsKey("position") && result.ContainsKey("normal")) {
                 Vector3 groundPosition = (Vector3) result["position"];
