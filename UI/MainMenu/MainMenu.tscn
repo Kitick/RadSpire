@@ -102,6 +102,7 @@ alignment = 0
 [node name="Multiplayer_Button" type="Button" parent="ButtonPanel" unique_id=2106788877]
 layout_mode = 2
 theme_override_font_sizes/font_size = 40
+disabled = true
 text = "Multiplayer"
 
 [node name="Multiplayer_Popup" type="VBoxContainer" parent="ButtonPanel/Multiplayer_Button" unique_id=1142054968]
@@ -119,18 +120,21 @@ offset_right = 140.0
 [node name="Host_New_Button" type="Button" parent="ButtonPanel/Multiplayer_Button/Multiplayer_Popup" unique_id=337774414]
 layout_mode = 2
 theme_override_font_sizes/font_size = 30
+disabled = true
 text = "> Host New"
 alignment = 0
 
 [node name="Host_Saved_Button" type="Button" parent="ButtonPanel/Multiplayer_Button/Multiplayer_Popup" unique_id=495328532]
 layout_mode = 2
 theme_override_font_sizes/font_size = 30
+disabled = true
 text = "> Host Saved"
 alignment = 0
 
 [node name="Join_Game_Button" type="Button" parent="ButtonPanel/Multiplayer_Button/Multiplayer_Popup" unique_id=1757166324]
 layout_mode = 2
 theme_override_font_sizes/font_size = 30
+disabled = true
 text = "> Join"
 alignment = 0
 

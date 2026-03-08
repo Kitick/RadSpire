@@ -1,12 +1,12 @@
-using System;
-using Core;
-using Godot;
-using Services;
-using UI.Multiplayer;
-using UI.Settings;
-
 namespace UI {
-	public sealed partial class MainMenu : Control {
+	using System;
+	using Core;
+	using Godot;
+	using Services;
+	using UI.Multiplayer;
+	using UI.Settings;
+
+	public sealed partial class MainMenu : BaseUIControl {
 		private static readonly LogService Log = new(nameof(MainMenu), enabled: true);
 
 		[ExportCategory("Main Buttons")]
@@ -34,13 +34,23 @@ namespace UI {
 		[Export] private PackedScene HostPanelScene = null!;
 		[Export] private PackedScene JoinPanelScene = null!;
 
-		private Control[] MainOrder => [SingleplayerButton, MultiplayerButton, SettingsButton, ExtrasButton, QuitButton];
-		private Control[] SingleplayerOrder => [ContinueButton, LoadSavedButton, StartNewButton];
-		private Control[] MultiplayerOrder => [HostNewButton, HostSavedButton, JoinGameButton];
-
 		private enum MenuState { Normal, SinglePopup, MultiPopup }
 
 		private const float HideDelay = 0.25f;
+
+		private bool UsingNavigation {
+			get;
+			set {
+				if(field == value) { return; }
+				field = value;
+
+				if(value) { SingleplayerButton.GrabFocus(); }
+				else {
+					GetViewport().GuiReleaseFocus();
+					SetPopupState(MenuState.Normal);
+				}
+			}
+		}
 
 		public event Action? OnStartNewGame;
 		public event Action? OnContinueGame;
@@ -48,13 +58,17 @@ namespace UI {
 		public event Action? OnQuit;
 
 		public override void _Ready() {
+			this.ValidateExports();
+
 			UpdateContinueButtonState();
 			SetCallbacks();
-
-			Navigator.Instance.Order = MainOrder;
 		}
 
 		private void SetCallbacks() {
+			// Input mode tracking
+			InputSystem.Instance.OnMouseMoved += OnMouseMoved;
+			InputSystem.Instance.OnActionPressed += OnNavActionPressed;
+
 			// Main buttons
 			StartNewButton.Pressed += () => OnStartNewGame?.Invoke();
 			ContinueButton.Pressed += () => OnContinueGame?.Invoke();
@@ -75,24 +89,6 @@ namespace UI {
 			MultiplayerButton.MouseEntered += () => SetPopupState(MenuState.MultiPopup);
 			MultiplayerButton.MouseExited += HidePopup;
 			MultiplayerPanel.MouseExited += HidePopup;
-
-			ActionEvent.MenuRight.WhenPressed(() => {
-				if(Navigator.Instance.Selected == SingleplayerButton) {
-					Navigator.Instance.Order = SingleplayerOrder;
-				}
-				else if(Navigator.Instance.Selected == MultiplayerButton) {
-					Navigator.Instance.Order = MultiplayerOrder;
-				}
-			});
-
-			ActionEvent.MenuLeft.WhenPressed(() => {
-				bool wasSingle = SingleplayerPanel.Visible;
-				bool wasMulti = MultiplayerPanel.Visible;
-
-				Navigator.Instance.Order = MainOrder;
-				if(wasSingle) { Navigator.Instance.Select(SingleplayerButton); }
-				else if(wasMulti) { Navigator.Instance.Select(MultiplayerButton); }
-			});
 		}
 
 		private void SetPopupState(MenuState state) {
@@ -101,16 +97,9 @@ namespace UI {
 		}
 
 		private void HidePopup() {
-			if(Navigator.Instance.IsActive) {
-				if(Navigator.Instance.Selected != SingleplayerButton && Navigator.Instance.Selected != MultiplayerButton) {
-					SetPopupState(MenuState.Normal);
-				}
-				return;
-			}
+			if(UsingNavigation) { return; }
 			GetTree().CreateTimer(HideDelay).Timeout += () => {
-				if(!IsMouseInside(SingleplayerButton, SingleplayerPanel, MultiplayerButton, MultiplayerPanel)
-					&& Navigator.Instance.Selected != SingleplayerButton
-					&& Navigator.Instance.Selected != MultiplayerButton) {
+				if(!IsMouseInside(SingleplayerButton, SingleplayerPanel, MultiplayerButton, MultiplayerPanel)) {
 					SetPopupState(MenuState.Normal);
 				}
 			};
@@ -140,7 +129,7 @@ namespace UI {
 		private void OpenSaveMenu() {
 			var saveMenu = this.AddScene<SaveMenu>(SaveMenuScene);
 			saveMenu.OnLoad += fileName => OnLoadGame?.Invoke(fileName);
-			saveMenu.OpenMenu(SaveMenuMode.Load);
+			saveMenu.OpenMenu(SaveMenu.SaveMode.Load);
 		}
 
 		private void OpenHostPanel() {
@@ -152,5 +141,38 @@ namespace UI {
 			var join = this.AddScene<JoinPanel>(JoinPanelScene);
 			join.OpenMenu();
 		}
+
+		private void OnMouseMoved(InputEventMouseMotion _) => UsingNavigation = false;
+
+		private void OnNavActionPressed(ActionEvent action) {
+			if(action.Name == ActionEvent.MenuUp.Name || action.Name == ActionEvent.MenuDown.Name ||
+			   action.Name == ActionEvent.MenuLeft.Name || action.Name == ActionEvent.MenuRight.Name) {
+				UsingNavigation = true;
+			}
+		}
+
+		public override void _ExitTree() {
+			InputSystem.Instance.OnMouseMoved -= OnMouseMoved;
+			InputSystem.Instance.OnActionPressed -= OnNavActionPressed;
+		}
+
+		public override void _Process(double delta) {
+			if(!UsingNavigation) { return; }
+
+			var focused = GetViewport().GuiGetFocusOwner();
+
+			if(focused == SingleplayerButton || focused == ContinueButton ||
+			   focused == LoadSavedButton || focused == StartNewButton) {
+				SetPopupState(MenuState.SinglePopup);
+			}
+			else if(focused == MultiplayerButton || focused == HostNewButton ||
+					focused == HostSavedButton || focused == JoinGameButton) {
+				SetPopupState(MenuState.MultiPopup);
+			}
+			else {
+				SetPopupState(MenuState.Normal);
+			}
+		}
+
 	}
 }

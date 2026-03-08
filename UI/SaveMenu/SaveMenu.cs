@@ -1,21 +1,11 @@
 using System;
+using Core;
 using Godot;
 using Services;
 
 namespace UI {
-	public enum SaveMenuMode { Save, Load }
-
 	public sealed partial class SaveMenu : Control {
 		private static readonly LogService Log = new(nameof(SaveMenu), enabled: true);
-
-		private const int SlotCount = 5;
-		private const int SlotFontSize = 128;
-
-		// Intent events
-		public event Action<string>? OnSave;
-		public event Action<string>? OnLoad;
-
-		private event Action? OnExit;
 
 		[ExportCategory("UI Elements")]
 		[Export] private Button BackButton = null!;
@@ -24,14 +14,25 @@ namespace UI {
 
 		[ExportCategory("Slot Style")]
 		[Export] private Texture2D? SlotIcon;
+		[Export] private int SlotFontSize = 128;
+
+		private const int SlotCount = 5;
+
+		public enum SaveMode { Save, Load }
+
+		public event Action<string>? OnSave;
+		public event Action<string>? OnLoad;
+
+		private event Action? OnExit;
 
 		private readonly Button[] SlotButtons = new Button[SlotCount];
 
-		public SaveMenuMode Mode { get; private set; }
+		public SaveMode Mode { get; private set; }
 
 		public static string SlotFile(int slot) => $"slot{slot}";
 
 		public override void _Ready() {
+			this.ValidateExports();
 			ProcessMode = ProcessModeEnum.Always;
 
 			GenerateSlots();
@@ -44,7 +45,6 @@ namespace UI {
 		}
 
 		private void SetInputCallbacks() {
-			OnExit += ActionEvent.MenuBack.WhenPressed(CloseMenu);
 			OnExit += ActionEvent.MenuExit.WhenPressed(CloseMenu);
 		}
 
@@ -71,7 +71,7 @@ namespace UI {
 		}
 
 		private void RefreshSlotDisplay() {
-			TitleLabel.Text = Mode == SaveMenuMode.Save ? "Save Game" : "Load Game";
+			TitleLabel.Text = Mode == SaveMode.Save ? "Save Game" : "Load Game";
 
 			for(int i = 0; i < SlotCount; i++) {
 				int slot = i + 1;
@@ -80,7 +80,7 @@ namespace UI {
 			}
 		}
 
-		public void OpenMenu(SaveMenuMode mode, Action? onClose = null) {
+		public void OpenMenu(SaveMode mode, Action? onClose = null) {
 			OnExit += onClose;
 			Mode = mode;
 
@@ -94,11 +94,11 @@ namespace UI {
 		private void OnSlotPressed(int slot) {
 			string fileName = SlotFile(slot);
 
-			if(Mode == SaveMenuMode.Save) {
+			if(Mode == SaveMode.Save) {
 				Log.Info($"Save requested: {fileName}");
 				OnSave?.Invoke(fileName);
 			}
-			else if(Mode == SaveMenuMode.Load) {
+			else if(Mode == SaveMode.Load) {
 				Log.Info($"Load requested: {fileName}");
 				OnLoad?.Invoke(fileName);
 			}

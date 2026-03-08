@@ -1,11 +1,12 @@
 namespace Character {
 	using Components;
-	using Core;
 	using Godot;
 	using Services;
 	using ItemSystem;
 	using System;
 	using Objects;
+	using Root;
+	using UI;
 
 	public sealed partial class Player : CharacterBase, ISaveable<PlayerData> {
 		private static readonly LogService Log = new(nameof(Player), enabled: true);
@@ -20,7 +21,7 @@ namespace Character {
 		protected override (int phys, int mag) InitialDamage => (InitialDamagePhysical, InitialDamageMagic);
 		protected override (int phys, int mag) InitialDefense => (InitialDefensePhysical, InitialDefenseMagic);
 
-		[Export] private float SprintMultiplier = 2.25f;
+		[Export] private float SprintMultiplier = 3.25f;
 		[Export] private float CrouchMultiplier = 0.5f;
 
 		// Inventories
@@ -33,9 +34,12 @@ namespace Character {
 		public readonly Item3DIconPickup PickupComponent = new Item3DIconPickup();
 		public readonly UseItem UseItemComponent = new UseItem();
 		public ObjectPickup? ObjectPickup { get; private set; }
+		public ObjectPlacementManager? ObjectPlacementManager { get; private set; }
+		private ObjectPlacementUI? ObjectPlacementUI;
 		private ObjectPickupUI? ObjectPickupUI;
 		private Action? UnsubscribeInteract;
 		private Action? UnsubscribeInteract2;
+		private Action? UnsubscribePlace;
 
 		public Player() {
 			Movement = new Movement(this);
@@ -50,15 +54,17 @@ namespace Character {
 			AddChild(InventoryManager);
 			AddChild(UseItemComponent);
 			SetupChildren();
-			this.Hurt(50); // For testing purposes, start the player hurt.
 		}
 
 		public override void _ExitTree() {
 			base._ExitTree();
 			UnsubscribeInteract?.Invoke();
 			UnsubscribeInteract2?.Invoke();
+			UnsubscribePlace?.Invoke();
 			ObjectPickupUI?.Dispose();
 			ObjectPickup = null;
+			ObjectPlacementUI = null;
+			ObjectPlacementManager = null;
 		}
 
 		public void Update(float dt, KeyInput keyInput) {
@@ -83,13 +89,20 @@ namespace Character {
 		private void UpdateMovementState(KeyInput keyInput) {
 			if(keyInput.AttackPressed) {
 				StateMachine.TransitionTo(State.Attacking);
+				return;
 			}
+
+			if(StateMachine.CurrentState == State.Attacking) { return; }
 
 			if(!IsOnFloor()) { StateMachine.TransitionTo(State.Falling); }
 			else if(!keyInput.IsMoving) { StateMachine.TransitionTo(State.Idle); }
 			else if(keyInput.SprintHeld) { StateMachine.TransitionTo(State.Sprinting); }
 			else if(keyInput.CrouchHeld) { StateMachine.TransitionTo(State.Crouching); }
 			else { StateMachine.TransitionTo(State.Walking); }
+		}
+
+		public void OnAttackFinished() {
+			StateMachine.TransitionTo(State.Idle);
 		}
 
 		private float GetMultiplier() {
@@ -125,6 +138,19 @@ namespace Character {
 				}
 				ObjectPickup.currentTargetObjectNode.Interact(this);
 			});
+
+			ObjectPlacementManager = new ObjectPlacementManager();
+			AddChild(ObjectPlacementManager);
+			ObjectPlacementUI = new ObjectPlacementUI();
+			AddChild(ObjectPlacementUI);
+			ObjectPlacementUI.Initialize(ObjectPlacementManager);
+			UnsubscribePlace = ActionEvent.Place.WhenPressed(() => {
+				if(ObjectPlacementManager == null) {
+					Log.Error("Place action pressed but ObjectPlacementManager is not initialized.");
+					return;
+				}
+				ObjectPlacementManager.PlaceRequested();
+			});
 		}
 
 		public void ConfigureObjectPickup(WorldObjectManager worldObjectManager) {
@@ -133,6 +159,14 @@ namespace Character {
 				return;
 			}
 			ObjectPickup.WorldObjectManager = worldObjectManager;
+		}
+
+		public void ConfigureObjectPlacement(WorldObjectManager worldObjectManager, GameManager gameManager, Hotbar playerHotbar) {
+			if(ObjectPlacementManager == null) {
+				Log.Error("ConfigureObjectPlacement called before ObjectPlacementManager was initialized.");
+				return;
+			}
+			ObjectPlacementManager.Initialize(worldObjectManager, InventoryManager, gameManager, playerHotbar, this);
 		}
 
 		public PlayerData Export() => new PlayerData {

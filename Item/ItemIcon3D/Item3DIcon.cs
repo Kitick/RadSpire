@@ -123,9 +123,21 @@ namespace ItemSystem {
 		}
 
 		public new Item3DIconData Export() => new Item3DIconData {
-			EntityData = base.Export(),
+			EntityData = ExportEntityDataFromRigidBody(),
 			ItemData = Item?.Export()
 		};
+
+		private EntityData ExportEntityDataFromRigidBody() {
+			var rigidBody = CurrentItem3DScene?.GetNodeOrNull<RigidBody3D>("RigidBody3D");
+			if(rigidBody != null && IsInstanceValid(rigidBody)) {
+				return new EntityData {
+					Position = rigidBody.GlobalPosition,
+					Rotation = rigidBody.GlobalRotation,
+				};
+			}
+
+			return base.Export();
+		}
 
 		public void Import(Item3DIconData data) {
 			if(data.ItemData is null) {
