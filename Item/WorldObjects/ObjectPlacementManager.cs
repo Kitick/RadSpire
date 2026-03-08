@@ -22,7 +22,7 @@ namespace Objects {
         public Player? Player {get; private set; }
         public bool Initalized => WorldObjectManager != null && InventoryManager != null && GameManager != null && PlayerHotbar != null && Player != null;
 
-        private enum PlaceState { Idle, FindingPlacableLocation, Placable, Place };
+        private enum PlaceState { Idle, FindingPlacableLocation, Placable };
         private StateMachine<PlaceState> PlaceStateMachine = new StateMachine<PlaceState>(PlaceState.Idle);
         public string? CurrentPlacingItemId { get; private set; }
         public Vector3 CurrentPlacingPosition { get; private set; }
@@ -60,10 +60,6 @@ namespace Objects {
             PlaceStateMachine.OnEnter(PlaceState.Placable, () => {
                 OnPlacingObjectValidChanged?.Invoke(true);
             });
-            PlaceStateMachine.OnSpecific(PlaceState.Placable, PlaceState.Place, () => {
-                PlaceObject();
-                PlaceStateMachine.TransitionTo(PlaceState.Idle);
-            });
         }
 
 		public override void _Process(double delta) {
@@ -89,9 +85,7 @@ namespace Objects {
                     if(!stillValid) {
                         PlaceStateMachine.TransitionTo(PlaceState.FindingPlacableLocation);
                     }
-                    break;
-                case PlaceState.Place:
-                    break;           
+                    break;      
             }
        }
 
@@ -116,7 +110,8 @@ namespace Objects {
                 PlaceStateMachine.TransitionTo(PlaceState.FindingPlacableLocation);
             }
             if(PlaceStateMachine.CurrentState == PlaceState.Placable) {
-                PlaceStateMachine.TransitionTo(PlaceState.Place);
+                PlaceObject();
+                PlaceStateMachine.TransitionTo(PlaceState.Idle);
             }
         }
 
