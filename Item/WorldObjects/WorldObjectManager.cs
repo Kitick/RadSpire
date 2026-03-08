@@ -1,6 +1,7 @@
 namespace Objects {
 	using System;
 	using System.Collections.Generic;
+	using Components;
 	using Godot;
 	using ItemSystem;
 	using Services;
@@ -31,6 +32,7 @@ namespace Objects {
 			GameWorldNode = gameWorldNode;
 			WorldObjectParentNode = parentNode;
 			List<WorldObjectSpawnPoint> spawnPoints = GetSpawnPointsRecursive(GameWorldNode);
+			Dictionary<string, (string SpawnPointName, Godot.Collections.Array<WorldObjectSpawnComponentDefinition> ComponentDefinitions)> pendingSpawnComponents = new();
 			foreach(WorldObjectSpawnPoint objNode in spawnPoints) {
 				if(!GodotObject.IsInstanceValid(objNode)) {
 					continue;
@@ -47,6 +49,9 @@ namespace Objects {
 					continue;
 				}
 				Object obj = new Object(itemId, objNode.GlobalPosition, objNode.GlobalRotation);
+				if(objNode.ComponentDefinitions.Count > 0) {
+					pendingSpawnComponents[obj.Id] = (objNode.Name, objNode.ComponentDefinitions);
+				}
 				if(!WorldObjects.RegisterWorldObject(obj)) {
 					Log.Warn($"Skipping spawn point '{objNode.Name}' because world object registration failed.");
 				}
@@ -67,6 +72,9 @@ namespace Objects {
 				if(node == null) {
 					Log.Error($"Failed to spawn world object with ID {obj.Id} and ItemId {obj.ItemId}");
 					continue;
+				}
+				if(pendingSpawnComponents.TryGetValue(obj.Id, out var pendingData)) {
+					ApplyPendingSpawnComponents(obj, pendingData);
 				}
 				WorldObjectNodes.AddObjectNode(node);
 			}
@@ -95,6 +103,41 @@ namespace Objects {
 					results.Add(spawnPoint);
 				}
 				CollectSpawnPoints(child, results);
+			}
+		}
+
+		private void ApplyPendingSpawnComponents(Object obj, (string SpawnPointName, Godot.Collections.Array<WorldObjectSpawnComponentDefinition> ComponentDefinitions) pendingData) {
+			foreach(WorldObjectSpawnComponentDefinition definition in pendingData.ComponentDefinitions) {
+				if(definition == null) {
+					continue;
+				}
+				if(definition is WorldObjectInventorySpawnDefinition inventorySpawnDefinition) {
+					ApplyInventorySpawnDefinition(obj, pendingData.SpawnPointName, inventorySpawnDefinition);
+				}
+			}
+		}
+
+		private void ApplyInventorySpawnDefinition(Object obj, string spawnPointName, WorldObjectInventorySpawnDefinition inventorySpawnDefinition) {
+			if(!obj.ComponentDictionary.Has<InventoryComponent>()) {
+				Log.Warn($"Spawn point '{spawnPointName}' has inventory spawn data but object ItemId '{obj.ItemId}' has no InventoryComponent.");
+				return;
+			}
+			Inventory inventory = obj.ComponentDictionary.Get<InventoryComponent>().Inventory;
+			foreach(WorldObjectInventorySpawnEntry entry in inventorySpawnDefinition.Entries) {
+				if(entry == null) {
+					continue;
+				}
+				if(ItemDataBaseManager.Instance.GetItemDefinitionById(entry.ItemId) == null) {
+					Log.Warn($"Spawn point '{spawnPointName}' contains unknown item '{entry.ItemId}'. Skipping entry.");
+					continue;
+				}
+				Item itemInstance = ItemDataBaseManager.Instance.CreateItemInstanceById(entry.ItemId);
+				int quantity = Math.Max(1, entry.Quantity);
+				ItemSlot itemSlot = new ItemSlot(itemInstance, quantity);
+				ItemSlot remainder = inventory.AddItem(itemSlot);
+				if(!remainder.IsEmpty()) {
+					Log.Warn($"Spawn point '{spawnPointName}' inventory overflow for item '{entry.ItemId}'. Remaining quantity: {remainder.Quantity}.");
+				}
 			}
 		}
 

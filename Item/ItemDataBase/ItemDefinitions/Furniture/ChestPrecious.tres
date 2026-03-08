@@ -1,17 +1,19 @@
-[gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://bpjwpm6d56a1p"]
+[gd_resource type="Resource" format=3 uid="uid://bpjwpm6d56a1p"]
 
-[ext_resource type="Script" uid="uid://cnm5iegiuj4xu" path="res://Item/ItemDataBase/ItemDataBaseScripts/ItemComponentDefinitions/ItemComponentDefinition.cs" id="1_772xq"]
-[ext_resource type="Resource" uid="uid://c1huxqjph6pmk" path="res://Item/ItemDataBase/ComponentDefinitions/InventoryComponentDefinition/3x5InventoryDefinition.tres" id="2_05ill"]
-[ext_resource type="Script" uid="uid://bxmh4fd7kjvv1" path="res://Item/ItemDataBase/ItemDataBaseScripts/ItemDefinition.cs" id="2_wd36x"]
-[ext_resource type="Texture2D" uid="uid://dlhbkgx53b785" path="res://Assets/Models/Chest/ChestIcons/Precious Chest.png" id="3_10wyt"]
+[ext_resource type="Script" uid="uid://cnm5iegiuj4xu" path="res://Item/ItemDataBase/ItemDataBaseScripts/ItemComponentDefinitions/ItemComponentDefinition.cs" id="1_aeb7m"]
+[ext_resource type="Resource" uid="uid://c1huxqjph6pmk" path="res://Item/ItemDataBase/ComponentDefinitions/InventoryComponentDefinition/3x5InventoryDefinition.tres" id="2_jwt1l"]
+[ext_resource type="Texture2D" uid="uid://dlhbkgx53b785" path="res://Assets/Models/Chest/ChestIcons/Precious Chest.png" id="3_nqami"]
+[ext_resource type="PackedScene" uid="uid://crflsj3utq4yg" path="res://Item/ItemDataBase/Item3DScenes/ChestPrecious.tscn" id="4_os6ok"]
+[ext_resource type="Script" uid="uid://bxmh4fd7kjvv1" path="res://Item/ItemDataBase/ItemDataBaseScripts/ItemDefinition.cs" id="5_1qvc3"]
 
 [resource]
-script = ExtResource("2_wd36x")
+script = ExtResource("5_1qvc3")
 Id = "ChestPrecious"
 Name = "Precious Chest"
 Description = "A precious chest with 4x8 storage capacity."
 IsConsumable = false
 IsPlaceable = true
-IconTexture = ExtResource("3_10wyt")
-ComponentsResources = Array[ExtResource("1_772xq")]([ExtResource("2_05ill")])
+IconTexture = ExtResource("3_nqami")
+ItemScene = ExtResource("4_os6ok")
+ComponentsResources = Array[ExtResource("1_aeb7m")]([ExtResource("2_jwt1l")])
 metadata/_custom_type_script = "uid://bxmh4fd7kjvv1"
