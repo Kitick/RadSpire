@@ -37,7 +37,7 @@ namespace Objects {
             }
             bool success = false;
             Vector3 position = GetPositionInFrontOfPlayer(player, out success, distance);
-            Vector3 rotation = player.GlobalRotation;
+            Vector3 rotation = new Vector3(0, player.GlobalRotation.Y, 0);
             if(!success) {
                 return success;
             }
@@ -53,7 +53,7 @@ namespace Objects {
             success = false;
             if(player == null || !GodotObject.IsInstanceValid(player)) {
                 Log.Error("Player is invalid.");
-                return player!.GlobalPosition;
+                return Vector3.Zero;
             }
             float placeDistance = Mathf.Max(0.5f, distance);
             Vector3 forward = -player.GlobalBasis.Z;
@@ -71,13 +71,23 @@ namespace Objects {
         public Vector3 GetPositionOnGround(Vector3 position, out bool success) {
             float height = position.Y;
             success = false;
-            var spaceState = GameManager!.GetWorld3D().DirectSpaceState;
+            if(GameManager == null) {
+                return position;
+            }
+            Viewport? viewport = GameManager.GetViewport();
+            if(viewport?.World3D == null) {
+                return position;
+            }
+            var spaceState = viewport.World3D.DirectSpaceState;
             var origin = position;
             var end = origin + Vector3.Down * RayLength;
             var query = PhysicsRayQueryParameters3D.Create(origin, end);
             query.CollideWithAreas = false;
             var result = spaceState.IntersectRay(query);
-            Vector3 groundPosition = result.position;
+            Vector3 groundPosition = Vector3.Zero;
+            if(result.Count > 0 && result.ContainsKey("position")) {
+                groundPosition = (Vector3) result["position"];
+            }
             if(groundPosition != Vector3.Zero) {
                 float heightDifference = Mathf.Abs(groundPosition.Y - height);
                 if(heightDifference <= PlaceHeightMaxDifference) {
@@ -90,7 +100,10 @@ namespace Objects {
             query.From = origin;
             query.To = end;
             result = spaceState.IntersectRay(query);
-            groundPosition = result.position;
+            groundPosition = Vector3.Zero;
+            if(result.Count > 0 && result.ContainsKey("position")) {
+                groundPosition = (Vector3) result["position"];
+            }
             if(groundPosition != Vector3.Zero) {
                 float heightDifference = Mathf.Abs(groundPosition.Y - height);
                 if(heightDifference <= PlaceHeightMaxDifference) {
