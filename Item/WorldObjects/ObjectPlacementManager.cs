@@ -13,6 +13,7 @@ namespace Objects {
         private const float DefaultPlaceDistance = 2.0f;
         private const float PlaceHeightMaxDifference = 5.0f;
         private const float RayLength = 100.0f;
+        private bool _isInitialized;
 
         public WorldObjectManager? WorldObjectManager { get; private set; }
         public InventoryManager? InventoryManager { get; private set; }
@@ -32,6 +33,10 @@ namespace Objects {
         public event Action? EndPlacingObject;
 
         public void Initialize(WorldObjectManager worldObjectManager, InventoryManager inventoryManager, GameManager gameManager, Hotbar playerHotbar, Player player) {
+            if(_isInitialized) {
+                Log.Info("Initialize called more than once; ignoring duplicate initialization.");
+                return;
+            }
             WorldObjectManager = worldObjectManager;
             InventoryManager = inventoryManager;
             GameManager = gameManager;
@@ -39,6 +44,7 @@ namespace Objects {
             Player = player;
             playerHotbar.OnSlotSelected += OnHotbarSlotSelected;
             ConfigureStateMachine();
+            _isInitialized = true;
         }
 
         public void ConfigureStateMachine() {
@@ -138,10 +144,6 @@ namespace Objects {
                 Log.Error("PlaceObject failed: CurrentPlacingItemId is null.");
                 return;
             }
-            if(CurrentPlacingPosition == Vector3.Zero) {
-                Log.Error("PlaceObject failed: CurrentPlacingPosition is zero.");
-                return;
-            }
             WorldObjectManager!.CreateWorldObject(CurrentPlacingItemId, CurrentPlacingPosition, CurrentPlacingRotation);
         }
 
@@ -217,11 +219,8 @@ namespace Objects {
             var query = PhysicsRayQueryParameters3D.Create(origin, end);
             query.CollideWithAreas = false;
             var result = spaceState.IntersectRay(query);
-            Vector3 groundPosition = Vector3.Zero;
             if(result.Count > 0 && result.ContainsKey("position")) {
-                groundPosition = (Vector3) result["position"];
-            }
-            if(groundPosition != Vector3.Zero) {
+                Vector3 groundPosition = (Vector3) result["position"];
                 float heightDifference = Mathf.Abs(groundPosition.Y - height);
                 if(heightDifference <= PlaceHeightMaxDifference) {
                     success = true;
@@ -233,11 +232,8 @@ namespace Objects {
             query.From = origin;
             query.To = end;
             result = spaceState.IntersectRay(query);
-            groundPosition = Vector3.Zero;
             if(result.Count > 0 && result.ContainsKey("position")) {
-                groundPosition = (Vector3) result["position"];
-            }
-            if(groundPosition != Vector3.Zero) {
+                Vector3 groundPosition = (Vector3) result["position"];
                 float heightDifference = Mathf.Abs(groundPosition.Y - height);
                 if(heightDifference <= PlaceHeightMaxDifference) {
                     success = true;
