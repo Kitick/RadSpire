@@ -54,7 +54,8 @@ namespace Root {
 			CameraRig = this.AddScene<CameraRig>(CameraScene);
 			Item3DIconManager = this.AddScene<Item3DIconManager>(Item3DIconManagerScene);
 			WorldObjectManager = this.AddScene<WorldObjectManager>(WorldObjectManageScene);
-			WorldObjectManager.SetUpWorldObjectManager(WorldObjectParentNode, this);
+			Node worldRoot = GetParent() ?? this;
+			WorldObjectManager.SetUpWorldObjectManager(WorldObjectParentNode, worldRoot);
 			ConfigureStateMachine();
 
 			StartGame();
