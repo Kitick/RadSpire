@@ -135,7 +135,6 @@ namespace Objects {
             }
             CurrentPlacingItemId = itemId;
             PlaceCanceled();
-            PlaceRequested();
         }    
         
         private void PlaceObject() {
@@ -190,10 +189,10 @@ namespace Objects {
                 return Vector3.Zero;
             }
             float placeDistance = Mathf.Max(0.5f, distance);
-            Vector3 forward = -player.GlobalBasis.Z;
+            Vector3 forward = player.GlobalBasis.Z;
             forward.Y = 0;
             if(forward.LengthSquared() < 0.0001f) {
-                forward = -Vector3.Forward;
+                forward = Vector3.Forward;
             }
             forward = forward.Normalized();
             Vector3 position = player.GlobalPosition + (forward * placeDistance);
