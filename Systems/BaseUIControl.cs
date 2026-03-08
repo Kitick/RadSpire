@@ -13,9 +13,7 @@ public abstract partial class BaseUIControl : Control {
         }
     }
 
-    protected virtual void OnCancel() {
-        
-    }
+    protected virtual void OnCancel() {}
 
     protected void ApplyHoverFocus(Control root) {
         foreach (Node child in root.GetChildren()) {

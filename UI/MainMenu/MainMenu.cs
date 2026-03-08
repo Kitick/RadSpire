@@ -112,22 +112,26 @@ namespace UI {
 		// Local popup management
 		private void OpenSettings() {
 			var settings = this.AddScene<SettingsMenu>(SettingsScene);
+			settings.TreeExited += () => SettingsButton.GrabFocus();
 			settings.OpenMenu();
 		}
 
 		private void OpenSaveMenu() {
 			var saveMenu = this.AddScene<SaveMenu>(SaveMenuScene);
 			saveMenu.OnLoad += fileName => OnLoadGame?.Invoke(fileName);
+			saveMenu.TreeExited += () => LoadSavedButton.GrabFocus();
 			saveMenu.OpenMenu(SaveMenuMode.Load);
 		}
 
 		private void OpenHostPanel() {
 			var host = this.AddScene<HostPanel>(HostPanelScene);
+			host.TreeExited += () => HostNewButton.GrabFocus();
 			host.OpenMenu();
 		}
 
 		private void OpenJoinPanel() {
 			var join = this.AddScene<JoinPanel>(JoinPanelScene);
+			join.TreeExited += () => JoinGameButton.GrabFocus();
 			join.OpenMenu();
 		}
 
