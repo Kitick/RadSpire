@@ -10,7 +10,8 @@ namespace Root {
 		public int MaxEnemies = 5;
 		public float MinSpawnInterval = 1f;
 		public float MaxSpawnInterval = 6f;
-		public float SpawnRadius = 10f;
+		public float MinSpawnRadius = 20f;
+		public float MaxSpawnRadius = 35f;
 		public float SpawnHeightOffset = 0.25f;
 
 		public int Count { get; private set; }
@@ -60,10 +61,12 @@ namespace Root {
 
 		private Vector3 GetRandomSpawnNearTarget() {
 			var pos = Target!.GlobalPosition;
+			float angle = (float) GD.RandRange(0f, Mathf.Tau);
+			float radius = (float) GD.RandRange(MinSpawnRadius, MaxSpawnRadius);
 			return pos + new Vector3(
-				(float) GD.RandRange(-SpawnRadius, SpawnRadius),
+				Mathf.Cos(angle) * radius,
 				SpawnHeightOffset,
-				(float) GD.RandRange(-SpawnRadius, SpawnRadius)
+				Mathf.Sin(angle) * radius
 			);
 		}
 	}
