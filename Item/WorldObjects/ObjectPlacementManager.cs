@@ -4,6 +4,9 @@ namespace Objects {
     using Services;
     using ItemSystem;
 	using Root;
+    using UI;
+    using Core;
+	using System.Transactions;
 
 	public partial class ObjectPlacementManager : Node {
         private static readonly LogService Log = new(nameof(ObjectPlacementManager), enabled: true);
@@ -14,12 +17,52 @@ namespace Objects {
         public WorldObjectManager? WorldObjectManager { get; private set; }
         public InventoryManager? InventoryManager { get; private set; }
         public GameManager? GameManager { get; private set; }
-        public bool Initalized => WorldObjectManager != null && InventoryManager != null && GameManager != null;
+        public Hotbar? PlayerHotbar {get; private set; }
+        public bool Initalized => WorldObjectManager != null && InventoryManager != null && GameManager != null && PlayerHotbar != null;
 
-        public void Initialize(WorldObjectManager worldObjectManager, InventoryManager inventoryManager, GameManager gameManager) {
+        private enum PlaceState {Idle, FindingPlacableLocation, Placable, Place};
+        private StateMachine<PlaceState> PlaceStateMachine = new StateMachine<PlaceState>(PlaceState.Idle);
+        public string? CurrentPlacingItemId { get; private set; }
+
+        public void Initialize(WorldObjectManager worldObjectManager, InventoryManager inventoryManager, GameManager gameManager, Hotbar playerHotbar) {
             WorldObjectManager = worldObjectManager;
             InventoryManager = inventoryManager;
             GameManager = gameManager;
+            PlayerHotbar = playerHotbar;
+            playerHotbar.OnSlotSelected += OnHotbarSlotSelected;
+        }
+
+        public void PlaceRequested() {
+            if(PlaceStateMachine.CurrentState == PlaceState.Idle) {
+                if(CurrentPlacingItemId == null) {
+                    Log.Info("PlaceRequested called but no item is currently selected for placing.");
+                    return;
+                }
+                ItemDefinition? itemDef = ItemDataBaseManager.Instance.GetItemDefinitionById(CurrentPlacingItemId);
+                if(itemDef == null) {
+                    Log.Error($"PlaceRequested failed: ItemDefinition for CurrentPlacingItemId '{CurrentPlacingItemId}' not found.");
+                    return;
+                }
+                if(!itemDef.IsPlaceable) {
+                    Log.Error($"PlaceRequested failed: ItemDefinition for CurrentPlacingItemId '{CurrentPlacingItemId}' is not placeable.");
+                    return;
+                }
+                PlaceStateMachine.TransitionTo(PlaceState.FindingPlacableLocation);
+            }
+            if(PlaceStateMachine.CurrentState == PlaceState.Placable) {
+                PlaceStateMachine.TransitionTo(PlaceState.Place);
+            }
+        }
+
+        public void PlaceCanceled() {
+            if(PlaceStateMachine.CurrentState == PlaceState.FindingPlacableLocation || PlaceStateMachine.CurrentState == PlaceState.Placable) {
+                PlaceStateMachine.TransitionTo(PlaceState.Idle);
+            }
+        }
+        
+        public void OnHotbarSlotSelected(string itemId) {
+            CurrentPlacingItemId = itemId;
+            PlaceCanceled();
         }
 
         public bool PlaceObjectInFrontOfPlayer(Player player, string itemId, float distance = DefaultPlaceDistance) {

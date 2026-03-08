@@ -55,6 +55,7 @@ namespace ItemSystem {
         public bool IsStackable => MaxStackSize > 1;
 
         [Export] public bool IsConsumable { get; set; } = true;
+        [Export] public bool IsPlaceable { get; set; } = false;
 
         [Export] public Texture2D IconTexture { get; set; } = null!;
 

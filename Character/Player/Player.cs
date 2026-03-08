@@ -5,6 +5,8 @@ namespace Character {
 	using ItemSystem;
 	using System;
 	using Objects;
+	using Root;
+	using UI;
 
 	public sealed partial class Player : CharacterBase, ISaveable<PlayerData> {
 		private static readonly LogService Log = new(nameof(Player), enabled: true);
@@ -32,9 +34,11 @@ namespace Character {
 		public readonly Item3DIconPickup PickupComponent = new Item3DIconPickup();
 		public readonly UseItem UseItemComponent = new UseItem();
 		public ObjectPickup? ObjectPickup { get; private set; }
+		public ObjectPlacementManager? ObjectPlacementManager { get; private set; }
 		private ObjectPickupUI? ObjectPickupUI;
 		private Action? UnsubscribeInteract;
 		private Action? UnsubscribeInteract2;
+		private Action? UnsubscribePlace;
 
 		public Player() {
 			Movement = new Movement(this);
@@ -57,6 +61,7 @@ namespace Character {
 			UnsubscribeInteract2?.Invoke();
 			ObjectPickupUI?.Dispose();
 			ObjectPickup = null;
+			ObjectPlacementManager = null;
 		}
 
 		public void Update(float dt, KeyInput keyInput) {
@@ -130,6 +135,15 @@ namespace Character {
 				}
 				ObjectPickup.currentTargetObjectNode.Interact(this);
 			});
+
+			ObjectPlacementManager = new ObjectPlacementManager();
+			UnsubscribePlace = ActionEvent.Place.WhenPressed(() => {
+				if(ObjectPlacementManager == null) {
+					Log.Error("Place action pressed but ObjectPlacementManager is not initialized.");
+					return;
+				}
+				ObjectPlacementManager.PlaceRequested();
+			});
 		}
 
 		public void ConfigureObjectPickup(WorldObjectManager worldObjectManager) {
@@ -138,6 +152,14 @@ namespace Character {
 				return;
 			}
 			ObjectPickup.WorldObjectManager = worldObjectManager;
+		}
+
+		public void ConfigureObjectPlacement(WorldObjectManager worldObjectManager, GameManager gameManager, Hotbar playerHotbar) {
+			if(ObjectPlacementManager == null) {
+				Log.Error("ConfigureObjectPlacement called before ObjectPlacementManager was initialized.");
+				return;
+			}
+			ObjectPlacementManager.Initialize(worldObjectManager, InventoryManager, gameManager, playerHotbar);
 		}
 
 		public PlayerData Export() => new PlayerData {

@@ -51,6 +51,7 @@ namespace ItemSystem {
 			item.Description = itemDef.Description;
 			item.MaxStackSize = itemDef.MaxStackSize;
 			item.IsConsumable = itemDef.IsConsumable;
+			item.IsPlaceable = itemDef.IsPlaceable;
 			item.IconTexture = itemDef.IconTexture;
 
 			BuildComponents(item, itemDef);
