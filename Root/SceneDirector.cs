@@ -15,6 +15,8 @@ namespace Root {
 		private Node? CurrentScene;
 
 		public override void _Ready() {
+			this.ValidateExports();
+
 			SettingSystem.Load();
 			SettingSystem.Apply();
 

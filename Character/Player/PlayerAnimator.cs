@@ -1,3 +1,4 @@
+using Core;
 using Godot;
 using Services;
 
@@ -31,11 +32,13 @@ namespace Character {
 					case AnimState.Jumping: Play(JUMPING); break;
 					case AnimState.Falling: Play(FALLING); break;
 					case AnimState.Landing: Play(LANDING); break;
-				}
+					case AnimState.Attacking: Play(SLASH); break;				}
 			}
 		}
 
 		public override void _Ready() {
+			this.ValidateExports();
+
 			Player.OnStateChanged += OnPlayerMovement;
 			SetupAnimations();
 			SyncAnimation(Player.CurrentState);
@@ -56,9 +59,8 @@ namespace Character {
 		}
 
 		public void OnAnimationFinished(StringName name) {
-			if(name == JUMPING || name == LANDING) {
-				SyncAnimation(Player.CurrentState);
-			}
+			if(name == JUMPING || name == LANDING) { SyncAnimation(Player.CurrentState); }
+			else if(name == SLASH) { Player.OnAttackFinished(); }
 		}
 
 		public void SyncAnimation(Player.State state) {
@@ -70,6 +72,7 @@ namespace Character {
 				Player.State.Sprinting => AnimState.Sprinting,
 				Player.State.Crouching => AnimState.Crouching,
 				Player.State.Falling => AnimState.Falling,
+				Player.State.Attacking => AnimState.Attacking,
 				_ => PlayingAnimation,
 			};
 		}

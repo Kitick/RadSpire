@@ -1,7 +1,8 @@
-using System;
-using Godot;
-
 namespace Core {
+	using System;
+	using System.Reflection;
+	using Godot;
+
 	public static class MathExtensions {
 		// Vector Components
 		public static Vector3 Horizontal(this Vector3 vector) => new Vector3(vector.X, 0, vector.Z);
@@ -62,6 +63,16 @@ namespace Core {
 	}
 
 	public static class NodeExtensions {
+		public static void ValidateExports(this Node node) {
+			Type type = node.GetType();
+			foreach(var field in type.GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)) {
+				if(!field.IsDefined(typeof(ExportAttribute), inherit: false)) { continue; }
+				if(!typeof(Node).IsAssignableFrom(field.FieldType)) { continue; }
+				if(field.GetValue(node) is not null) { continue; }
+				GD.PushError($"[{type.Name}] {field.Name} is missing export assignment!");
+			}
+		}
+
 		// Node instantiation
 		public static Node AddScene(this Node node, PackedScene scene) => node.AddScene<Node>(scene);
 		public static TScene AddScene<TScene>(this Node node, PackedScene scene) where TScene : Node {

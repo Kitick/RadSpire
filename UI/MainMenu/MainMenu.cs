@@ -1,12 +1,11 @@
-using System;
-using Core;
-using Godot;
-using Services;
-using Services.Settings;
-using UI.Multiplayer;
-using UI.Settings;
-
 namespace UI {
+	using System;
+	using Core;
+	using Godot;
+	using Services;
+	using UI.Multiplayer;
+	using UI.Settings;
+
 	public sealed partial class MainMenu : BaseUIControl {
 		private static readonly LogService Log = new(nameof(MainMenu), enabled: true);
 
@@ -39,19 +38,37 @@ namespace UI {
 
 		private const float HideDelay = 0.25f;
 
+		private bool UsingNavigation {
+			get;
+			set {
+				if(field == value) { return; }
+				field = value;
+
+				if(value) { SingleplayerButton.GrabFocus(); }
+				else {
+					GetViewport().GuiReleaseFocus();
+					SetPopupState(MenuState.Normal);
+				}
+			}
+		}
+
 		public event Action? OnStartNewGame;
 		public event Action? OnContinueGame;
 		public event Action<string>? OnLoadGame;
 		public event Action? OnQuit;
 
 		public override void _Ready() {
+			this.ValidateExports();
+
 			UpdateContinueButtonState();
 			SetCallbacks();
-
-			SingleplayerButton.GrabFocus();
 		}
 
 		private void SetCallbacks() {
+			// Input mode tracking
+			InputSystem.Instance.OnMouseMoved += OnMouseMoved;
+			InputSystem.Instance.OnActionPressed += OnNavActionPressed;
+
 			// Main buttons
 			StartNewButton.Pressed += () => OnStartNewGame?.Invoke();
 			ContinueButton.Pressed += () => OnContinueGame?.Invoke();
@@ -80,6 +97,7 @@ namespace UI {
 		}
 
 		private void HidePopup() {
+			if(UsingNavigation) { return; }
 			GetTree().CreateTimer(HideDelay).Timeout += () => {
 				if(!IsMouseInside(SingleplayerButton, SingleplayerPanel, MultiplayerButton, MultiplayerPanel)) {
 					SetPopupState(MenuState.Normal);
@@ -111,7 +129,7 @@ namespace UI {
 		private void OpenSaveMenu() {
 			var saveMenu = this.AddScene<SaveMenu>(SaveMenuScene);
 			saveMenu.OnLoad += fileName => OnLoadGame?.Invoke(fileName);
-			saveMenu.OpenMenu(SaveMenuMode.Load);
+			saveMenu.OpenMenu(SaveMenu.SaveMode.Load);
 		}
 
 		private void OpenHostPanel() {
@@ -124,15 +142,35 @@ namespace UI {
 			join.OpenMenu();
 		}
 
+		private void OnMouseMoved(InputEventMouseMotion _) => UsingNavigation = false;
+
+		private void OnNavActionPressed(ActionEvent action) {
+			if(action.Name == ActionEvent.MenuUp.Name || action.Name == ActionEvent.MenuDown.Name ||
+			   action.Name == ActionEvent.MenuLeft.Name || action.Name == ActionEvent.MenuRight.Name) {
+				UsingNavigation = true;
+			}
+		}
+
+		public override void _ExitTree() {
+			InputSystem.Instance.OnMouseMoved -= OnMouseMoved;
+			InputSystem.Instance.OnActionPressed -= OnNavActionPressed;
+		}
+
 		public override void _Process(double delta) {
+			if(!UsingNavigation) { return; }
+
 			var focused = GetViewport().GuiGetFocusOwner();
 
-			if(focused == SingleplayerButton) {
+			if(focused == SingleplayerButton || focused == ContinueButton ||
+			   focused == LoadSavedButton || focused == StartNewButton) {
 				SetPopupState(MenuState.SinglePopup);
 			}
-
-			else if(focused == MultiplayerButton) {
+			else if(focused == MultiplayerButton || focused == HostNewButton ||
+					focused == HostSavedButton || focused == JoinGameButton) {
 				SetPopupState(MenuState.MultiPopup);
+			}
+			else {
+				SetPopupState(MenuState.Normal);
 			}
 		}
 

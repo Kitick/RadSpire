@@ -4,7 +4,7 @@ using Services.Settings;
 
 namespace UI.Settings {
 	public sealed partial class AccessibilityPanel : VBoxContainer {
-
+		[ExportCategory("Accessibility Settings")]
 		[Export] private CheckBox SubtitlesCheckBox = null!;
 		[Export] private HSlider SubtitleSizeSlider = null!;
 		[Export] private OptionButton ColorblindModeOption = null!;
@@ -12,6 +12,7 @@ namespace UI.Settings {
 		[Export] private CheckBox HighContrastUICheckBox = null!;
 
 		public override void _Ready() {
+			this.ValidateExports();
 			SetCallbacks();
 		}
 
