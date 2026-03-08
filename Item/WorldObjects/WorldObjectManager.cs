@@ -133,10 +133,16 @@ namespace Objects {
 				}
 				Item itemInstance = ItemDataBaseManager.Instance.CreateItemInstanceById(entry.ItemId);
 				int quantity = Math.Max(1, entry.Quantity);
-				ItemSlot itemSlot = new ItemSlot(itemInstance, quantity);
-				ItemSlot remainder = inventory.AddItem(itemSlot);
-				if(!remainder.IsEmpty()) {
-					Log.Warn($"Spawn point '{spawnPointName}' inventory overflow for item '{entry.ItemId}'. Remaining quantity: {remainder.Quantity}.");
+				while(quantity > 0) {
+					int quantityToAdd = Math.Min(quantity, itemInstance.MaxStackSize);
+					ItemSlot itemSlot = new ItemSlot(itemInstance, quantityToAdd);
+					ItemSlot remaining = inventory.AddItem(itemSlot);
+					int added = quantityToAdd - remaining.Quantity;
+					if(added <= 0) {
+						Log.Warn($"Failed to add item '{entry.ItemId}' to inventory for spawn point '{spawnPointName}'. Inventory may be full.");
+						break;
+					}
+					quantity -= added;
 				}
 			}
 		}
