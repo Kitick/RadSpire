@@ -67,7 +67,6 @@ namespace Core {
 			Type type = node.GetType();
 			foreach(var field in type.GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)) {
 				if(!field.IsDefined(typeof(ExportAttribute), inherit: false)) { continue; }
-				if(!typeof(Node).IsAssignableFrom(field.FieldType)) { continue; }
 				if(field.GetValue(node) is not null) { continue; }
 				GD.PushError($"[{type.Name}] {field.Name} is missing export assignment!");
 			}
