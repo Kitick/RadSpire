@@ -35,6 +35,7 @@ namespace Character {
 		public readonly UseItem UseItemComponent = new UseItem();
 		public ObjectPickup? ObjectPickup { get; private set; }
 		public ObjectPlacementManager? ObjectPlacementManager { get; private set; }
+		private ObjectPlacementUI? ObjectPlacementUI;
 		private ObjectPickupUI? ObjectPickupUI;
 		private Action? UnsubscribeInteract;
 		private Action? UnsubscribeInteract2;
@@ -59,8 +60,10 @@ namespace Character {
 			base._ExitTree();
 			UnsubscribeInteract?.Invoke();
 			UnsubscribeInteract2?.Invoke();
+			UnsubscribePlace?.Invoke();
 			ObjectPickupUI?.Dispose();
 			ObjectPickup = null;
+			ObjectPlacementUI = null;
 			ObjectPlacementManager = null;
 		}
 
@@ -137,6 +140,10 @@ namespace Character {
 			});
 
 			ObjectPlacementManager = new ObjectPlacementManager();
+			AddChild(ObjectPlacementManager);
+			ObjectPlacementUI = new ObjectPlacementUI();
+			AddChild(ObjectPlacementUI);
+			ObjectPlacementUI.Initialize(ObjectPlacementManager);
 			UnsubscribePlace = ActionEvent.Place.WhenPressed(() => {
 				if(ObjectPlacementManager == null) {
 					Log.Error("Place action pressed but ObjectPlacementManager is not initialized.");

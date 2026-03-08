@@ -12,6 +12,7 @@ Id = "Barrel"
 Name = "Barrel"
 Description = "A barrel with a 4x8 storage capacity."
 IsConsumable = false
+IsPlaceable = true
 IconTexture = ExtResource("3_tr6eg")
 ItemScene = ExtResource("3_0p077")
 ComponentsResources = Array[ExtResource("1_e7y2w")]([ExtResource("2_tr6eg")])
