@@ -5,7 +5,7 @@ using Services;
 using Services.Settings;
 
 namespace UI.Settings {
-	public sealed partial class SettingsMenu : Control {
+	public sealed partial class SettingsMenu : BaseUIControl {
 		[ExportCategory("Buttons")]
 		[Export] private Button BackButton = null!;
 		[Export] private Button ResetButton = null!;
@@ -81,6 +81,7 @@ namespace UI.Settings {
 		}
 
 		private void OnBackButtonPressed() {
+			QueueFree();
 			CloseMenu();
 		}
 

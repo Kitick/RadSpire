@@ -9,6 +9,7 @@
 [ext_resource type="Script" uid="uid://fxvdaltq3r54" path="res://UI/SettingsMenu/Panels/AccessibilityPanel.cs" id="7_2kpqc"]
 
 [node name="SettingsMenu" type="Control" unique_id=440443673 node_paths=PackedStringArray("BackButton", "ResetButton", "GeneralPanel", "GeneralButton", "DisplayPanel", "DisplayButton", "SoundPanel", "SoundButton", "ControllerPanel", "ControllerButton", "MKPanel", "MKButton", "AccessibilityPanel", "AccessibilityButton")]
+process_mode = 3
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0

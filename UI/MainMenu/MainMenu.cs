@@ -123,7 +123,13 @@ namespace UI {
 		// Local popup management
 		private void OpenSettings() {
 			var settings = this.AddScene<SettingsMenu>(SettingsScene);
-			settings.TreeExited += () => SettingsButton.GrabFocus();
+			GetTree().Paused = true;
+
+			settings.TreeExited += () => {
+				GetTree().Paused = false;
+				SettingsButton.GrabFocus();
+			};
+			
 			settings.OpenMenu();
 		}
 
