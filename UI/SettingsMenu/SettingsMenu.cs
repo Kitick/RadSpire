@@ -127,8 +127,7 @@ namespace UI.Settings {
 			}
 		}
 
-		public void OpenMenu(Action? onClose = null) {
-			OnExit += onClose;
+		public void OpenMenu() {
 			LoadData();
 
 			if(ActivePanel == null) {

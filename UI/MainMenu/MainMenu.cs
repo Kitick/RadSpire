@@ -10,6 +10,7 @@ namespace UI {
 		private static readonly LogService Log = new(nameof(MainMenu), enabled: true);
 
 		[ExportCategory("Main Buttons")]
+		[Export] private VBoxContainer ButtonPanel = null!;
 		[Export] private Button SingleplayerButton = null!;
 		[Export] private Button MultiplayerButton = null!;
 		[Export] private Button SettingsButton = null!;
@@ -17,13 +18,13 @@ namespace UI {
 		[Export] private Button QuitButton = null!;
 
 		[ExportCategory("Singleplayer Pop-up")]
-		[Export] private Control SingleplayerPanel = null!;
+		[Export] private VBoxContainer SingleplayerPanel = null!;
 		[Export] private Button ContinueButton = null!;
 		[Export] private Button LoadSavedButton = null!;
 		[Export] private Button StartNewButton = null!;
 
 		[ExportCategory("Multiplayer Pop-up")]
-		[Export] private Control MultiplayerPanel = null!;
+		[Export] private VBoxContainer MultiplayerPanel = null!;
 		[Export] private Button HostNewButton = null!;
 		[Export] private Button HostSavedButton = null!;
 		[Export] private Button JoinGameButton = null!;
@@ -123,13 +124,16 @@ namespace UI {
 		// Local popup management
 		private void OpenSettings() {
 			var settings = this.AddScene<SettingsMenu>(SettingsScene);
-			GetTree().Paused = true;
 
 			settings.TreeExited += () => {
-				GetTree().Paused = false;
-				SettingsButton.GrabFocus();
+				ButtonPanel.Visible = true;
+
+				if(UsingNavigation) {
+					SettingsButton.GrabFocus();
+				}
 			};
-			
+
+			ButtonPanel.Visible = false;
 			settings.OpenMenu();
 		}
 
