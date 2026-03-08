@@ -135,12 +135,11 @@ anchor_bottom = 0.5
 offset_left = 100.0
 offset_top = -16.0
 offset_bottom = 16.0
+focus_neighbor_top = NodePath("../../../NavBar/General_Button")
 theme_override_font_sizes/font_size = 20
 
 [node name="UIScale" type="Label" parent="General" unique_id=204374435]
 layout_mode = 2
-focus_neighbor_top = NodePath("../Language")
-focus_neighbor_bottom = NodePath("../Theme")
 theme_override_font_sizes/font_size = 32
 text = "UI Scale"
 
@@ -161,8 +160,6 @@ value = 0.5
 
 [node name="Theme" type="Label" parent="General" unique_id=384361819]
 layout_mode = 2
-focus_neighbor_top = NodePath("../UIScale")
-focus_neighbor_bottom = NodePath("../../BackButton")
 theme_override_font_sizes/font_size = 32
 text = "Theme"
 
@@ -201,8 +198,6 @@ FramerateOption = NodePath("Framerate/OptionButton")
 
 [node name="Resolution" type="Label" parent="Display" unique_id=1102883880]
 layout_mode = 2
-focus_neighbor_top = NodePath("../../NavBar/Display_Button")
-focus_neighbor_bottom = NodePath("../Fullscreen")
 theme_override_font_sizes/font_size = 32
 text = "Resolution"
 
@@ -217,12 +212,11 @@ offset_left = 100.0
 offset_top = -15.9850025
 offset_right = 150.0
 offset_bottom = 16.015
+focus_neighbor_top = NodePath("../../../NavBar/Display_Button")
 theme_override_font_sizes/font_size = 20
 
 [node name="Fullscreen" type="Label" parent="Display" unique_id=872083276]
 layout_mode = 2
-focus_neighbor_top = NodePath("../Resolution")
-focus_neighbor_bottom = NodePath("../VSync")
 theme_override_font_sizes/font_size = 32
 text = "Fullscreen"
 
@@ -240,8 +234,6 @@ scale = Vector2(1.5, 1.5)
 
 [node name="VSync" type="Label" parent="Display" unique_id=2147413102]
 layout_mode = 2
-focus_neighbor_top = NodePath("../Fullscreen")
-focus_neighbor_bottom = NodePath("../Brightness")
 theme_override_font_sizes/font_size = 32
 text = "VSync"
 
@@ -259,8 +251,6 @@ scale = Vector2(1.5, 1.5)
 
 [node name="Brightness" type="Label" parent="Display" unique_id=803022101]
 layout_mode = 2
-focus_neighbor_top = NodePath("../VSync")
-focus_neighbor_bottom = NodePath("../Framerate")
 theme_override_font_sizes/font_size = 32
 text = "Brightness"
 
@@ -281,8 +271,6 @@ value = 1.0
 
 [node name="Framerate" type="Label" parent="Display" unique_id=1766648480]
 layout_mode = 2
-focus_neighbor_top = NodePath("../Brightness")
-focus_neighbor_bottom = NodePath("../../BackButton")
 theme_override_font_sizes/font_size = 32
 text = "FPS Cap"
 
@@ -322,8 +310,6 @@ OutputDeviceOption = NodePath("OutputDevice/OptionButton")
 
 [node name="Master" type="Label" parent="Sound" unique_id=680519911]
 layout_mode = 2
-focus_neighbor_top = NodePath("../../NavBar/Sound_Button")
-focus_neighbor_bottom = NodePath("../Music")
 theme_override_font_sizes/font_size = 32
 text = "Master Volume"
 
@@ -338,11 +324,10 @@ offset_left = 31.0
 offset_top = -16.0
 offset_right = 256.0
 offset_bottom = 16.0
+focus_neighbor_top = NodePath("../../../NavBar/Sound_Button")
 
 [node name="Music" type="Label" parent="Sound" unique_id=1613468907]
 layout_mode = 2
-focus_neighbor_top = NodePath("../Master")
-focus_neighbor_bottom = NodePath("../SFX")
 theme_override_font_sizes/font_size = 32
 text = "Music Volume"
 
@@ -360,8 +345,6 @@ offset_bottom = 16.0
 
 [node name="SFX" type="Label" parent="Sound" unique_id=1434505635]
 layout_mode = 2
-focus_neighbor_top = NodePath("../Music")
-focus_neighbor_bottom = NodePath("../Mute")
 theme_override_font_sizes/font_size = 32
 text = "SFX Volume"
 
@@ -379,8 +362,6 @@ offset_bottom = 16.0
 
 [node name="Mute" type="Label" parent="Sound" unique_id=520914139]
 layout_mode = 2
-focus_neighbor_top = NodePath("../SFX")
-focus_neighbor_bottom = NodePath("../OutputDevice")
 theme_override_font_sizes/font_size = 32
 text = "Mute All"
 
@@ -398,8 +379,6 @@ scale = Vector2(1.5, 1.5)
 
 [node name="OutputDevice" type="Label" parent="Sound" unique_id=1624693647]
 layout_mode = 2
-focus_neighbor_top = NodePath("../Mute")
-focus_neighbor_bottom = NodePath("../../BackButton")
 theme_override_font_sizes/font_size = 32
 text = "Output Device"
 
@@ -436,8 +415,6 @@ RemapButtonsButton = NodePath("Remap_Buttons")
 
 [node name="Controller_Sense" type="Label" parent="Controller" unique_id=1958249126]
 layout_mode = 2
-focus_neighbor_top = NodePath("../../NavBar/Controller_Button")
-focus_neighbor_bottom = NodePath("../Vibration")
 theme_override_font_sizes/font_size = 32
 text = "Joystick Sense"
 
@@ -452,12 +429,11 @@ offset_left = 6.0
 offset_top = -16.0
 offset_right = 231.0
 offset_bottom = 16.0
+focus_neighbor_top = NodePath("../../../NavBar/Controller_Button")
 max_value = 300.0
 
 [node name="Vibration" type="Label" parent="Controller" unique_id=765539001]
 layout_mode = 2
-focus_neighbor_top = NodePath("../Controller_Sense")
-focus_neighbor_bottom = NodePath("../Deadzone")
 theme_override_font_sizes/font_size = 32
 text = "Vibration"
 
@@ -475,8 +451,6 @@ scale = Vector2(1.5, 1.5)
 
 [node name="Deadzone" type="Label" parent="Controller" unique_id=1100646173]
 layout_mode = 2
-focus_neighbor_top = NodePath("../Vibration")
-focus_neighbor_bottom = NodePath("../../BackButton")
 theme_override_font_sizes/font_size = 32
 text = "Deadzone"
 
@@ -521,8 +495,6 @@ RemapKeysButton = NodePath("Remap_Keys")
 
 [node name="Mouse_Sense" type="Label" parent="MK" unique_id=2053511060]
 layout_mode = 2
-focus_neighbor_top = NodePath("../../NavBar/MK_Button")
-focus_neighbor_bottom = NodePath("../Invert_Y-Axis")
 theme_override_font_sizes/font_size = 32
 text = "Mouse Sense"
 
@@ -537,13 +509,12 @@ offset_left = 6.0
 offset_top = -16.0
 offset_right = 231.0
 offset_bottom = 16.0
+focus_neighbor_top = NodePath("../../../NavBar/MK_Button")
 max_value = 2.0
 step = 0.1
 
 [node name="Invert_Y-Axis" type="Label" parent="MK" unique_id=648042255]
 layout_mode = 2
-focus_neighbor_top = NodePath("../Mouse_Sense")
-focus_neighbor_bottom = NodePath("../Enable_Raw_Input")
 theme_override_font_sizes/font_size = 32
 text = "Invert Y-Axis"
 
@@ -561,8 +532,6 @@ scale = Vector2(1.5, 1.5)
 
 [node name="Enable_Raw_Input" type="Label" parent="MK" unique_id=76786761]
 layout_mode = 2
-focus_neighbor_top = NodePath("../Invert_Y-Axis")
-focus_neighbor_bottom = NodePath("../../BackButton")
 theme_override_font_sizes/font_size = 32
 text = "Enable Raw Input"
 
@@ -587,7 +556,6 @@ disabled = true
 text = "Remap Keys"
 
 [node name="Accessibility" type="VBoxContainer" parent="." unique_id=229276971 node_paths=PackedStringArray("SubtitlesCheckBox", "SubtitleSizeSlider", "ColorblindModeOption", "TextToSpeechCheckBox", "HighContrastUICheckBox")]
-visible = false
 layout_mode = 1
 anchors_preset = 14
 anchor_top = 0.5
@@ -609,8 +577,6 @@ HighContrastUICheckBox = NodePath("High_Contrast_UI/CheckBox")
 
 [node name="Subtitles" type="Label" parent="Accessibility" unique_id=185340189]
 layout_mode = 2
-focus_neighbor_top = NodePath("../../NavBar/Accessibility_Button")
-focus_neighbor_bottom = NodePath("../Subtitle_Size")
 theme_override_font_sizes/font_size = 32
 text = "Subtitles"
 
@@ -625,11 +591,10 @@ offset_left = 12.0
 offset_top = -24.0
 offset_bottom = 8.0
 scale = Vector2(1.5, 1.5)
+focus_neighbor_top = NodePath("../../../NavBar/Accessibility_Button")
 
 [node name="Subtitle_Size" type="Label" parent="Accessibility" unique_id=517582319]
 layout_mode = 2
-focus_neighbor_top = NodePath("../Subtitles")
-focus_neighbor_bottom = NodePath("../Colorblind_Mode")
 theme_override_font_sizes/font_size = 32
 text = "Subtitle Size"
 
@@ -647,8 +612,6 @@ offset_bottom = 16.0
 
 [node name="Colorblind_Mode" type="Label" parent="Accessibility" unique_id=709399320]
 layout_mode = 2
-focus_neighbor_top = NodePath("../Subtitle_Size")
-focus_neighbor_bottom = NodePath("../Text-to-Speech")
 theme_override_font_sizes/font_size = 32
 text = "Colorblind Mode"
 
@@ -665,8 +628,6 @@ offset_bottom = 16.0
 
 [node name="Text-to-Speech" type="Label" parent="Accessibility" unique_id=277903164]
 layout_mode = 2
-focus_neighbor_top = NodePath("../Colorblind_Mode")
-focus_neighbor_bottom = NodePath("../High_Contrast_UI")
 theme_override_font_sizes/font_size = 32
 text = "Text to Speech"
 
@@ -684,8 +645,6 @@ scale = Vector2(1.5, 1.5)
 
 [node name="High_Contrast_UI" type="Label" parent="Accessibility" unique_id=906879753]
 layout_mode = 2
-focus_neighbor_top = NodePath("../Text-to-Speech")
-focus_neighbor_bottom = NodePath("../../BackButton")
 theme_override_font_sizes/font_size = 32
 text = "High Contrast UI"
 
