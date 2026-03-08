@@ -38,8 +38,8 @@ namespace Root {
 
 		private string? LoadFile;
 
-		private const int SpawnHeight = 10;
-		private const int SpawnRadius = 50;
+		private const int SpawnHeight = 5;
+		private const int SpawnRadius = 10;
 
 		private static readonly Vector3 PlayerSpawnLocation = new Vector3(-280, SpawnHeight, 40);
 
@@ -191,12 +191,12 @@ namespace Root {
 
 		private void StartGame() {
 			SpawnLocalPlayer();
-			SpawnTestItems();
-
 			if(LoadFile != null) {
 				LoadData(LoadFile);
 				LoadFile = null;
+				return;
 			}
+			SpawnTestItems();
 		}
 
 		private void LoadData(string file) {
@@ -237,12 +237,14 @@ namespace Root {
 			SpawnTimer = 5.0f;
 		}
 
-		private static Vector3 RandomLocation() {
-			return new Vector3(
-				GD.RandRange(-SpawnRadius, SpawnRadius),
-				SpawnHeight,
-				GD.RandRange(-SpawnRadius, SpawnRadius)
+		private Vector3 RandomLocationNearPlayer() {
+			Vector3 center = IsInstanceValid(LocalPlayer) ? LocalPlayer!.GlobalPosition : PlayerSpawnLocation;
+			Vector3 randomPoint = new Vector3(
+				center.X + GD.RandRange(-SpawnRadius, SpawnRadius),
+				center.Y + SpawnHeight,
+				center.Z + GD.RandRange(-SpawnRadius, SpawnRadius)
 			);
+			return randomPoint;
 		}
 
 		private void SpawnTestItems() {
@@ -250,17 +252,18 @@ namespace Root {
 				Log.Error("Cannot spawn test items: Item3DIconManager is not initialized");
 				return;
 			}
-			Item3DIconManager.SpawnItem(ItemID.AppleRed, RandomLocation());
-			Item3DIconManager.SpawnItem(ItemID.AppleYellow, RandomLocation());
-			Item3DIconManager.SpawnItem(ItemID.AppleGreen, RandomLocation());
-			Item3DIconManager.SpawnItem(ItemID.BananaYellow, RandomLocation());
-			Item3DIconManager.SpawnItem(ItemID.BananaGreen, RandomLocation());
-			Item3DIconManager.SpawnItem(ItemID.StrawberryGreen, RandomLocation());
-			Item3DIconManager.SpawnItem(ItemID.StrawberryRed, RandomLocation());
-			Item3DIconManager.SpawnItem(ItemID.StrawberryRed, RandomLocation());
-			Item3DIconManager.SpawnItem(ItemID.StrawberryRed, RandomLocation());
-			Item3DIconManager.SpawnItem(ItemID.StrawberryRed, RandomLocation());
-			Item3DIconManager.SpawnItem(ItemID.StrawberryRed, new Vector3(40, SpawnHeight, 20), 3);
+			Item3DIconManager.SpawnItem(ItemID.AppleRed, RandomLocationNearPlayer());
+			Item3DIconManager.SpawnItem(ItemID.AppleYellow, RandomLocationNearPlayer());
+			Item3DIconManager.SpawnItem(ItemID.AppleGreen, RandomLocationNearPlayer());
+			Item3DIconManager.SpawnItem(ItemID.BananaYellow, RandomLocationNearPlayer());
+			Item3DIconManager.SpawnItem(ItemID.BananaGreen, RandomLocationNearPlayer());
+			Item3DIconManager.SpawnItem(ItemID.StrawberryGreen, RandomLocationNearPlayer());
+			Item3DIconManager.SpawnItem(ItemID.StrawberryRed, RandomLocationNearPlayer());
+			Item3DIconManager.SpawnItem(ItemID.StrawberryRed, RandomLocationNearPlayer());
+			Item3DIconManager.SpawnItem(ItemID.StrawberryRed, RandomLocationNearPlayer());
+			Item3DIconManager.SpawnItem(ItemID.StrawberryRed, RandomLocationNearPlayer());
+
+			Item3DIconManager.SpawnItem(ItemID.StrawberryRed, RandomLocationNearPlayer(), 3);
 		}
 
 		private void SubscribeToPlayerItem3DIconEvents(Player player) {
