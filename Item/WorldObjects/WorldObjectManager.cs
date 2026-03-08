@@ -49,9 +49,7 @@ namespace Objects {
 					continue;
 				}
 				Object obj = new Object(itemId, objNode.GlobalPosition, objNode.GlobalRotation);
-				if(objNode.ComponentDefinitions.Count > 0) {
-					pendingSpawnComponents[obj.Id] = (objNode.Name, objNode.ComponentDefinitions);
-				}
+				pendingSpawnComponents[obj.Id] = (objNode.Name, objNode.ComponentDefinitions);
 				if(!WorldObjects.RegisterWorldObject(obj)) {
 					Log.Warn($"Skipping spawn point '{objNode.Name}' because world object registration failed.");
 				}
@@ -73,8 +71,14 @@ namespace Objects {
 					Log.Error($"Failed to spawn world object with ID {obj.Id} and ItemId {obj.ItemId}");
 					continue;
 				}
+				bool hasInventorySpawnDefinition = false;
+				string spawnPointName = "UnknownSpawnPoint";
 				if(pendingSpawnComponents.TryGetValue(obj.Id, out var pendingData)) {
-					ApplyPendingSpawnComponents(obj, pendingData);
+					spawnPointName = pendingData.SpawnPointName;
+					hasInventorySpawnDefinition = ApplyPendingSpawnComponents(obj, pendingData);
+				}
+				if(!hasInventorySpawnDefinition) {
+					obj.TryFillInventoryFromRarity(spawnPointName);
 				}
 				WorldObjectNodes.AddObjectNode(node);
 			}
@@ -106,15 +110,18 @@ namespace Objects {
 			}
 		}
 
-		private void ApplyPendingSpawnComponents(Object obj, (string SpawnPointName, Godot.Collections.Array<WorldObjectSpawnComponentDefinition> ComponentDefinitions) pendingData) {
+		private bool ApplyPendingSpawnComponents(Object obj, (string SpawnPointName, Godot.Collections.Array<WorldObjectSpawnComponentDefinition> ComponentDefinitions) pendingData) {
+			bool hasInventorySpawnDefinition = false;
 			foreach(WorldObjectSpawnComponentDefinition definition in pendingData.ComponentDefinitions) {
 				if(definition == null) {
 					continue;
 				}
 				if(definition is WorldObjectInventorySpawnDefinition inventorySpawnDefinition) {
+					hasInventorySpawnDefinition = true;
 					ApplyInventorySpawnDefinition(obj, pendingData.SpawnPointName, inventorySpawnDefinition);
 				}
 			}
+			return hasInventorySpawnDefinition;
 		}
 
 		private void ApplyInventorySpawnDefinition(Object obj, string spawnPointName, WorldObjectInventorySpawnDefinition inventorySpawnDefinition) {

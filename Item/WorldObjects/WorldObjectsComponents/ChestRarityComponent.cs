@@ -92,4 +92,68 @@ namespace Components {
             return Common;
         }
     }
+
+    public static class ChestRarityComponentExtensions {
+        private static readonly LogService Log = new(nameof(ChestRarityComponentExtensions), enabled: true);
+        private static readonly Random Random = new Random();
+
+        public static void TryFillInventoryFromRarity(this Objects.Object obj, string spawnPointName) {
+            if(!obj.ComponentDictionary.Has<InventoryComponent>()) {
+                return;
+            }
+            if(!obj.ComponentDictionary.Has<ChestRarityComponent>()) {
+                return;
+            }
+
+            Inventory inventory = obj.ComponentDictionary.Get<InventoryComponent>().Inventory;
+            ChestRarityComponent chestRarity = obj.ComponentDictionary.Get<ChestRarityComponent>();
+            RarityDefinition rarityDefinition = RarityDefinitions.Get(chestRarity.RarityLevel);
+
+            int lowerBound = Math.Max(0, Math.Min(rarityDefinition.LowerBound, rarityDefinition.UpperBound));
+            int upperBound = Math.Max(lowerBound, Math.Max(rarityDefinition.LowerBound, rarityDefinition.UpperBound));
+            int numberOfItemsInChest = Random.Next(lowerBound, upperBound + 1);
+
+            for(int i = 0; i < numberOfItemsInChest; i++) {
+                ItemProbabilities? selected = PickWeightedItem(rarityDefinition.PossibleContents);
+                if(selected == null) {
+                    break;
+                }
+
+                if(ItemDataBaseManager.Instance.GetItemDefinitionById(selected.Value.ItemId) == null) {
+                    Log.Warn($"Rarity loot on spawn point '{spawnPointName}' references unknown item '{selected.Value.ItemId}'. Skipping.");
+                    continue;
+                }
+
+                Item itemInstance = ItemDataBaseManager.Instance.CreateItemInstanceById(selected.Value.ItemId);
+                ItemSlot remaining = inventory.AddItem(new ItemSlot(itemInstance, 1));
+                if(!remaining.IsEmpty()) {
+                    // Inventory is full
+                    break;
+                }
+            }
+        }
+
+        private static ItemProbabilities? PickWeightedItem(ItemProbabilities[] possibleContents) {
+            if(possibleContents == null || possibleContents.Length == 0) {
+                return null;
+            }
+            int totalWeight = 0;
+            for(int i = 0; i < possibleContents.Length; i++) {
+                totalWeight += Math.Max(0, possibleContents[i].ChanceWeight);
+            }
+            if(totalWeight <= 0) {
+                return null;
+            }
+            int roll = Random.Next(0, totalWeight);
+            int cumulative = 0;
+            for(int i = 0; i < possibleContents.Length; i++) {
+                int weight = Math.Max(0, possibleContents[i].ChanceWeight);
+                cumulative += weight;
+                if(roll < cumulative) {
+                    return possibleContents[i];
+                }
+            }
+            return possibleContents[possibleContents.Length - 1];
+        }
+    }
 }
