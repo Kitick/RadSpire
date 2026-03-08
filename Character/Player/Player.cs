@@ -50,6 +50,7 @@ namespace Character {
 		public override void _Ready() {
 			base._Ready();
 			PickupComponent.HandleInteractInput = false;
+			AddToGroup("player");
 			AddChild(PickupComponent);
 			AddChild(InventoryManager);
 			AddChild(UseItemComponent);
