@@ -54,31 +54,43 @@ theme_override_constants/separation = 8
 
 [node name="General_Button" type="Button" parent="NavBar" unique_id=1431747125]
 layout_mode = 2
+focus_neighbor_left = NodePath("../Accessibility_Button")
+focus_neighbor_right = NodePath("../Display_Button")
 theme_override_font_sizes/font_size = 40
 text = "General"
 
 [node name="Display_Button" type="Button" parent="NavBar" unique_id=465923652]
 layout_mode = 2
+focus_neighbor_left = NodePath("../General_Button")
+focus_neighbor_right = NodePath("../Sound_Button")
 theme_override_font_sizes/font_size = 40
 text = "Display"
 
 [node name="Sound_Button" type="Button" parent="NavBar" unique_id=1150145720]
 layout_mode = 2
+focus_neighbor_left = NodePath("../Display_Button")
+focus_neighbor_right = NodePath("../Controller_Button")
 theme_override_font_sizes/font_size = 40
 text = "Sound"
 
 [node name="Controller_Button" type="Button" parent="NavBar" unique_id=1841363012]
 layout_mode = 2
+focus_neighbor_left = NodePath("../Sound_Button")
+focus_neighbor_right = NodePath("../MK_Button")
 theme_override_font_sizes/font_size = 40
 text = "Controller"
 
 [node name="MK_Button" type="Button" parent="NavBar" unique_id=1818435186]
 layout_mode = 2
+focus_neighbor_left = NodePath("../Controller_Button")
+focus_neighbor_right = NodePath("../Accessibility_Button")
 theme_override_font_sizes/font_size = 40
 text = "Mouse & Keyboard"
 
 [node name="Accessibility_Button" type="Button" parent="NavBar" unique_id=1538897931]
 layout_mode = 2
+focus_neighbor_left = NodePath("../MK_Button")
+focus_neighbor_right = NodePath("../General_Button")
 theme_override_font_sizes/font_size = 40
 text = "Accessibility"
 

@@ -19,6 +19,7 @@ namespace UI {
 		public void OpenMenu() {
 			UpdateHostButtonText();
 			Visible = true;
+			ResumeButton.GrabFocus();
 		}
 
 		public void CloseMenu() {

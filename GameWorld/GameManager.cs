@@ -47,8 +47,6 @@ namespace Root {
 		private int EnemyCount;
 
 		public override void _Ready() {
-			ProcessMode = ProcessModeEnum.Always;
-
 			DisplaySettings.SetWorldEnvironment(WorldEnvironment);
 
 			CameraRig = this.AddScene<CameraRig>(CameraScene);
@@ -84,6 +82,7 @@ namespace Root {
 		private void SpawnLocalPlayer() {
 			LocalPlayer = this.AddScene<Player>(PlayerScene);
 			LocalPlayer.GlobalPosition = PlayerSpawnLocation;
+
 			if(WorldObjectManager != null) {
 				LocalPlayer.ConfigureObjectPickup(WorldObjectManager);
 			}
