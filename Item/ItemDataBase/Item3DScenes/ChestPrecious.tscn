@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://crflsj3utq4yg"]
+
+[ext_resource type="PackedScene" path="res://Assets/Models/Chest/Chests/stone_chest.tscn" id="1_mpffv"]
+[ext_resource type="PackedScene" uid="uid://b7gv62rlbjt5l" path="res://Item/WorldObjects/WorldObjectSpawnPoint.tscn" id="2_7ptf5"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_h4n8c"]
+size = Vector3(3.0863647, 3.583252, 3.0703125)
+
+[node name="ChestPrecious" type="Node3D" unique_id=159631961]
+
+[node name="Stone Chest" parent="." unique_id=365201895 instance=ExtResource("1_mpffv")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.26873732, 0)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Stone Chest" unique_id=507409766]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Stone Chest/StaticBody3D" unique_id=582574414]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.036468506, 1.5513916, 0.00390625)
+shape = SubResource("BoxShape3D_h4n8c")
+
+[node name="WorldObjectSpawnPoint" parent="." unique_id=2064846928 instance=ExtResource("2_7ptf5")]
+ItemId = "ChestPrecious"

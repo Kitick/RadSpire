@@ -1,8 +1,0 @@
-[gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://djm8jdo2vk410"]
-
-[ext_resource type="Script" uid="uid://cnm5iegiuj4xu" path="res://Item/ItemDataBase/ItemDataBaseScripts/ItemComponentDefinitions/ItemComponentDefinition.cs" id="1_hsk00"]
-[ext_resource type="Script" uid="uid://bxmh4fd7kjvv1" path="res://Item/ItemDataBase/ItemDataBaseScripts/ItemDefinition.cs" id="2_7cj5h"]
-
-[resource]
-script = ExtResource("2_7cj5h")
-metadata/_custom_type_script = "uid://bxmh4fd7kjvv1"
