@@ -16,11 +16,11 @@ using Services;
 		protected override (int phys, int mag) InitialDamage => (InitialDamagePhysical, InitialDamageMagic);
 		protected override (int phys, int mag) InitialDefense => (InitialDefensePhysical, InitialDefenseMagic);
 
-		private Player? Target;
-
 		// Components
 		private readonly Movement Movement;
 		private readonly ChaseAI AI;
+
+		public void SetTarget(Node3D target) => AI.SetTarget(target);
 
 		public Enemy() {
 			Movement = new Movement(this);

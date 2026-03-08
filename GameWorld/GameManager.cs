@@ -6,10 +6,10 @@ namespace Root {
 	using Core;
 	using Godot;
 	using ItemSystem;
+	using Objects;
 	using Services;
 	using Services.Settings;
 	using UI;
-	using Objects;
 
 	public sealed partial class GameManager : Node {
 		private static readonly LogService Log = new(nameof(GameManager), enabled: true);
@@ -22,6 +22,8 @@ namespace Root {
 		[Export] private PackedScene PlayerScene = null!;
 		[Export] private PackedScene EnemyScene = null!;
 		[Export] private PackedScene Item3DIconManagerScene = null!;
+
+		private EnemySpawner EnemySpawner = null!;
 		[Export] private PackedScene WorldObjectManageScene = null!;
 		[Export] private PackedScene NPCScene = null!;
 		[Export] private Node WorldObjectParentNode = null!;
@@ -43,10 +45,7 @@ namespace Root {
 		private const int SpawnRadius = 10;
 
 		private static readonly Vector3 PlayerSpawnLocation = new Vector3(-280, SpawnHeight, 40);
-		private static readonly Vector3 NPCSpawnLocation = new Vector3(-324, 0,-7);
-
-		private float SpawnTimer = 5.0f;
-		private int EnemyCount;
+		private static readonly Vector3 NPCSpawnLocation = new Vector3(-324, 0, -7);
 
 		public override void _Ready() {
 			DisplaySettings.SetWorldEnvironment(WorldEnvironment);
@@ -56,6 +55,7 @@ namespace Root {
 			WorldObjectManager = this.AddScene<WorldObjectManager>(WorldObjectManageScene);
 			Node worldRoot = GetParent() ?? this;
 			WorldObjectManager.SetUpWorldObjectManager(WorldObjectParentNode, worldRoot);
+			EnemySpawner = new EnemySpawner(this, EnemyScene);
 			ConfigureStateMachine();
 
 			StartGame();
@@ -73,14 +73,14 @@ namespace Root {
 			KeyInput.Update(CameraRig);
 			LocalPlayer.Update(dt, KeyInput);
 
-			UpdateTimer();
+			EnemySpawner.Update();
 		}
 
 		private void ConfigureStateMachine() {
 			StateMachine.OnEnter(MenuState.Game, () => GetTree().Paused = false);
 			StateMachine.OnExit(MenuState.Game, () => GetTree().Paused = true);
 		}
-		
+
 		private void SpawnNPC() {
 			var npc = this.AddScene<NPC>(NPCScene);
 			npc.GlobalPosition = NPCSpawnLocation;
@@ -96,6 +96,7 @@ namespace Root {
 			SubscribeToPlayerItem3DIconEvents(LocalPlayer);
 
 			CameraRig.Target = LocalPlayer;
+			EnemySpawner.SetTarget(LocalPlayer);
 
 			AttachHUD();
 			LocalPlayer.ConfigureObjectPlacement(WorldObjectManager!, this, HUD!.GetNode<Hotbar>("Hotbar"));
@@ -140,28 +141,6 @@ namespace Root {
 			LocalPlayer.Hotbar.Import(hotbarData);
 
 			Log.Info("Player respawned");
-		}
-
-		private void UpdateTimer() {
-			SpawnTimer -= 0.015f;
-
-			if(SpawnTimer <= 0.0f && EnemyCount < 5) {
-				GD.Print("Spawned");
-				SpawnTimer = (float) GD.RandRange(1f, 6f);
-				var enemy = this.AddScene<Enemy>(EnemyScene);
-				enemy.GlobalPosition = GetRandomEnemySpawn();
-				EnemyCount += 1;
-			}
-		}
-
-		private Vector3 GetRandomEnemySpawn() {
-			var pos = LocalPlayer!.GlobalPosition;
-			return pos + new Vector3(
-				(float) GD.RandRange(-10f, 10f),
-				0.25f,
-				(float) GD.RandRange(-10f, 10f)
-			);
-
 		}
 
 		public bool SaveGame(string fileName) {
@@ -240,9 +219,7 @@ namespace Root {
 			Cleanup(Item3DIconManager);
 			Item3DIconManager = null;
 
-			// Reset spawn state
-			EnemyCount = 0;
-			SpawnTimer = 5.0f;
+			EnemySpawner.Reset();
 		}
 
 		private Vector3 RandomLocationNearPlayer() {
