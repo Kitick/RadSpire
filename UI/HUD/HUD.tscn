@@ -7,7 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://dv4igypq0dbv8" path="res://UI/SaveMenu/SaveMenu.tscn" id="3_o30d6"]
 [ext_resource type="PackedScene" uid="uid://etextx8i4ksr" path="res://UI/Hotbar/Hotbar.tscn" id="5_c358i"]
 [ext_resource type="PackedScene" uid="uid://crye0f0yw8xrb" path="res://UI/PauseMenu/PauseMenu.tscn" id="5_jmlhc"]
-[ext_resource type="Script" uid="uid://bovlwauji4mth" path="res://UI/HUD/InventoryUI.cs" id="5_q8dl0"]
+[ext_resource type="Script" uid="uid://bovlwauji4mth" path="res://UI/Inventory/InventoryUI.cs" id="5_q8dl0"]
 [ext_resource type="PackedScene" uid="uid://bffohbw4kmhwa" path="res://UI/Inventory/Inventory.tscn" id="6_785o0"]
 [ext_resource type="PackedScene" uid="uid://bjql4hi1q0ouh" path="res://UI/QuestLog/QuestLog.tscn" id="8_6ymr8"]
 [ext_resource type="PackedScene" uid="uid://2mdnsh082j66" path="res://UI/RespawnMenu/RespawnMenu.tscn" id="8_10ibt"]

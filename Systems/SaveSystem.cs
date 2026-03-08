@@ -12,6 +12,7 @@ namespace Services {
 
 	public static class SaveService {
 		private const string SaveDirName = "saves";
+		public static string? SaveDirOverride { get; set; } = null;
 
 		private static readonly JsonSerializerOptions FileJsonOptions = new() {
 			IncludeFields = true,
@@ -21,7 +22,8 @@ namespace Services {
 		};
 
 		private static DirectoryInfo GetSaveDir() {
-			var path = Path.Combine(Godot.OS.GetUserDataDir(), SaveDirName);
+			string root = SaveDirOverride ?? Godot.OS.GetUserDataDir();
+			string path = Path.Combine(root, SaveDirName);
 
 			if(!Directory.Exists(path)) { Directory.CreateDirectory(path); }
 
@@ -29,20 +31,20 @@ namespace Services {
 		}
 
 		private static FileInfo GetFile(string fileName) {
-			var path = Path.Combine(GetSaveDir().FullName, fileName + ".json");
+			string path = Path.Combine(GetSaveDir().FullName, fileName + ".json");
 			return new FileInfo(path);
 		}
 
 		private static void Write<TData>(this FileInfo file, TData data) {
-			var json = JsonService.Serialize(data, FileJsonOptions);
+			string json = JsonService.Serialize(data, FileJsonOptions);
 			File.WriteAllText(file.FullName, json);
 		}
 
 		private static TData Read<TData>(this FileInfo file) {
 			if(!file.Exists) { throw new FileNotFoundException("Save file not found", file.Name); }
 
-			var json = File.ReadAllText(file.FullName);
-			var data = JsonService.Deserialize<TData>(json, FileJsonOptions);
+			string json = File.ReadAllText(file.FullName);
+			TData data = JsonService.Deserialize<TData>(json, FileJsonOptions);
 
 			return data;
 		}
@@ -60,7 +62,7 @@ namespace Services {
 		}
 
 		public static void Load<TData>(this ISaveable<TData> saveable, string fileName) where TData : ISaveData {
-			var data = Load<TData>(fileName);
+			TData data = Load<TData>(fileName);
 			saveable.Import(data);
 		}
 
@@ -69,12 +71,12 @@ namespace Services {
 		}
 
 		public static void Delete(string fileName) {
-			var file = GetFile(fileName);
+			FileInfo file = GetFile(fileName);
 			if(file.Exists) { file.Delete(); }
 		}
 
 		public static string[] List() {
-			var files = GetSaveDir().GetFiles("*.json");
+			FileInfo[] files = GetSaveDir().GetFiles("*.json");
 
 			return files.Select(file => Path.GetFileNameWithoutExtension(file.Name)).ToArray();
 		}

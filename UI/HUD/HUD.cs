@@ -52,6 +52,7 @@ namespace UI {
 		}
 
 		public override void _Ready() {
+			this.ValidateExports();
 			ProcessMode = ProcessModeEnum.Always;
 
 			SetCallbacks();
@@ -170,7 +171,7 @@ namespace UI {
 		private void OpenSaveMenu() {
 			var saveMenu = this.AddScene<SaveMenu>(SaveMenuScene);
 			saveMenu.OnSave += fileName => SaveRequested?.Invoke(fileName);
-			saveMenu.OpenMenu(SaveMenuMode.Save);
+			saveMenu.OpenMenu(SaveMenu.SaveMode.Save);
 		}
 
 		private void ToggleInventory() {

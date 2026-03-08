@@ -38,17 +38,15 @@ namespace Root {
 
 		private string? LoadFile;
 
-		private const int SpawnHeight = 40;
+		private const int SpawnHeight = 10;
 		private const int SpawnRadius = 50;
 
-		private static readonly Vector3 PlayerSpawnLocation = new Vector3(-330, SpawnHeight, -10);
+		private static readonly Vector3 PlayerSpawnLocation = new Vector3(-280, SpawnHeight, 40);
 
 		private float SpawnTimer = 5.0f;
 		private int EnemyCount;
 
 		public override void _Ready() {
-			ProcessMode = ProcessModeEnum.Always;
-
 			DisplaySettings.SetWorldEnvironment(WorldEnvironment);
 
 			CameraRig = this.AddScene<CameraRig>(CameraScene);
@@ -83,6 +81,7 @@ namespace Root {
 		private void SpawnLocalPlayer() {
 			LocalPlayer = this.AddScene<Player>(PlayerScene);
 			LocalPlayer.GlobalPosition = PlayerSpawnLocation;
+
 			if(WorldObjectManager != null) {
 				LocalPlayer.ConfigureObjectPickup(WorldObjectManager);
 			}
