@@ -18,22 +18,25 @@ namespace Objects {
         public InventoryManager? InventoryManager { get; private set; }
         public GameManager? GameManager { get; private set; }
         public Hotbar? PlayerHotbar { get; private set; }
-        public bool Initalized => WorldObjectManager != null && InventoryManager != null && GameManager != null && PlayerHotbar != null;
+        public Player? Player {get; private set; }
+        public bool Initalized => WorldObjectManager != null && InventoryManager != null && GameManager != null && PlayerHotbar != null && Player != null;
 
         private enum PlaceState { Idle, FindingPlacableLocation, Placable, Place };
         private StateMachine<PlaceState> PlaceStateMachine = new StateMachine<PlaceState>(PlaceState.Idle);
         public string? CurrentPlacingItemId { get; private set; }
         public Vector3 CurrentPlacingPosition { get; private set; }
+        public Vector3 CurrentPlacingRotation { get; private set; }
         public event Action<Vector3>? OnPlacingObject;
         public event Action<bool>? OnPlacingObjectValidChanged;
         public event Action<string>? StartPlacingObject;
         public event Action? EndPlacingObject;
 
-        public void Initialize(WorldObjectManager worldObjectManager, InventoryManager inventoryManager, GameManager gameManager, Hotbar playerHotbar) {
+        public void Initialize(WorldObjectManager worldObjectManager, InventoryManager inventoryManager, GameManager gameManager, Hotbar playerHotbar, Player player) {
             WorldObjectManager = worldObjectManager;
             InventoryManager = inventoryManager;
             GameManager = gameManager;
             PlayerHotbar = playerHotbar;
+            Player = player;
             playerHotbar.OnSlotSelected += OnHotbarSlotSelected;
             ConfigureStateMachine();
         }
@@ -52,7 +55,7 @@ namespace Objects {
             PlaceStateMachine.OnEnter(PlaceState.Placable, () => {
                 OnPlacingObjectValidChanged?.Invoke(true);
             });
-            PlaceStateMachine.OnEnter(PlaceState.Place, () => {
+            PlaceStateMachine.OnSpecific(PlaceState.Placable, PlaceState.Place, () => {
                 PlaceObject();
                 PlaceStateMachine.TransitionTo(PlaceState.Idle);
             });
@@ -67,8 +70,20 @@ namespace Objects {
                   case PlaceState.Idle:
                     break;
                 case PlaceState.FindingPlacableLocation:
+                    CurrentPlacingPosition = GetPositionInFrontOfPlayer(Player!, out bool success);
+                    CurrentPlacingRotation = GetRotationFacingPlayer(Player!, CurrentPlacingPosition);
+                    OnPlacingObject?.Invoke(CurrentPlacingPosition);
+                    if(success) {
+                        PlaceStateMachine.TransitionTo(PlaceState.Placable);
+                    }
                     break;
                 case PlaceState.Placable:
+                    CurrentPlacingPosition = GetPositionInFrontOfPlayer(Player!, out bool stillValid);
+                    CurrentPlacingRotation = GetRotationFacingPlayer(Player!, CurrentPlacingPosition);
+                    OnPlacingObject?.Invoke(CurrentPlacingPosition);
+                    if(!stillValid) {
+                        PlaceStateMachine.TransitionTo(PlaceState.FindingPlacableLocation);
+                    }
                     break;
                 case PlaceState.Place:
                     break;           
@@ -81,8 +96,8 @@ namespace Objects {
             }
         }
 
-        public void PlaceRequested() 
-             if(PlaceStateMachine.CurrentState == PlaceState.Idle) {
+        public void PlaceRequested() {
+            if(PlaceStateMachine.CurrentState == PlaceState.Idle) {
                 if(CurrentPlacingItemId == null) {
                     Log.Info("PlaceRequested called but no item is currently selected for placing.");
                     return;
@@ -100,19 +115,37 @@ namespace Objects {
             }
             if(PlaceStateMachine.CurrentState == PlaceState.Placable) {
                 PlaceStateMachine.TransitionTo(PlaceState.Place);
-            }         
-
+            }
+        }
 
         public void PlaceCanceled(){
-{           if(PlaceStateMachine.CurrentState == PlaceState.FindingPlacableLocation || PlaceStateMachine.CurrentState == PlaceState.Placable) {
+           if(PlaceStateMachine.CurrentState == PlaceState.FindingPlacableLocation || PlaceStateMachine.CurrentState == PlaceState.Placable) {
                 PlaceStateMachine.TransitionTo(PlaceState.Idle);
             }   
         }
-        
+
         public void OnHotbarSlotSelected(string itemId) {
             CurrentPlacingItemId = itemId;
             PlaceCanceled();
-        }    public bool PlaceObjectInFrontOfPlayer(Player player, string itemId, float distance = DefaultPlaceDistance) {
+        }    
+        
+        private void PlaceObject() {
+            if(!Initalized) {
+                Log.Error("PlaceObject failed: ObjectPlacementManager is not initialized.");
+                return;
+            }
+            if(CurrentPlacingItemId == null) {
+                Log.Error("PlaceObject failed: CurrentPlacingItemId is null.");
+                return;
+            }
+            if(CurrentPlacingPosition == Vector3.Zero) {
+                Log.Error("PlaceObject failed: CurrentPlacingPosition is zero.");
+                return;
+            }
+            WorldObjectManager!.CreateWorldObject(CurrentPlacingItemId, CurrentPlacingPosition, CurrentPlacingRotation);
+        }
+
+        public bool PlaceObjectInFrontOfPlayer(Player player, string itemId, float distance = DefaultPlaceDistance) {
             if(!Initalized) {
                 Log.Error("ObjectPlacementManager is not initialized.");
                 return false;
@@ -127,7 +160,7 @@ namespace Objects {
             }
             bool success = false;
             Vector3 position = GetPositionInFrontOfPlayer(player, out success, distance);
-            Vector3 rotation = new Vector3(0, player.GlobalRotation.Y, 0);
+            Vector3 rotation = GetRotationFacingPlayer(player, position);
             if(!success) {
                 return success;
             }
@@ -156,6 +189,16 @@ namespace Objects {
             position.Y = player.GlobalPosition.Y;
             Vector3 groundPosition = GetPositionOnGround(position, out success);
             return groundPosition;
+        }
+
+        public Vector3 GetRotationFacingPlayer(Player player, Vector3 objectPosition) {
+            if(player == null || !GodotObject.IsInstanceValid(player)) {
+                Log.Error("Player is invalid.");
+                return Vector3.Zero;
+            }
+            Vector3 directionToPlayer = (player.GlobalPosition - objectPosition).Normalized();
+            float angle = Mathf.Atan2(directionToPlayer.X, directionToPlayer.Z);
+            return new Vector3(0, angle, 0);
         }
 
         public Vector3 GetPositionOnGround(Vector3 position, out bool success) {

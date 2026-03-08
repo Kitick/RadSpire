@@ -92,6 +92,7 @@ namespace Root {
 			CameraRig.Target = LocalPlayer;
 
 			AttachHUD();
+			LocalPlayer.ConfigureObjectPlacement(WorldObjectManager!, this, HUD!.GetNode<Hotbar>("Hotbar"));
 		}
 
 		private void AttachHUD() {

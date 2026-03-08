@@ -159,7 +159,7 @@ namespace Character {
 				Log.Error("ConfigureObjectPlacement called before ObjectPlacementManager was initialized.");
 				return;
 			}
-			ObjectPlacementManager.Initialize(worldObjectManager, InventoryManager, gameManager, playerHotbar);
+			ObjectPlacementManager.Initialize(worldObjectManager, InventoryManager, gameManager, playerHotbar, this);
 		}
 
 		public PlayerData Export() => new PlayerData {
