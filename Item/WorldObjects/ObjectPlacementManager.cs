@@ -83,10 +83,11 @@ namespace Objects {
                 case PlaceState.Placable:
                     CurrentPlacingPosition = GetPositionInFrontOfPlayer(Player!, out bool stillValid);
                     CurrentPlacingRotation = GetRotationFacingPlayer(Player!, CurrentPlacingPosition);
-                    OnPlacingObject?.Invoke(CurrentPlacingPosition, CurrentPlacingRotation);
                     if(!stillValid) {
                         PlaceStateMachine.TransitionTo(PlaceState.FindingPlacableLocation);
+                        break;
                     }
+                    OnPlacingObject?.Invoke(CurrentPlacingPosition, CurrentPlacingRotation);
                     break;      
             }
        }
