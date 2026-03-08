@@ -27,7 +27,7 @@ namespace Objects {
         public string? CurrentPlacingItemId { get; private set; }
         public Vector3 CurrentPlacingPosition { get; private set; }
         public Vector3 CurrentPlacingRotation { get; private set; }
-        public event Action<Vector3>? OnPlacingObject;
+        public event Action<Vector3, Vector3>? OnPlacingObject;
         public event Action<bool>? OnPlacingObjectValidChanged;
         public event Action<string>? StartPlacingObject;
         public event Action? EndPlacingObject;
@@ -78,7 +78,7 @@ namespace Objects {
                 case PlaceState.FindingPlacableLocation:
                     CurrentPlacingPosition = GetPositionInFrontOfPlayer(Player!, out bool success);
                     CurrentPlacingRotation = GetRotationFacingPlayer(Player!, CurrentPlacingPosition);
-                    OnPlacingObject?.Invoke(CurrentPlacingPosition);
+                    OnPlacingObject?.Invoke(CurrentPlacingPosition, CurrentPlacingRotation);
                     if(success) {
                         PlaceStateMachine.TransitionTo(PlaceState.Placable);
                     }
@@ -86,7 +86,7 @@ namespace Objects {
                 case PlaceState.Placable:
                     CurrentPlacingPosition = GetPositionInFrontOfPlayer(Player!, out bool stillValid);
                     CurrentPlacingRotation = GetRotationFacingPlayer(Player!, CurrentPlacingPosition);
-                    OnPlacingObject?.Invoke(CurrentPlacingPosition);
+                    OnPlacingObject?.Invoke(CurrentPlacingPosition, CurrentPlacingRotation);
                     if(!stillValid) {
                         PlaceStateMachine.TransitionTo(PlaceState.FindingPlacableLocation);
                     }
