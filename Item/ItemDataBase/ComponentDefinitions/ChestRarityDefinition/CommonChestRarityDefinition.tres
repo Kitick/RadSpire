@@ -1,0 +1,7 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://Item/ItemDataBase/ItemDataBaseScripts/ItemComponentDefinitions/ChestRarityDefinition.cs" id="1_rarity"]
+
+[resource]
+script = ExtResource("1_rarity")
+RarityLevel = 0

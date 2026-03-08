@@ -89,6 +89,10 @@ namespace ItemSystem {
 						InventoryComponent objComp = new InventoryComponent(invDef.Rows, invDef.Columns, obj);
 						obj.ComponentDictionary.Add(objComp);
 					}
+					else if(comp is ChestRarityDefinition chestRarityDef) {
+						ChestRarityComponent rarityComp = new ChestRarityComponent(chestRarityDef.RarityLevel, obj);
+						obj.ComponentDictionary.Add(rarityComp);
+					}
 				}
 			}
 		 }

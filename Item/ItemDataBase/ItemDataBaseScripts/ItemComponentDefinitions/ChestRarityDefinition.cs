@@ -1,14 +1,14 @@
 namespace ItemSystem {
     using Godot;
 
+    public enum Rarity {
+        Common,
+        Rare,
+        Precious,
+    }
+        
     [GlobalClass]
     public partial class ChestRarityDefinition : ItemComponentDefinition {
-        public enum Rarity {
-            Common,
-            Rare,
-            Precious,
-        }
-
         [Export]
         public Rarity RarityLevel {
             get; set;
