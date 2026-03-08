@@ -13,6 +13,7 @@ namespace Objects {
         private const float DefaultPlaceDistance = 2.0f;
         private const float PlaceHeightMaxDifference = 5.0f;
         private const float RayLength = 100.0f;
+        private const float MinPlaceSurfaceNormalY = 0.6f;
         private bool _isInitialized;
 
         public WorldObjectManager? WorldObjectManager { get; private set; }
@@ -217,26 +218,17 @@ namespace Objects {
                 return position;
             }
             var spaceState = viewport.World3D.DirectSpaceState;
-            var origin = position;
-            var end = origin + Vector3.Down * RayLength;
+            var origin = position + Vector3.Up * PlaceHeightMaxDifference;
+            var end = position + Vector3.Down * RayLength;
             var query = PhysicsRayQueryParameters3D.Create(origin, end);
             query.CollideWithAreas = false;
             var result = spaceState.IntersectRay(query);
-            if(result.Count > 0 && result.ContainsKey("position")) {
+            if(result.Count > 0 && result.ContainsKey("position") && result.ContainsKey("normal")) {
                 Vector3 groundPosition = (Vector3) result["position"];
-                float heightDifference = Mathf.Abs(groundPosition.Y - height);
-                if(heightDifference <= PlaceHeightMaxDifference) {
-                    success = true;
-                    return groundPosition;
+                Vector3 normal = (Vector3) result["normal"];
+                if(normal.Y < MinPlaceSurfaceNormalY) {
+                    return position;
                 }
-            }
-            origin = position + Vector3.Up * PlaceHeightMaxDifference;
-            end = position + Vector3.Down * RayLength;
-            query.From = origin;
-            query.To = end;
-            result = spaceState.IntersectRay(query);
-            if(result.Count > 0 && result.ContainsKey("position")) {
-                Vector3 groundPosition = (Vector3) result["position"];
                 float heightDifference = Mathf.Abs(groundPosition.Y - height);
                 if(heightDifference <= PlaceHeightMaxDifference) {
                     success = true;
