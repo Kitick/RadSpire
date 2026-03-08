@@ -49,7 +49,6 @@ namespace Objects {
 
         public void ConfigureStateMachine() {
             PlaceStateMachine.OnEnter(PlaceState.Idle, () => {
-                CurrentPlacingItemId = null;
                 EndPlacingObject?.Invoke();
             });
             PlaceStateMachine.OnSpecific(PlaceState.Idle, PlaceState.FindingPlacableLocation, () => {
@@ -103,20 +102,17 @@ namespace Objects {
         }
 
         public void PlaceRequested() {
+            if(!Initalized) {
+                Log.Error("PlaceRequested failed: ObjectPlacementManager is not initialized.");
+                return;
+            }
             if(PlaceStateMachine.CurrentState == PlaceState.Idle) {
-                if(CurrentPlacingItemId == null) {
+                string? selectedItemSlot = PlayerHotbar!.GetSelectedItemSlot()?.Item?.Id;
+                if(!IsPlaceable(selectedItemSlot)) {
                     Log.Info("PlaceRequested called but no item is currently selected for placing.");
                     return;
                 }
-                ItemDefinition? itemDef = ItemDataBaseManager.Instance.GetItemDefinitionById(CurrentPlacingItemId);
-                if(itemDef == null) {
-                    Log.Error($"PlaceRequested failed: ItemDefinition for CurrentPlacingItemId '{CurrentPlacingItemId}' not found.");
-                    return;
-                }
-                if(!itemDef.IsPlaceable) {
-                    Log.Error($"PlaceRequested failed: ItemDefinition for CurrentPlacingItemId '{CurrentPlacingItemId}' is not placeable.");
-                    return;
-                }
+                CurrentPlacingItemId = selectedItemSlot;
                 PlaceStateMachine.TransitionTo(PlaceState.FindingPlacableLocation);
             }
             if(PlaceStateMachine.CurrentState == PlaceState.Placable) {
@@ -131,8 +127,15 @@ namespace Objects {
         }
 
         public void OnHotbarSlotSelected(string itemId) {
+            if(!IsPlaceable(itemId)) {
+                if(PlaceStateMachine.CurrentState == PlaceState.FindingPlacableLocation || PlaceStateMachine.CurrentState == PlaceState.Placable) {
+                    PlaceStateMachine.TransitionTo(PlaceState.Idle);
+                }
+                return;
+            }
             CurrentPlacingItemId = itemId;
             PlaceCanceled();
+            PlaceRequested();
         }    
         
         private void PlaceObject() {
@@ -140,11 +143,17 @@ namespace Objects {
                 Log.Error("PlaceObject failed: ObjectPlacementManager is not initialized.");
                 return;
             }
-            if(CurrentPlacingItemId == null) {
-                Log.Error("PlaceObject failed: CurrentPlacingItemId is null.");
+            string? currentItemId = CurrentPlacingItemId;
+            if(currentItemId == null || !IsPlaceable(currentItemId)) {
+                Log.Error("PlaceObject failed: CurrentPlacingItemId is not placeable.");
                 return;
             }
-            WorldObjectManager!.CreateWorldObject(CurrentPlacingItemId, CurrentPlacingPosition, CurrentPlacingRotation);
+            bool created = WorldObjectManager!.CreateWorldObject(currentItemId, CurrentPlacingPosition, CurrentPlacingRotation);
+            if(!created) {
+                Log.Error($"PlaceObject failed to create world object for ItemId '{CurrentPlacingItemId}'.");
+                return;
+            }
+            InventoryManager!.ConsumeSelectedHotbar(PlayerHotbar!, 1);
         }
 
         public bool PlaceObjectInFrontOfPlayer(Player player, string itemId, float distance = DefaultPlaceDistance) {
@@ -156,8 +165,8 @@ namespace Objects {
                 Log.Error("PlaceObjectInFrontOfPlayer failed: player is invalid.");
                 return false;
             }
-            if(string.IsNullOrWhiteSpace(itemId)) {
-                Log.Error("PlaceObjectInFrontOfPlayer failed: itemId is empty.");
+            if(!IsPlaceable(itemId)) {
+                Log.Error("PlaceObjectInFrontOfPlayer failed: itemId is not placeable.");
                 return false;
             }
             bool success = false;
@@ -241,6 +250,14 @@ namespace Objects {
                 }
             }
             return position;
+        }
+
+        public bool IsPlaceable(string? itemId){
+            if(string.IsNullOrWhiteSpace(itemId)) {
+                return false;
+            }
+            ItemDefinition? itemDef = ItemDataBaseManager.Instance.GetItemDefinitionById(itemId);
+            return itemDef != null && itemDef.IsPlaceable;
         }
     }
 }
