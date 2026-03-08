@@ -6,9 +6,9 @@ namespace Objects {
 	using Root;
     using UI;
     using Core;
-	using System.Transactions;
+    using System;
 
-	public partial class ObjectPlacementManager : Node {
+    public partial class ObjectPlacementManager : Node {
         private static readonly LogService Log = new(nameof(ObjectPlacementManager), enabled: true);
         private const float DefaultPlaceDistance = 2.0f;
         private const float PlaceHeightMaxDifference = 5.0f;
@@ -17,12 +17,17 @@ namespace Objects {
         public WorldObjectManager? WorldObjectManager { get; private set; }
         public InventoryManager? InventoryManager { get; private set; }
         public GameManager? GameManager { get; private set; }
-        public Hotbar? PlayerHotbar {get; private set; }
+        public Hotbar? PlayerHotbar { get; private set; }
         public bool Initalized => WorldObjectManager != null && InventoryManager != null && GameManager != null && PlayerHotbar != null;
 
-        private enum PlaceState {Idle, FindingPlacableLocation, Placable, Place};
+        private enum PlaceState { Idle, FindingPlacableLocation, Placable, Place };
         private StateMachine<PlaceState> PlaceStateMachine = new StateMachine<PlaceState>(PlaceState.Idle);
         public string? CurrentPlacingItemId { get; private set; }
+        public Vector3 CurrentPlacingPosition { get; private set; }
+        public event Action<Vector3>? OnPlacingObject;
+        public event Action<bool>? OnPlacingObjectValidChanged;
+        public event Action<string>? StartPlacingObject;
+        public event Action? EndPlacingObject;
 
         public void Initialize(WorldObjectManager worldObjectManager, InventoryManager inventoryManager, GameManager gameManager, Hotbar playerHotbar) {
             WorldObjectManager = worldObjectManager;
@@ -30,10 +35,54 @@ namespace Objects {
             GameManager = gameManager;
             PlayerHotbar = playerHotbar;
             playerHotbar.OnSlotSelected += OnHotbarSlotSelected;
+            ConfigureStateMachine();
         }
 
-        public void PlaceRequested() {
-            if(PlaceStateMachine.CurrentState == PlaceState.Idle) {
+        public void ConfigureStateMachine() {
+            PlaceStateMachine.OnEnter(PlaceState.Idle, () => {
+                CurrentPlacingItemId = null;
+                EndPlacingObject?.Invoke();
+            });
+            PlaceStateMachine.OnSpecific(PlaceState.Idle, PlaceState.FindingPlacableLocation, () => {
+                StartPlacingObject?.Invoke(CurrentPlacingItemId!);
+            });
+            PlaceStateMachine.OnEnter(PlaceState.FindingPlacableLocation, () => {
+                OnPlacingObjectValidChanged?.Invoke(false);
+            });
+            PlaceStateMachine.OnEnter(PlaceState.Placable, () => {
+                OnPlacingObjectValidChanged?.Invoke(true);
+            });
+            PlaceStateMachine.OnEnter(PlaceState.Place, () => {
+                PlaceObject();
+                PlaceStateMachine.TransitionTo(PlaceState.Idle);
+            });
+        }
+
+		public override void _Process(double delta) {
+            base._Process(delta);
+            if(!Initalized) {
+                return;
+            }
+            switch(PlaceStateMachine.CurrentState){
+                  case PlaceState.Idle:
+                    break;
+                case PlaceState.FindingPlacableLocation:
+                    break;
+                case PlaceState.Placable:
+                    break;
+                case PlaceState.Place:
+                    break;           
+            }
+       }
+
+        public override void _ExitTree() {
+            if(PlayerHotbar != null) {
+                PlayerHotbar.OnSlotSelected -= OnHotbarSlotSelected;
+            }
+        }
+
+        public void PlaceRequested() 
+             if(PlaceStateMachine.CurrentState == PlaceState.Idle) {
                 if(CurrentPlacingItemId == null) {
                     Log.Info("PlaceRequested called but no item is currently selected for placing.");
                     return;
@@ -51,21 +100,19 @@ namespace Objects {
             }
             if(PlaceStateMachine.CurrentState == PlaceState.Placable) {
                 PlaceStateMachine.TransitionTo(PlaceState.Place);
-            }
-        }
+            }         
 
-        public void PlaceCanceled() {
-            if(PlaceStateMachine.CurrentState == PlaceState.FindingPlacableLocation || PlaceStateMachine.CurrentState == PlaceState.Placable) {
+
+        public void PlaceCanceled(){
+{           if(PlaceStateMachine.CurrentState == PlaceState.FindingPlacableLocation || PlaceStateMachine.CurrentState == PlaceState.Placable) {
                 PlaceStateMachine.TransitionTo(PlaceState.Idle);
-            }
+            }   
         }
         
         public void OnHotbarSlotSelected(string itemId) {
             CurrentPlacingItemId = itemId;
             PlaceCanceled();
-        }
-
-        public bool PlaceObjectInFrontOfPlayer(Player player, string itemId, float distance = DefaultPlaceDistance) {
+        }    public bool PlaceObjectInFrontOfPlayer(Player player, string itemId, float distance = DefaultPlaceDistance) {
             if(!Initalized) {
                 Log.Error("ObjectPlacementManager is not initialized.");
                 return false;
