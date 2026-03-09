@@ -13,32 +13,6 @@ namespace Services.Crafting {
 	}
 
 	public static class Recipes {
-		// --- Smelting / Processing ---
-
-		public static readonly CraftingRecipe SmeltIronChunk = new(
-			RecipeName: "Smelt Iron Chunk",
-			Inputs: [new(ItemID.IronOre, 2), new(ItemID.Wood, 1)],
-			Outputs: [new(ItemID.IronChunk, 1)]
-		);
-
-		public static readonly CraftingRecipe SmeltIronBar = new(
-			RecipeName: "Smelt Iron Bar",
-			Inputs: [new(ItemID.IronChunk, 2), new(ItemID.Wood, 1)],
-			Outputs: [new(ItemID.IronBar, 1)]
-		);
-
-		public static readonly CraftingRecipe SmeltGoldChunk = new(
-			RecipeName: "Smelt Gold Chunk",
-			Inputs: [new(ItemID.GoldOre, 2), new(ItemID.Wood, 1)],
-			Outputs: [new(ItemID.GoldChunk, 1)]
-		);
-
-		public static readonly CraftingRecipe SmeltGoldBar = new(
-			RecipeName: "Smelt Gold Bar",
-			Inputs: [new(ItemID.GoldChunk, 2), new(ItemID.Wood, 1)],
-			Outputs: [new(ItemID.GoldBar, 1)]
-		);
-
 		public static readonly CraftingRecipe CrackCoconutBrown = new(
 			RecipeName: "Crack Brown Coconut",
 			Inputs: [
@@ -63,12 +37,38 @@ namespace Services.Crafting {
 			]
 		);
 
+		// --- Smelting / Processing ---
+
+		public static readonly CraftingRecipe SmeltIronChunk = new(
+			RecipeName: "Process Iron Chunk",
+			Inputs: [new(ItemID.IronOre, 1), new(ItemID.Wood, 1)],
+			Outputs: [new(ItemID.IronChunk, 1)]
+		);
+
+		public static readonly CraftingRecipe SmeltIronBar = new(
+			RecipeName: "Smelt Iron Bar",
+			Inputs: [new(ItemID.IronChunk, 2), new(ItemID.Wood, 1)],
+			Outputs: [new(ItemID.IronBar, 1)]
+		);
+
+		public static readonly CraftingRecipe SmeltGoldChunk = new(
+			RecipeName: "Process Gold Chunk",
+			Inputs: [new(ItemID.GoldOre, 2), new(ItemID.Wood, 1)],
+			Outputs: [new(ItemID.GoldChunk, 1)]
+		);
+
+		public static readonly CraftingRecipe SmeltGoldBar = new(
+			RecipeName: "Smelt Gold Bar",
+			Inputs: [new(ItemID.GoldChunk, 2), new(ItemID.Wood, 1)],
+			Outputs: [new(ItemID.GoldBar, 1)]
+		);
+
 		// --- Weapons ---
 
 		public static readonly CraftingRecipe CraftSwordIron = new(
 			RecipeName: "Craft Iron Sword",
 			Inputs: [
-				new(ItemID.IronBar, 3),
+				new(ItemID.IronBar, 2),
 				new(ItemID.Stick, 2),
 				new(ItemID.Stone, 1),
 			],
@@ -77,20 +77,11 @@ namespace Services.Crafting {
 
 		// --- Shields ---
 
-		public static readonly CraftingRecipe CraftShieldWood = new(
-			RecipeName: "Craft Wood Shield",
-			Inputs: [
-				new(ItemID.Wood, 4),
-				new(ItemID.Stick, 2)
-			],
-			Outputs: [new(ItemID.ShieldWood, 1)]
-		);
-
 		public static readonly CraftingRecipe CraftShieldIron = new(
 			RecipeName: "Craft Iron Shield",
 			Inputs: [
-				new(ItemID.ShieldWood, 1),
-				new(ItemID.IronBar, 3)
+				new(ItemID.Wood, 2),
+				new(ItemID.IronBar, 1)
 			],
 			Outputs: [new(ItemID.ShieldIron, 1)]
 		);
@@ -172,7 +163,6 @@ namespace Services.Crafting {
 			CrackCoconutBrown,
 			CrackCoconutGreen,
 			CraftSwordIron,
-			CraftShieldWood,
 			CraftShieldIron,
 			CraftHeadpieceIron,
 			CraftChestpieceIron,
