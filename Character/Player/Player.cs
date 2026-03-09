@@ -16,7 +16,6 @@ namespace Character {
 		[Export] private int InitialDamageMagic = 0;
 		[Export] private int InitialDefensePhysical = 5;
 		[Export] private int InitialDefenseMagic = 2;
-		[Export] private WeaponHitbox WeaponHitbox = null!;
 
 		protected override int InitialHealth => InitialHealthValue;
 		protected override (int phys, int mag) InitialDamage => (InitialDamagePhysical, InitialDamageMagic);
@@ -60,8 +59,6 @@ namespace Character {
 			AddChild(UseItemComponent);
 			AddChild(EquipItemComponent);
 			SetupChildren();
-
-			WeaponHitbox.Init(this);
 		}
 
 		public override void _ExitTree() {
