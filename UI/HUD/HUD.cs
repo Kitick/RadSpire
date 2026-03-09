@@ -32,6 +32,7 @@ namespace UI {
 
 		private StateMachine<MenuState> StateMachineRef = null!;
 		private Action? Unsubscribe;
+		private Label InteractionPrompt = null!;
 
 		public event Action? ResumeRequested;
 		public event Action? PauseRequested;
@@ -54,6 +55,9 @@ namespace UI {
 		public override void _Ready() {
 			this.ValidateExports();
 			ProcessMode = ProcessModeEnum.Always;
+			
+			InteractionPrompt = GetNode<Label>("InteractionPrompt");
+			InteractionPrompt.Visible = false;
 
 			SetCallbacks();
 			SetInputCallbacks();
@@ -172,6 +176,15 @@ namespace UI {
 			var saveMenu = this.AddScene<SaveMenu>(SaveMenuScene);
 			saveMenu.OnSave += fileName => SaveRequested?.Invoke(fileName);
 			saveMenu.OpenMenu(SaveMenu.SaveMode.Save);
+		}
+		
+		public void ShowInteractionPrompt(string text) {
+			InteractionPrompt.Text = text;
+			InteractionPrompt.Visible = true;
+		}
+
+		public void HideInteractionPrompt() {
+			InteractionPrompt.Visible = false;
 		}
 
 		private void ToggleInventory() {

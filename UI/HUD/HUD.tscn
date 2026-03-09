@@ -143,3 +143,12 @@ offset_left = 264.0
 offset_top = 964.0
 offset_right = 537.0
 offset_bottom = 997.0
+
+[node name="InteractionPrompt" type="Label" parent="." unique_id=1956403469]
+layout_mode = 0
+offset_left = 835.0
+offset_top = 352.0
+offset_right = 956.0
+offset_bottom = 381.0
+horizontal_alignment = 1
+vertical_alignment = 1
