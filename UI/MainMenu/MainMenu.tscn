@@ -8,7 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://bnjymb23oq215" path="res://UI/MultiplayerPanels/HostPanel/HostPanel.tscn" id="4_jhcbk"]
 [ext_resource type="PackedScene" uid="uid://bg5jxcp2jtwjp" path="res://UI/MultiplayerPanels/JoinPanel/JoinPanel.tscn" id="5_32jca"]
 
-[node name="MainMenu" type="Control" unique_id=2104341140 node_paths=PackedStringArray("SingleplayerButton", "MultiplayerButton", "SettingsButton", "ExtrasButton", "QuitButton", "SingleplayerPanel", "ContinueButton", "LoadSavedButton", "StartNewButton", "MultiplayerPanel", "HostNewButton", "HostSavedButton", "JoinGameButton")]
+[node name="MainMenu" type="Control" unique_id=2104341140 node_paths=PackedStringArray("ButtonPanel", "SingleplayerButton", "MultiplayerButton", "SettingsButton", "ExtrasButton", "QuitButton", "SingleplayerPanel", "ContinueButton", "LoadSavedButton", "StartNewButton", "MultiplayerPanel", "HostNewButton", "HostSavedButton", "JoinGameButton")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -16,6 +16,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_7b88o")
+ButtonPanel = NodePath("ButtonPanel")
 SingleplayerButton = NodePath("ButtonPanel/Singleplayer_Button")
 MultiplayerButton = NodePath("ButtonPanel/Multiplayer_Button")
 SettingsButton = NodePath("ButtonPanel/Settings_Button")

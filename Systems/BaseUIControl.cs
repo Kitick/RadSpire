@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System;
 using Godot;
 
 public interface IFocusable {
@@ -11,7 +13,6 @@ public class HoverService {
 }
 
 public abstract partial class BaseUIControl : Control, IFocusable {
-
     private HoverService _hoverService = new HoverService();
 
     public override void _Ready() {
@@ -25,9 +26,7 @@ public abstract partial class BaseUIControl : Control, IFocusable {
         }
     }
 
-    protected virtual void OnCancel() {
-        
-    }
+    protected virtual void OnCancel() {}
 
     protected void ApplyHoverFocus(Control root) {
         foreach (Node child in root.GetChildren()) {
