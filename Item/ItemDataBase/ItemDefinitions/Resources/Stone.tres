@@ -2,7 +2,14 @@
 
 [ext_resource type="Script" uid="uid://cnm5iegiuj4xu" path="res://Item/ItemDataBase/ItemDataBaseScripts/ItemComponentDefinitions/ItemComponentDefinition.cs" id="1_6ll1x"]
 [ext_resource type="Script" uid="uid://bxmh4fd7kjvv1" path="res://Item/ItemDataBase/ItemDataBaseScripts/ItemDefinition.cs" id="2_47w3y"]
+[ext_resource type="Texture2D" uid="uid://boshukc572fv" path="res://Assets/Images/Icons/stone_1.png" id="2_tsvyh"]
 
 [resource]
 script = ExtResource("2_47w3y")
+Id = "Stone"
+Name = "Stone"
+Description = "A rough stone used for building and crafting."
+MaxStackSize = 16
+IsConsumable = false
+IconTexture = ExtResource("2_tsvyh")
 metadata/_custom_type_script = "uid://bxmh4fd7kjvv1"

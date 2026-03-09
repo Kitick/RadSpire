@@ -1,8 +1,15 @@
 [gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://o1cabu4hl4i0"]
 
 [ext_resource type="Script" uid="uid://cnm5iegiuj4xu" path="res://Item/ItemDataBase/ItemDataBaseScripts/ItemComponentDefinitions/ItemComponentDefinition.cs" id="1_le4lo"]
+[ext_resource type="Texture2D" uid="uid://vhmb0wu0kcoj" path="res://Assets/Images/Icons/gold_bar.png" id="2_at1t6"]
 [ext_resource type="Script" uid="uid://bxmh4fd7kjvv1" path="res://Item/ItemDataBase/ItemDataBaseScripts/ItemDefinition.cs" id="2_nx3vn"]
 
 [resource]
 script = ExtResource("2_nx3vn")
+Id = "GoldBar"
+Name = "Gold Bar"
+Description = "A pure bar of gold."
+MaxStackSize = 16
+IsConsumable = false
+IconTexture = ExtResource("2_at1t6")
 metadata/_custom_type_script = "uid://bxmh4fd7kjvv1"

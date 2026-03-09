@@ -1,8 +1,15 @@
 [gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://cj6lxnnglflgx"]
 
 [ext_resource type="Script" uid="uid://cnm5iegiuj4xu" path="res://Item/ItemDataBase/ItemDataBaseScripts/ItemComponentDefinitions/ItemComponentDefinition.cs" id="1_j52fk"]
+[ext_resource type="Texture2D" uid="uid://bhxl81pkiwe0b" path="res://Assets/Images/Icons/WoodenShield.png" id="2_8eqwb"]
 [ext_resource type="Script" uid="uid://bxmh4fd7kjvv1" path="res://Item/ItemDataBase/ItemDataBaseScripts/ItemDefinition.cs" id="2_aexav"]
 
 [resource]
 script = ExtResource("2_aexav")
+Id = "ShieldWood"
+Name = "Shield Wood"
+Description = "A basic wooden shield that offers light protection."
+MaxStackSize = 16
+IsConsumable = false
+IconTexture = ExtResource("2_8eqwb")
 metadata/_custom_type_script = "uid://bxmh4fd7kjvv1"

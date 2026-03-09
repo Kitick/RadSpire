@@ -2,7 +2,14 @@
 
 [ext_resource type="Script" uid="uid://cnm5iegiuj4xu" path="res://Item/ItemDataBase/ItemDataBaseScripts/ItemComponentDefinitions/ItemComponentDefinition.cs" id="1_0qdi2"]
 [ext_resource type="Script" uid="uid://bxmh4fd7kjvv1" path="res://Item/ItemDataBase/ItemDataBaseScripts/ItemDefinition.cs" id="2_egdkm"]
+[ext_resource type="Texture2D" uid="uid://dumfyasqv1u04" path="res://Assets/Images/Icons/stone_2.png" id="2_tfgwk"]
 
 [resource]
 script = ExtResource("2_egdkm")
+Id = "StonePiece"
+Name = "Stone Piece"
+Description = "A chipped piece of stone useful for small crafting jobs."
+MaxStackSize = 16
+IsConsumable = false
+IconTexture = ExtResource("2_tfgwk")
 metadata/_custom_type_script = "uid://bxmh4fd7kjvv1"
