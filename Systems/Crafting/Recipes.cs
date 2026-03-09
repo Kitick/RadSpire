@@ -32,5 +32,11 @@ namespace Services.Crafting {
 			],
 			Outputs: [new("BlueberryBlue", 3)]
 		);
+
+		public static readonly CraftingRecipe[] AllRecipes = new[] {
+			CrackBrownCoconut,
+			CrackGreenCoconut,
+			MixedBerryBowl
+		};
 	}
 }
