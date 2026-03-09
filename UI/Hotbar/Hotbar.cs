@@ -138,7 +138,7 @@ namespace UI {
 				GridContainer.AddChild(slotInstance);
 			}
 			if(NumHotbarSlots > 0) {
-				SelectedSlot = 0;
+				SelectSlot(HotbarSlots[0]);
 			}
 		}
 
