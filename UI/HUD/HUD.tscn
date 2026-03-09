@@ -79,10 +79,10 @@ script = ExtResource("5_q8dl0")
 [node name="Crafting" parent="." unique_id=2111148912 instance=ExtResource("9_y8qxg")]
 visible = false
 layout_mode = 1
-offset_left = 626.0
-offset_top = 400.0
-offset_right = 626.0
-offset_bottom = 400.0
+offset_left = 320.0
+offset_top = 240.0
+offset_right = 320.0
+offset_bottom = 240.0
 
 [node name="ChestUI" parent="." unique_id=162888265 instance=ExtResource("6_785o0")]
 visible = false

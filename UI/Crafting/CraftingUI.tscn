@@ -10,13 +10,13 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_8hsgg")
-CraftableDropdown = NodePath("MainBackground/LightBackground/Craftable/OptionButton")
-NonCraftableDropdown = NodePath("MainBackground/LightBackground/NotCraftable/OptionButton")
-RequirementsList = NodePath("MainBackground/LightBackground/ItemsList/ItemList")
+CraftableDropdown = NodePath("MainBackground/LightBackground/CraftableOptionButton")
+NonCraftableDropdown = NodePath("MainBackground/LightBackground/NotCraftableOptionButton")
+RequirementsList = NodePath("MainBackground/LightBackground/ItemsList")
 CraftButton = NodePath("MainBackground/LightBackground/CraftButton")
-QuantityDisplay = NodePath("MainBackground/LightBackground/Quantity/QuantityInput")
-PosButton = NodePath("MainBackground/LightBackground/Quantity/PosButton")
-NegButton = NodePath("MainBackground/LightBackground/Quantity/NegButton")
+QuantityDisplay = NodePath("MainBackground/LightBackground/QuantityInput")
+PosButton = NodePath("MainBackground/LightBackground/PosButton")
+NegButton = NodePath("MainBackground/LightBackground/NegButton")
 metadata/_edit_horizontal_guides_ = [0.0]
 
 [node name="MainBackground" type="ColorRect" parent="." unique_id=29192493]
@@ -26,8 +26,8 @@ anchor_top = 0.1
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_top = -84.0
-offset_right = -1760.0
-offset_bottom = -831.0
+offset_right = -1472.0
+offset_bottom = -606.0
 mouse_filter = 1
 color = Color(0.45054996, 0.2622559, 0.190151, 1)
 
@@ -42,144 +42,159 @@ mouse_filter = 1
 color = Color(1, 1, 1, 0.60784316)
 
 [node name="Craftable" type="Label" parent="MainBackground/LightBackground" unique_id=1764258548]
-layout_mode = 0
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.1
 offset_left = 8.0
-offset_right = 81.0
-offset_bottom = 23.0
+theme_override_font_sizes/font_size = 32
 text = "Craftable"
 
-[node name="OptionButton" type="OptionButton" parent="MainBackground/LightBackground/Craftable" unique_id=1335649761]
-layout_mode = 0
-offset_top = 20.0
-offset_right = 128.0
-offset_bottom = 40.0
+[node name="CraftableOptionButton" type="OptionButton" parent="MainBackground/LightBackground" unique_id=1335649761]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.1
+anchor_right = 1.0
+anchor_bottom = 0.2
+offset_left = 8.000001
+offset_right = -8.0
+grow_vertical = 0
 
 [node name="NotCraftable" type="Label" parent="MainBackground/LightBackground" unique_id=1962039103]
-layout_mode = 0
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.2
+anchor_right = 1.0
+anchor_bottom = 0.3
 offset_left = 8.0
-offset_top = 40.125
-offset_right = 114.0
-offset_bottom = 63.125
+theme_override_font_sizes/font_size = 32
 text = "Not Craftable"
 
-[node name="OptionButton" type="OptionButton" parent="MainBackground/LightBackground/NotCraftable" unique_id=662628308]
-layout_mode = 0
-offset_top = 20.0
-offset_right = 128.0
-offset_bottom = 40.0
-
-[node name="Quantity" type="Label" parent="MainBackground/LightBackground" unique_id=1596092855]
-layout_mode = 0
+[node name="NotCraftableOptionButton" type="OptionButton" parent="MainBackground/LightBackground" unique_id=662628308]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.3
+anchor_right = 1.0
+anchor_bottom = 0.4
 offset_left = 8.0
-offset_top = 160.0
-offset_right = 76.0
-offset_bottom = 183.0
-text = "Quantity"
+offset_right = -8.0
 
-[node name="NegButton" type="Button" parent="MainBackground/LightBackground/Quantity" unique_id=974923918]
-layout_mode = 0
-offset_left = 71.0
-offset_top = 4.0
-offset_right = 84.0
-offset_bottom = 24.0
-theme_override_font_sizes/font_size = 8
-text = "-"
-
-[node name="QuantityInput" type="LineEdit" parent="MainBackground/LightBackground/Quantity" unique_id=1086066354]
-layout_mode = 0
-offset_left = 92.0
-offset_top = 4.0
-offset_right = 160.5
-offset_bottom = 35.0
-scale = Vector2(0.23344189, 0.64110106)
-
-[node name="PosButton" type="Button" parent="MainBackground/LightBackground/Quantity" unique_id=1355145367]
-layout_mode = 0
-offset_left = 116.0
-offset_top = 4.0
-offset_right = 129.0
-offset_bottom = 24.0
-theme_override_font_sizes/font_size = 8
-text = "+"
-
-[node name="ItemsList" type="Label" parent="MainBackground/LightBackground" unique_id=516954877]
-layout_mode = 0
+[node name="Items" type="Label" parent="MainBackground/LightBackground" unique_id=516954877]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.4
+anchor_right = 0.5
+anchor_bottom = 0.5
 offset_left = 8.0
-offset_top = 96.0
-offset_right = 52.0
-offset_bottom = 119.0
-theme_override_font_sizes/font_size = 8
+offset_right = -8.0
+theme_override_font_sizes/font_size = 24
 text = "Items"
 
-[node name="ItemList" type="ItemList" parent="MainBackground/LightBackground/ItemsList" unique_id=1146406095]
-layout_mode = 0
-offset_top = 10.0
-offset_right = 76.0
-offset_bottom = 50.0
+[node name="ItemsList" type="ItemList" parent="MainBackground/LightBackground" unique_id=1146406095]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.8
+offset_left = 8.0
 
 [node name="Need" type="Label" parent="MainBackground/LightBackground" unique_id=2017928979]
-layout_mode = 0
-offset_left = 84.0
-offset_top = 96.0
-offset_right = 125.0
-offset_bottom = 119.0
-theme_override_font_sizes/font_size = 8
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.4
+anchor_right = 0.75
+anchor_bottom = 0.5
+theme_override_font_sizes/font_size = 24
 text = "Need"
 horizontal_alignment = 1
 
-[node name="ItemList" type="ItemList" parent="MainBackground/LightBackground/Need" unique_id=1998151795]
+[node name="NeedList" type="ItemList" parent="MainBackground/LightBackground" unique_id=1998151795]
 layout_mode = 1
-anchors_preset = 7
+anchors_preset = -1
 anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -5.0
-offset_top = -13.0
-offset_right = 5.0
-offset_bottom = 27.0
+anchor_top = 0.5
+anchor_right = 0.75
+anchor_bottom = 0.8
+offset_left = 32.0
+offset_right = -32.0
 grow_horizontal = 2
 grow_vertical = 0
 
 [node name="Have" type="Label" parent="MainBackground/LightBackground" unique_id=1091678768]
-layout_mode = 0
-offset_left = 112.0
-offset_top = 96.0
-offset_right = 153.0
-offset_bottom = 119.0
-theme_override_font_sizes/font_size = 8
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.75
+anchor_top = 0.4
+anchor_right = 1.0
+anchor_bottom = 0.5
+theme_override_font_sizes/font_size = 24
 text = "Have"
 horizontal_alignment = 1
 
-[node name="ItemList" type="ItemList" parent="MainBackground/LightBackground/Have" unique_id=363383509]
+[node name="HaveList" type="ItemList" parent="MainBackground/LightBackground" unique_id=363383509]
 layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -5.0
-offset_top = -13.0
-offset_right = 5.0
-offset_bottom = 27.0
+anchors_preset = -1
+anchor_left = 0.75
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.8
+offset_left = 32.0
+offset_right = -32.0
 grow_horizontal = 2
 grow_vertical = 0
 
+[node name="Quantity" type="Label" parent="MainBackground/LightBackground" unique_id=1596092855]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.9
+anchor_right = 0.3
+anchor_bottom = 0.975
+offset_left = 8.0
+theme_override_font_sizes/font_size = 24
+text = "Quantity"
+
+[node name="NegButton" type="Button" parent="MainBackground/LightBackground" unique_id=974923918]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.3
+anchor_top = 0.9
+anchor_right = 0.35
+anchor_bottom = 0.975
+theme_override_font_sizes/font_size = 16
+text = "-"
+
+[node name="QuantityInput" type="LineEdit" parent="MainBackground/LightBackground" unique_id=1086066354]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.4
+anchor_top = 0.9
+anchor_right = 0.6
+anchor_bottom = 0.975
+alignment = 1
+
+[node name="PosButton" type="Button" parent="MainBackground/LightBackground" unique_id=1355145367]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.65
+anchor_top = 0.9
+anchor_right = 0.7
+anchor_bottom = 0.975
+theme_override_font_sizes/font_size = 16
+text = "+"
+
 [node name="CraftButton" type="Button" parent="MainBackground/LightBackground" unique_id=415348296]
 layout_mode = 1
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 1.0
+anchors_preset = -1
+anchor_left = 0.75
+anchor_top = 0.85
 anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -48.0
-offset_top = -21.25
-offset_right = 22.0
-offset_bottom = 9.75
+anchor_bottom = 0.975
+offset_right = -8.0
 grow_horizontal = 0
 grow_vertical = 0
-scale = Vector2(0.6, 0.6)
-text = "Crafting"
+theme_override_font_sizes/font_size = 32
+text = "Craft"
 
 [node name="TabBackground" type="ColorRect" parent="." unique_id=342495999]
 layout_mode = 1
@@ -197,6 +212,6 @@ anchors_preset = -1
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 1
-text = "Crafting"
+text = "Craft"
 horizontal_alignment = 1
 vertical_alignment = 1
