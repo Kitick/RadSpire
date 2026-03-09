@@ -1,6 +1,6 @@
-[gd_resource type="Resource" format=3]
+[gd_resource type="Resource" script_class="ChestRarityDefinition" format=3 uid="uid://hvqqiasgy3dx"]
 
-[ext_resource type="Script" path="res://Item/ItemDataBase/ItemDataBaseScripts/ItemComponentDefinitions/ChestRarityDefinition.cs" id="1_rarity"]
+[ext_resource type="Script" uid="uid://s1h6oci73fa6" path="res://Item/ItemDataBase/ItemDataBaseScripts/ItemComponentDefinitions/ChestRarityDefinition.cs" id="1_rarity"]
 
 [resource]
 script = ExtResource("1_rarity")
