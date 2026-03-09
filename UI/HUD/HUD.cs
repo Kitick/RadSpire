@@ -16,6 +16,7 @@ namespace UI {
 		[Export] private Button PauseButton = null!;
 		[Export] private PauseMenu PauseMenu = null!;
 		[Export] private InventoryUI Inventory = null!;
+		[Export] private CraftingUI CraftingUI = null!;
 		[Export] public InventoryItemInformationUI InventoryItemInformationUI = null!;
 		[Export] private InventoryUI Chest = null!;
 		[Export] private Control QuestLog = null!;
@@ -79,6 +80,7 @@ namespace UI {
 				PauseMenu.CloseMenu();
 				RespawnMenu.CloseMenu();
 				Inventory.Visible = false;
+				CraftingUI.Visible = false;
 				InventoryItemInformationUI.Visible = false;
 			});
 
@@ -92,6 +94,7 @@ namespace UI {
 			// Inventory state
 			stateMachine.OnEnter(MenuState.Inventory, () => {
 				Inventory.Visible = true;
+				CraftingUI.Visible = true;
 				Hotbar.Visible = true;
 				InventoryItemInformationUI.Visible = true;
 				InventoryRequested?.Invoke(true);
@@ -99,6 +102,7 @@ namespace UI {
 
 			stateMachine.OnExit(MenuState.Inventory, () => {
 				Inventory.Visible = false;
+				CraftingUI.Visible = false;
 				InventoryItemInformationUI.Visible = false;
 				InventoryRequested?.Invoke(false);
 			});

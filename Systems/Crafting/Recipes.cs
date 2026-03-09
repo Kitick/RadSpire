@@ -1,3 +1,6 @@
+using Core;
+using ItemSystem;
+
 namespace Services.Crafting {
 	public readonly record struct RecipeItem(string ItemId, int Quantity);
 
@@ -33,10 +36,22 @@ namespace Services.Crafting {
 			Outputs: [new("BlueberryBlue", 3)]
 		);
 
+		public static readonly CraftingRecipe Sundae = new(
+			RecipeName: "Sundae",
+			Inputs: [
+				new(ItemID.BananaYellow, 1),
+				new(ItemID.StrawberryRed, 1),
+				new(ItemID.BananaGreen, 1)
+			],
+			Outputs: [new(ItemID.Bonfire, 2)]
+		);
+				
+
 		public static readonly CraftingRecipe[] AllRecipes = new[] {
 			CrackBrownCoconut,
 			CrackGreenCoconut,
-			MixedBerryBowl
+			MixedBerryBowl,
+			Sundae
 		};
 	}
 }

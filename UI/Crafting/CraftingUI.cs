@@ -22,7 +22,7 @@ namespace UI {
         private int quantity = 1;
 
 
-        public List<Inventory> PlayerInventory { get; set; } = new();
+        public List<Inventory> Inventories { get; set; } = new();
 
 
         public override void _Ready() {
@@ -65,7 +65,7 @@ namespace UI {
 
 
             foreach(var recipe in Recipes.AllRecipes) {
-                if(CraftingSystem.CanCraft(recipe, PlayerInventory, out _)) {
+                if(CraftingSystem.CanCraft(recipe, Inventories, out _)) {
                     craftableRecipes.Add(recipe);
                     CraftableDropdown.AddItem(recipe.RecipeName);
                 }
@@ -110,10 +110,10 @@ namespace UI {
             var selectedRecipe = craftableRecipes[CraftableDropdown.Selected];
 
             for(int i = 0; i < quantity; i++) {
-                CraftResult result = CraftingSystem.Craft(selectedRecipe, PlayerInventory);
+                CraftResult result = CraftingSystem.Craft(selectedRecipe, Inventories);
                 if(result.Status != CraftStatus.Success) {
                     foreach (var slot in result.Items) {
-                        PlayerInventory[0].AddItem(slot);
+                        Inventories[0].AddItem(slot);
                     }
                     GD.Print($"Crafted '{selectedRecipe.RecipeName}' x {quantity}.");
                 }
