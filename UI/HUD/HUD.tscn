@@ -12,6 +12,7 @@
 [ext_resource type="PackedScene" uid="uid://bjql4hi1q0ouh" path="res://UI/QuestLog/QuestLog.tscn" id="8_6ymr8"]
 [ext_resource type="PackedScene" uid="uid://2mdnsh082j66" path="res://UI/RespawnMenu/RespawnMenu.tscn" id="8_10ibt"]
 [ext_resource type="PackedScene" uid="uid://n150xowq1ipg" path="res://UI/Inventory/InventoryItemInformationUITemplate.tscn" id="9_2y2n3"]
+[ext_resource type="PackedScene" uid="uid://bmo8vs5v4lyqv" path="res://UI/Crafting/CraftingUI.tscn" id="9_y8qxg"]
 [ext_resource type="Script" uid="uid://cl6aplc7wunof" path="res://UI/Inventory/InventoryItemInformationUI.cs" id="10_y8qxg"]
 
 [node name="HUD" type="Control" unique_id=935922708 node_paths=PackedStringArray("PauseButton", "PauseMenu", "Inventory", "InventoryItemInformationUI", "Chest", "QuestLog", "Hotbar", "RespawnMenu", "HealthBar")]
@@ -73,6 +74,14 @@ offset_right = 175.0
 offset_bottom = 111.0
 grow_horizontal = 2
 script = ExtResource("5_q8dl0")
+
+[node name="Crafting" parent="." unique_id=2111148912 instance=ExtResource("9_y8qxg")]
+visible = false
+layout_mode = 1
+offset_left = 626.0
+offset_top = 400.0
+offset_right = 626.0
+offset_bottom = 400.0
 
 [node name="ChestUI" parent="." unique_id=162888265 instance=ExtResource("6_785o0")]
 visible = false

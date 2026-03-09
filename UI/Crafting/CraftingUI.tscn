@@ -1,5 +1,7 @@
 [gd_scene format=3 uid="uid://bmo8vs5v4lyqv"]
 
+[ext_resource type="Script" uid="uid://bkwawkixe56or" path="res://UI/Crafting/CraftingUI.cs" id="1_8hsgg"]
+
 [node name="Crafting" type="Control" unique_id=2111148912]
 layout_mode = 3
 anchors_preset = 15
@@ -7,6 +9,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_8hsgg")
 metadata/_edit_horizontal_guides_ = [0.0]
 
 [node name="MainBackground" type="ColorRect" parent="." unique_id=29192493]
