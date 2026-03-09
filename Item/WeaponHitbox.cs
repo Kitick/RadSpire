@@ -7,7 +7,7 @@ namespace ItemSystem {
 	public partial class WeaponHitbox : Area3D {
 		private static readonly LogService Log = new(nameof(WeaponHitbox), enabled: true);
 
-		private CharacterBase? Owner;
+		private CharacterBase? OwnerCharacter;
 		public bool Active;
 
 		public override void _Ready() {
@@ -16,7 +16,7 @@ namespace ItemSystem {
 		}
 
 		public void Init(CharacterBase owner) {
-			Owner = owner;
+			OwnerCharacter = owner;
 			owner.OnStateChanged += OnOwnerStateChanged;
 		}
 
@@ -38,11 +38,11 @@ namespace ItemSystem {
 		private void OnBodyEntered(Node3D body) {
 			Log.Info($"Body entered: {body.Name}, Active={Active}");
 
-			if(!Active || Owner == null || body == Owner) return;
+			if(!Active || OwnerCharacter == null || body == OwnerCharacter) return;
 
 			if(body is IHealth healthTarget) {
 				Log.Info($"WeaponHitbox hit: {body.Name}");
-				Owner.Attack(healthTarget);
+				OwnerCharacter?.Attack(healthTarget);
 				Deactivate();
 			}
 		}
