@@ -16,6 +16,7 @@ namespace Character {
 		[Export] private int InitialDamageMagic = 0;
 		[Export] private int InitialDefensePhysical = 5;
 		[Export] private int InitialDefenseMagic = 2;
+		[Export] private WeaponHitbox WeaponHitbox = null!;
 
 		protected override int InitialHealth => InitialHealthValue;
 		protected override (int phys, int mag) InitialDamage => (InitialDamagePhysical, InitialDamageMagic);
@@ -56,9 +57,7 @@ namespace Character {
 			AddChild(UseItemComponent);
 			SetupChildren();
 
-			var hitbox = GetNodeOrNull<ItemSystem.WeaponHitbox>("WeaponHitbox");
-			if(hitbox != null) hitbox.Init(this);
-			else Log.Error("WeaponHitbox not found in Player scene.");
+			WeaponHitbox.Init(this);
 		}
 
 		public override void _ExitTree() {
