@@ -48,6 +48,7 @@ namespace UI {
 		public event Action<string, int, MouseButton>? OnSlotPressed;
 		public event Action<string, int, MouseButton>? OnSlotReleased;
 		public event Action<string, int>? OnSlotHovered;
+		public event Action<string>? OnSlotSelected;
 
 		public Hotbar() {
 		}
@@ -158,6 +159,9 @@ namespace UI {
 			if(Debug) {
 				Log.Info($"Hotbar: Selecting slot {HotbarSlots.IndexOf(slot)}");
 				Log.Info($"Hotbar: Selected item: {GetSelectedItem()!.Name}");
+			}
+			if(GetSelectedItem() != null) {
+				OnSlotSelected?.Invoke(GetSelectedItem()!.Id);
 			}
 
 			foreach(var other in HotbarSlots) {

@@ -14,7 +14,7 @@
 [ext_resource type="PackedScene" uid="uid://n150xowq1ipg" path="res://UI/Inventory/InventoryItemInformationUITemplate.tscn" id="9_2y2n3"]
 [ext_resource type="Script" uid="uid://cl6aplc7wunof" path="res://UI/Inventory/InventoryItemInformationUI.cs" id="10_y8qxg"]
 
-[node name="HUD" type="Control" unique_id=935922708 node_paths=PackedStringArray("PauseButton", "PauseMenu", "Inventory", "InventoryItemInformationUI", "QuestLog", "Hotbar", "RespawnMenu", "HealthBar")]
+[node name="HUD" type="Control" unique_id=935922708 node_paths=PackedStringArray("PauseButton", "PauseMenu", "Inventory", "InventoryItemInformationUI", "Chest", "QuestLog", "Hotbar", "RespawnMenu", "HealthBar")]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 1920.0
@@ -24,6 +24,7 @@ PauseButton = NodePath("PauseButton")
 PauseMenu = NodePath("PauseMenu")
 Inventory = NodePath("Inventory")
 InventoryItemInformationUI = NodePath("ItemInformationUI")
+Chest = NodePath("ChestUI")
 QuestLog = NodePath("QuestLog")
 Hotbar = NodePath("Hotbar")
 RespawnMenu = NodePath("RespawnMenu")

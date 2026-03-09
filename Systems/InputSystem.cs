@@ -95,6 +95,7 @@ namespace Services {
 
 		public static readonly ActionEvent Interact = new("Interact");
 		public static readonly ActionEvent Interact2 = new("Interact2");
+		public static readonly ActionEvent Place = new("Place");
 		public static readonly ActionEvent Consume = new("Consume");
 		public static readonly ActionEvent Inventory = new("Inventory");
 		public static readonly ActionEvent Attack = new("Attack");
@@ -136,6 +137,7 @@ namespace Services {
 
 			yield return Interact;
 			yield return Interact2;
+			yield return Place;
 			yield return Consume;
 			yield return Inventory;
 			yield return Attack;

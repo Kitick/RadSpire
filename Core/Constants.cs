@@ -40,5 +40,6 @@ namespace Core {
 		public const string StrawberryGreen = "StrawberryGreen";
 		public const string StrawberryRed = "StrawberryRed";
 		public const string Bonfire = "Bonfire";
+		public const string Barrel = "Barrel";
 	}
 }

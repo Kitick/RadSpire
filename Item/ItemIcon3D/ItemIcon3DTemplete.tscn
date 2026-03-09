@@ -16,6 +16,7 @@ material = SubResource("StandardMaterial3D_xcpaa")
 [node name="ItemIcon3DTemplete" type="Node3D" unique_id=1624026847]
 
 [node name="RigidBody3D" type="RigidBody3D" parent="." unique_id=1633418659]
+continuous_cd = true
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D" unique_id=241055892]
 shape = SubResource("BoxShape3D_aua6x")

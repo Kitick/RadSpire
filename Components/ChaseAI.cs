@@ -56,13 +56,11 @@ namespace Components {
 				toTarget.Y = 0f;
 				float dist = toTarget.Length();
 
-				if(dist <= DetectionRadius) {
+				if(dist <= DetectionRadius && dist > StopDistance) {
 					// CHASE PLAYER
-					if(dist > StopDistance) {
-						HorizontalInput = toTarget.Normalized();
-						SprintHeld = dist > SprintDistance;
-					}
-					return; // chasing → no wandering
+					HorizontalInput = toTarget.Normalized();
+					SprintHeld = dist > SprintDistance;
+					return;
 				}
 			}
 

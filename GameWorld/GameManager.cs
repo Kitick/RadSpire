@@ -6,10 +6,10 @@ namespace Root {
 	using Core;
 	using Godot;
 	using ItemSystem;
+	using Objects;
 	using Services;
 	using Services.Settings;
 	using UI;
-	using Objects;
 
 	public sealed partial class GameManager : Node {
 		private static readonly LogService Log = new(nameof(GameManager), enabled: true);
@@ -22,7 +22,10 @@ namespace Root {
 		[Export] private PackedScene PlayerScene = null!;
 		[Export] private PackedScene EnemyScene = null!;
 		[Export] private PackedScene Item3DIconManagerScene = null!;
+
+		private EnemySpawner EnemySpawner = null!;
 		[Export] private PackedScene WorldObjectManageScene = null!;
+		[Export] private PackedScene NPCScene = null!;
 		[Export] private Node WorldObjectParentNode = null!;
 
 		private readonly KeyInput KeyInput = new();
@@ -38,13 +41,12 @@ namespace Root {
 
 		private string? LoadFile;
 
-		private const int SpawnHeight = 10;
-		private const int SpawnRadius = 50;
+		private const int SpawnHeight = 5;
+		private const int SpawnRadius = 10;
 
-		private static readonly Vector3 PlayerSpawnLocation = new Vector3(-280, SpawnHeight, 40);
-
-		private float SpawnTimer = 5.0f;
-		private int EnemyCount;
+		[ExportCategory("Spawn Points")]
+		[Export] private Marker3D PlayerSpawnMarker = null!;
+		[Export] private Marker3D NPCSpawnMarker = null!;
 
 		public override void _Ready() {
 			DisplaySettings.SetWorldEnvironment(WorldEnvironment);
@@ -52,7 +54,9 @@ namespace Root {
 			CameraRig = this.AddScene<CameraRig>(CameraScene);
 			Item3DIconManager = this.AddScene<Item3DIconManager>(Item3DIconManagerScene);
 			WorldObjectManager = this.AddScene<WorldObjectManager>(WorldObjectManageScene);
-			WorldObjectManager.SetUpWorldObjectManager(WorldObjectParentNode);
+			Node worldRoot = GetParent() ?? this;
+			WorldObjectManager.SetUpWorldObjectManager(WorldObjectParentNode, worldRoot);
+			EnemySpawner = new EnemySpawner(this, EnemyScene);
 			ConfigureStateMachine();
 
 			StartGame();
@@ -70,7 +74,7 @@ namespace Root {
 			KeyInput.Update(CameraRig);
 			LocalPlayer.Update(dt, KeyInput);
 
-			UpdateTimer();
+			EnemySpawner.Update();
 		}
 
 		private void ConfigureStateMachine() {
@@ -78,9 +82,14 @@ namespace Root {
 			StateMachine.OnExit(MenuState.Game, () => GetTree().Paused = true);
 		}
 
+		private void SpawnNPC() {
+			var npc = this.AddScene<NPC>(NPCScene);
+			npc.GlobalPosition = NPCSpawnMarker.GlobalPosition;
+		}
+
 		private void SpawnLocalPlayer() {
 			LocalPlayer = this.AddScene<Player>(PlayerScene);
-			LocalPlayer.GlobalPosition = PlayerSpawnLocation;
+			LocalPlayer.GlobalPosition = PlayerSpawnMarker.GlobalPosition;
 
 			if(WorldObjectManager != null) {
 				LocalPlayer.ConfigureObjectPickup(WorldObjectManager);
@@ -88,8 +97,10 @@ namespace Root {
 			SubscribeToPlayerItem3DIconEvents(LocalPlayer);
 
 			CameraRig.Target = LocalPlayer;
+			EnemySpawner.SetTarget(LocalPlayer);
 
 			AttachHUD();
+			LocalPlayer.ConfigureObjectPlacement(WorldObjectManager!, this, HUD!.GetNode<Hotbar>("Hotbar"));
 		}
 
 		private void AttachHUD() {
@@ -133,28 +144,6 @@ namespace Root {
 			Log.Info("Player respawned");
 		}
 
-		private void UpdateTimer() {
-			SpawnTimer -= 0.015f;
-
-			if(SpawnTimer <= 0.0f && EnemyCount < 5) {
-				GD.Print("Spawned");
-				SpawnTimer = (float) GD.RandRange(1f, 6f);
-				var enemy = this.AddScene<Enemy>(EnemyScene);
-				enemy.GlobalPosition = GetRandomEnemySpawn();
-				EnemyCount += 1;
-			}
-		}
-
-		private Vector3 GetRandomEnemySpawn() {
-			var pos = LocalPlayer!.GlobalPosition;
-			return pos + new Vector3(
-				(float) GD.RandRange(-10f, 10f),
-				0.25f,
-				(float) GD.RandRange(-10f, 10f)
-			);
-
-		}
-
 		public bool SaveGame(string fileName) {
 			if(!IsInstanceValid(LocalPlayer) || !IsInstanceValid(CameraRig)) {
 				Log.Error("Cannot save game: game objects are not valid");
@@ -189,12 +178,13 @@ namespace Root {
 
 		private void StartGame() {
 			SpawnLocalPlayer();
-			SpawnTestItems();
-
+			SpawnNPC();
 			if(LoadFile != null) {
 				LoadData(LoadFile);
 				LoadFile = null;
+				return;
 			}
+			SpawnTestItems();
 		}
 
 		private void LoadData(string file) {
@@ -230,17 +220,17 @@ namespace Root {
 			Cleanup(Item3DIconManager);
 			Item3DIconManager = null;
 
-			// Reset spawn state
-			EnemyCount = 0;
-			SpawnTimer = 5.0f;
+			EnemySpawner.Reset();
 		}
 
-		private static Vector3 RandomLocation() {
-			return new Vector3(
-				GD.RandRange(-SpawnRadius, SpawnRadius),
-				SpawnHeight,
-				GD.RandRange(-SpawnRadius, SpawnRadius)
+		private Vector3 RandomLocationNearPlayer() {
+			Vector3 center = IsInstanceValid(LocalPlayer) ? LocalPlayer!.GlobalPosition : PlayerSpawnMarker.GlobalPosition;
+			Vector3 randomPoint = new Vector3(
+				center.X + GD.RandRange(-SpawnRadius, SpawnRadius),
+				center.Y + SpawnHeight,
+				center.Z + GD.RandRange(-SpawnRadius, SpawnRadius)
 			);
+			return randomPoint;
 		}
 
 		private void SpawnTestItems() {
@@ -248,17 +238,18 @@ namespace Root {
 				Log.Error("Cannot spawn test items: Item3DIconManager is not initialized");
 				return;
 			}
-			Item3DIconManager.SpawnItem(ItemID.AppleRed, RandomLocation());
-			Item3DIconManager.SpawnItem(ItemID.AppleYellow, RandomLocation());
-			Item3DIconManager.SpawnItem(ItemID.AppleGreen, RandomLocation());
-			Item3DIconManager.SpawnItem(ItemID.BananaYellow, RandomLocation());
-			Item3DIconManager.SpawnItem(ItemID.BananaGreen, RandomLocation());
-			Item3DIconManager.SpawnItem(ItemID.StrawberryGreen, RandomLocation());
-			Item3DIconManager.SpawnItem(ItemID.StrawberryRed, RandomLocation());
-			Item3DIconManager.SpawnItem(ItemID.StrawberryRed, RandomLocation());
-			Item3DIconManager.SpawnItem(ItemID.StrawberryRed, RandomLocation());
-			Item3DIconManager.SpawnItem(ItemID.StrawberryRed, RandomLocation());
-			Item3DIconManager.SpawnItem(ItemID.StrawberryRed, new Vector3(40, SpawnHeight, 20), 3);
+			Item3DIconManager.SpawnItem(ItemID.AppleRed, RandomLocationNearPlayer());
+			Item3DIconManager.SpawnItem(ItemID.AppleYellow, RandomLocationNearPlayer());
+			Item3DIconManager.SpawnItem(ItemID.AppleGreen, RandomLocationNearPlayer());
+			Item3DIconManager.SpawnItem(ItemID.BananaYellow, RandomLocationNearPlayer());
+			Item3DIconManager.SpawnItem(ItemID.BananaGreen, RandomLocationNearPlayer());
+			Item3DIconManager.SpawnItem(ItemID.StrawberryGreen, RandomLocationNearPlayer());
+			Item3DIconManager.SpawnItem(ItemID.StrawberryRed, RandomLocationNearPlayer());
+			Item3DIconManager.SpawnItem(ItemID.StrawberryRed, RandomLocationNearPlayer());
+			Item3DIconManager.SpawnItem(ItemID.StrawberryRed, RandomLocationNearPlayer());
+			Item3DIconManager.SpawnItem(ItemID.StrawberryRed, RandomLocationNearPlayer());
+
+			Item3DIconManager.SpawnItem(ItemID.StrawberryRed, RandomLocationNearPlayer(), 3);
 		}
 
 		private void SubscribeToPlayerItem3DIconEvents(Player player) {
