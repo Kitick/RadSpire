@@ -16,6 +16,7 @@ namespace UI {
 		[Export] private Button PauseButton = null!;
 		[Export] private PauseMenu PauseMenu = null!;
 		[Export] private InventoryUI Inventory = null!;
+		[Export] private CraftingUI CraftingUI = null!;
 		[Export] public InventoryItemInformationUI InventoryItemInformationUI = null!;
 		[Export] private InventoryUI Chest = null!;
 		[Export] private Control QuestLog = null!;
@@ -46,6 +47,8 @@ namespace UI {
 
 		public void Init(Player player, StateMachine<MenuState> stateMachine) {
 			Player = player;
+			CraftingUI.Inventories.Add(player.Inventory);
+			CraftingUI.Inventories.Add(player.Hotbar);
 			StateMachineRef = stateMachine;
 			Inventory.Initialize(player.Inventory, player);
 			Hotbar.Initialize(player.Hotbar, player);
@@ -83,6 +86,7 @@ namespace UI {
 				PauseMenu.CloseMenu();
 				RespawnMenu.CloseMenu();
 				Inventory.Visible = false;
+				CraftingUI.Visible = false;
 				InventoryItemInformationUI.Visible = false;
 			});
 
@@ -96,13 +100,16 @@ namespace UI {
 			// Inventory state
 			stateMachine.OnEnter(MenuState.Inventory, () => {
 				Inventory.Visible = true;
+				CraftingUI.Visible = true;
 				Hotbar.Visible = true;
+				CraftingUI.RefreshUI();
 				InventoryItemInformationUI.Visible = true;
 				InventoryRequested?.Invoke(true);
 			});
 
 			stateMachine.OnExit(MenuState.Inventory, () => {
 				Inventory.Visible = false;
+				CraftingUI.Visible = false;
 				InventoryItemInformationUI.Visible = false;
 				InventoryRequested?.Invoke(false);
 			});

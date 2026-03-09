@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cnm5iegiuj4xu" path="res://Item/ItemDataBase/ItemDataBaseScripts/ItemComponentDefinitions/ItemComponentDefinition.cs" id="1_ipxpc"]
 [ext_resource type="Texture2D" uid="uid://cwuec2le405dc" path="res://Assets/Images/Icons/IronSword.png" id="2_0otxp"]
+[ext_resource type="Resource" uid="uid://b7vyspd40hxww" path="res://Item/ItemDataBase/ComponentDefinitions/WeaponBaseDefinition/Level2_WeaponBase.tres" id="2_ftpc4"]
 [ext_resource type="Script" uid="uid://bxmh4fd7kjvv1" path="res://Item/ItemDataBase/ItemDataBaseScripts/ItemDefinition.cs" id="2_u3y5q"]
 
 [resource]
@@ -12,4 +13,5 @@ Description = "A reliable iron sword with solid damage and durability."
 MaxStackSize = 16
 IsConsumable = false
 IconTexture = ExtResource("2_0otxp")
+ComponentsResources = Array[ExtResource("1_ipxpc")]([ExtResource("2_ftpc4")])
 metadata/_custom_type_script = "uid://bxmh4fd7kjvv1"

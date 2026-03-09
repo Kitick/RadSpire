@@ -19,6 +19,10 @@ namespace ItemSystem {
 		private void OnBodyEntered(Node3D body) {
 			if(body == WeaponOwner)
 				return;
+
+			if(body is IHealth health) {
+				health.Hurt(Damage);
+			}
 		}
 	}
 }

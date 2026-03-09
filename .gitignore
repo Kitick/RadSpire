@@ -7,9 +7,5 @@ Release/
 bin/
 obj/
 
-# Exception for addons binaries
-!addons/*/bin/
-!addons/*/bin/**
-
 # JetBrains IDE
 .idea/

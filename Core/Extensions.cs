@@ -1,5 +1,7 @@
 namespace Core {
 	using System;
+	using System.Collections.Generic;
+	using System.Linq;
 	using System.Reflection;
 	using Godot;
 
@@ -81,7 +83,7 @@ namespace Core {
 		}
 
 		// OptionButton
-		public static void Populate<T>(this OptionButton button, T[] values) where T : notnull {
+		public static void Populate<T>(this OptionButton button, params IEnumerable<T> values) where T : notnull {
 			button.Clear();
 			foreach(var value in values) {
 				button.AddItem(value.ToString());
@@ -99,6 +101,12 @@ namespace Core {
 				}
 			}
 			return false;
+		}
+
+		public static T? GetSelectedItem<T>(this OptionButton button, params IEnumerable<T> values) where T : class {
+			int index = button.Selected;
+			if(index < 0 || index >= values.Count()) { return null; }
+			return values.ElementAt(index);
 		}
 	}
 }
