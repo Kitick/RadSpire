@@ -89,6 +89,7 @@ namespace Components {
             User = user;
             UserHotbar = hotbar;
             hotbar.OnSlotSelected += OnHotbarSlotSelected;
+            hotbar.OnSlotDeselected += OnHotbarSlotDeselected;
             IsInitalized = true;
         }
 
@@ -96,21 +97,34 @@ namespace Components {
             
         }
 
-        public void OnHotbarSlotSelected(string itemID) {
+        public void OnHotbarSlotSelected(ItemSlot selectedSlot) {
             if(!IsInitalized || User == null || UserHotbar == null) {
                 return;
             }
-            Item? selectedItem = UserHotbar.GetSelectedItem();
+            Item? selectedItem = selectedSlot.Item;
             if(selectedItem == null) {
                 Log.Info("No item selected in hotbar.");
                 return;
             }
-            bool success = User!.EquipItem(selectedItem);
+            User!.EquipItem(selectedItem);
         }
-        
+
+        public void OnHotbarSlotDeselected(ItemSlot deselectedSlot) {
+            if(!IsInitalized || User == null || UserHotbar == null) {
+                return;
+            }
+            Item? deselectedItem = deselectedSlot.Item;
+            if(deselectedItem == null) {
+                Log.Info("No item deselected in hotbar.");
+                return;
+            }
+            User!.UnequipItem(deselectedItem);
+        }
+
         public override void _ExitTree() {
             if(IsInitalized && UserHotbar != null) {
                 UserHotbar.OnSlotSelected -= OnHotbarSlotSelected;
+                UserHotbar.OnSlotDeselected -= OnHotbarSlotDeselected;
             }
         }
     }

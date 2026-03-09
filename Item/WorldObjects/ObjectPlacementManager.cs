@@ -124,7 +124,8 @@ namespace Objects {
             }   
         }
 
-        public void OnHotbarSlotSelected(string itemId) {
+        public void OnHotbarSlotSelected(ItemSlot selectedSlot) {
+            string? itemId = selectedSlot.Item?.Id;
             if(!IsPlaceable(itemId)) {
                 if(PlaceStateMachine.CurrentState == PlaceState.FindingPlacableLocation || PlaceStateMachine.CurrentState == PlaceState.Placable) {
                     PlaceStateMachine.TransitionTo(PlaceState.Idle);
