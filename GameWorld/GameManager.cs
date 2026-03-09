@@ -1,5 +1,6 @@
 namespace Root {
 	using System;
+	using System.Collections.Generic;
 	using Camera;
 	using Character;
 	using Components;
@@ -23,7 +24,7 @@ namespace Root {
 		[Export] private PackedScene EnemyScene = null!;
 		[Export] private PackedScene Item3DIconManagerScene = null!;
 
-		private EnemySpawner EnemySpawner = null!;
+		private readonly List<Enemy> SpawnedEnemies = [];
 		[Export] private PackedScene WorldObjectManageScene = null!;
 		[Export] private PackedScene NPCScene = null!;
 		[Export] private Node WorldObjectParentNode = null!;
@@ -47,6 +48,7 @@ namespace Root {
 		[ExportCategory("Spawn Points")]
 		[Export] private Marker3D PlayerSpawnMarker = null!;
 		[Export] private Marker3D NPCSpawnMarker = null!;
+		[Export] private Godot.Collections.Array<Marker3D> EnemySpawnPoints = [];
 
 		public override void _Ready() {
 			DisplaySettings.SetWorldEnvironment(WorldEnvironment);
@@ -56,7 +58,6 @@ namespace Root {
 			WorldObjectManager = this.AddScene<WorldObjectManager>(WorldObjectManageScene);
 			Node worldRoot = GetParent() ?? this;
 			WorldObjectManager.SetUpWorldObjectManager(WorldObjectParentNode, worldRoot);
-			EnemySpawner = new EnemySpawner(this, EnemyScene);
 			ConfigureStateMachine();
 
 			StartGame();
@@ -73,8 +74,6 @@ namespace Root {
 
 			KeyInput.Update(CameraRig);
 			LocalPlayer.Update(dt, KeyInput);
-
-			EnemySpawner.Update();
 		}
 
 		private void ConfigureStateMachine() {
@@ -97,7 +96,7 @@ namespace Root {
 			SubscribeToPlayerItem3DIconEvents(LocalPlayer);
 
 			CameraRig.Target = LocalPlayer;
-			EnemySpawner.SetTarget(LocalPlayer);
+			UpdateEnemyTargets(LocalPlayer);
 
 			AttachHUD();
 			LocalPlayer.ConfigureObjectPlacement(WorldObjectManager!, this, HUD!.GetNode<Hotbar>("Hotbar"));
@@ -179,6 +178,7 @@ namespace Root {
 		private void StartGame() {
 			SpawnLocalPlayer();
 			SpawnNPC();
+			SpawnEnemies();
 			if(LoadFile != null) {
 				LoadData(LoadFile);
 				LoadFile = null;
@@ -220,7 +220,29 @@ namespace Root {
 			Cleanup(Item3DIconManager);
 			Item3DIconManager = null;
 
-			EnemySpawner.Reset();
+			foreach(var enemy in SpawnedEnemies) { Cleanup(enemy); }
+			SpawnedEnemies.Clear();
+		}
+
+		private void SpawnEnemies() {
+			if(EnemySpawnPoints.Count == 0) {
+				Log.Info("No EnemySpawnPoints assigned — skipping enemy spawn.");
+				return;
+			}
+			foreach(var spawnPoint in EnemySpawnPoints) {
+				if(!IsInstanceValid(spawnPoint)) continue;
+				var enemy = this.AddScene<Enemy>(EnemyScene);
+				enemy.GlobalPosition = spawnPoint.GlobalPosition;
+				if(LocalPlayer != null) enemy.SetTarget(LocalPlayer);
+				SpawnedEnemies.Add(enemy);
+				Log.Info($"Enemy spawned at {spawnPoint.Name} ({spawnPoint.GlobalPosition})");
+			}
+		}
+
+		private void UpdateEnemyTargets(Node3D target) {
+			foreach(var enemy in SpawnedEnemies) {
+				if(IsInstanceValid(enemy)) enemy.SetTarget(target);
+			}
 		}
 
 		private Vector3 RandomLocationNearPlayer() {
