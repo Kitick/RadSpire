@@ -1,0 +1,217 @@
+[gd_scene format=3 uid="uid://bmo8vs5v4lyqv"]
+
+[ext_resource type="Script" uid="uid://bkwawkixe56or" path="res://UI/Crafting/CraftingUI.cs" id="1_8hsgg"]
+
+[node name="Crafting" type="Control" unique_id=2111148912 node_paths=PackedStringArray("CraftableDropdown", "NonCraftableDropdown", "RequirementsList", "CraftButton", "QuantityDisplay", "PosButton", "NegButton")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_8hsgg")
+CraftableDropdown = NodePath("MainBackground/LightBackground/CraftableOptionButton")
+NonCraftableDropdown = NodePath("MainBackground/LightBackground/NotCraftableOptionButton")
+RequirementsList = NodePath("MainBackground/LightBackground/ItemsList")
+CraftButton = NodePath("MainBackground/LightBackground/CraftButton")
+QuantityDisplay = NodePath("MainBackground/LightBackground/QuantityInput")
+PosButton = NodePath("MainBackground/LightBackground/PosButton")
+NegButton = NodePath("MainBackground/LightBackground/NegButton")
+metadata/_edit_horizontal_guides_ = [0.0]
+
+[node name="MainBackground" type="ColorRect" parent="." unique_id=29192493]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -84.0
+offset_right = -1472.0
+offset_bottom = -606.0
+mouse_filter = 1
+color = Color(0.45054996, 0.2622559, 0.190151, 1)
+
+[node name="LightBackground" type="ColorRect" parent="MainBackground" unique_id=850420720]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.025
+anchor_top = 0.035
+anchor_right = 0.975
+anchor_bottom = 0.965
+mouse_filter = 1
+color = Color(1, 1, 1, 0.60784316)
+
+[node name="Craftable" type="Label" parent="MainBackground/LightBackground" unique_id=1764258548]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.1
+offset_left = 8.0
+theme_override_font_sizes/font_size = 32
+text = "Craftable"
+
+[node name="CraftableOptionButton" type="OptionButton" parent="MainBackground/LightBackground" unique_id=1335649761]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.1
+anchor_right = 1.0
+anchor_bottom = 0.2
+offset_left = 8.000001
+offset_right = -8.0
+grow_vertical = 0
+
+[node name="NotCraftable" type="Label" parent="MainBackground/LightBackground" unique_id=1962039103]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.2
+anchor_right = 1.0
+anchor_bottom = 0.3
+offset_left = 8.0
+theme_override_font_sizes/font_size = 32
+text = "Not Craftable"
+
+[node name="NotCraftableOptionButton" type="OptionButton" parent="MainBackground/LightBackground" unique_id=662628308]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.3
+anchor_right = 1.0
+anchor_bottom = 0.4
+offset_left = 8.0
+offset_right = -8.0
+
+[node name="Items" type="Label" parent="MainBackground/LightBackground" unique_id=516954877]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.4
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 8.0
+offset_right = -8.0
+theme_override_font_sizes/font_size = 24
+text = "Items"
+
+[node name="ItemsList" type="ItemList" parent="MainBackground/LightBackground" unique_id=1146406095]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.8
+offset_left = 8.0
+
+[node name="Need" type="Label" parent="MainBackground/LightBackground" unique_id=2017928979]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.4
+anchor_right = 0.75
+anchor_bottom = 0.5
+theme_override_font_sizes/font_size = 24
+text = "Need"
+horizontal_alignment = 1
+
+[node name="NeedList" type="ItemList" parent="MainBackground/LightBackground" unique_id=1998151795]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.75
+anchor_bottom = 0.8
+offset_left = 32.0
+offset_right = -32.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="Have" type="Label" parent="MainBackground/LightBackground" unique_id=1091678768]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.75
+anchor_top = 0.4
+anchor_right = 1.0
+anchor_bottom = 0.5
+theme_override_font_sizes/font_size = 24
+text = "Have"
+horizontal_alignment = 1
+
+[node name="HaveList" type="ItemList" parent="MainBackground/LightBackground" unique_id=363383509]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.75
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.8
+offset_left = 32.0
+offset_right = -32.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="Quantity" type="Label" parent="MainBackground/LightBackground" unique_id=1596092855]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.9
+anchor_right = 0.3
+anchor_bottom = 0.975
+offset_left = 8.0
+theme_override_font_sizes/font_size = 24
+text = "Quantity"
+
+[node name="NegButton" type="Button" parent="MainBackground/LightBackground" unique_id=974923918]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.3
+anchor_top = 0.9
+anchor_right = 0.35
+anchor_bottom = 0.975
+theme_override_font_sizes/font_size = 16
+text = "-"
+
+[node name="QuantityInput" type="LineEdit" parent="MainBackground/LightBackground" unique_id=1086066354]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.4
+anchor_top = 0.9
+anchor_right = 0.6
+anchor_bottom = 0.975
+alignment = 1
+
+[node name="PosButton" type="Button" parent="MainBackground/LightBackground" unique_id=1355145367]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.65
+anchor_top = 0.9
+anchor_right = 0.7
+anchor_bottom = 0.975
+theme_override_font_sizes/font_size = 16
+text = "+"
+
+[node name="CraftButton" type="Button" parent="MainBackground/LightBackground" unique_id=415348296]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.75
+anchor_top = 0.85
+anchor_right = 1.0
+anchor_bottom = 0.975
+offset_right = -8.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_font_sizes/font_size = 32
+text = "Craft"
+
+[node name="TabBackground" type="ColorRect" parent="." unique_id=342495999]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.3
+anchor_bottom = 0.1
+offset_right = -471.0
+offset_bottom = -82.0
+mouse_filter = 1
+color = Color(0.4509804, 0.2627451, 0.1882353, 1)
+
+[node name="Label" type="RichTextLabel" parent="TabBackground" unique_id=1824951502]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 1
+text = "Craft"
+horizontal_alignment = 1
+vertical_alignment = 1

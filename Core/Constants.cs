@@ -1,4 +1,6 @@
 namespace Core {
+	using Godot;
+
 	public static class Constants {
 		public const string AutosaveFile = "autosave";
 	}
@@ -21,46 +23,46 @@ namespace Core {
 	}
 
 	public static class ItemID {
-		public const string AppleRed = "AppleRed";
-		public const string AppleYellow = "AppleYellow";
-		public const string AppleGreen = "AppleGreen";
-		public const string BananaYellow = "BananaYellow";
-		public const string BananaGreen = "BananaGreen";
-		public const string Barrel = "Barrel";
-		public const string BerryBlack = "BerryBlack";
-		public const string BerryGreen = "BerryGreen";
-		public const string BerryRed = "BerryRed";
-		public const string BlueberryBlue = "BlueberryBlue";
-		public const string BlueberryGreen = "BlueberryGreen";
-		public const string Bonfire = "Bonfire";
-		public const string CherryGreen = "CherryGreen";
-		public const string CherryRed = "CherryRed";
-		public const string ChestCommon = "ChestCommon";
-		public const string ChestpieceIron = "ChestpieceIron";
-		public const string ChestPrecious = "ChestPrecious";
-		public const string ChestRare = "ChestRare";
-		public const string CoconutBrown = "CoconutBrown";
-		public const string CoconutBrownOpen = "CoconutBrownOpen";
-		public const string CoconutGreen = "CoconutGreen";
-		public const string CoconutGreenOpen = "CoconutGreenOpen";
-		public const string GoldBar = "GoldBar";
-		public const string GoldChunk = "GoldChunk";
-		public const string GoldOre = "GoldOre";
-		public const string HeadpieceIron = "HeadpieceIron";
-		public const string IronBar = "IronBar";
-		public const string IronChunk = "IronChunk";
-		public const string IronOre = "IronOre";
-		public const string PantpieceIron = "PantpieceIron";
-		public const string ShieldIron = "ShieldIron";
-		public const string ShieldWood = "ShieldWood";
-		public const string Stick = "Stick";
-		public const string Stone = "Stone";
-		public const string StonePiece = "StonePiece";
-		public const string StrawberryGreen = "StrawberryGreen";
-		public const string StrawberryRed = "StrawberryRed";
-		public const string SwordGold = "SwordGold";
-		public const string SwordIron = "SwordIron";
-		public const string SwordWood = "SwordWood";
-		public const string Wood = "Wood";
+		public readonly static StringName AppleRed = "AppleRed";
+		public readonly static StringName AppleYellow = "AppleYellow";
+		public readonly static StringName AppleGreen = "AppleGreen";
+		public readonly static StringName BananaYellow = "BananaYellow";
+		public readonly static StringName BananaGreen = "BananaGreen";
+		public readonly static StringName Barrel = "Barrel";
+		public readonly static StringName BerryBlack = "BerryBlack";
+		public readonly static StringName BerryGreen = "BerryGreen";
+		public readonly static StringName BerryRed = "BerryRed";
+		public readonly static StringName BlueberryBlue = "BlueberryBlue";
+		public readonly static StringName BlueberryGreen = "BlueberryGreen";
+		public readonly static StringName Bonfire = "Bonfire";
+		public readonly static StringName CherryGreen = "CherryGreen";
+		public readonly static StringName CherryRed = "CherryRed";
+		public readonly static StringName ChestCommon = "ChestCommon";
+		public readonly static StringName ChestpieceIron = "ChestpieceIron";
+		public readonly static StringName ChestPrecious = "ChestPrecious";
+		public readonly static StringName ChestRare = "ChestRare";
+		public readonly static StringName CoconutBrown = "CoconutBrown";
+		public readonly static StringName CoconutBrownOpen = "CoconutBrownOpen";
+		public readonly static StringName CoconutGreen = "CoconutGreen";
+		public readonly static StringName CoconutGreenOpen = "CoconutGreenOpen";
+		public readonly static StringName GoldBar = "GoldBar";
+		public readonly static StringName GoldChunk = "GoldChunk";
+		public readonly static StringName GoldOre = "GoldOre";
+		public readonly static StringName HeadpieceIron = "HeadpieceIron";
+		public readonly static StringName IronBar = "IronBar";
+		public readonly static StringName IronChunk = "IronChunk";
+		public readonly static StringName IronOre = "IronOre";
+		public readonly static StringName PantpieceIron = "PantpieceIron";
+		public readonly static StringName ShieldIron = "ShieldIron";
+		public readonly static StringName ShieldWood = "ShieldWood";
+		public readonly static StringName Stick = "Stick";
+		public readonly static StringName Stone = "Stone";
+		public readonly static StringName StonePiece = "StonePiece";
+		public readonly static StringName StrawberryGreen = "StrawberryGreen";
+		public readonly static StringName StrawberryRed = "StrawberryRed";
+		public readonly static StringName SwordGold = "SwordGold";
+		public readonly static StringName SwordIron = "SwordIron";
+		public readonly static StringName SwordWood = "SwordWood";
+		public readonly static StringName Wood = "Wood";
 	}
 }

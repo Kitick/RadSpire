@@ -4,7 +4,7 @@ namespace Services {
 	using Godot;
 
 	public sealed partial class InputSystem : Node {
-		public static readonly LogService Log = new(nameof(InputSystem), enabled: true);
+		public static readonly LogService Log = new(nameof(InputSystem), enabled: false);
 
 		public static InputSystem Instance { get; private set; } = null!;
 
