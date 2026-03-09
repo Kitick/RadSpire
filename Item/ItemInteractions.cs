@@ -72,9 +72,46 @@ namespace Components {
                 }
             });
         }
-        
+
         public override void _ExitTree() {
             UnsubscribeUse?.Invoke();
+        }
+    }
+    
+    public partial class EquipItem : Node {
+        private static readonly LogService Log = new(nameof(EquipItem), enabled: true);
+        public Player? User;
+        public Item? ItemToUse;
+        public Hotbar UserHotbar = null!;
+        private bool IsInitalized = false;
+
+        public void Initalize(Player user, Hotbar hotbar) {
+            User = user;
+            UserHotbar = hotbar;
+            hotbar.OnSlotSelected += OnHotbarSlotSelected;
+            IsInitalized = true;
+        }
+
+        public override void _Ready() {
+            
+        }
+
+        public void OnHotbarSlotSelected(string itemID) {
+            if(!IsInitalized || User == null || UserHotbar == null) {
+                return;
+            }
+            Item? selectedItem = UserHotbar.GetSelectedItem();
+            if(selectedItem == null) {
+                Log.Info("No item selected in hotbar.");
+                return;
+            }
+            bool success = User!.EquipItem(selectedItem);
+        }
+        
+        public override void _ExitTree() {
+            if(IsInitalized && UserHotbar != null) {
+                UserHotbar.OnSlotSelected -= OnHotbarSlotSelected;
+            }
         }
     }
 }
