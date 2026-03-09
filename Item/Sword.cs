@@ -1,6 +1,7 @@
 using Godot;
 using Services;
 using Components;
+using Character;
 
 namespace ItemSystem {
 	public partial class Sword : Area3D {
@@ -10,15 +11,20 @@ namespace ItemSystem {
 
 		public int Damage = 10;
 
+		private AudioStreamPlayer? impactSound;
+
 		public override void _Ready() {
 			WeaponOwner = GetOwner<Node3D>();
 			Monitoring = false;
 			BodyEntered += OnBodyEntered;
+
+			impactSound = GetNode<AudioStreamPlayer>("ImpactSound");
 		}
 
 		private void OnBodyEntered(Node3D body) {
-			if(body == WeaponOwner)
-				return;
+			if(body == WeaponOwner) return;
+			
+			if(impactSound is {Playing: false}) impactSound.Play();
 
 			if(body is IHealth health) {
 				health.Hurt(Damage);
