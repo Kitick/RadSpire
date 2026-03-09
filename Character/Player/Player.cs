@@ -34,6 +34,7 @@ namespace Character {
 		public readonly Movement Movement;
 		public readonly Item3DIconPickup PickupComponent = new Item3DIconPickup();
 		public readonly UseItem UseItemComponent = new UseItem();
+		public readonly EquipItem EquipItemComponent = new EquipItem();
 		public ObjectPickup? ObjectPickup { get; private set; }
 		public ObjectPlacementManager? ObjectPlacementManager { get; private set; }
 		private ObjectPlacementUI? ObjectPlacementUI;
@@ -41,6 +42,8 @@ namespace Character {
 		private Action? UnsubscribeInteract;
 		private Action? UnsubscribeInteract2;
 		private Action? UnsubscribePlace;
+
+		public bool HoldingSword = false;
 
 		public Player() {
 			Movement = new Movement(this);
@@ -55,6 +58,7 @@ namespace Character {
 			AddChild(PickupComponent);
 			AddChild(InventoryManager);
 			AddChild(UseItemComponent);
+			AddChild(EquipItemComponent);
 			SetupChildren();
 
 			WeaponHitbox.Init(this);
