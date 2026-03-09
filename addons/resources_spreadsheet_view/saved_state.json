@@ -71,6 +71,17 @@
       "resource_name": {
         "visibility": 0.0
       }
+    },
+    "res://Item/ItemDataBase/ItemDefinitions/Resources/": {
+      "metadata/_custom_type_script": {
+        "visibility": 0
+      },
+      "resource_local_to_scene": {
+        "visibility": 0
+      },
+      "resource_name": {
+        "visibility": 0
+      }
     }
   },
   "recent_paths": [
@@ -79,7 +90,8 @@
     "res://Item/ItemDataBase/ComponentDefinitions/",
     "res://Item/ItemDataBase/ItemDefinitions/Food/",
     "res://Item/ItemDataBase/ItemDefinitions/",
-    "res://Item/ItemDataBase/ComponentDefinitions/ChestRarityDefinition/"
+    "res://Item/ItemDataBase/ComponentDefinitions/ChestRarityDefinition/",
+    "res://Item/ItemDataBase/ItemDefinitions/Resources/"
   ],
   "table_functions": {
     "filter": [
