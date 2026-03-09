@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bs8mou6sasa7y"]
 
-[ext_resource type="PackedScene" path="res://Assets/Models/Chest/Chests/old_chest.tscn" id="1_kfvhx"]
+[ext_resource type="PackedScene" uid="uid://dna00eg1jcs3j" path="res://Assets/Models/Chest/Chests/old_chest.tscn" id="1_kfvhx"]
 [ext_resource type="Script" uid="uid://klsonhpw4auo" path="res://Item/WorldObjects/ObjectNode.cs" id="2_imyk2"]
 [ext_resource type="PackedScene" uid="uid://b7gv62rlbjt5l" path="res://Item/WorldObjects/WorldObjectSpawnPoint.tscn" id="2_l1cxs"]
 

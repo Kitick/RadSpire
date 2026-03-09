@@ -1,8 +1,8 @@
-[gd_resource type="Resource" format=3 uid="uid://brm18peimiwuj"]
+[gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://brm18peimiwuj"]
 
 [ext_resource type="Script" uid="uid://cnm5iegiuj4xu" path="res://Item/ItemDataBase/ItemDataBaseScripts/ItemComponentDefinitions/ItemComponentDefinition.cs" id="1_fwpe3"]
 [ext_resource type="Resource" uid="uid://c1huxqjph6pmk" path="res://Item/ItemDataBase/ComponentDefinitions/InventoryComponentDefinition/3x5InventoryDefinition.tres" id="2_f3fuy"]
-[ext_resource type="Resource" path="res://Item/ItemDataBase/ComponentDefinitions/ChestRarityDefinition/CommonChestRarityDefinition.tres" id="3_9s18h"]
+[ext_resource type="Resource" uid="uid://cdxl0njbf5ldq" path="res://Item/ItemDataBase/ComponentDefinitions/ChestRarityDefinition/CommonChestRarityDefinition.tres" id="3_9s18h"]
 [ext_resource type="Texture2D" uid="uid://cb8574sf714xs" path="res://Assets/Models/Chest/ChestIcons/Common Chest.png" id="3_bqbbc"]
 [ext_resource type="PackedScene" uid="uid://bs8mou6sasa7y" path="res://Item/ItemDataBase/Item3DScenes/ChestCommon.tscn" id="4_v1teg"]
 [ext_resource type="Script" uid="uid://bxmh4fd7kjvv1" path="res://Item/ItemDataBase/ItemDataBaseScripts/ItemDefinition.cs" id="5_1nhsk"]
