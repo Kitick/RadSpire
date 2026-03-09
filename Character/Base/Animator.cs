@@ -81,6 +81,7 @@ namespace Character {
 				CharState.Crouching => AnimState.Crouching,
 				CharState.Falling => AnimState.Falling,
 				CharState.Attacking => AnimState.Attacking,
+				CharState.Dead => AnimState.Dying,
 				_ => PlayingAnimation,
 			};
 		}
