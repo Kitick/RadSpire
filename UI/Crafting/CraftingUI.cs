@@ -1,142 +1,130 @@
-using Godot;
-using System;
-using System.Collections.Generic;
-using Services.Crafting;
-using ItemSystem;
-using Character;
-
-
 namespace UI {
-    public partial class CraftingUI : Control {
-        [Export] public OptionButton CraftableDropdown = null!;
-        [Export] public OptionButton NonCraftableDropdown = null!;
-        [Export] public ItemList RequirementsList = null!;
-        [Export] public Button CraftButton = null!;
-        [Export] public LineEdit QuantityDisplay = null!;
-        [Export] public Button PosButton = null!;
-        [Export] public Button NegButton = null!;
+	using System;
+	using System.Collections.Generic;
+	using Godot;
+	using ItemSystem;
+	using Services;
+	using Services.Crafting;
 
+	public sealed partial class CraftingUI : Control {
+		private static readonly LogService Log = new(nameof(CraftingUI), enabled: true);
 
-        private List<CraftingRecipe> craftableRecipes = new();
-        private List<CraftingRecipe> nonCraftableRecipes = new();
-        private int quantity = 1;
+		[Export] public OptionButton CraftableDropdown = null!;
+		[Export] public OptionButton NonCraftableDropdown = null!;
+		[Export] public ItemList RequirementsList = null!;
+		[Export] public Button CraftButton = null!;
+		[Export] public LineEdit QuantityDisplay = null!;
+		[Export] public Button PosButton = null!;
+		[Export] public Button NegButton = null!;
 
+		private readonly List<CraftingRecipe> craftableRecipes = [];
+		private readonly List<CraftingRecipe> nonCraftableRecipes = [];
 
-        public List<Inventory> Inventories { get; set; } = new();
+		private int Quantity {
+			get;
+			set => field = Math.Clamp(value, 1, 5);
+		}
 
+		public readonly List<Inventory> Inventories = [];
 
-        public override void _Ready() {
-            SetCallbacks();
-        }
+		public override void _Ready() {
+			SetCallbacks();
+		}
 
+		private void SetCallbacks() {
+			CraftButton.Pressed += OnCraftButtonPressed;
+			PosButton.Pressed += OnPosButtonPressed;
+			NegButton.Pressed += OnNegButtonPressed;
 
-        private void SetCallbacks() {
-            CraftButton.Pressed += OnCraftButtonPressed;
-            PosButton.Pressed += OnPosButtonPressed;
-            NegButton.Pressed += OnNegButtonPressed;
+			CraftableDropdown.ItemSelected += OnCraftableSelected;
+			NonCraftableDropdown.ItemSelected += OnNonCraftableSelected;
+		}
 
+		private void OnCraftableSelected(long index) {
+			if(index >= 0 && index < craftableRecipes.Count) {
+				UpdateRequirementsList(craftableRecipes[(int) index]);
+			}
+		}
 
-            CraftableDropdown.ItemSelected += OnCraftableSelected;
-            NonCraftableDropdown.ItemSelected += OnNonCraftableSelected;
-        }
+		private void OnNonCraftableSelected(long index) {
+			if(index >= 0 && index < nonCraftableRecipes.Count) {
+				UpdateRequirementsList(nonCraftableRecipes[(int) index]);
+			}
+		}
 
+		public void RefreshUI() {
+			craftableRecipes.Clear();
+			nonCraftableRecipes.Clear();
 
-        private void OnCraftableSelected(long index) {
-            if (index >= 0 && index < craftableRecipes.Count) {
-                UpdateRequirementsList(craftableRecipes[(int)index]);
-            }
-        }
+			CraftableDropdown.Clear();
+			NonCraftableDropdown.Clear();
 
+			foreach(var recipe in Recipes.AllRecipes) {
+				if(CraftingSystem.CanCraft(recipe, Inventories, out _)) {
+					craftableRecipes.Add(recipe);
+					CraftableDropdown.AddItem(recipe.RecipeName);
+				}
+				else {
+					nonCraftableRecipes.Add(recipe);
+					NonCraftableDropdown.AddItem(recipe.RecipeName);
+				}
+			}
 
-        private void OnNonCraftableSelected(long index) {
-            if (index >= 0 && index < nonCraftableRecipes.Count) {
-                UpdateRequirementsList(nonCraftableRecipes[(int)index]);
-            }
-        }
+			QuantityDisplay.Text = Quantity.ToString();
+			UpdateCurrentSelectedRequirements();
+		}
 
+		private void UpdateRequirementsList(CraftingRecipe recipe) {
+			RequirementsList.Clear();
+			if(recipe.Inputs == null) return;
 
-        public void RefreshUI() {
-            craftableRecipes.Clear();
-            nonCraftableRecipes.Clear();
+			foreach(var ingredient in recipe.Inputs) {
+				int totalCost = ingredient.Quantity * Quantity;
+				RequirementsList.AddItem($"{ingredient.ItemId} x {totalCost}");
+			}
+		}
 
+		private void UpdateCurrentSelectedRequirements() {
+			int index = CraftableDropdown.Selected;
 
-            CraftableDropdown.Clear();
-            NonCraftableDropdown.Clear();
+			if(index >= 0 && index < craftableRecipes.Count) {
+				UpdateRequirementsList(craftableRecipes[index]);
+			}
+			else {
+				RequirementsList.Clear();
+			}
+		}
 
+		private void OnCraftButtonPressed() {
+			if(CraftableDropdown.Selected < 0) { return; }
 
-            foreach(var recipe in Recipes.AllRecipes) {
-                if(CraftingSystem.CanCraft(recipe, Inventories, out _)) {
-                    craftableRecipes.Add(recipe);
-                    CraftableDropdown.AddItem(recipe.RecipeName);
-                }
-                else {
-                    nonCraftableRecipes.Add(recipe);
-                    NonCraftableDropdown.AddItem(recipe.RecipeName);
-                }
-            }
+			var selectedRecipe = craftableRecipes[CraftableDropdown.Selected];
 
+			for(int i = 0; i < Quantity; i++) {
+				CraftResult result = CraftingSystem.Craft(selectedRecipe, Inventories);
 
-            QuantityDisplay.Text = quantity.ToString();
-            UpdateCurrentSelectedRequirements();
-        }
+				if(result.Status == CraftStatus.Success) {
+					foreach(var slot in result.Items) {
+						Inventories[0].AddItem(slot);
+					}
+					Log.Info($"Crafted '{selectedRecipe.RecipeName}' x {Quantity}.");
+				}
+				else {
+					Log.Warn($"Crafting failed: {result.Status}");
+					break;
+				}
+			}
 
+			RefreshUI();
+		}
 
-        private void UpdateRequirementsList(CraftingRecipe recipe) {
-            RequirementsList.Clear();
-            if(recipe.Inputs == null) return;
+		public void OnPosButtonPressed() {
+			Quantity++;
+			RefreshUI();
+		}
 
-
-            foreach(var ingredient in recipe.Inputs) {
-                int totalCost = ingredient.Quantity * quantity;
-                RequirementsList.AddItem($"{ingredient.ItemId} x {totalCost}");
-            }
-        }
-
-        private void UpdateCurrentSelectedRequirements() {
-            int index = CraftableDropdown.Selected;
-           
-            if (index >= 0 && index < craftableRecipes.Count) {
-                UpdateRequirementsList(craftableRecipes[index]);
-            }
-            else {
-                RequirementsList.Clear();
-            }
-        }
-
-
-        private void OnCraftButtonPressed() {
-            if(CraftableDropdown.Selected < 0) return;
-
-            var selectedRecipe = craftableRecipes[CraftableDropdown.Selected];
-
-            for(int i = 0; i < quantity; i++) {
-                CraftResult result = CraftingSystem.Craft(selectedRecipe, Inventories);
-                if(result.Status != CraftStatus.Success) {
-                    foreach (var slot in result.Items) {
-                        Inventories[0].AddItem(slot);
-                    }
-                    GD.Print($"Crafted '{selectedRecipe.RecipeName}' x {quantity}.");
-                }
-                else {
-                    GD.PrintErr($"Crafting failed: {result.Status}");
-                    break;
-                }
-            }
-            RefreshUI();
-        }
-
-
-        public void OnPosButtonPressed() {
-            quantity++;
-            RefreshUI();
-        }
-
-
-        public void OnNegButtonPressed() {
-            if(quantity > 1) {
-                quantity--;
-                RefreshUI();
-            }
-        }
-    }
+		public void OnNegButtonPressed() {
+			RefreshUI();
+		}
+	}
 }

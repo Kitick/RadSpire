@@ -98,6 +98,7 @@ namespace UI {
 				Inventory.Visible = true;
 				CraftingUI.Visible = true;
 				Hotbar.Visible = true;
+				CraftingUI.RefreshUI();
 				InventoryItemInformationUI.Visible = true;
 				InventoryRequested?.Invoke(true);
 			});
