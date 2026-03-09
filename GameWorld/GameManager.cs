@@ -70,6 +70,18 @@ namespace Root {
 		public override void _PhysicsProcess(double delta) {
 			if(!IsInstanceValid(LocalPlayer)) { return; }
 
+			int killed = 0;
+
+			foreach(var enemy in SpawnedEnemies) {
+				if(enemy.Health.Current == 0) {
+					killed += 1;
+				}
+			}
+
+			if(killed == SpawnedEnemies.Count) {
+				HUD.Win();
+			}
+
 			float dt = (float) delta;
 
 			KeyInput.Update(CameraRig);

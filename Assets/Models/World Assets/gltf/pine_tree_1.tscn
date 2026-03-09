@@ -4,5 +4,5 @@
 
 [node name="Pine_Tree_1" unique_id=1188420079 instance=ExtResource("1_143s2")]
 
-[node name="CollisionShape3D" parent="Pine_Tree_1/StaticBody3D" parent_id_path=PackedInt32Array(1849264817) index="0" unique_id=190052136]
+[node name="CollisionShape3D" parent="Pine_Tree_1/StaticBody3D" parent_id_path=PackedInt32Array(1750849585) index="0" unique_id=1216397705]
 transform = Transform3D(0.3, 0, 0, 0, 2, 0, 0, 0, 0.3, 0, 0.468, 0)

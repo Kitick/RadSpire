@@ -23,6 +23,7 @@ namespace UI {
 		[Export] private Hotbar Hotbar = null!;
 		[Export] private RespawnMenu RespawnMenu = null!;
 		[Export] private ProgressBar HealthBar = null!;
+		[Export] private Control WinMenu = null!;
 
 		[ExportCategory("HUD Scenes")]
 		[Export] private PackedScene SettingsScene = null!;
@@ -166,6 +167,11 @@ namespace UI {
 
 			HealthBar.MaxValue = max;
 			HealthBar.Value = current;
+		}
+
+		public void Win() {
+			WinMenu.Visible = true;
+			GetTree().CreateTimer(5.0f).Timeout += () => { GetTree().Quit(); };
 		}
 
 		private void OpenSettingsPanel() {

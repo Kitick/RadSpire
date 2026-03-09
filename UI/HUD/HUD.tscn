@@ -14,8 +14,9 @@
 [ext_resource type="PackedScene" uid="uid://n150xowq1ipg" path="res://UI/Inventory/InventoryItemInformationUITemplate.tscn" id="9_2y2n3"]
 [ext_resource type="PackedScene" uid="uid://bmo8vs5v4lyqv" path="res://UI/Crafting/CraftingUI.tscn" id="9_y8qxg"]
 [ext_resource type="Script" uid="uid://cl6aplc7wunof" path="res://UI/Inventory/InventoryItemInformationUI.cs" id="10_y8qxg"]
+[ext_resource type="PackedScene" uid="uid://bfiyahye18w1t" path="res://UI/HUD/WinMenu.tscn" id="15_cgpfr"]
 
-[node name="HUD" type="Control" unique_id=935922708 node_paths=PackedStringArray("PauseButton", "PauseMenu", "Inventory", "CraftingUI", "InventoryItemInformationUI", "Chest", "QuestLog", "Hotbar", "RespawnMenu", "HealthBar")]
+[node name="HUD" type="Control" unique_id=935922708 node_paths=PackedStringArray("PauseButton", "PauseMenu", "Inventory", "CraftingUI", "InventoryItemInformationUI", "Chest", "QuestLog", "Hotbar", "RespawnMenu", "HealthBar", "WinMenu")]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 1920.0
@@ -31,6 +32,7 @@ QuestLog = NodePath("QuestLog")
 Hotbar = NodePath("Hotbar")
 RespawnMenu = NodePath("RespawnMenu")
 HealthBar = NodePath("HealthBar")
+WinMenu = NodePath("WinMenu")
 SettingsScene = ExtResource("2_o30d6")
 SaveMenuScene = ExtResource("3_o30d6")
 HostPanelScene = ExtResource("2_3o8sq")
@@ -162,3 +164,11 @@ offset_right = 956.0
 offset_bottom = 381.0
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="WinMenu" parent="." unique_id=48555054 instance=ExtResource("15_cgpfr")]
+visible = false
+layout_mode = 1
+offset_left = 835.0
+offset_top = 340.0
+offset_right = -841.0
+offset_bottom = -677.0
