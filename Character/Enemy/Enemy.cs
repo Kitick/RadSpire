@@ -19,8 +19,12 @@ using Services;
 		// Components
 		private readonly Movement Movement;
 		private readonly ChaseAI AI;
+		private Node3D? AttackTarget;
 
-		public void SetTarget(Node3D target) => AI.SetTarget(target);
+		public void SetTarget(Node3D target) {
+			AI.SetTarget(target);
+			AttackTarget = target;
+		}
 
 		public Enemy() {
 			Movement = new Movement(this);
@@ -49,10 +53,20 @@ using Services;
 		}
 
 		private void UpdateMovementState() {
+			if(StateMachine.CurrentState == State.Attacking) { return; }
+			if(AI.AttackPressed) { StateMachine.TransitionTo(State.Attacking); return; }
 			if(!IsOnFloor()) { StateMachine.TransitionTo(State.Falling); }
 			else if(!AI.IsMoving) { StateMachine.TransitionTo(State.Idle); }
 			else if(AI.SprintHeld) { StateMachine.TransitionTo(State.Sprinting); }
 			else { StateMachine.TransitionTo(State.Walking); }
+		}
+
+		public override void OnAttackFinished() {
+			if(AttackTarget != null && GodotObject.IsInstanceValid(AttackTarget) && AttackTarget is IHealth healthTarget) {
+				Log.Info($"Enemy attacking {AttackTarget.Name}");
+				this.Attack(healthTarget);
+			}
+			StateMachine.TransitionTo(State.Idle);
 		}
 
 		public EnemyData Export() => new EnemyData {

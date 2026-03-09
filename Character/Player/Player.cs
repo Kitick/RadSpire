@@ -55,6 +55,10 @@ namespace Character {
 			AddChild(InventoryManager);
 			AddChild(UseItemComponent);
 			SetupChildren();
+
+			var hitbox = GetNodeOrNull<ItemSystem.WeaponHitbox>("WeaponHitbox");
+			if(hitbox != null) hitbox.Init(this);
+			else Log.Error("WeaponHitbox not found in Player scene.");
 		}
 
 		public override void _ExitTree() {

@@ -7,8 +7,11 @@ namespace Components {
 
 		public bool SprintHeld { get; private set; }
 		public bool CrouchHeld { get; private set; }
+		public bool AttackPressed { get; private set; }
 
 		public bool IsMoving => HorizontalInput.Length() >= Numbers.EPSILON;
+
+		private readonly float AttackDistance = 1.5f;
 
 		private readonly Node3D Self;
 		private Node3D? Target;
@@ -47,6 +50,7 @@ namespace Components {
 			HorizontalInput = Vector3.Zero;
 			SprintHeld = false;
 			CrouchHeld = false;
+			AttackPressed = false;
 
 			// -------------------------
 			// 1. FIRST: see if player is close enough to chase
@@ -55,6 +59,11 @@ namespace Components {
 				Vector3 toTarget = Target.GlobalPosition - Self.GlobalPosition;
 				toTarget.Y = 0f;
 				float dist = toTarget.Length();
+
+				if(dist <= AttackDistance) {
+					AttackPressed = true;
+					return;
+				}
 
 				if(dist <= DetectionRadius && dist > StopDistance) {
 					// CHASE PLAYER
