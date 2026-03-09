@@ -7,6 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://howutpu3c584" path="res://Assets/Images/Menu/title.png" id="3_ectev"]
 [ext_resource type="PackedScene" uid="uid://bnjymb23oq215" path="res://UI/MultiplayerPanels/HostPanel/HostPanel.tscn" id="4_jhcbk"]
 [ext_resource type="PackedScene" uid="uid://bg5jxcp2jtwjp" path="res://UI/MultiplayerPanels/JoinPanel/JoinPanel.tscn" id="5_32jca"]
+[ext_resource type="AudioStream" uid="uid://c085xb2ydxxcg" path="res://Assets/Audio/Bpm100_G_Escape_Brass.wav" id="8_1dhmk"]
 
 [node name="MainMenu" type="Control" unique_id=2104341140 node_paths=PackedStringArray("ButtonPanel", "SingleplayerButton", "MultiplayerButton", "SettingsButton", "ExtrasButton", "QuitButton", "SingleplayerPanel", "ContinueButton", "LoadSavedButton", "StartNewButton", "MultiplayerPanel", "HostNewButton", "HostSavedButton", "JoinGameButton")]
 layout_mode = 3
@@ -153,3 +154,8 @@ text = "Extras"
 layout_mode = 2
 theme_override_font_sizes/font_size = 40
 text = "Quit"
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=2128160467]
+stream = ExtResource("8_1dhmk")
+autoplay = true
+bus = &"Music"
