@@ -46,6 +46,8 @@ namespace UI {
 
 		public void Init(Player player, StateMachine<MenuState> stateMachine) {
 			Player = player;
+			CraftingUI.Inventories.Add(player.Inventory);
+			CraftingUI.Inventories.Add(player.Hotbar);
 			StateMachineRef = stateMachine;
 			Inventory.Initialize(player.Inventory, player);
 			Hotbar.Initialize(player.Hotbar, player);
