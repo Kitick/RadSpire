@@ -18,10 +18,17 @@ namespace UI {
 					field = 0;
 					return;
 				}
+				string? previousItemId = GetItemIdAtSlotIndex(field);
 				int idx = value;
 				idx += HotbarSlots.Count;
 				idx %= HotbarSlots.Count;
+				if(idx == field) {
+					return;
+				}
 				field = idx;
+				if(previousItemId != null) {
+					OnSlotDeselected?.Invoke(previousItemId);
+				}
 				SelectSlot(HotbarSlots[idx]);
 			}
 		}
@@ -49,6 +56,7 @@ namespace UI {
 		public event Action<string, int, MouseButton>? OnSlotReleased;
 		public event Action<string, int>? OnSlotHovered;
 		public event Action<string>? OnSlotSelected;
+		public event Action<string>? OnSlotDeselected;
 
 		public Hotbar() {
 		}
@@ -182,6 +190,18 @@ namespace UI {
 			if(Inventory.IsEmptySlot(Inventory.GetRow(index), Inventory.GetColumn(index))) { return null; }
 
 			return Inventory.GetItem(Inventory.GetRow(index), Inventory.GetColumn(index));
+		}
+
+		private string? GetItemIdAtSlotIndex(int index) {
+			if(index < 0 || index >= HotbarSlots.Count) {
+				return null;
+			}
+			int row = Inventory.GetRow(index);
+			int column = Inventory.GetColumn(index);
+			if(Inventory.IsEmptySlot(row, column)) {
+				return null;
+			}
+			return Inventory.GetItem(row, column)?.Id;
 		}
 
 		public void UpdateInventoryUI() {
