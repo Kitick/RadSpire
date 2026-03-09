@@ -9,6 +9,7 @@
 [ext_resource type="Script" uid="uid://fxvdaltq3r54" path="res://UI/SettingsMenu/Panels/AccessibilityPanel.cs" id="7_2kpqc"]
 
 [node name="SettingsMenu" type="Control" unique_id=440443673 node_paths=PackedStringArray("BackButton", "ResetButton", "GeneralPanel", "GeneralButton", "DisplayPanel", "DisplayButton", "SoundPanel", "SoundButton", "ControllerPanel", "ControllerButton", "MKPanel", "MKButton", "AccessibilityPanel", "AccessibilityButton")]
+process_mode = 3
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -56,6 +57,7 @@ theme_override_constants/separation = 8
 layout_mode = 2
 focus_neighbor_left = NodePath("../Accessibility_Button")
 focus_neighbor_right = NodePath("../Display_Button")
+focus_neighbor_bottom = NodePath("../../General")
 theme_override_font_sizes/font_size = 40
 text = "General"
 
@@ -63,6 +65,7 @@ text = "General"
 layout_mode = 2
 focus_neighbor_left = NodePath("../General_Button")
 focus_neighbor_right = NodePath("../Sound_Button")
+focus_neighbor_bottom = NodePath("../../Display")
 theme_override_font_sizes/font_size = 40
 text = "Display"
 
@@ -70,6 +73,7 @@ text = "Display"
 layout_mode = 2
 focus_neighbor_left = NodePath("../Display_Button")
 focus_neighbor_right = NodePath("../Controller_Button")
+focus_neighbor_bottom = NodePath("../../Sound")
 theme_override_font_sizes/font_size = 40
 text = "Sound"
 
@@ -77,6 +81,7 @@ text = "Sound"
 layout_mode = 2
 focus_neighbor_left = NodePath("../Sound_Button")
 focus_neighbor_right = NodePath("../MK_Button")
+focus_neighbor_bottom = NodePath("../../Controller")
 theme_override_font_sizes/font_size = 40
 text = "Controller"
 
@@ -84,6 +89,7 @@ text = "Controller"
 layout_mode = 2
 focus_neighbor_left = NodePath("../Controller_Button")
 focus_neighbor_right = NodePath("../Accessibility_Button")
+focus_neighbor_bottom = NodePath("../../MK")
 theme_override_font_sizes/font_size = 40
 text = "Mouse & Keyboard"
 
@@ -91,6 +97,7 @@ text = "Mouse & Keyboard"
 layout_mode = 2
 focus_neighbor_left = NodePath("../MK_Button")
 focus_neighbor_right = NodePath("../General_Button")
+focus_neighbor_bottom = NodePath("../../Accessibility")
 theme_override_font_sizes/font_size = 40
 text = "Accessibility"
 
@@ -128,6 +135,7 @@ anchor_bottom = 0.5
 offset_left = 100.0
 offset_top = -16.0
 offset_bottom = 16.0
+focus_neighbor_top = NodePath("../../../NavBar/General_Button")
 theme_override_font_sizes/font_size = 20
 
 [node name="UIScale" type="Label" parent="General" unique_id=204374435]
@@ -204,6 +212,7 @@ offset_left = 100.0
 offset_top = -15.9850025
 offset_right = 150.0
 offset_bottom = 16.015
+focus_neighbor_top = NodePath("../../../NavBar/Display_Button")
 theme_override_font_sizes/font_size = 20
 
 [node name="Fullscreen" type="Label" parent="Display" unique_id=872083276]
@@ -315,6 +324,7 @@ offset_left = 31.0
 offset_top = -16.0
 offset_right = 256.0
 offset_bottom = 16.0
+focus_neighbor_top = NodePath("../../../NavBar/Sound_Button")
 
 [node name="Music" type="Label" parent="Sound" unique_id=1613468907]
 layout_mode = 2
@@ -385,6 +395,7 @@ offset_bottom = 16.0
 theme_override_font_sizes/font_size = 20
 
 [node name="Controller" type="VBoxContainer" parent="." unique_id=1706615415 node_paths=PackedStringArray("VibrationCheckBox", "DeadzoneSlider", "ControllerSensitivitySlider", "RemapButtonsButton")]
+visible = false
 layout_mode = 1
 anchors_preset = 14
 anchor_top = 0.5
@@ -419,6 +430,7 @@ offset_left = 6.0
 offset_top = -16.0
 offset_right = 231.0
 offset_bottom = 16.0
+focus_neighbor_top = NodePath("../../../NavBar/Controller_Button")
 max_value = 300.0
 
 [node name="Vibration" type="Label" parent="Controller" unique_id=765539001]
@@ -498,6 +510,7 @@ offset_left = 6.0
 offset_top = -16.0
 offset_right = 231.0
 offset_bottom = 16.0
+focus_neighbor_top = NodePath("../../../NavBar/MK_Button")
 max_value = 2.0
 step = 0.1
 
@@ -544,7 +557,6 @@ disabled = true
 text = "Remap Keys"
 
 [node name="Accessibility" type="VBoxContainer" parent="." unique_id=229276971 node_paths=PackedStringArray("SubtitlesCheckBox", "SubtitleSizeSlider", "ColorblindModeOption", "TextToSpeechCheckBox", "HighContrastUICheckBox")]
-visible = false
 layout_mode = 1
 anchors_preset = 14
 anchor_top = 0.5
@@ -580,6 +592,7 @@ offset_left = 12.0
 offset_top = -24.0
 offset_bottom = 8.0
 scale = Vector2(1.5, 1.5)
+focus_neighbor_top = NodePath("../../../NavBar/Accessibility_Button")
 
 [node name="Subtitle_Size" type="Label" parent="Accessibility" unique_id=517582319]
 layout_mode = 2
