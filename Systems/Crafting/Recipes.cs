@@ -13,39 +13,29 @@ namespace Services.Crafting {
 	}
 
 	public static class Recipes {
-		public static readonly CraftingRecipe Sundae = new(
-			RecipeName: "Sundae",
-			Inputs: [
-				new(ItemID.BananaYellow, 1),
-				new(ItemID.StrawberryRed, 1),
-				new(ItemID.BananaGreen, 1)
-			],
-			Outputs: [new(ItemID.Bonfire, 1)]
-		);
-
 		// --- Smelting / Processing ---
 
 		public static readonly CraftingRecipe SmeltIronChunk = new(
 			RecipeName: "Smelt Iron Chunk",
-			Inputs: [new(ItemID.IronOre, 3)],
+			Inputs: [new(ItemID.IronOre, 2), new(ItemID.Wood, 1)],
 			Outputs: [new(ItemID.IronChunk, 1)]
 		);
 
 		public static readonly CraftingRecipe SmeltIronBar = new(
 			RecipeName: "Smelt Iron Bar",
-			Inputs: [new(ItemID.IronChunk, 3)],
+			Inputs: [new(ItemID.IronChunk, 2), new(ItemID.Wood, 1)],
 			Outputs: [new(ItemID.IronBar, 1)]
 		);
 
 		public static readonly CraftingRecipe SmeltGoldChunk = new(
 			RecipeName: "Smelt Gold Chunk",
-			Inputs: [new(ItemID.GoldOre, 3)],
+			Inputs: [new(ItemID.GoldOre, 2), new(ItemID.Wood, 1)],
 			Outputs: [new(ItemID.GoldChunk, 1)]
 		);
 
 		public static readonly CraftingRecipe SmeltGoldBar = new(
 			RecipeName: "Smelt Gold Bar",
-			Inputs: [new(ItemID.GoldChunk, 3)],
+			Inputs: [new(ItemID.GoldChunk, 2), new(ItemID.Wood, 1)],
 			Outputs: [new(ItemID.GoldBar, 1)]
 		);
 
@@ -75,32 +65,14 @@ namespace Services.Crafting {
 
 		// --- Weapons ---
 
-		public static readonly CraftingRecipe CraftSwordWood = new(
-			RecipeName: "Craft Wood Sword",
-			Inputs: [
-				new(ItemID.Wood, 3),
-				new(ItemID.Stick, 1)
-			],
-			Outputs: [new(ItemID.SwordWood, 1)]
-		);
-
 		public static readonly CraftingRecipe CraftSwordIron = new(
 			RecipeName: "Craft Iron Sword",
 			Inputs: [
-				new(ItemID.SwordWood, 1),
-				new(ItemID.IronBar, 2)
+				new(ItemID.IronBar, 3),
+				new(ItemID.Stick, 2),
+				new(ItemID.Stone, 1),
 			],
 			Outputs: [new(ItemID.SwordIron, 1)]
-		);
-
-		public static readonly CraftingRecipe CraftSwordGold = new(
-			RecipeName: "Craft Gold Sword",
-			Inputs: [
-				new(ItemID.SwordIron, 1),
-				new(ItemID.GoldBar, 2),
-				new(ItemID.Stone, 1)
-			],
-			Outputs: [new(ItemID.SwordGold, 1)]
 		);
 
 		// --- Shields ---
@@ -193,16 +165,13 @@ namespace Services.Crafting {
 		);
 
 		public static readonly CraftingRecipe[] AllRecipes = [
-			Sundae,
 			SmeltIronChunk,
 			SmeltIronBar,
 			SmeltGoldChunk,
 			SmeltGoldBar,
 			CrackCoconutBrown,
 			CrackCoconutGreen,
-			CraftSwordWood,
 			CraftSwordIron,
-			CraftSwordGold,
 			CraftShieldWood,
 			CraftShieldIron,
 			CraftHeadpieceIron,
