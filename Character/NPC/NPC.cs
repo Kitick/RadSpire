@@ -11,7 +11,7 @@ namespace Character {
 		private static readonly LogService Log = new(nameof(NPC), enabled: true);
 
 		[Export] private string NPCName = "Villager";
-		[Export(PropertyHint.MultilineText)] private string Dialogue = "Please eliminate the men at the gas station!";
+		[Export(PropertyHint.MultilineText)] private string Dialogue = "Craft a sword and defeat the guys at the gas station";
 
 		private bool PlayerInRange;
 		private Action? UnsubscribeInteract;

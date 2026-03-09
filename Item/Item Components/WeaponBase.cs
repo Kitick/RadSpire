@@ -2,8 +2,11 @@ namespace Components {
 	using System;
 	using ItemSystem;
 	using Character;
+	using Services;
 
 	public interface IWeaponBase { WeaponBase Weapon { get; set; } }
+	
+	
 
 	public sealed class WeaponBase : Component<WeaponBaseData>, IItemComponent, IItemEquipable {
 		public int priority { get; init; } = 0;
