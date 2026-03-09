@@ -74,11 +74,20 @@ namespace UI {
 			}
 
 			RefreshQuantity();
-			UpdateCurrentSelectedRequirements();
+			UpdateSelectedRequirements();
 		}
 
 		private void RefreshQuantity() {
 			QuantityDisplay.Text = Quantity.ToString();
+			UpdateSelectedRequirements();
+		}
+
+		private CraftingRecipe? GetSelectedRecipe() {
+			int index = CraftableDropdown.Selected;
+
+			if(index < 0 || index >= craftableRecipes.Count) { return null; }
+
+			return craftableRecipes[index];
 		}
 
 		private void UpdateRequirementsList(CraftingRecipe recipe) {
@@ -86,26 +95,29 @@ namespace UI {
 			if(recipe.Inputs == null) { return; }
 
 			foreach(var ingredient in recipe.Inputs) {
+				Log.Info($"Ingredient: {ingredient.ItemId} x {ingredient.Quantity}");
 				int totalCost = ingredient.Quantity * Quantity;
 				RequirementsList.AddItem($"{ingredient.ItemId} x {totalCost}");
 			}
 		}
 
-		private void UpdateCurrentSelectedRequirements() {
-			int index = CraftableDropdown.Selected;
+		private void UpdateSelectedRequirements() {
+			RequirementsList.Clear();
 
-			if(index >= 0 && index < craftableRecipes.Count) {
-				UpdateRequirementsList(craftableRecipes[index]);
-			}
-			else {
-				RequirementsList.Clear();
+			var selectedRecipe = GetSelectedRecipe();
+
+			if(selectedRecipe != null) {
+				UpdateRequirementsList(selectedRecipe);
 			}
 		}
 
 		private void OnCraftButtonPressed() {
-			if(CraftableDropdown.Selected < 0) { return; }
+			var selectedRecipe = GetSelectedRecipe();
 
-			var selectedRecipe = craftableRecipes[CraftableDropdown.Selected];
+			if(selectedRecipe == null) {
+				Log.Warn("Craft button pressed but no recipe selected");
+				return;
+			}
 
 			for(int i = 0; i < Quantity; i++) {
 				CraftResult result = CraftingSystem.Craft(selectedRecipe, Inventories);
