@@ -1,5 +1,6 @@
 [gd_scene format=3 uid="uid://dov4o4rrxb65j"]
 
+[ext_resource type="Script" uid="uid://klsonhpw4auo" path="res://Item/WorldObjects/ObjectNode.cs" id="1_m8fq7"]
 [ext_resource type="PackedScene" uid="uid://dxekk6jit3rvq" path="res://Assets/Models/Chest/Chests/gold_chest.tscn" id="1_xikha"]
 [ext_resource type="PackedScene" uid="uid://b7gv62rlbjt5l" path="res://Item/WorldObjects/WorldObjectSpawnPoint.tscn" id="2_m8fq7"]
 
@@ -7,6 +8,7 @@
 size = Vector3(5.9694824, 4.17395, 4.212616)
 
 [node name="ChestRare" type="Node3D" unique_id=773986980]
+script = ExtResource("1_m8fq7")
 
 [node name="Gold chest" parent="." unique_id=1729713802 instance=ExtResource("1_xikha")]
 transform = Transform3D(0.25, 0, 0, 0, 0.25, 0, 0, 0, 0.25, 0, 0.26792884, 0)

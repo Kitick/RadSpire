@@ -1,5 +1,6 @@
 [gd_scene format=3 uid="uid://crflsj3utq4yg"]
 
+[ext_resource type="Script" uid="uid://klsonhpw4auo" path="res://Item/WorldObjects/ObjectNode.cs" id="1_7ptf5"]
 [ext_resource type="PackedScene" path="res://Assets/Models/Chest/Chests/stone_chest.tscn" id="1_mpffv"]
 [ext_resource type="PackedScene" uid="uid://b7gv62rlbjt5l" path="res://Item/WorldObjects/WorldObjectSpawnPoint.tscn" id="2_7ptf5"]
 
@@ -7,6 +8,7 @@
 size = Vector3(3.0863647, 3.583252, 3.0703125)
 
 [node name="ChestPrecious" type="Node3D" unique_id=159631961]
+script = ExtResource("1_7ptf5")
 
 [node name="Stone Chest" parent="." unique_id=365201895 instance=ExtResource("1_mpffv")]
 transform = Transform3D(0.25, 0, 0, 0, 0.25, 0, 0, 0, 0.25, 0, 0.0690555, 0)
