@@ -8,7 +8,9 @@ namespace Services.Crafting {
 		StringName RecipeName,
 		RecipeItem[] Inputs,
 		RecipeItem[] Outputs
-	);
+	) {
+		public override string ToString() => RecipeName;
+	}
 
 	public static class Recipes {
 		public static readonly CraftingRecipe Sundae = new(

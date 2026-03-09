@@ -1,6 +1,7 @@
 namespace UI {
 	using System;
 	using System.Collections.Generic;
+	using Core;
 	using Godot;
 	using ItemSystem;
 	using Services;
@@ -17,8 +18,10 @@ namespace UI {
 		[Export] public Button PosButton = null!;
 		[Export] public Button NegButton = null!;
 
-		private readonly List<CraftingRecipe> craftableRecipes = [];
-		private readonly List<CraftingRecipe> nonCraftableRecipes = [];
+		private readonly List<CraftingRecipe> CraftableRecipes = [];
+		private readonly List<CraftingRecipe> NonCraftableRecipes = [];
+
+		private CraftingRecipe? SelectedRecipe;
 
 		private int Quantity {
 			get;
@@ -43,51 +46,42 @@ namespace UI {
 			NonCraftableDropdown.ItemSelected += OnNonCraftableSelected;
 		}
 
-		private void OnCraftableSelected(long index) {
-			if(index >= 0 && index < craftableRecipes.Count) {
-				UpdateRequirementsList(craftableRecipes[(int) index]);
-			}
+		private void OnCraftableSelected(long _) {
+			SelectedRecipe = CraftableDropdown.GetSelectedItem(CraftableRecipes);
+			UpdateSelectedRequirements();
 		}
 
-		private void OnNonCraftableSelected(long index) {
-			if(index >= 0 && index < nonCraftableRecipes.Count) {
-				UpdateRequirementsList(nonCraftableRecipes[(int) index]);
-			}
+		private void OnNonCraftableSelected(long _) {
+			SelectedRecipe = NonCraftableDropdown.GetSelectedItem(NonCraftableRecipes);
+			UpdateSelectedRequirements();
 		}
 
 		public void RefreshUI() {
-			craftableRecipes.Clear();
-			nonCraftableRecipes.Clear();
-
-			CraftableDropdown.Clear();
-			NonCraftableDropdown.Clear();
+			CraftableRecipes.Clear();
+			NonCraftableRecipes.Clear();
 
 			foreach(var recipe in Recipes.AllRecipes) {
 				if(CraftingSystem.CanCraft(recipe, Inventories, out _)) {
-					craftableRecipes.Add(recipe);
-					CraftableDropdown.AddItem(recipe.RecipeName);
+					CraftableRecipes.Add(recipe);
 				}
 				else {
-					nonCraftableRecipes.Add(recipe);
-					NonCraftableDropdown.AddItem(recipe.RecipeName);
+					NonCraftableRecipes.Add(recipe);
 				}
 			}
 
+			CraftableDropdown.Populate(CraftableRecipes);
+			NonCraftableDropdown.Populate(NonCraftableRecipes);
+
+			if(CraftableRecipes.Count > 0) { SelectedRecipe = CraftableRecipes[0]; }
+			else if(NonCraftableRecipes.Count > 0) { SelectedRecipe = NonCraftableRecipes[0]; }
+			else { SelectedRecipe = null; }
+
 			RefreshQuantity();
-			UpdateSelectedRequirements();
 		}
 
 		private void RefreshQuantity() {
 			QuantityDisplay.Text = Quantity.ToString();
 			UpdateSelectedRequirements();
-		}
-
-		private CraftingRecipe? GetSelectedRecipe() {
-			int index = CraftableDropdown.Selected;
-
-			if(index < 0 || index >= craftableRecipes.Count) { return null; }
-
-			return craftableRecipes[index];
 		}
 
 		private void UpdateRequirementsList(CraftingRecipe recipe) {
@@ -104,29 +98,25 @@ namespace UI {
 		private void UpdateSelectedRequirements() {
 			RequirementsList.Clear();
 
-			var selectedRecipe = GetSelectedRecipe();
-
-			if(selectedRecipe != null) {
-				UpdateRequirementsList(selectedRecipe);
+			if(SelectedRecipe != null) {
+				UpdateRequirementsList(SelectedRecipe);
 			}
 		}
 
 		private void OnCraftButtonPressed() {
-			var selectedRecipe = GetSelectedRecipe();
-
-			if(selectedRecipe == null) {
+			if(SelectedRecipe == null) {
 				Log.Warn("Craft button pressed but no recipe selected");
 				return;
 			}
 
 			for(int i = 0; i < Quantity; i++) {
-				CraftResult result = CraftingSystem.Craft(selectedRecipe, Inventories);
+				CraftResult result = CraftingSystem.Craft(SelectedRecipe, Inventories);
 
 				if(result.Status == CraftStatus.Success) {
 					foreach(var slot in result.Items) {
 						Inventories[0].AddItem(slot);
 					}
-					Log.Info($"Crafted '{selectedRecipe.RecipeName}' x {Quantity}.");
+					Log.Info($"Crafted '{SelectedRecipe.RecipeName}' x {Quantity}.");
 				}
 				else {
 					Log.Warn($"Crafting failed: {result.Status}");
