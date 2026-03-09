@@ -40,7 +40,11 @@ namespace Components {
                 new(ItemID.BerryGreen, 3),
                 new(ItemID.BlueberryGreen, 3),
                 new(ItemID.CherryGreen, 2),
-                new(ItemID.StrawberryGreen, 2)
+                new(ItemID.StrawberryGreen, 2),
+                new(ItemID.Wood, 4),
+                new(ItemID.Stick, 4),
+                new(ItemID.StonePiece, 3),
+                new(ItemID.Stone, 2)
             ]
         );
 
@@ -58,7 +62,14 @@ namespace Components {
                 new(ItemID.BlueberryBlue, 2),
                 new(ItemID.StrawberryRed, 2),
                 new(ItemID.BananaYellow, 1),
-                new(ItemID.Barrel, 1)
+                new(ItemID.Barrel, 1),
+                new(ItemID.IronOre, 3),
+                new(ItemID.IronChunk, 2),
+                new(ItemID.IronBar, 1),
+                new(ItemID.GoldOre, 2),
+                new(ItemID.GoldChunk, 1),
+                new(ItemID.SwordWood, 1),
+                new(ItemID.ShieldWood, 1)
             ]
         );
 
@@ -74,7 +85,16 @@ namespace Components {
                 new(ItemID.BerryBlack, 2),
                 new(ItemID.CherryRed, 2),
                 new(ItemID.Bonfire, 2),
-                new(ItemID.Barrel, 1)
+                new(ItemID.Barrel, 1),
+                new(ItemID.IronBar, 3),
+                new(ItemID.GoldBar, 2),
+                new(ItemID.GoldChunk, 2),
+                new(ItemID.SwordIron, 2),
+                new(ItemID.SwordGold, 1),
+                new(ItemID.ShieldIron, 2),
+                new(ItemID.HeadpieceIron, 1),
+                new(ItemID.ChestpieceIron, 1),
+                new(ItemID.PantpieceIron, 1)
             ]
         );
 
