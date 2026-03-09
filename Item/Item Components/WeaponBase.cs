@@ -8,19 +8,11 @@ namespace Components {
 		public int priority { get; init; } = 0;
 		public int BaseAttack { get; set; } = 10;
 		public float AttackSpeed { get; set; } = 1f;
-		public float Range { get; set; } = 1f;
-		public float Knockback { get; set; } = 0f;
-		public float CriticalChance { get; set; } = 0f;
-		public float CriticalMultiplier { get; set; } = 1f;
 
 		public string[] getComponentDescription() {
 			string[] componentDescriptions = new string[] {
 				$"+{BaseAttack} Attack",
-				$"+{AttackSpeed} Attack Speed",
-				$"+{Range} Range",
-				$"+{Knockback} Knockback",
-				$"+{CriticalChance * 100}% Critical Chance",
-				$"+{CriticalMultiplier * 100}% Critical Multiplier"
+				$"{AttackSpeed}x Attack Speed"
 			};
 			return componentDescriptions;
 		}
@@ -30,7 +22,7 @@ namespace Components {
 			return false;
 		}
 
-		public WeaponBase(int baseAttack, float attackSpeed, float range, float knockback, float criticalChance, float criticalMultiplier) : base(new WeaponBaseData { BaseAttack = baseAttack, AttackSpeed = attackSpeed, Range = range, Knockback = knockback, CriticalChance = criticalChance, CriticalMultiplier = criticalMultiplier }) { }
+		public WeaponBase(int baseAttack, float attackSpeed) : base(new WeaponBaseData { BaseAttack = baseAttack, AttackSpeed = attackSpeed }) { }
 	}
 
 	public static class WeaponExtensions {
@@ -40,9 +32,5 @@ namespace Components {
 	public readonly record struct WeaponBaseData : Services.ISaveData {
 		public int BaseAttack { get; init; }
 		public float AttackSpeed { get; init; }
-		public float Range { get; init; }
-		public float Knockback { get; init; }
-		public float CriticalChance { get; init; }
-		public float CriticalMultiplier { get; init; }
 	}
 }
