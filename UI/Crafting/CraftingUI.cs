@@ -34,7 +34,27 @@ namespace UI {
 		public readonly List<Inventory> Inventories = [];
 
 		public override void _Ready() {
+			ConfigureMouseFilters();
 			SetCallbacks();
+		}
+
+		private void ConfigureMouseFilters() {
+			MouseFilter = MouseFilterEnum.Ignore;
+
+			Control? mainBackground = GetNodeOrNull<Control>("MainBackground");
+			if(mainBackground != null) {
+				mainBackground.MouseFilter = MouseFilterEnum.Ignore;
+			}
+
+			Control? lightBackground = GetNodeOrNull<Control>("MainBackground/LightBackground");
+			if(lightBackground != null) {
+				lightBackground.MouseFilter = MouseFilterEnum.Ignore;
+			}
+
+			Control? tabBackground = GetNodeOrNull<Control>("TabBackground");
+			if(tabBackground != null) {
+				tabBackground.MouseFilter = MouseFilterEnum.Ignore;
+			}
 		}
 
 		private void SetCallbacks() {
