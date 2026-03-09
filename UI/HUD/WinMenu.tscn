@@ -1,0 +1,35 @@
+[gd_scene format=3 uid="uid://bfiyahye18w1t"]
+
+[ext_resource type="Script" uid="uid://rn8pxohrw6oe" path="res://UI/RespawnMenu/RespawnMenu.cs" id="1_w6qhy"]
+
+[node name="WinMenu" type="Control" unique_id=48555054]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -1676.0
+offset_bottom = -1017.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_w6qhy")
+
+[node name="DeadBG" type="ColorRect" parent="." unique_id=819048088]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 2.341
+anchor_bottom = 5.4300003
+offset_top = -3.0
+offset_right = -303.20404
+offset_bottom = -255.09003
+color = Color(0.41960785, 0.2784314, 0.23921569, 0.45882353)
+
+[node name="Message" type="RichTextLabel" parent="DeadBG" unique_id=515070265]
+layout_mode = 0
+offset_left = 6.0
+offset_top = 11.0
+offset_right = 263.0
+offset_bottom = 88.0
+text = "YOU WIN!!!
+I guess thats something?
+Well, goodbye now."
+horizontal_alignment = 1
