@@ -41,6 +41,8 @@ namespace Character {
 		private Action? UnsubscribeInteract2;
 		private Action? UnsubscribePlace;
 
+		public bool HoldingSword = false;
+
 		public Player() {
 			Movement = new Movement(this);
 			Inventory.Name = "Inventory";
