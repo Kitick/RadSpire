@@ -44,8 +44,9 @@ namespace Root {
 		private const int SpawnHeight = 5;
 		private const int SpawnRadius = 10;
 
-		private static readonly Vector3 PlayerSpawnLocation = new Vector3(-280, SpawnHeight, 40);
-		private static readonly Vector3 NPCSpawnLocation = new Vector3(-324, 0, -7);
+		[ExportCategory("Spawn Points")]
+		[Export] private Marker3D PlayerSpawnMarker = null!;
+		[Export] private Marker3D NPCSpawnMarker = null!;
 
 		public override void _Ready() {
 			DisplaySettings.SetWorldEnvironment(WorldEnvironment);
@@ -83,12 +84,12 @@ namespace Root {
 
 		private void SpawnNPC() {
 			var npc = this.AddScene<NPC>(NPCScene);
-			npc.GlobalPosition = NPCSpawnLocation;
+			npc.GlobalPosition = NPCSpawnMarker.GlobalPosition;
 		}
 
 		private void SpawnLocalPlayer() {
 			LocalPlayer = this.AddScene<Player>(PlayerScene);
-			LocalPlayer.GlobalPosition = PlayerSpawnLocation;
+			LocalPlayer.GlobalPosition = PlayerSpawnMarker.GlobalPosition;
 
 			if(WorldObjectManager != null) {
 				LocalPlayer.ConfigureObjectPickup(WorldObjectManager);
@@ -223,7 +224,7 @@ namespace Root {
 		}
 
 		private Vector3 RandomLocationNearPlayer() {
-			Vector3 center = IsInstanceValid(LocalPlayer) ? LocalPlayer!.GlobalPosition : PlayerSpawnLocation;
+			Vector3 center = IsInstanceValid(LocalPlayer) ? LocalPlayer!.GlobalPosition : PlayerSpawnMarker.GlobalPosition;
 			Vector3 randomPoint = new Vector3(
 				center.X + GD.RandRange(-SpawnRadius, SpawnRadius),
 				center.Y + SpawnHeight,
