@@ -12,6 +12,7 @@ namespace Character {
 		private static readonly LogService Log = new(nameof(Player), enabled: true);
 
 		[Export] public MeshInstance3D SwordMesh = null!;
+		[Export] public MeshInstance3D ShieldMesh = null!;
 
 		[Export] private int InitialHealthValue = 100;
 		[Export] public int InitialDamagePhysical = 10;
