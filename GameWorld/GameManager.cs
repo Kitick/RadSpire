@@ -79,6 +79,8 @@ namespace Root {
 		private void ConfigureStateMachine() {
 			StateMachine.OnEnter(MenuState.Game, () => GetTree().Paused = false);
 			StateMachine.OnExit(MenuState.Game, () => GetTree().Paused = true);
+
+			StateMachine.OnEnter(MenuState.Death, () => GetTree().Paused = false);
 		}
 
 		private void SpawnNPC() {
@@ -89,6 +91,8 @@ namespace Root {
 		private void SpawnLocalPlayer() {
 			LocalPlayer = this.AddScene<Player>(PlayerScene);
 			LocalPlayer.GlobalPosition = PlayerSpawnMarker.GlobalPosition;
+
+			LocalPlayer.WhenDead(() => StateMachine.TransitionTo(MenuState.Death));
 
 			if(WorldObjectManager != null) {
 				LocalPlayer.ConfigureObjectPickup(WorldObjectManager);
@@ -141,6 +145,8 @@ namespace Root {
 
 			LocalPlayer!.Inventory.Import(inventoryData);
 			LocalPlayer.Hotbar.Import(hotbarData);
+
+			StateMachine.TransitionTo(MenuState.Game);
 
 			Log.Info("Player respawned");
 		}
