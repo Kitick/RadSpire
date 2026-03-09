@@ -129,6 +129,8 @@ namespace UI {
 				return;
 			}
 
+			bool craftedAtLeastOne = false;
+
 			for(int i = 0; i < Quantity; i++) {
 				CraftResult result = CraftingSystem.Craft(SelectedRecipe, Inventories);
 
@@ -137,6 +139,7 @@ namespace UI {
 						Inventories[0].AddItem(slot);
 					}
 					Log.Info($"Crafted '{SelectedRecipe.RecipeName}' x {Quantity}.");
+					craftedAtLeastOne = true;
 				}
 				else {
 					Log.Warn($"Crafting failed: {result.Status}");
@@ -144,7 +147,7 @@ namespace UI {
 				}
 			}
 
-			RefreshUI();
+			if(craftedAtLeastOne) { RefreshUI(); }
 		}
 	}
 }
