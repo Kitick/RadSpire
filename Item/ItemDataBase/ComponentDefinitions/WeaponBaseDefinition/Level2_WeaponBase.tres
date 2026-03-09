@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="WeaponBaseDefinition" format=3 uid="uid://b7vyspd40hxww"]
+
+[ext_resource type="Script" uid="uid://b3r1li6nl8bs3" path="res://Item/ItemDataBase/ItemDataBaseScripts/ItemComponentDefinitions/WeaponBaseDefinition.cs" id="1_5dfv7"]
+
+[resource]
+script = ExtResource("1_5dfv7")
+metadata/_custom_type_script = "uid://b3r1li6nl8bs3"
