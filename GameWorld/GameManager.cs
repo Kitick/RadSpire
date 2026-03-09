@@ -192,7 +192,6 @@ namespace Root {
 				LoadFile = null;
 				return;
 			}
-			SpawnTestItems();
 		}
 
 		private void LoadData(string file) {
@@ -261,25 +260,6 @@ namespace Root {
 				center.Z + GD.RandRange(-SpawnRadius, SpawnRadius)
 			);
 			return randomPoint;
-		}
-
-		private void SpawnTestItems() {
-			if(Item3DIconManager == null) {
-				Log.Error("Cannot spawn test items: Item3DIconManager is not initialized");
-				return;
-			}
-			Item3DIconManager.SpawnItem(ItemID.AppleRed, RandomLocationNearPlayer());
-			Item3DIconManager.SpawnItem(ItemID.AppleYellow, RandomLocationNearPlayer());
-			Item3DIconManager.SpawnItem(ItemID.AppleGreen, RandomLocationNearPlayer());
-			Item3DIconManager.SpawnItem(ItemID.BananaYellow, RandomLocationNearPlayer());
-			Item3DIconManager.SpawnItem(ItemID.BananaGreen, RandomLocationNearPlayer());
-			Item3DIconManager.SpawnItem(ItemID.StrawberryGreen, RandomLocationNearPlayer());
-			Item3DIconManager.SpawnItem(ItemID.StrawberryRed, RandomLocationNearPlayer());
-			Item3DIconManager.SpawnItem(ItemID.StrawberryRed, RandomLocationNearPlayer());
-			Item3DIconManager.SpawnItem(ItemID.StrawberryRed, RandomLocationNearPlayer());
-			Item3DIconManager.SpawnItem(ItemID.StrawberryRed, RandomLocationNearPlayer());
-
-			Item3DIconManager.SpawnItem(ItemID.StrawberryRed, RandomLocationNearPlayer(), 3);
 		}
 
 		private void SubscribeToPlayerItem3DIconEvents(Player player) {
