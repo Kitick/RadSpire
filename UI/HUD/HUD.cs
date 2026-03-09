@@ -176,6 +176,7 @@ namespace UI {
 
 		private void OpenSettingsPanel() {
 			var settings = this.AddScene<SettingsMenu>(SettingsScene);
+			settings.TreeExited += () => PauseRequested?.Invoke();
 			settings.OpenMenu();
 		}
 
