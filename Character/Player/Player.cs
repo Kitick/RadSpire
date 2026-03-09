@@ -12,7 +12,7 @@ namespace Character {
 		private static readonly LogService Log = new(nameof(Player), enabled: true);
 
 		[Export] private int InitialHealthValue = 100;
-		[Export] private int InitialDamagePhysical = 10;
+		[Export] public int InitialDamagePhysical = 10;
 		[Export] private int InitialDamageMagic = 0;
 		[Export] private int InitialDefensePhysical = 5;
 		[Export] private int InitialDefenseMagic = 2;

@@ -21,7 +21,7 @@ namespace Components {
 		public bool Equip<TEntity>(TEntity user) {
 			if(user is Player player) {
 				player.HoldingSword = true;
-				player.Offense.PhysicalDamage = BaseAttack;
+				player.Offense.PhysicalDamage += BaseAttack;
 			}
 			return true;
 		}
@@ -29,7 +29,7 @@ namespace Components {
 		public bool Unequip<TEntity>(TEntity user) {
 			if(user is Player player) {
 				player.HoldingSword = false;
-				player.Offense.PhysicalDamage = 0;
+				player.Offense.PhysicalDamage -= BaseAttack;
 			}
 			return true;
 		}
