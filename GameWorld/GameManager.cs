@@ -41,6 +41,7 @@ namespace Root {
 		private readonly StateMachine<MenuState> StateMachine = new(MenuState.Game);
 
 		private string? LoadFile;
+		private bool Won = false;
 
 		private const int SpawnHeight = 5;
 		private const int SpawnRadius = 10;
@@ -49,6 +50,7 @@ namespace Root {
 		[Export] private Marker3D PlayerSpawnMarker = null!;
 		[Export] private Marker3D NPCSpawnMarker = null!;
 		[Export] private Godot.Collections.Array<Marker3D> EnemySpawnPoints = [];
+		[Export] private Godot.Collections.Array<ItemSpawnEntry> ItemSpawnEntries = [];
 
 		public override void _Ready() {
 			DisplaySettings.SetWorldEnvironment(WorldEnvironment);
@@ -70,16 +72,15 @@ namespace Root {
 		public override void _PhysicsProcess(double delta) {
 			if(!IsInstanceValid(LocalPlayer)) { return; }
 
-			int killed = 0;
-
-			foreach(var enemy in SpawnedEnemies) {
-				if(enemy.Health.Current == 0) {
-					killed += 1;
+			if(!Won) {
+				int killed = 0;
+				foreach(var enemy in SpawnedEnemies) {
+					if(enemy.Health.Current == 0) {
+						killed += 1;
+					}
 				}
-			}
 
-			if(killed == SpawnedEnemies.Count) {
-				HUD.Win();
+				if(killed == SpawnedEnemies.Count) { HUD?.Win(); }
 			}
 
 			float dt = (float) delta;
@@ -199,6 +200,7 @@ namespace Root {
 			SpawnLocalPlayer();
 			SpawnNPC();
 			SpawnEnemies();
+			SpawnItems();
 			if(LoadFile != null) {
 				LoadData(LoadFile);
 				LoadFile = null;
@@ -255,6 +257,21 @@ namespace Root {
 				if(LocalPlayer != null) enemy.SetTarget(LocalPlayer);
 				SpawnedEnemies.Add(enemy);
 				Log.Info($"Enemy spawned at {spawnPoint.Name} ({spawnPoint.GlobalPosition})");
+			}
+		}
+
+		private void SpawnItems() {
+			if(Item3DIconManager == null) {
+				Log.Error("Cannot spawn items: Item3DIconManager is not initialized");
+				return;
+			}
+			if(ItemSpawnEntries.Count == 0) {
+				Log.Info("No ItemSpawnEntries assigned — skipping item spawn.");
+				return;
+			}
+			foreach(var entry in ItemSpawnEntries) {
+				Item3DIconManager.SpawnItem(entry.ItemId, entry.GlobalPosition);
+				Log.Info($"Item '{entry.ItemId}' spawned at {entry.Name} ({entry.GlobalPosition})");
 			}
 		}
 

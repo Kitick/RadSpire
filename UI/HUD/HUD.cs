@@ -59,7 +59,7 @@ namespace UI {
 		public override void _Ready() {
 			this.ValidateExports();
 			ProcessMode = ProcessModeEnum.Always;
-			
+
 			InteractionPrompt = GetNode<Label>("InteractionPrompt");
 			InteractionPrompt.Visible = false;
 
@@ -158,7 +158,7 @@ namespace UI {
 			RespawnMenu.MainMenuButton.Pressed += () => MainMenuRequested?.Invoke();
 
 			// Health bar updates
-			Player.Health.OnChanged += (from, to) => UpdateHealthBar();
+			Player.Health.OnChanged += (_, _) => UpdateHealthBar();
 		}
 
 		private void UpdateHealthBar() {
@@ -190,7 +190,7 @@ namespace UI {
 			saveMenu.OnSave += fileName => SaveRequested?.Invoke(fileName);
 			saveMenu.OpenMenu(SaveMenu.SaveMode.Save);
 		}
-		
+
 		public void ShowInteractionPrompt(string text) {
 			InteractionPrompt.Text = text;
 			InteractionPrompt.Visible = true;
@@ -201,58 +201,44 @@ namespace UI {
 		}
 
 		private void ToggleInventory() {
-			if(StateMachineRef == null) {
-				Log.Error("ToggleInventory: StateMachineRef is null");
-				return;
-			}
-
 			if(!StateMachineRef.IsSettled) {
-				Log.Info("ToggleInventory: state machine not started, starting at Game");
+				Log.Info("state machine not started, starting at Game");
 				StateMachineRef.Start(MenuState.Game);
 			}
 
 			if(StateMachineRef.CurrentState == MenuState.Chest) {
-				Log.Info("Toggling Inventory: Closing Chest");
+				Log.Info("Closing Chest");
 				StateMachineRef.TransitionTo(MenuState.Game);
 			}
 			else if(StateMachineRef.CurrentState == MenuState.Inventory) {
-				Log.Info("Toggling Inventory: Closing Inventory");
+				Log.Info("Closing Inventory");
 				StateMachineRef.TransitionTo(MenuState.Game);
 			}
 			else {
-				Log.Info("Toggling Inventory: Opening Inventory");
+				Log.Info("Opening Inventory");
 				StateMachineRef.TransitionTo(MenuState.Inventory);
 			}
 		}
 
 		public void ToggleChest() {
-			if(StateMachineRef == null) {
-				Log.Error("ToggleChest: StateMachineRef is null");
-				return;
-			}
-
 			if(!StateMachineRef.IsSettled) {
-				Log.Info("ToggleChest: state machine not started, starting at Game");
+				Log.Info("state machine not started, starting at Game");
 				StateMachineRef.Start(MenuState.Game);
 			}
 
 			if(StateMachineRef.CurrentState == MenuState.Chest) {
-				Log.Info("Toggling Chest: Closing Chest");
+				Log.Info("Closing Chest");
 				StateMachineRef.TransitionTo(MenuState.Game);
 			}
 			else {
-				Log.Info("Toggling Chest: Opening Chest");
+				Log.Info("Opening Chest");
 				StateMachineRef.TransitionTo(MenuState.Chest);
 			}
 		}
 
 		public void OpenChest(Inventory chestInventory, Player player) {
-			if(StateMachineRef == null) {
-				Log.Error("OpenChest: StateMachineRef is null");
-				return;
-			}
 			if(chestInventory == null || player == null) {
-				Log.Error("OpenChest: chestInventory or player is null");
+				Log.Error("chestInventory or player is null");
 				return;
 			}
 

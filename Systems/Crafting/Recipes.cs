@@ -192,40 +192,6 @@ namespace Services.Crafting {
 			Outputs: [new(ItemID.ChestPrecious, 1)]
 		);
 
-		// --- Food / Fun ---
-
-		public static readonly CraftingRecipe BerryMix = new(
-			RecipeName: "Berry Mix",
-			Inputs: [
-				new(ItemID.BerryRed, 2),
-				new(ItemID.BerryBlack, 2),
-				new(ItemID.BlueberryBlue, 2)
-			],
-			Outputs: [new(ItemID.BlueberryGreen, 3)]
-		);
-
-		public static readonly CraftingRecipe CherryCandy = new(
-			RecipeName: "Cherry Candy",
-			Inputs: [
-				new(ItemID.CherryRed, 3),
-				new(ItemID.CherryGreen, 1)
-			],
-			Outputs: [new(ItemID.StrawberryRed, 2)]
-		);
-
-		public static readonly CraftingRecipe TropicalMix = new(
-			RecipeName: "Tropical Mix",
-			Inputs: [
-				new(ItemID.CoconutBrownOpen, 1),
-				new(ItemID.BananaYellow, 2),
-				new(ItemID.AppleGreen, 1)
-			],
-			Outputs: [
-				new(ItemID.AppleRed, 1),
-				new(ItemID.AppleYellow, 1)
-			]
-		);
-
 		public static readonly CraftingRecipe[] AllRecipes = [
 			Sundae,
 			SmeltIronChunk,
@@ -247,9 +213,6 @@ namespace Services.Crafting {
 			CraftChestCommon,
 			CraftChestRare,
 			CraftChestPrecious,
-			BerryMix,
-			CherryCandy,
-			TropicalMix,
 		];
 	}
 }
