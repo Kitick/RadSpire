@@ -8,7 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://bnjymb23oq215" path="res://UI/MultiplayerPanels/HostPanel/HostPanel.tscn" id="4_jhcbk"]
 [ext_resource type="PackedScene" uid="uid://bg5jxcp2jtwjp" path="res://UI/MultiplayerPanels/JoinPanel/JoinPanel.tscn" id="5_32jca"]
 
-[node name="MainMenu" type="Control" unique_id=2104341140 node_paths=PackedStringArray("SingleplayerButton", "MultiplayerButton", "SettingsButton", "ExtrasButton", "QuitButton", "SingleplayerPanel", "ContinueButton", "LoadSavedButton", "StartNewButton", "MultiplayerPanel", "HostNewButton", "HostSavedButton", "JoinGameButton")]
+[node name="MainMenu" type="Control" unique_id=2104341140 node_paths=PackedStringArray("ButtonPanel", "SingleplayerButton", "MultiplayerButton", "SettingsButton", "ExtrasButton", "QuitButton", "SingleplayerPanel", "ContinueButton", "LoadSavedButton", "StartNewButton", "MultiplayerPanel", "HostNewButton", "HostSavedButton", "JoinGameButton")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -16,6 +16,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_7b88o")
+ButtonPanel = NodePath("ButtonPanel")
 SingleplayerButton = NodePath("ButtonPanel/Singleplayer_Button")
 MultiplayerButton = NodePath("ButtonPanel/Multiplayer_Button")
 SettingsButton = NodePath("ButtonPanel/Settings_Button")
@@ -102,6 +103,7 @@ alignment = 0
 [node name="Multiplayer_Button" type="Button" parent="ButtonPanel" unique_id=2106788877]
 layout_mode = 2
 theme_override_font_sizes/font_size = 40
+disabled = true
 text = "Multiplayer"
 
 [node name="Multiplayer_Popup" type="VBoxContainer" parent="ButtonPanel/Multiplayer_Button" unique_id=1142054968]
@@ -119,18 +121,21 @@ offset_right = 140.0
 [node name="Host_New_Button" type="Button" parent="ButtonPanel/Multiplayer_Button/Multiplayer_Popup" unique_id=337774414]
 layout_mode = 2
 theme_override_font_sizes/font_size = 30
+disabled = true
 text = "> Host New"
 alignment = 0
 
 [node name="Host_Saved_Button" type="Button" parent="ButtonPanel/Multiplayer_Button/Multiplayer_Popup" unique_id=495328532]
 layout_mode = 2
 theme_override_font_sizes/font_size = 30
+disabled = true
 text = "> Host Saved"
 alignment = 0
 
 [node name="Join_Game_Button" type="Button" parent="ButtonPanel/Multiplayer_Button/Multiplayer_Popup" unique_id=1757166324]
 layout_mode = 2
 theme_override_font_sizes/font_size = 30
+disabled = true
 text = "> Join"
 alignment = 0
 

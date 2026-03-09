@@ -1,11 +1,11 @@
 using System;
-using System.Linq;
+using Core;
 using Godot;
 using Services;
 using Services.Settings;
 
 namespace UI.Settings {
-	public sealed partial class SettingsMenu : Control {
+	public sealed partial class SettingsMenu : BaseUIControl {
 		[ExportCategory("Buttons")]
 		[Export] private Button BackButton = null!;
 		[Export] private Button ResetButton = null!;
@@ -54,6 +54,7 @@ namespace UI.Settings {
 		private event Action? OnExit;
 
 		public override void _Ready() {
+			this.ValidateExports();
 			ProcessMode = ProcessModeEnum.Always;
 
 			SetCallbacks();
@@ -67,7 +68,6 @@ namespace UI.Settings {
 		}
 
 		private void SetInputCallbacks() {
-			OnExit += ActionEvent.MenuBack.WhenPressed(CloseMenu);
 			OnExit += ActionEvent.MenuExit.WhenPressed(CloseMenu);
 		}
 
@@ -81,6 +81,7 @@ namespace UI.Settings {
 		}
 
 		private void OnBackButtonPressed() {
+			QueueFree();
 			CloseMenu();
 		}
 
@@ -126,13 +127,12 @@ namespace UI.Settings {
 			}
 		}
 
-		public void OpenMenu(Action? onClose = null) {
-			OnExit += onClose;
+		public void OpenMenu() {
 			LoadData();
-			
+
 			if(ActivePanel == null) {
 				GeneralButton.GrabFocus();
-			} 
+			}
 			else {
 				foreach(var (panel, button) in Panels) {
 					if(panel == ActivePanel) {

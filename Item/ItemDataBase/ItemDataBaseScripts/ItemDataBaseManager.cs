@@ -51,6 +51,7 @@ namespace ItemSystem {
 			item.Description = itemDef.Description;
 			item.MaxStackSize = itemDef.MaxStackSize;
 			item.IsConsumable = itemDef.IsConsumable;
+			item.IsPlaceable = itemDef.IsPlaceable;
 			item.IconTexture = itemDef.IconTexture;
 
 			BuildComponents(item, itemDef);
@@ -87,6 +88,10 @@ namespace ItemSystem {
 					if(comp is InventoryDefinition invDef) {
 						InventoryComponent objComp = new InventoryComponent(invDef.Rows, invDef.Columns, obj);
 						obj.ComponentDictionary.Add(objComp);
+					}
+					else if(comp is ChestRarityDefinition chestRarityDef) {
+						ChestRarityComponent rarityComp = new ChestRarityComponent(chestRarityDef.RarityLevel, obj);
+						obj.ComponentDictionary.Add(rarityComp);
 					}
 				}
 			}

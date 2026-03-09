@@ -9,6 +9,7 @@
 [ext_resource type="Script" uid="uid://fxvdaltq3r54" path="res://UI/SettingsMenu/Panels/AccessibilityPanel.cs" id="7_2kpqc"]
 
 [node name="SettingsMenu" type="Control" unique_id=440443673 node_paths=PackedStringArray("BackButton", "ResetButton", "GeneralPanel", "GeneralButton", "DisplayPanel", "DisplayButton", "SoundPanel", "SoundButton", "ControllerPanel", "ControllerButton", "MKPanel", "MKButton", "AccessibilityPanel", "AccessibilityButton")]
+process_mode = 3
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -54,31 +55,49 @@ theme_override_constants/separation = 8
 
 [node name="General_Button" type="Button" parent="NavBar" unique_id=1431747125]
 layout_mode = 2
+focus_neighbor_left = NodePath("../Accessibility_Button")
+focus_neighbor_right = NodePath("../Display_Button")
+focus_neighbor_bottom = NodePath("../../General")
 theme_override_font_sizes/font_size = 40
 text = "General"
 
 [node name="Display_Button" type="Button" parent="NavBar" unique_id=465923652]
 layout_mode = 2
+focus_neighbor_left = NodePath("../General_Button")
+focus_neighbor_right = NodePath("../Sound_Button")
+focus_neighbor_bottom = NodePath("../../Display")
 theme_override_font_sizes/font_size = 40
 text = "Display"
 
 [node name="Sound_Button" type="Button" parent="NavBar" unique_id=1150145720]
 layout_mode = 2
+focus_neighbor_left = NodePath("../Display_Button")
+focus_neighbor_right = NodePath("../Controller_Button")
+focus_neighbor_bottom = NodePath("../../Sound")
 theme_override_font_sizes/font_size = 40
 text = "Sound"
 
 [node name="Controller_Button" type="Button" parent="NavBar" unique_id=1841363012]
 layout_mode = 2
+focus_neighbor_left = NodePath("../Sound_Button")
+focus_neighbor_right = NodePath("../MK_Button")
+focus_neighbor_bottom = NodePath("../../Controller")
 theme_override_font_sizes/font_size = 40
 text = "Controller"
 
 [node name="MK_Button" type="Button" parent="NavBar" unique_id=1818435186]
 layout_mode = 2
+focus_neighbor_left = NodePath("../Controller_Button")
+focus_neighbor_right = NodePath("../Accessibility_Button")
+focus_neighbor_bottom = NodePath("../../MK")
 theme_override_font_sizes/font_size = 40
 text = "Mouse & Keyboard"
 
 [node name="Accessibility_Button" type="Button" parent="NavBar" unique_id=1538897931]
 layout_mode = 2
+focus_neighbor_left = NodePath("../MK_Button")
+focus_neighbor_right = NodePath("../General_Button")
+focus_neighbor_bottom = NodePath("../../Accessibility")
 theme_override_font_sizes/font_size = 40
 text = "Accessibility"
 
@@ -90,9 +109,9 @@ anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
 offset_left = 64.0
-offset_top = -444.0
+offset_top = -440.0
 offset_right = -1688.0
-offset_bottom = -309.0
+offset_bottom = -305.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 0
@@ -116,6 +135,7 @@ anchor_bottom = 0.5
 offset_left = 100.0
 offset_top = -16.0
 offset_bottom = 16.0
+focus_neighbor_top = NodePath("../../../NavBar/General_Button")
 theme_override_font_sizes/font_size = 20
 
 [node name="UIScale" type="Label" parent="General" unique_id=204374435]
@@ -163,9 +183,9 @@ anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
 offset_left = 64.0
-offset_top = -444.0
+offset_top = -440.0
 offset_right = -1688.0
-offset_bottom = -219.0
+offset_bottom = -215.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 0
@@ -192,6 +212,7 @@ offset_left = 100.0
 offset_top = -15.9850025
 offset_right = 150.0
 offset_bottom = 16.015
+focus_neighbor_top = NodePath("../../../NavBar/Display_Button")
 theme_override_font_sizes/font_size = 20
 
 [node name="Fullscreen" type="Label" parent="Display" unique_id=872083276]
@@ -273,10 +294,10 @@ anchors_preset = 14
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
-offset_left = 64.0
-offset_top = -444.0
-offset_right = -1622.0
-offset_bottom = -219.0
+offset_left = 63.5
+offset_top = -440.0
+offset_right = -1621.5
+offset_bottom = -215.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 0
@@ -303,6 +324,7 @@ offset_left = 31.0
 offset_top = -16.0
 offset_right = 256.0
 offset_bottom = 16.0
+focus_neighbor_top = NodePath("../../../NavBar/Sound_Button")
 
 [node name="Music" type="Label" parent="Sound" unique_id=1613468907]
 layout_mode = 2
@@ -372,32 +394,32 @@ offset_top = -16.0
 offset_bottom = 16.0
 theme_override_font_sizes/font_size = 20
 
-[node name="Controller" type="VBoxContainer" parent="." unique_id=1706615415 node_paths=PackedStringArray("EnableControllerCheckBox", "VibrationCheckBox", "DeadzoneSlider", "RemapButtonsButton")]
+[node name="Controller" type="VBoxContainer" parent="." unique_id=1706615415 node_paths=PackedStringArray("VibrationCheckBox", "DeadzoneSlider", "ControllerSensitivitySlider", "RemapButtonsButton")]
 visible = false
 layout_mode = 1
 anchors_preset = 14
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
-offset_left = 58.0
-offset_top = -444.0
-offset_right = -1594.0
-offset_bottom = -256.0
+offset_left = 65.0
+offset_top = -440.0
+offset_right = -1586.0
+offset_bottom = -207.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 0
 script = ExtResource("5_jh1wv")
-EnableControllerCheckBox = NodePath("Enable_Controller/CheckBox")
 VibrationCheckBox = NodePath("Vibration/CheckBox")
 DeadzoneSlider = NodePath("Deadzone/HSlider")
+ControllerSensitivitySlider = NodePath("Controller_Sense/HSlider")
 RemapButtonsButton = NodePath("Remap_Buttons")
 
-[node name="Enable_Controller" type="Label" parent="Controller" unique_id=554200959]
+[node name="Controller_Sense" type="Label" parent="Controller" unique_id=1958249126]
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
-text = "Enable Controller"
+text = "Joystick Sense"
 
-[node name="CheckBox" type="CheckBox" parent="Controller/Enable_Controller" unique_id=398049958]
+[node name="HSlider" type="HSlider" parent="Controller/Controller_Sense" unique_id=1178069278]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 1.0
@@ -405,9 +427,11 @@ anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
 offset_left = 6.0
-offset_top = -24.0
-offset_bottom = 8.0
-scale = Vector2(1.5, 1.5)
+offset_top = -16.0
+offset_right = 231.0
+offset_bottom = 16.0
+focus_neighbor_top = NodePath("../../../NavBar/Controller_Button")
+max_value = 300.0
 
 [node name="Vibration" type="Label" parent="Controller" unique_id=765539001]
 layout_mode = 2
@@ -447,6 +471,7 @@ offset_bottom = 16.0
 layout_mode = 2
 size_flags_horizontal = 0
 theme_override_font_sizes/font_size = 32
+disabled = true
 text = "Remap Buttons"
 
 [node name="MK" type="VBoxContainer" parent="." unique_id=1252852007 node_paths=PackedStringArray("MouseSenseSlider", "InvertedYAxisCheckBox", "RawInputCheckBox", "RemapKeysButton")]
@@ -457,9 +482,9 @@ anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
 offset_left = 64.0
-offset_top = -444.0
+offset_top = -440.0
 offset_right = -1588.0
-offset_bottom = -256.0
+offset_bottom = -252.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 0
@@ -485,6 +510,9 @@ offset_left = 6.0
 offset_top = -16.0
 offset_right = 231.0
 offset_bottom = 16.0
+focus_neighbor_top = NodePath("../../../NavBar/MK_Button")
+max_value = 2.0
+step = 0.1
 
 [node name="Invert_Y-Axis" type="Label" parent="MK" unique_id=648042255]
 layout_mode = 2
@@ -525,19 +553,19 @@ scale = Vector2(1.5, 1.5)
 layout_mode = 2
 size_flags_horizontal = 0
 theme_override_font_sizes/font_size = 32
+disabled = true
 text = "Remap Keys"
 
 [node name="Accessibility" type="VBoxContainer" parent="." unique_id=229276971 node_paths=PackedStringArray("SubtitlesCheckBox", "SubtitleSizeSlider", "ColorblindModeOption", "TextToSpeechCheckBox", "HighContrastUICheckBox")]
-visible = false
 layout_mode = 1
 anchors_preset = 14
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
 offset_left = 64.0
-offset_top = -444.0
+offset_top = -440.0
 offset_right = -1600.0
-offset_bottom = -219.0
+offset_bottom = -215.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 0
@@ -564,6 +592,7 @@ offset_left = 12.0
 offset_top = -24.0
 offset_bottom = 8.0
 scale = Vector2(1.5, 1.5)
+focus_neighbor_top = NodePath("../../../NavBar/Accessibility_Button")
 
 [node name="Subtitle_Size" type="Label" parent="Accessibility" unique_id=517582319]
 layout_mode = 2

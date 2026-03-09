@@ -7,14 +7,14 @@
 [ext_resource type="PackedScene" uid="uid://dv4igypq0dbv8" path="res://UI/SaveMenu/SaveMenu.tscn" id="3_o30d6"]
 [ext_resource type="PackedScene" uid="uid://etextx8i4ksr" path="res://UI/Hotbar/Hotbar.tscn" id="5_c358i"]
 [ext_resource type="PackedScene" uid="uid://crye0f0yw8xrb" path="res://UI/PauseMenu/PauseMenu.tscn" id="5_jmlhc"]
-[ext_resource type="Script" uid="uid://bovlwauji4mth" path="res://UI/HUD/InventoryUI.cs" id="5_q8dl0"]
+[ext_resource type="Script" uid="uid://bovlwauji4mth" path="res://UI/Inventory/InventoryUI.cs" id="5_q8dl0"]
 [ext_resource type="PackedScene" uid="uid://bffohbw4kmhwa" path="res://UI/Inventory/Inventory.tscn" id="6_785o0"]
 [ext_resource type="PackedScene" uid="uid://bjql4hi1q0ouh" path="res://UI/QuestLog/QuestLog.tscn" id="8_6ymr8"]
 [ext_resource type="PackedScene" uid="uid://2mdnsh082j66" path="res://UI/RespawnMenu/RespawnMenu.tscn" id="8_10ibt"]
 [ext_resource type="PackedScene" uid="uid://n150xowq1ipg" path="res://UI/Inventory/InventoryItemInformationUITemplate.tscn" id="9_2y2n3"]
 [ext_resource type="Script" uid="uid://cl6aplc7wunof" path="res://UI/Inventory/InventoryItemInformationUI.cs" id="10_y8qxg"]
 
-[node name="HUD" type="Control" unique_id=935922708 node_paths=PackedStringArray("PauseButton", "PauseMenu", "Inventory", "InventoryItemInformationUI", "QuestLog", "Hotbar", "RespawnMenu", "HealthBar")]
+[node name="HUD" type="Control" unique_id=935922708 node_paths=PackedStringArray("PauseButton", "PauseMenu", "Inventory", "InventoryItemInformationUI", "Chest", "QuestLog", "Hotbar", "RespawnMenu", "HealthBar")]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 1920.0
@@ -24,6 +24,7 @@ PauseButton = NodePath("PauseButton")
 PauseMenu = NodePath("PauseMenu")
 Inventory = NodePath("Inventory")
 InventoryItemInformationUI = NodePath("ItemInformationUI")
+Chest = NodePath("ChestUI")
 QuestLog = NodePath("QuestLog")
 Hotbar = NodePath("Hotbar")
 RespawnMenu = NodePath("RespawnMenu")

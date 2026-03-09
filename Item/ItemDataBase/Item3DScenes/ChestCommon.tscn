@@ -1,0 +1,23 @@
+[gd_scene format=3 uid="uid://bs8mou6sasa7y"]
+
+[ext_resource type="PackedScene" path="res://Assets/Models/Chest/Chests/old_chest.tscn" id="1_kfvhx"]
+[ext_resource type="Script" uid="uid://klsonhpw4auo" path="res://Item/WorldObjects/ObjectNode.cs" id="2_imyk2"]
+[ext_resource type="PackedScene" uid="uid://b7gv62rlbjt5l" path="res://Item/WorldObjects/WorldObjectSpawnPoint.tscn" id="2_l1cxs"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_imyk2"]
+size = Vector3(3.3065796, 2.0772705, 2.136917)
+
+[node name="ChestCommon" type="Node3D" unique_id=1184848489]
+script = ExtResource("2_imyk2")
+
+[node name="Old Chest" parent="." unique_id=745494050 instance=ExtResource("1_kfvhx")]
+transform = Transform3D(0.25, 0, 0, 0, 0.25, 0, 0, 0, 0.25, 0, 0.24991632, -0.042515993)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Old Chest" unique_id=1564425385]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Old Chest/StaticBody3D" unique_id=1134080846]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.019378662, 0.057556152, 0.16260529)
+shape = SubResource("BoxShape3D_imyk2")
+
+[node name="WorldObjectSpawnPoint" parent="." unique_id=2064846928 instance=ExtResource("2_l1cxs")]
+ItemId = "ChestCommon"

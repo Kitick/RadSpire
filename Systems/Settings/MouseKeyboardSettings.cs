@@ -4,9 +4,9 @@ namespace Services.Settings {
 	public static class MouseKeyboardSettings {
 		public static readonly Setting<float> MouseSensitivity = new(
 			name: nameof(MouseSensitivity),
-			getActual: () => default,
+			getActual: () => MouseSensitivity!.Target,
 			setActual: v => { },
-			defaultValue: 1.0f
+			defaultValue: 0.5f
 		);
 
 		public static readonly Setting<bool> InvertedYAxis = new(

@@ -1,0 +1,15 @@
+<Project Sdk="Godot.NET.Sdk/4.6.1">
+	<PropertyGroup>
+		<TargetFramework>net10.0</TargetFramework>
+		<Optimize>true</Optimize>
+
+		<Nullable>enable</Nullable>
+		<EnableDynamicLoading>true</EnableDynamicLoading>
+
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+		<GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
+	</PropertyGroup>
+	<ItemGroup>
+		<Compile Remove="Tests\**" />
+	</ItemGroup>
+</Project>

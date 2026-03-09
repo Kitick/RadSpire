@@ -4,12 +4,12 @@ using Services.Settings;
 
 namespace UI.Settings {
 	public sealed partial class GeneralPanel : VBoxContainer {
-
 		[Export] private OptionButton LanguageOption = null!;
 		[Export] private HSlider UIScaleSlider = null!;
 		[Export] private OptionButton ThemeOption = null!;
 
 		public override void _Ready() {
+			this.ValidateExports();
 			SetCallbacks();
 		}
 

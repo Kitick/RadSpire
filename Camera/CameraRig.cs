@@ -33,6 +33,8 @@ namespace Camera {
 		public override void _PhysicsProcess(double delta) {
 			float dt = (float) delta;
 
+			HandleJoystickRotation(dt);
+
 			if(State == CameraState.Following) {
 				FollowTarget(dt);
 			}

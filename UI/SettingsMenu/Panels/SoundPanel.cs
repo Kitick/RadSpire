@@ -12,6 +12,8 @@ namespace UI.Settings {
 		[Export] private OptionButton OutputDeviceOption = null!;
 
 		public override void _Ready() {
+			this.ValidateExports();
+
 			SetCallbacks();
 			OutputDeviceOption.Populate(AudioServer.GetOutputDeviceList());
 		}

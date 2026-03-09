@@ -55,6 +55,7 @@ namespace ItemSystem {
 		public bool IsStackable => MaxStackSize > 1;
 
 		[Export] public bool IsConsumable { get; set; } = false;
+		[Export] public bool IsPlaceable { get; set; } = false;
 
 		[Export] public Texture2D IconTexture { get; set; } = null!;
 		public ComponentDictionary<IItemComponent> ComponentDictionary { get; } = new();
@@ -84,6 +85,7 @@ namespace ItemSystem {
 			Description = other.Description;
 			MaxStackSize = other.MaxStackSize;
 			IsConsumable = other.IsConsumable;
+			IsPlaceable = other.IsPlaceable;
 			IconTexture = other.IconTexture;
 			CopyComponentsFrom(other);
 		}
@@ -111,6 +113,7 @@ namespace ItemSystem {
 			Description = item.Description;
 			MaxStackSize = item.MaxStackSize;
 			IsConsumable = item.IsConsumable;
+			IsPlaceable = item.IsPlaceable;
 			IconTexture = item.IconTexture;
 			CopyComponentsFrom(item);
 			if(data.DurabilityData != null) {

@@ -71,6 +71,10 @@ namespace Services {
 			return Input.IsActionPressed(keyEvent.Name);
 		}
 
+		public static bool IsJustPressed(this ActionEvent keyEvent) {
+			return Input.IsActionJustPressed(keyEvent.Name);
+		}
+
 		public static bool IsReleased(this ActionEvent keyEvent) {
 			return !IsPressed(keyEvent);
 		}
@@ -91,17 +95,18 @@ namespace Services {
 
 		public static readonly ActionEvent Interact = new("Interact");
 		public static readonly ActionEvent Interact2 = new("Interact2");
+		public static readonly ActionEvent Place = new("Place");
 		public static readonly ActionEvent Consume = new("Consume");
 		public static readonly ActionEvent Inventory = new("Inventory");
+		public static readonly ActionEvent Attack = new("Attack");
 
-		public static readonly ActionEvent MenuBack = new("MenuBack");
-		public static readonly ActionEvent MenuExit = new("MenuExit");
-		public static readonly ActionEvent MenuSelect = new("MenuSelect");
+		public static readonly ActionEvent MenuSelect = new("ui_accept");
+		public static readonly ActionEvent MenuExit = new("ui_cancel");
 
-		public static readonly ActionEvent MenuUp = new("MenuUp");
-		public static readonly ActionEvent MenuDown = new("MenuDown");
-		public static readonly ActionEvent MenuLeft = new("MenuLeft");
-		public static readonly ActionEvent MenuRight = new("MenuRight");
+		public static readonly ActionEvent MenuUp = new("ui_up");
+		public static readonly ActionEvent MenuDown = new("ui_down");
+		public static readonly ActionEvent MenuLeft = new("ui_left");
+		public static readonly ActionEvent MenuRight = new("ui_right");
 		public static readonly ActionEvent PageLeft = new("PageLeft");
 		public static readonly ActionEvent PageRight = new("PageRight");
 
@@ -113,9 +118,10 @@ namespace Services {
 		public static readonly ActionEvent HotbarNext = new("HotbarNext");
 		public static readonly ActionEvent HotbarPrev = new("HotbarPrev");
 
-		public static readonly ActionEvent CameraReset = new("CameraReset");
-		public static readonly ActionEvent CameraPan = new("PanCamera");
 		public static readonly ActionEvent CameraRotate = new("RotateCamera");
+		public static readonly ActionEvent CameraPan = new("PanCamera");
+		public static readonly ActionEvent CameraReset = new("ResetCamera");
+
 		public static readonly ActionEvent ZoomIn = new("ZoomIn");
 		public static readonly ActionEvent ZoomOut = new("ZoomOut");
 
@@ -131,12 +137,13 @@ namespace Services {
 
 			yield return Interact;
 			yield return Interact2;
+			yield return Place;
 			yield return Consume;
 			yield return Inventory;
+			yield return Attack;
 
-			yield return MenuBack;
-			yield return MenuExit;
 			yield return MenuSelect;
+			yield return MenuExit;
 
 			yield return MenuUp;
 			yield return MenuDown;
