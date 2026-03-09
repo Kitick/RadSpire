@@ -2,7 +2,6 @@ namespace Character {
 using Components;
 using Core;
 using Godot;
-using Root;
 using Services;
 	public sealed partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 		private static readonly LogService Log = new(nameof(Enemy), enabled: true);
@@ -17,11 +16,11 @@ using Services;
 		protected override (int phys, int mag) InitialDamage => (InitialDamagePhysical, InitialDamageMagic);
 		protected override (int phys, int mag) InitialDefense => (InitialDefensePhysical, InitialDefenseMagic);
 
-		private Player? Target;
-
 		// Components
 		private readonly Movement Movement;
 		private readonly ChaseAI AI;
+
+		public void SetTarget(Node3D target) => AI.SetTarget(target);
 
 		public Enemy() {
 			Movement = new Movement(this);
@@ -35,11 +34,25 @@ using Services;
 		public override void _PhysicsProcess(double delta) {
 			float dt = (float) delta;
 
+			if(this.IsDead()) {
+				StateMachine.TransitionTo(State.Dead);
+				return;
+			}
+
 			AI.Update();
 
 			Movement.Move(AI.HorizontalInput, 1);
 
 			Movement.Update(dt);
+
+			UpdateMovementState();
+		}
+
+		private void UpdateMovementState() {
+			if(!IsOnFloor()) { StateMachine.TransitionTo(State.Falling); }
+			else if(!AI.IsMoving) { StateMachine.TransitionTo(State.Idle); }
+			else if(AI.SprintHeld) { StateMachine.TransitionTo(State.Sprinting); }
+			else { StateMachine.TransitionTo(State.Walking); }
 		}
 
 		public EnemyData Export() => new EnemyData {

@@ -102,7 +102,7 @@ namespace Character {
 			else { StateMachine.TransitionTo(State.Walking); }
 		}
 
-		public void OnAttackFinished() {
+		public override void OnAttackFinished() {
 			StateMachine.TransitionTo(State.Idle);
 		}
 
