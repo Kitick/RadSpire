@@ -11,6 +11,17 @@
         "visibility": 0.0
       }
     },
+    "res://Item/ItemDataBase/ComponentDefinition/": {
+      "metadata/_custom_type_script": {
+        "visibility": 0
+      },
+      "resource_local_to_scene": {
+        "visibility": 0
+      },
+      "resource_name": {
+        "visibility": 0
+      }
+    },
     "res://Item/ItemDataBase/ComponentDefinitions/": {
       "metadata/_custom_type_script": {
         "visibility": 0.0
@@ -33,6 +44,17 @@
         "visibility": 0.0
       }
     },
+    "res://Item/ItemDataBase/ComponentDefinitions/WeaponBaseDefinition/": {
+      "metadata/_custom_type_script": {
+        "visibility": 0
+      },
+      "resource_local_to_scene": {
+        "visibility": 0
+      },
+      "resource_name": {
+        "visibility": 0
+      }
+    },
     "res://Item/ItemDataBase/Food/": {
       "ComponentsResources": {
         "visibility": 1.0
@@ -50,6 +72,17 @@
         "visibility": 1.0
       }
     },
+    "res://Item/ItemDataBase/ItemDefinition/": {
+      "metadata/_custom_type_script": {
+        "visibility": 0
+      },
+      "resource_local_to_scene": {
+        "visibility": 0
+      },
+      "resource_name": {
+        "visibility": 0
+      }
+    },
     "res://Item/ItemDataBase/ItemDefinitions/": {
       "metadata/_custom_type_script": {
         "visibility": 0.0
@@ -59,6 +92,17 @@
       },
       "resource_name": {
         "visibility": 0.0
+      }
+    },
+    "res://Item/ItemDataBase/ItemDefinitions/ComponentDefinition/": {
+      "metadata/_custom_type_script": {
+        "visibility": 0
+      },
+      "resource_local_to_scene": {
+        "visibility": 0
+      },
+      "resource_name": {
+        "visibility": 0
       }
     },
     "res://Item/ItemDataBase/ItemDefinitions/Food/": {
@@ -103,7 +147,11 @@
     "res://Item/ItemDataBase/ItemDefinitions/",
     "res://Item/ItemDataBase/ComponentDefinitions/ChestRarityDefinition/",
     "res://Item/ItemDataBase/ItemDefinitions/Resources/",
-    "res://Item/ItemDataBase/ItemDefinitions/Weapons/"
+    "res://Item/ItemDataBase/ItemDefinitions/Weapons/",
+    "res://Item/ItemDataBase/ItemDefinitions/ComponentDefinition/",
+    "res://Item/ItemDataBase/ComponentDefinition/",
+    "res://Item/ItemDataBase/ComponentDefinitions/WeaponBaseDefinition/",
+    "res://Item/ItemDataBase/ItemDefinition/"
   ],
   "table_functions": {
     "filter": [
