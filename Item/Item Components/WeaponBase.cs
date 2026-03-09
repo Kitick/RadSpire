@@ -22,6 +22,7 @@ namespace Components {
 			if(user is Player player) {
 				player.HoldingSword = true;
 				player.Offense.PhysicalDamage += BaseAttack;
+				player.SwordMesh.Visible = true;
 			}
 			return true;
 		}
@@ -30,6 +31,7 @@ namespace Components {
 			if(user is Player player) {
 				player.HoldingSword = false;
 				player.Offense.PhysicalDamage -= BaseAttack;
+				player.SwordMesh.Visible = false;
 			}
 			return true;
 		}

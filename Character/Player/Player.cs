@@ -11,6 +11,8 @@ namespace Character {
 	public sealed partial class Player : CharacterBase, ISaveable<PlayerData> {
 		private static readonly LogService Log = new(nameof(Player), enabled: true);
 
+		[Export] public MeshInstance3D SwordMesh = null!;
+
 		[Export] private int InitialHealthValue = 100;
 		[Export] public int InitialDamagePhysical = 10;
 		[Export] private int InitialDamageMagic = 0;
