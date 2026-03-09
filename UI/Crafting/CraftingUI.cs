@@ -22,8 +22,11 @@ namespace UI {
 
 		private int Quantity {
 			get;
-			set => field = Math.Clamp(value, 1, 5);
-		}
+			set {
+				field = Math.Clamp(value, 1, 10);
+				RefreshQuantity();
+			}
+		} = 1;
 
 		public readonly List<Inventory> Inventories = [];
 
@@ -33,8 +36,8 @@ namespace UI {
 
 		private void SetCallbacks() {
 			CraftButton.Pressed += OnCraftButtonPressed;
-			PosButton.Pressed += OnPosButtonPressed;
-			NegButton.Pressed += OnNegButtonPressed;
+			PosButton.Pressed += () => Quantity++;
+			NegButton.Pressed += () => Quantity--;
 
 			CraftableDropdown.ItemSelected += OnCraftableSelected;
 			NonCraftableDropdown.ItemSelected += OnNonCraftableSelected;
@@ -70,13 +73,17 @@ namespace UI {
 				}
 			}
 
-			QuantityDisplay.Text = Quantity.ToString();
+			RefreshQuantity();
 			UpdateCurrentSelectedRequirements();
+		}
+
+		private void RefreshQuantity() {
+			QuantityDisplay.Text = Quantity.ToString();
 		}
 
 		private void UpdateRequirementsList(CraftingRecipe recipe) {
 			RequirementsList.Clear();
-			if(recipe.Inputs == null) return;
+			if(recipe.Inputs == null) { return; }
 
 			foreach(var ingredient in recipe.Inputs) {
 				int totalCost = ingredient.Quantity * Quantity;
@@ -115,15 +122,6 @@ namespace UI {
 				}
 			}
 
-			RefreshUI();
-		}
-
-		public void OnPosButtonPressed() {
-			Quantity++;
-			RefreshUI();
-		}
-
-		public void OnNegButtonPressed() {
 			RefreshUI();
 		}
 	}
