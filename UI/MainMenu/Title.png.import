@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ey80t6hrma51"
-path="res://.godot/imported/background_kneeling.png-cdd07949c68849c8cab0f0b111d31af4.ctex"
+uid="uid://howutpu3c584"
+path="res://.godot/imported/Title.png-74fb7a51f492e4f5076a98b90e7ad985.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Images/Menu/background_kneeling.png"
-dest_files=["res://.godot/imported/background_kneeling.png-cdd07949c68849c8cab0f0b111d31af4.ctex"]
+source_file="res://UI/MainMenu/Title.png"
+dest_files=["res://.godot/imported/Title.png-74fb7a51f492e4f5076a98b90e7ad985.ctex"]
 
 [params]
 

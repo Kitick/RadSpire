@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dfr168nswrve8"
-path="res://.godot/imported/background_standing.png-7c74891b27acc3b3d6122f70ead2e61d.ctex"
+uid="uid://ey80t6hrma51"
+path="res://.godot/imported/KneelingBackground.png-2ca66df6f9faa22971e252084e73b306.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Images/Menu/background_standing.png"
-dest_files=["res://.godot/imported/background_standing.png-7c74891b27acc3b3d6122f70ead2e61d.ctex"]
+source_file="res://UI/SaveMenu/KneelingBackground.png"
+dest_files=["res://.godot/imported/KneelingBackground.png-2ca66df6f9faa22971e252084e73b306.ctex"]
 
 [params]
 
