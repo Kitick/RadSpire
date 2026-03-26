@@ -1,51 +1,51 @@
-namespace Camera {
-	using System;
-	using Godot;
+namespace Camera;
 
-	public sealed class CameraDrag {
-		public enum DragState { Idle, Dragging, Cooldown };
-		public DragState State { get; private set; } = DragState.Idle;
+using System;
+using Godot;
 
-		public Vector3 Target { get; private set; } = Vector3.Zero;
-		public Vector3 Velocity { get; private set; } = Vector3.Zero;
+public sealed class CameraDrag {
+	public enum DragState { Idle, Dragging, Cooldown };
+	public DragState State { get; private set; } = DragState.Idle;
 
-		public readonly Timer ResetTimer = new Timer();
-		public TimeSpan ResetCooldown = TimeSpan.FromSeconds(3);
+	public Vector3 Target { get; private set; } = Vector3.Zero;
+	public Vector3 Velocity { get; private set; } = Vector3.Zero;
 
-		public CameraDrag() {
-			ResetTimer.OneShot = true;
-			ResetTimer.Timeout += Reset;
-		}
+	public readonly Timer ResetTimer = new Timer();
+	public TimeSpan ResetCooldown = TimeSpan.FromSeconds(3);
 
-		public void Start(Vector3 position) {
-			State = DragState.Dragging;
-			ResetTimer.Stop();
-			Target = position;
-		}
+	public CameraDrag() {
+		ResetTimer.OneShot = true;
+		ResetTimer.Timeout += Reset;
+	}
 
-		public void Move(Vector3 delta) {
-			Target += delta;
-		}
+	public void Start(Vector3 position) {
+		State = DragState.Dragging;
+		ResetTimer.Stop();
+		Target = position;
+	}
 
-		public void End() {
-			State = DragState.Cooldown;
-			ResetTimer.Start(ResetCooldown.Seconds);
-		}
+	public void Move(Vector3 delta) {
+		Target += delta;
+	}
 
-		public void Reset() {
-			State = DragState.Idle;
-			ResetTimer.Stop();
-		}
+	public void End() {
+		State = DragState.Cooldown;
+		ResetTimer.Start(ResetCooldown.Seconds);
+	}
 
-		public void Update(Vector3 Position) {
-			Vector3 VelocityTarget;
+	public void Reset() {
+		State = DragState.Idle;
+		ResetTimer.Stop();
+	}
 
-			VelocityTarget = State switch {
-				DragState.Dragging => Target - Position,
-				_ => Vector3.Zero,
-			};
+	public void Update(Vector3 Position) {
+		Vector3 VelocityTarget;
 
-			Velocity = VelocityTarget;
-		}
+		VelocityTarget = State switch {
+			DragState.Dragging => Target - Position,
+			_ => Vector3.Zero,
+		};
+
+		Velocity = VelocityTarget;
 	}
 }

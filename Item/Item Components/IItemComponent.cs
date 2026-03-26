@@ -1,4 +1,5 @@
-namespace ItemSystem {
+namespace ItemSystem;
+
 	using System.Dynamic;
 	using Godot;
 
@@ -19,4 +20,3 @@ namespace ItemSystem {
 	public interface IItemUseableOnTarget {
 		public bool UseOnTarget<TEntity, TTarget>(TEntity user, TTarget target);
 	}
-}

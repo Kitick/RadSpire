@@ -1,8 +1,8 @@
-namespace Root {
-	using Godot;
+namespace GameWorld;
 
-	[GlobalClass]
-	public partial class ItemSpawnEntry : Marker3D {
-		[Export] public StringName ItemId = "";
-	}
+using Godot;
+
+[GlobalClass]
+public sealed partial class ItemSpawnEntry : Marker3D {
+	[Export] public StringName ItemId = "";
 }

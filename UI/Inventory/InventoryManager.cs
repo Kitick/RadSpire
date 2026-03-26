@@ -1,13 +1,15 @@
+namespace ItemSystem;
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Character;
 using Godot;
 using Root;
+using GameWorld;
 using Services;
 using UI;
 
-namespace ItemSystem {
+
 	public partial class InventoryManager : Node {
 		private static readonly LogService Log = new(nameof(InventoryManager), enabled: true);
 
@@ -537,4 +539,4 @@ namespace ItemSystem {
 			return remainSlot;
 		}
 	}
-}
+

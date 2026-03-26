@@ -1,7 +1,8 @@
-namespace Objects {
-    using Godot;
+namespace Objects;
 
-    [GlobalClass]
-    public partial class WorldObjectSpawnComponentDefinition : Resource {
-    }
+using Godot;
+
+[GlobalClass]
+public partial class WorldObjectSpawnComponentDefinition : Resource {
 }
+

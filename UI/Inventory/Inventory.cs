@@ -1,7 +1,8 @@
+namespace ItemSystem;
 using System;
 using Services;
 
-namespace ItemSystem {
+
 	public interface IInventory { Inventory Inventory { get; } }
 
 	public sealed partial class Inventory : ISaveable<InventoryData> {
@@ -270,4 +271,4 @@ namespace ItemSystem {
 		public int MaxSlotsColumns { get; init; }
 		public ItemSlotData[] ItemSlots { get; init; }
 	}
-}
+

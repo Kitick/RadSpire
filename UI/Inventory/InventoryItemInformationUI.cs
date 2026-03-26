@@ -1,4 +1,5 @@
-namespace UI {
+namespace UI;
+
 	using System;
 	using Godot;
 	using Services;
@@ -68,4 +69,4 @@ namespace UI {
 			}
 		}
 	}
-}
+

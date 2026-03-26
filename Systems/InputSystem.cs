@@ -1,170 +1,170 @@
-namespace Services {
-	using System;
-	using System.Collections.Generic;
-	using Godot;
+namespace Services;
 
-	public sealed partial class InputSystem : Node {
-		public static readonly LogService Log = new(nameof(InputSystem), enabled: false);
+using System;
+using System.Collections.Generic;
+using Godot;
 
-		public static InputSystem Instance { get; private set; } = null!;
+public sealed partial class InputSystem : Node {
+	public static readonly LogService Log = new(nameof(InputSystem), enabled: false);
 
-		public event Action<ActionEvent>? OnActionPressed;
-		public event Action<ActionEvent>? OnActionReleased;
+	public static InputSystem Instance { get; private set; } = null!;
 
-		public event Action<InputEventMouseMotion>? OnMouseMoved;
-		public event Action<InputEventJoypadMotion>? OnJoypadMoved;
+	public event Action<ActionEvent>? OnActionPressed;
+	public event Action<ActionEvent>? OnActionReleased;
 
-		public override void _Ready() {
-			Instance = this;
-			ProcessMode = ProcessModeEnum.Always;
-			Log.Info("Ready");
+	public event Action<InputEventMouseMotion>? OnMouseMoved;
+	public event Action<InputEventJoypadMotion>? OnJoypadMoved;
+
+	public override void _Ready() {
+		Instance = this;
+		ProcessMode = ProcessModeEnum.Always;
+		Log.Info("Ready");
+	}
+
+	public override void _Input(InputEvent input) {
+		if(input is InputEventMouseMotion mouse) {
+			Log.Info($"Mouse moved {mouse.Relative}");
+			OnMouseMoved?.Invoke(mouse);
 		}
-
-		public override void _Input(InputEvent input) {
-			if(input is InputEventMouseMotion mouse) {
-				Log.Info($"Mouse moved {mouse.Relative}");
-				OnMouseMoved?.Invoke(mouse);
-			}
-			else if(input is InputEventJoypadMotion joypad) {
-				Log.Info($"Joypad moved {joypad.Axis} : {joypad.AxisValue}");
-				OnJoypadMoved?.Invoke(joypad);
-			}
-			else {
-				CheckActionEvents(input);
-			}
+		else if(input is InputEventJoypadMotion joypad) {
+			Log.Info($"Joypad moved {joypad.Axis} : {joypad.AxisValue}");
+			OnJoypadMoved?.Invoke(joypad);
 		}
-
-		private void CheckActionEvents(InputEvent input) {
-			foreach(var action in ActionEvent.Actions()) {
-				if(input.IsActionPressed(action.Name)) {
-					Log.Info($"Pressed {action.Name}");
-					OnActionPressed?.Invoke(action);
-				}
-				else if(input.IsActionReleased(action.Name)) {
-					Log.Info($"Released {action.Name}");
-					OnActionReleased?.Invoke(action);
-				}
-			}
+		else {
+			CheckActionEvents(input);
 		}
 	}
 
-	public static class ActionEventExtensions {
-		private static Action<ActionEvent> CreateHandler(this ActionEvent keyEvent, Action callback) {
-			return (action) => {
-				if(action.Name == keyEvent.Name) { callback?.Invoke(); }
-			};
-		}
-
-		public static Action WhenPressed(this ActionEvent keyEvent, Action callback) {
-			Action<ActionEvent> handler = keyEvent.CreateHandler(callback);
-			InputSystem.Instance.OnActionPressed += handler;
-			return () => InputSystem.Instance.OnActionPressed -= handler;
-		}
-
-		public static Action WhenReleased(this ActionEvent keyEvent, Action callback) {
-			Action<ActionEvent> handler = keyEvent.CreateHandler(callback);
-			InputSystem.Instance.OnActionReleased += handler;
-			return () => InputSystem.Instance.OnActionReleased -= handler;
-		}
-
-		public static bool IsPressed(this ActionEvent keyEvent) {
-			return Input.IsActionPressed(keyEvent.Name);
-		}
-
-		public static bool IsJustPressed(this ActionEvent keyEvent) {
-			return Input.IsActionJustPressed(keyEvent.Name);
-		}
-
-		public static bool IsReleased(this ActionEvent keyEvent) {
-			return !IsPressed(keyEvent);
+	private void CheckActionEvents(InputEvent input) {
+		foreach(var action in ActionEvent.Actions()) {
+			if(input.IsActionPressed(action.Name)) {
+				Log.Info($"Pressed {action.Name}");
+				OnActionPressed?.Invoke(action);
+			}
+			else if(input.IsActionReleased(action.Name)) {
+				Log.Info($"Released {action.Name}");
+				OnActionReleased?.Invoke(action);
+			}
 		}
 	}
+}
 
-	public readonly struct ActionEvent {
-		public readonly StringName Name;
-		private ActionEvent(StringName name) => Name = name;
+public static class ActionEventExtensions {
+	private static Action<ActionEvent> CreateHandler(this ActionEvent keyEvent, Action callback) {
+		return (action) => {
+			if(action.Name == keyEvent.Name) { callback?.Invoke(); }
+		};
+	}
 
-		public static readonly ActionEvent MoveForward = new("MoveForward");
-		public static readonly ActionEvent MoveBack = new("MoveBack");
-		public static readonly ActionEvent MoveLeft = new("MoveLeft");
-		public static readonly ActionEvent MoveRight = new("MoveRight");
+	public static Action WhenPressed(this ActionEvent keyEvent, Action callback) {
+		Action<ActionEvent> handler = keyEvent.CreateHandler(callback);
+		InputSystem.Instance.OnActionPressed += handler;
+		return () => InputSystem.Instance.OnActionPressed -= handler;
+	}
 
-		public static readonly ActionEvent Jump = new("Jump");
-		public static readonly ActionEvent Sprint = new("Sprint");
-		public static readonly ActionEvent Crouch = new("Crouch");
+	public static Action WhenReleased(this ActionEvent keyEvent, Action callback) {
+		Action<ActionEvent> handler = keyEvent.CreateHandler(callback);
+		InputSystem.Instance.OnActionReleased += handler;
+		return () => InputSystem.Instance.OnActionReleased -= handler;
+	}
 
-		public static readonly ActionEvent Interact = new("Interact");
-		public static readonly ActionEvent Interact2 = new("Interact2");
-		public static readonly ActionEvent Place = new("Place");
-		public static readonly ActionEvent Consume = new("Consume");
-		public static readonly ActionEvent Inventory = new("Inventory");
-		public static readonly ActionEvent Attack = new("Attack");
+	public static bool IsPressed(this ActionEvent keyEvent) {
+		return Input.IsActionPressed(keyEvent.Name);
+	}
 
-		public static readonly ActionEvent MenuSelect = new("ui_accept");
-		public static readonly ActionEvent MenuExit = new("ui_cancel");
+	public static bool IsJustPressed(this ActionEvent keyEvent) {
+		return Input.IsActionJustPressed(keyEvent.Name);
+	}
 
-		public static readonly ActionEvent MenuUp = new("ui_up");
-		public static readonly ActionEvent MenuDown = new("ui_down");
-		public static readonly ActionEvent MenuLeft = new("ui_left");
-		public static readonly ActionEvent MenuRight = new("ui_right");
-		public static readonly ActionEvent PageLeft = new("PageLeft");
-		public static readonly ActionEvent PageRight = new("PageRight");
+	public static bool IsReleased(this ActionEvent keyEvent) {
+		return !IsPressed(keyEvent);
+	}
+}
 
-		public static readonly ActionEvent Hotbar1 = new("Hotbar1");
-		public static readonly ActionEvent Hotbar2 = new("Hotbar2");
-		public static readonly ActionEvent Hotbar3 = new("Hotbar3");
-		public static readonly ActionEvent Hotbar4 = new("Hotbar4");
-		public static readonly ActionEvent Hotbar5 = new("Hotbar5");
-		public static readonly ActionEvent HotbarNext = new("HotbarNext");
-		public static readonly ActionEvent HotbarPrev = new("HotbarPrev");
+public readonly struct ActionEvent {
+	public readonly StringName Name;
+	private ActionEvent(StringName name) => Name = name;
 
-		public static readonly ActionEvent CameraRotate = new("RotateCamera");
-		public static readonly ActionEvent CameraPan = new("PanCamera");
-		public static readonly ActionEvent CameraReset = new("ResetCamera");
+	public static readonly ActionEvent MoveForward = new("MoveForward");
+	public static readonly ActionEvent MoveBack = new("MoveBack");
+	public static readonly ActionEvent MoveLeft = new("MoveLeft");
+	public static readonly ActionEvent MoveRight = new("MoveRight");
 
-		public static readonly ActionEvent ZoomIn = new("ZoomIn");
-		public static readonly ActionEvent ZoomOut = new("ZoomOut");
+	public static readonly ActionEvent Jump = new("Jump");
+	public static readonly ActionEvent Sprint = new("Sprint");
+	public static readonly ActionEvent Crouch = new("Crouch");
 
-		public static IEnumerable<ActionEvent> Actions() {
-			yield return MoveForward;
-			yield return MoveBack;
-			yield return MoveLeft;
-			yield return MoveRight;
+	public static readonly ActionEvent Interact = new("Interact");
+	public static readonly ActionEvent Interact2 = new("Interact2");
+	public static readonly ActionEvent Place = new("Place");
+	public static readonly ActionEvent Consume = new("Consume");
+	public static readonly ActionEvent Inventory = new("Inventory");
+	public static readonly ActionEvent Attack = new("Attack");
 
-			yield return Jump;
-			yield return Sprint;
-			yield return Crouch;
+	public static readonly ActionEvent MenuSelect = new("ui_accept");
+	public static readonly ActionEvent MenuExit = new("ui_cancel");
 
-			yield return Interact;
-			yield return Interact2;
-			yield return Place;
-			yield return Consume;
-			yield return Inventory;
-			yield return Attack;
+	public static readonly ActionEvent MenuUp = new("ui_up");
+	public static readonly ActionEvent MenuDown = new("ui_down");
+	public static readonly ActionEvent MenuLeft = new("ui_left");
+	public static readonly ActionEvent MenuRight = new("ui_right");
+	public static readonly ActionEvent PageLeft = new("PageLeft");
+	public static readonly ActionEvent PageRight = new("PageRight");
 
-			yield return MenuSelect;
-			yield return MenuExit;
+	public static readonly ActionEvent Hotbar1 = new("Hotbar1");
+	public static readonly ActionEvent Hotbar2 = new("Hotbar2");
+	public static readonly ActionEvent Hotbar3 = new("Hotbar3");
+	public static readonly ActionEvent Hotbar4 = new("Hotbar4");
+	public static readonly ActionEvent Hotbar5 = new("Hotbar5");
+	public static readonly ActionEvent HotbarNext = new("HotbarNext");
+	public static readonly ActionEvent HotbarPrev = new("HotbarPrev");
 
-			yield return MenuUp;
-			yield return MenuDown;
-			yield return MenuLeft;
-			yield return MenuRight;
-			yield return PageLeft;
-			yield return PageRight;
+	public static readonly ActionEvent CameraRotate = new("RotateCamera");
+	public static readonly ActionEvent CameraPan = new("PanCamera");
+	public static readonly ActionEvent CameraReset = new("ResetCamera");
 
-			yield return Hotbar1;
-			yield return Hotbar2;
-			yield return Hotbar3;
-			yield return Hotbar4;
-			yield return Hotbar5;
-			yield return HotbarNext;
-			yield return HotbarPrev;
+	public static readonly ActionEvent ZoomIn = new("ZoomIn");
+	public static readonly ActionEvent ZoomOut = new("ZoomOut");
 
-			yield return CameraReset;
-			yield return CameraPan;
-			yield return CameraRotate;
-			yield return ZoomIn;
-			yield return ZoomOut;
-		}
+	public static IEnumerable<ActionEvent> Actions() {
+		yield return MoveForward;
+		yield return MoveBack;
+		yield return MoveLeft;
+		yield return MoveRight;
+
+		yield return Jump;
+		yield return Sprint;
+		yield return Crouch;
+
+		yield return Interact;
+		yield return Interact2;
+		yield return Place;
+		yield return Consume;
+		yield return Inventory;
+		yield return Attack;
+
+		yield return MenuSelect;
+		yield return MenuExit;
+
+		yield return MenuUp;
+		yield return MenuDown;
+		yield return MenuLeft;
+		yield return MenuRight;
+		yield return PageLeft;
+		yield return PageRight;
+
+		yield return Hotbar1;
+		yield return Hotbar2;
+		yield return Hotbar3;
+		yield return Hotbar4;
+		yield return Hotbar5;
+		yield return HotbarNext;
+		yield return HotbarPrev;
+
+		yield return CameraReset;
+		yield return CameraPan;
+		yield return CameraRotate;
+		yield return ZoomIn;
+		yield return ZoomOut;
 	}
 }

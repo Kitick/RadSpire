@@ -1,4 +1,5 @@
-namespace ItemSystem {
+namespace ItemSystem;
+
     using Godot;
 
     public enum Rarity {
@@ -14,4 +15,3 @@ namespace ItemSystem {
             get; set;
         } = Rarity.Common;
     }
-}

@@ -1,34 +1,33 @@
+namespace ItemSystem;
+
+using Components;
 using Godot;
 using Services;
-using Components;
-using Character;
 
-namespace ItemSystem {
-	public partial class Sword : Area3D {
-		private static readonly LogService Log = new(nameof(Sword), enabled: true);
+public partial class Sword : Area3D {
+	private static readonly LogService Log = new(nameof(Sword), enabled: true);
 
-		private Node3D WeaponOwner = null!;
+	private Node3D WeaponOwner = null!;
 
-		public int Damage = 10;
+	public int Damage = 10;
 
-		private AudioStreamPlayer? impactSound;
+	private AudioStreamPlayer? impactSound;
 
-		public override void _Ready() {
-			WeaponOwner = GetOwner<Node3D>();
-			Monitoring = false;
-			BodyEntered += OnBodyEntered;
+	public override void _Ready() {
+		WeaponOwner = GetOwner<Node3D>();
+		Monitoring = false;
+		BodyEntered += OnBodyEntered;
 
-			impactSound = GetNode<AudioStreamPlayer>("ImpactSound");
-		}
+		impactSound = GetNode<AudioStreamPlayer>("ImpactSound");
+	}
 
-		private void OnBodyEntered(Node3D body) {
-			if(body == WeaponOwner) return;
-			
-			if(impactSound is {Playing: false}) impactSound.Play();
+	private void OnBodyEntered(Node3D body) {
+		if(body == WeaponOwner) return;
 
-			if(body is IHealth health) {
-				health.Hurt(Damage);
-			}
+		if(impactSound is { Playing: false }) impactSound.Play();
+
+		if(body is IHealth health) {
+			health.Hurt(Damage);
 		}
 	}
 }

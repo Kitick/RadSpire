@@ -1,6 +1,6 @@
 namespace Root;
 
-using Core;
+using GameWorld;
 using Godot;
 using Services;
 using Services.Settings;

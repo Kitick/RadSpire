@@ -1,150 +1,150 @@
+namespace Services.Network;
+
 using System;
 using System.Text.Json;
 using Godot;
 
-namespace Services.Network {
-	public enum TransferMode { Reliable, Unreliable }
+public enum TransferMode { Reliable, Unreliable }
 
-	public sealed partial class NetworkSync<T> : Node where T : INetworkData {
-		private static readonly LogService Log = new(nameof(NetworkSync<>), enabled: true);
+public sealed partial class NetworkSync<T> : Node where T : INetworkData {
+	private static readonly LogService Log = new(nameof(NetworkSync<>), enabled: true);
 
-		private readonly INetworkable<T> SyncObject;
-		private readonly TransferMode Mode;
-		private readonly int OwnerPeerId;
+	private readonly INetworkable<T> SyncObject;
+	private readonly TransferMode Mode;
+	private readonly int OwnerPeerId;
 
-		private string LogPrefix => $"{{Peer {OwnerPeerId}}}:";
+	private string LogPrefix => $"{{Peer {OwnerPeerId}}}:";
 
-		private bool HasPendingStateChange = false;
+	private bool HasPendingStateChange = false;
 
-		private static readonly JsonSerializerOptions NetJsonOptions = new();
+	private static readonly JsonSerializerOptions NetJsonOptions = new();
 
-		private bool IsOwner => Server.Instance.IsOwner(OwnerPeerId);
-		private bool IsServer => Multiplayer.IsServer();
-		private string SerializeState() => JsonService.Serialize(SyncObject.Export(), NetJsonOptions);
+	private bool IsOwner => Server.Instance.IsOwner(OwnerPeerId);
+	private bool IsServer => Multiplayer.IsServer();
+	private string SerializeState() => JsonService.Serialize(SyncObject.Export(), NetJsonOptions);
 
-		public NetworkSync(INetworkable<T> syncObject, int ownerPeerId, string syncId = "sync", TransferMode mode = TransferMode.Reliable) {
-			SyncObject = syncObject;
-			OwnerPeerId = ownerPeerId;
-			Mode = mode;
-			Name = $"NetworkSync_{syncId}_{ownerPeerId}";
-		}
+	public NetworkSync(INetworkable<T> syncObject, int ownerPeerId, string syncId = "sync", TransferMode mode = TransferMode.Reliable) {
+		SyncObject = syncObject;
+		OwnerPeerId = ownerPeerId;
+		Mode = mode;
+		Name = $"NetworkSync_{syncId}_{ownerPeerId}";
+	}
 
-		public override void _Ready() {
-			if(IsOwner) {
-				SyncObject.OnChanged += OnLocalStateChanged;
-
-				if(IsServer) {
-					CallDeferred(nameof(BroadcastCurrentState));
-				}
-			}
-			else if(!IsServer) {
-				CallDeferred(nameof(RequestCurrentState));
-			}
-		}
-
-		public override void _ExitTree() {
-			SyncObject.OnChanged -= OnLocalStateChanged;
-		}
-
-		public override void _Process(double delta) {
-			if(!Server.Instance.IsNetworkConnected) { return; }
-			if(HasPendingStateChange && IsOwner) {
-				HasPendingStateChange = false;
-				SendStateUpdate();
-			}
-		}
-
-		private void OnLocalStateChanged() {
-			if(!IsInsideTree()) { return; }
-			HasPendingStateChange = true;
-		}
-
-		private void SendStateUpdate() {
-			var json = SerializeState();
-
-			Log.Info($"{LogPrefix} Sending state update to host");
+	public override void _Ready() {
+		if(IsOwner) {
+			SyncObject.OnChanged += OnLocalStateChanged;
 
 			if(IsServer) {
-				ProcessAndBroadcast(OwnerPeerId, json);
-				return;
+				CallDeferred(nameof(BroadcastCurrentState));
 			}
-
-			if(Mode == TransferMode.Unreliable) {
-				RpcId(1, nameof(SendToHostUnreliable), json);
-			}
-			else {
-				RpcId(1, nameof(SendToHostReliable), json);
-			}
-
 		}
+		else if(!IsServer) {
+			CallDeferred(nameof(RequestCurrentState));
+		}
+	}
 
-		[Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = false, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
-		private void SendToHostReliable(string json) => HandleSendToHost(json);
+	public override void _ExitTree() {
+		SyncObject.OnChanged -= OnLocalStateChanged;
+	}
 
-		[Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = false, TransferMode = MultiplayerPeer.TransferModeEnum.Unreliable)]
-		private void SendToHostUnreliable(string json) => HandleSendToHost(json);
+	public override void _Process(double delta) {
+		if(!Server.Instance.IsNetworkConnected) { return; }
+		if(HasPendingStateChange && IsOwner) {
+			HasPendingStateChange = false;
+			SendStateUpdate();
+		}
+	}
 
-		private void HandleSendToHost(string json) {
-			if(!IsServer) return;
+	private void OnLocalStateChanged() {
+		if(!IsInsideTree()) { return; }
+		HasPendingStateChange = true;
+	}
 
-			var actualSender = Server.Instance.RemoteSenderId;
-			Log.Info($"{LogPrefix} Host received update from peer {actualSender}");
+	private void SendStateUpdate() {
+		var json = SerializeState();
 
-			if(actualSender != OwnerPeerId) {
-				Log.Error($"{LogPrefix} Peer {actualSender} tried to update object owned by {OwnerPeerId}");
-				return;
-			}
+		Log.Info($"{LogPrefix} Sending state update to host");
 
+		if(IsServer) {
 			ProcessAndBroadcast(OwnerPeerId, json);
+			return;
 		}
 
-		private void ProcessAndBroadcast(int senderPeerId, string json) {
-			var data = JsonService.Deserialize<T>(json, NetJsonOptions);
-
-			Log.Info($"{LogPrefix} Host broadcasting to all clients");
-
-			if(Mode == TransferMode.Unreliable) {
-				Rpc(nameof(ReceiveFromHostUnreliable), json);
-			}
-			else {
-				Rpc(nameof(ReceiveFromHostReliable), json);
-			}
+		if(Mode == TransferMode.Unreliable) {
+			RpcId(1, nameof(SendToHostUnreliable), json);
+		}
+		else {
+			RpcId(1, nameof(SendToHostReliable), json);
 		}
 
-		[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
-		private void ReceiveFromHostReliable(string json) => HandleReceiveFromHost(json);
+	}
 
-		[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Unreliable)]
-		private void ReceiveFromHostUnreliable(string json) => HandleReceiveFromHost(json);
+	[Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = false, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+	private void SendToHostReliable(string json) => HandleSendToHost(json);
 
-		private void HandleReceiveFromHost(string json) {
-			if(IsOwner) { return; }
+	[Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = false, TransferMode = MultiplayerPeer.TransferModeEnum.Unreliable)]
+	private void SendToHostUnreliable(string json) => HandleSendToHost(json);
 
-			Log.Info($"{LogPrefix} Received broadcast, applying to SyncObject");
-			var data = JsonService.Deserialize<T>(json, NetJsonOptions);
-			SyncObject.Import(data);
+	private void HandleSendToHost(string json) {
+		if(!IsServer) return;
+
+		var actualSender = Server.Instance.RemoteSenderId;
+		Log.Info($"{LogPrefix} Host received update from peer {actualSender}");
+
+		if(actualSender != OwnerPeerId) {
+			Log.Error($"{LogPrefix} Peer {actualSender} tried to update object owned by {OwnerPeerId}");
+			return;
 		}
 
-		private void RequestCurrentState() {
-			if(!IsInsideTree()) { return; }
+		ProcessAndBroadcast(OwnerPeerId, json);
+	}
 
-			Log.Info($"{LogPrefix} Requesting current state from host");
-			RpcId(1, nameof(SendCurrentStateTo), Multiplayer.GetUniqueId());
+	private void ProcessAndBroadcast(int senderPeerId, string json) {
+		var data = JsonService.Deserialize<T>(json, NetJsonOptions);
+
+		Log.Info($"{LogPrefix} Host broadcasting to all clients");
+
+		if(Mode == TransferMode.Unreliable) {
+			Rpc(nameof(ReceiveFromHostUnreliable), json);
 		}
-
-		[Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = false, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
-		private void SendCurrentStateTo(int requesterId) {
-			if(!IsServer) { return; }
-
-			Log.Info($"{LogPrefix} Sending current state to peer {requesterId}");
-			RpcId(requesterId, nameof(ReceiveFromHostReliable), SerializeState());
+		else {
+			Rpc(nameof(ReceiveFromHostReliable), json);
 		}
+	}
 
-		private void BroadcastCurrentState() {
-			if(!IsInsideTree() || !IsServer) { return; }
+	[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+	private void ReceiveFromHostReliable(string json) => HandleReceiveFromHost(json);
 
-			Log.Info($"{LogPrefix} Broadcasting initial state to all clients");
-			Rpc(nameof(ReceiveFromHostReliable), SerializeState());
-		}
+	[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Unreliable)]
+	private void ReceiveFromHostUnreliable(string json) => HandleReceiveFromHost(json);
+
+	private void HandleReceiveFromHost(string json) {
+		if(IsOwner) { return; }
+
+		Log.Info($"{LogPrefix} Received broadcast, applying to SyncObject");
+		var data = JsonService.Deserialize<T>(json, NetJsonOptions);
+		SyncObject.Import(data);
+	}
+
+	private void RequestCurrentState() {
+		if(!IsInsideTree()) { return; }
+
+		Log.Info($"{LogPrefix} Requesting current state from host");
+		RpcId(1, nameof(SendCurrentStateTo), Multiplayer.GetUniqueId());
+	}
+
+	[Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = false, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+	private void SendCurrentStateTo(int requesterId) {
+		if(!IsServer) { return; }
+
+		Log.Info($"{LogPrefix} Sending current state to peer {requesterId}");
+		RpcId(requesterId, nameof(ReceiveFromHostReliable), SerializeState());
+	}
+
+	private void BroadcastCurrentState() {
+		if(!IsInsideTree() || !IsServer) { return; }
+
+		Log.Info($"{LogPrefix} Broadcasting initial state to all clients");
+		Rpc(nameof(ReceiveFromHostReliable), SerializeState());
 	}
 }

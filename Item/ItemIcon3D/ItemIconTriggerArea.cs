@@ -1,9 +1,10 @@
+namespace ItemSystem;
 using System;
 using Character;
 using Godot;
 using Services;
 
-namespace ItemSystem {
+
 	public partial class ItemIconTriggerArea : Area3D {
 		private static readonly LogService Log = new(nameof(ItemIconTriggerArea), enabled: true);
 
@@ -33,4 +34,3 @@ namespace ItemSystem {
 			}
 		}
 	}
-}

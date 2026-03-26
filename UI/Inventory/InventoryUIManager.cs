@@ -1,8 +1,9 @@
+namespace UI;
 using Godot;
 using Services;
 using ItemSystem;
 
-namespace UI {
+
 	public partial class InventoryUIManager : Control {
 		private static readonly LogService Log = new(nameof(InventoryUIManager), enabled: true);
 		public InventoryManager InventoryManager = null!;
@@ -67,4 +68,4 @@ namespace UI {
 			}
 		}
 	}
-}
+

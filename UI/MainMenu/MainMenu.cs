@@ -1,8 +1,8 @@
 namespace UI.MainMenu;
 
 using System;
-using Core;
 using Godot;
+using Root;
 using Services;
 using UI.Multiplayer;
 using UI.Settings;

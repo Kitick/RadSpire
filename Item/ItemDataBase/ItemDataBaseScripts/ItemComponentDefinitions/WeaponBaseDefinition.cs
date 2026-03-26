@@ -1,4 +1,5 @@
-namespace ItemSystem {
+namespace ItemSystem;
+
     using Godot;
 
     [GlobalClass]
@@ -13,4 +14,3 @@ namespace ItemSystem {
             get; set;
         } = 1f;
     }
-}

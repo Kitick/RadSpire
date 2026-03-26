@@ -1,3 +1,4 @@
+namespace UI;
 using System;
 using System.Collections.Generic;
 using Godot;
@@ -5,7 +6,7 @@ using Services;
 using Character;
 using ItemSystem;
 
-namespace UI {
+
 	public interface IInventoryUI {
 		Inventory Inventory { get; set; }
 		Rect2 GetGlobalRect();
@@ -209,4 +210,4 @@ namespace UI {
 			}
 		}
 	}
-}
+

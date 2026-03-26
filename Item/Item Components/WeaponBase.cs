@@ -1,4 +1,5 @@
-namespace Components {
+namespace Components;
+
 	using System;
 	using ItemSystem;
 	using Character;
@@ -50,4 +51,3 @@ namespace Components {
 		public int BaseAttack { get; init; }
 		public float AttackSpeed { get; init; }
 	}
-}

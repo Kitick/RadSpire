@@ -1,260 +1,260 @@
-namespace UI {
-	using System;
-	using Character;
-	using Core;
-	using Godot;
-	using ItemSystem;
-	using Services;
-	using UI.Multiplayer;
-	using UI.Settings;
-	using MenuState = Root.GameManager.MenuState;
+namespace UI;
 
-	public sealed partial class HUD : Control {
-		private static readonly LogService Log = new(nameof(HUD), enabled: true);
+using System;
+using Character;
+using Godot;
+using ItemSystem;
+using Root;
+using Services;
+using UI.Multiplayer;
+using UI.Settings;
+using MenuState = GameWorld.GameManager.MenuState;
 
-		[ExportCategory("HUD Elements")]
-		[Export] private Button PauseButton = null!;
-		[Export] private PauseMenu PauseMenu = null!;
-		[Export] private InventoryUI Inventory = null!;
-		[Export] private CraftingUI CraftingUI = null!;
-		[Export] public InventoryItemInformationUI InventoryItemInformationUI = null!;
-		[Export] private InventoryUI Chest = null!;
-		[Export] private Control QuestLog = null!;
-		[Export] private Hotbar Hotbar = null!;
-		[Export] private RespawnMenu RespawnMenu = null!;
-		[Export] private ProgressBar HealthBar = null!;
-		[Export] private Control WinMenu = null!;
+public sealed partial class HUD : Control {
+	private static readonly LogService Log = new(nameof(HUD), enabled: true);
 
-		[ExportCategory("HUD Scenes")]
-		[Export] private PackedScene SettingsScene = null!;
-		[Export] private PackedScene SaveMenuScene = null!;
-		[Export] private PackedScene HostPanelScene = null!;
+	[ExportCategory("HUD Elements")]
+	[Export] private Button PauseButton = null!;
+	[Export] private PauseMenu PauseMenu = null!;
+	[Export] private InventoryUI Inventory = null!;
+	[Export] private CraftingUI CraftingUI = null!;
+	[Export] public InventoryItemInformationUI InventoryItemInformationUI = null!;
+	[Export] private InventoryUI Chest = null!;
+	[Export] private Control QuestLog = null!;
+	[Export] private Hotbar Hotbar = null!;
+	[Export] private RespawnMenu RespawnMenu = null!;
+	[Export] private ProgressBar HealthBar = null!;
+	[Export] private Control WinMenu = null!;
 
-		public Player Player = null!;
+	[ExportCategory("HUD Scenes")]
+	[Export] private PackedScene SettingsScene = null!;
+	[Export] private PackedScene SaveMenuScene = null!;
+	[Export] private PackedScene HostPanelScene = null!;
 
-		private StateMachine<MenuState> StateMachineRef = null!;
-		private Action? Unsubscribe;
-		private Label InteractionPrompt = null!;
+	public Player Player = null!;
 
-		public event Action? ResumeRequested;
-		public event Action? PauseRequested;
-		public event Action? SettingsRequested;
-		public event Action? HostRequested;
-		public event Action? MainMenuRequested;
-		public event Action? RespawnRequested;
-		public event Action<bool>? InventoryRequested;
-		public event Action<bool>? ChestRequested;
-		public event Action<string>? SaveRequested;
+	private StateMachine<MenuState> StateMachineRef = null!;
+	private Action? Unsubscribe;
+	private Label InteractionPrompt = null!;
 
-		public void Init(Player player, StateMachine<MenuState> stateMachine) {
-			Player = player;
-			CraftingUI.Inventories.Add(player.Inventory);
-			CraftingUI.Inventories.Add(player.Hotbar);
-			StateMachineRef = stateMachine;
-			Inventory.Initialize(player.Inventory, player);
-			Hotbar.Initialize(player.Hotbar, player);
-			ConfigureStateMachine(stateMachine);
+	public event Action? ResumeRequested;
+	public event Action? PauseRequested;
+	public event Action? SettingsRequested;
+	public event Action? HostRequested;
+	public event Action? MainMenuRequested;
+	public event Action? RespawnRequested;
+	public event Action<bool>? InventoryRequested;
+	public event Action<bool>? ChestRequested;
+	public event Action<string>? SaveRequested;
+
+	public void Init(Player player, StateMachine<MenuState> stateMachine) {
+		Player = player;
+		CraftingUI.Inventories.Add(player.Inventory);
+		CraftingUI.Inventories.Add(player.Hotbar);
+		StateMachineRef = stateMachine;
+		Inventory.Initialize(player.Inventory, player);
+		Hotbar.Initialize(player.Hotbar, player);
+		ConfigureStateMachine(stateMachine);
+	}
+
+	public override void _Ready() {
+		this.ValidateExports();
+		ProcessMode = ProcessModeEnum.Always;
+
+		InteractionPrompt = GetNode<Label>("InteractionPrompt");
+		InteractionPrompt.Visible = false;
+
+		SetCallbacks();
+		SetInputCallbacks();
+		UpdateHealthBar();
+	}
+
+	public override void _ExitTree() {
+		Unsubscribe?.Invoke();
+	}
+
+	private void SetInputCallbacks() {
+		Unsubscribe = ActionEvent.Inventory.WhenPressed(ToggleInventory);
+
+		Unsubscribe += ActionEvent.MenuExit.WhenPressed(() => {
+			if(StateMachineRef.CurrentState == MenuState.Game) { PauseRequested?.Invoke(); }
+			else if(StateMachineRef.CurrentState != MenuState.Game) { ResumeRequested?.Invoke(); }
+		});
+	}
+
+	private void ConfigureStateMachine(StateMachine<MenuState> stateMachine) {
+		// Game state - normal gameplay
+		stateMachine.OnEnter(MenuState.Game, () => {
+			PauseMenu.CloseMenu();
+			RespawnMenu.CloseMenu();
+			Inventory.Visible = false;
+			CraftingUI.Visible = false;
+			InventoryItemInformationUI.Visible = false;
+		});
+
+		// Paused state
+		stateMachine.OnEnter(MenuState.Paused, PauseMenu.OpenMenu);
+		stateMachine.OnExit(MenuState.Paused, PauseMenu.CloseMenu);
+
+		// Settings state
+		stateMachine.OnEnter(MenuState.Settings, OpenSettingsPanel);
+
+		// Inventory state
+		stateMachine.OnEnter(MenuState.Inventory, () => {
+			Inventory.Visible = true;
+			CraftingUI.Visible = true;
+			Hotbar.Visible = true;
+			CraftingUI.RefreshUI();
+			InventoryItemInformationUI.Visible = true;
+			InventoryRequested?.Invoke(true);
+		});
+
+		stateMachine.OnExit(MenuState.Inventory, () => {
+			Inventory.Visible = false;
+			CraftingUI.Visible = false;
+			InventoryItemInformationUI.Visible = false;
+			InventoryRequested?.Invoke(false);
+		});
+
+		// Chest state
+		stateMachine.OnEnter(MenuState.Chest, () => {
+			Chest.Visible = true;
+			ChestRequested?.Invoke(true);
+			Inventory.Visible = true;
+			InventoryItemInformationUI.Visible = false;
+			Hotbar.Visible = true;
+			InventoryRequested?.Invoke(true);
+		});
+
+		stateMachine.OnExit(MenuState.Chest, () => {
+			Chest.Visible = false;
+			ChestRequested?.Invoke(false);
+			Inventory.Visible = false;
+			InventoryItemInformationUI.Visible = false;
+			Hotbar.Visible = true;
+			InventoryRequested?.Invoke(false);
+		});
+
+		// Host state
+		stateMachine.OnEnter(MenuState.Host, OpenHostPanel);
+
+		// Death state
+		stateMachine.OnEnter(MenuState.Death, RespawnMenu.OpenMenu);
+		stateMachine.OnExit(MenuState.Death, RespawnMenu.CloseMenu);
+	}
+
+	private void SetCallbacks() {
+		// Pause button in HUD
+		PauseButton.Pressed += () => PauseRequested?.Invoke();
+
+		// Pause menu buttons
+		PauseMenu.ResumeButton.Pressed += () => ResumeRequested?.Invoke();
+		PauseMenu.SaveButton.Pressed += OpenSaveMenu;
+		PauseMenu.HostButton.Pressed += () => HostRequested?.Invoke();
+		PauseMenu.SettingsButton.Pressed += () => SettingsRequested?.Invoke();
+		PauseMenu.MainMenuButton.Pressed += () => MainMenuRequested?.Invoke();
+
+		// Respawn menu buttons
+		RespawnMenu.RespawnButton.Pressed += () => RespawnRequested?.Invoke();
+		RespawnMenu.MainMenuButton.Pressed += () => MainMenuRequested?.Invoke();
+
+		// Health bar updates
+		Player.Health.OnChanged += (_, _) => UpdateHealthBar();
+	}
+
+	private void UpdateHealthBar() {
+		int current = Player.Health.Current;
+		int max = Player.Health.Max;
+
+		HealthBar.MaxValue = max;
+		HealthBar.Value = current;
+	}
+
+	public void Win() {
+		WinMenu.Visible = true;
+		GetTree().CreateTimer(5.0f).Timeout += () => { GetTree().Quit(); };
+	}
+
+	private void OpenSettingsPanel() {
+		var settings = this.AddScene<SettingsMenu>(SettingsScene);
+		settings.TreeExited += () => PauseRequested?.Invoke();
+		settings.OpenMenu();
+	}
+
+	private void OpenHostPanel() {
+		var hostPanel = this.AddScene<HostPanel>(HostPanelScene);
+		hostPanel.UpdateHostText("Host Game");
+		hostPanel.OpenMenu();
+	}
+
+	private void OpenSaveMenu() {
+		var saveMenu = this.AddScene<SaveMenu>(SaveMenuScene);
+		saveMenu.OnSave += fileName => SaveRequested?.Invoke(fileName);
+		saveMenu.OpenMenu(SaveMenu.SaveMode.Save);
+	}
+
+	public void ShowInteractionPrompt(string text) {
+		InteractionPrompt.Text = text;
+		InteractionPrompt.Visible = true;
+	}
+
+	public void HideInteractionPrompt() {
+		InteractionPrompt.Visible = false;
+	}
+
+	private void ToggleInventory() {
+		if(!StateMachineRef.IsSettled) {
+			Log.Info("state machine not started, starting at Game");
+			StateMachineRef.Start(MenuState.Game);
 		}
 
-		public override void _Ready() {
-			this.ValidateExports();
-			ProcessMode = ProcessModeEnum.Always;
+		if(StateMachineRef.CurrentState == MenuState.Chest) {
+			Log.Info("Closing Chest");
+			StateMachineRef.TransitionTo(MenuState.Game);
+		}
+		else if(StateMachineRef.CurrentState == MenuState.Inventory) {
+			Log.Info("Closing Inventory");
+			StateMachineRef.TransitionTo(MenuState.Game);
+		}
+		else {
+			Log.Info("Opening Inventory");
+			StateMachineRef.TransitionTo(MenuState.Inventory);
+		}
+	}
 
-			InteractionPrompt = GetNode<Label>("InteractionPrompt");
-			InteractionPrompt.Visible = false;
-
-			SetCallbacks();
-			SetInputCallbacks();
-			UpdateHealthBar();
+	public void ToggleChest() {
+		if(!StateMachineRef.IsSettled) {
+			Log.Info("state machine not started, starting at Game");
+			StateMachineRef.Start(MenuState.Game);
 		}
 
-		public override void _ExitTree() {
-			Unsubscribe?.Invoke();
+		if(StateMachineRef.CurrentState == MenuState.Chest) {
+			Log.Info("Closing Chest");
+			StateMachineRef.TransitionTo(MenuState.Game);
+		}
+		else {
+			Log.Info("Opening Chest");
+			StateMachineRef.TransitionTo(MenuState.Chest);
+		}
+	}
+
+	public void OpenChest(Inventory chestInventory, Player player) {
+		if(chestInventory == null || player == null) {
+			Log.Error("chestInventory or player is null");
+			return;
 		}
 
-		private void SetInputCallbacks() {
-			Unsubscribe = ActionEvent.Inventory.WhenPressed(ToggleInventory);
+		chestInventory.Name = "Chest";
 
-			Unsubscribe += ActionEvent.MenuExit.WhenPressed(() => {
-				if(StateMachineRef.CurrentState == MenuState.Game) { PauseRequested?.Invoke(); }
-				else if(StateMachineRef.CurrentState != MenuState.Game) { ResumeRequested?.Invoke(); }
-			});
+		Chest.Initialize(chestInventory, player);
+		Chest.SetLabelText("Chest");
+
+		if(!StateMachineRef.IsSettled) {
+			StateMachineRef.Start(MenuState.Game);
 		}
 
-		private void ConfigureStateMachine(StateMachine<MenuState> stateMachine) {
-			// Game state - normal gameplay
-			stateMachine.OnEnter(MenuState.Game, () => {
-				PauseMenu.CloseMenu();
-				RespawnMenu.CloseMenu();
-				Inventory.Visible = false;
-				CraftingUI.Visible = false;
-				InventoryItemInformationUI.Visible = false;
-			});
-
-			// Paused state
-			stateMachine.OnEnter(MenuState.Paused, PauseMenu.OpenMenu);
-			stateMachine.OnExit(MenuState.Paused, PauseMenu.CloseMenu);
-
-			// Settings state
-			stateMachine.OnEnter(MenuState.Settings, OpenSettingsPanel);
-
-			// Inventory state
-			stateMachine.OnEnter(MenuState.Inventory, () => {
-				Inventory.Visible = true;
-				CraftingUI.Visible = true;
-				Hotbar.Visible = true;
-				CraftingUI.RefreshUI();
-				InventoryItemInformationUI.Visible = true;
-				InventoryRequested?.Invoke(true);
-			});
-
-			stateMachine.OnExit(MenuState.Inventory, () => {
-				Inventory.Visible = false;
-				CraftingUI.Visible = false;
-				InventoryItemInformationUI.Visible = false;
-				InventoryRequested?.Invoke(false);
-			});
-
-			// Chest state
-			stateMachine.OnEnter(MenuState.Chest, () => {
-				Chest.Visible = true;
-				ChestRequested?.Invoke(true);
-				Inventory.Visible = true;
-				InventoryItemInformationUI.Visible = false;
-				Hotbar.Visible = true;
-				InventoryRequested?.Invoke(true);
-			});
-
-			stateMachine.OnExit(MenuState.Chest, () => {
-				Chest.Visible = false;
-				ChestRequested?.Invoke(false);
-				Inventory.Visible = false;
-				InventoryItemInformationUI.Visible = false;
-				Hotbar.Visible = true;
-				InventoryRequested?.Invoke(false);
-			});
-
-			// Host state
-			stateMachine.OnEnter(MenuState.Host, OpenHostPanel);
-
-			// Death state
-			stateMachine.OnEnter(MenuState.Death, RespawnMenu.OpenMenu);
-			stateMachine.OnExit(MenuState.Death, RespawnMenu.CloseMenu);
-		}
-
-		private void SetCallbacks() {
-			// Pause button in HUD
-			PauseButton.Pressed += () => PauseRequested?.Invoke();
-
-			// Pause menu buttons
-			PauseMenu.ResumeButton.Pressed += () => ResumeRequested?.Invoke();
-			PauseMenu.SaveButton.Pressed += OpenSaveMenu;
-			PauseMenu.HostButton.Pressed += () => HostRequested?.Invoke();
-			PauseMenu.SettingsButton.Pressed += () => SettingsRequested?.Invoke();
-			PauseMenu.MainMenuButton.Pressed += () => MainMenuRequested?.Invoke();
-
-			// Respawn menu buttons
-			RespawnMenu.RespawnButton.Pressed += () => RespawnRequested?.Invoke();
-			RespawnMenu.MainMenuButton.Pressed += () => MainMenuRequested?.Invoke();
-
-			// Health bar updates
-			Player.Health.OnChanged += (_, _) => UpdateHealthBar();
-		}
-
-		private void UpdateHealthBar() {
-			int current = Player.Health.Current;
-			int max = Player.Health.Max;
-
-			HealthBar.MaxValue = max;
-			HealthBar.Value = current;
-		}
-
-		public void Win() {
-			WinMenu.Visible = true;
-			GetTree().CreateTimer(5.0f).Timeout += () => { GetTree().Quit(); };
-		}
-
-		private void OpenSettingsPanel() {
-			var settings = this.AddScene<SettingsMenu>(SettingsScene);
-			settings.TreeExited += () => PauseRequested?.Invoke();
-			settings.OpenMenu();
-		}
-
-		private void OpenHostPanel() {
-			var hostPanel = this.AddScene<HostPanel>(HostPanelScene);
-			hostPanel.UpdateHostText("Host Game");
-			hostPanel.OpenMenu();
-		}
-
-		private void OpenSaveMenu() {
-			var saveMenu = this.AddScene<SaveMenu>(SaveMenuScene);
-			saveMenu.OnSave += fileName => SaveRequested?.Invoke(fileName);
-			saveMenu.OpenMenu(SaveMenu.SaveMode.Save);
-		}
-
-		public void ShowInteractionPrompt(string text) {
-			InteractionPrompt.Text = text;
-			InteractionPrompt.Visible = true;
-		}
-
-		public void HideInteractionPrompt() {
-			InteractionPrompt.Visible = false;
-		}
-
-		private void ToggleInventory() {
-			if(!StateMachineRef.IsSettled) {
-				Log.Info("state machine not started, starting at Game");
-				StateMachineRef.Start(MenuState.Game);
-			}
-
-			if(StateMachineRef.CurrentState == MenuState.Chest) {
-				Log.Info("Closing Chest");
-				StateMachineRef.TransitionTo(MenuState.Game);
-			}
-			else if(StateMachineRef.CurrentState == MenuState.Inventory) {
-				Log.Info("Closing Inventory");
-				StateMachineRef.TransitionTo(MenuState.Game);
-			}
-			else {
-				Log.Info("Opening Inventory");
-				StateMachineRef.TransitionTo(MenuState.Inventory);
-			}
-		}
-
-		public void ToggleChest() {
-			if(!StateMachineRef.IsSettled) {
-				Log.Info("state machine not started, starting at Game");
-				StateMachineRef.Start(MenuState.Game);
-			}
-
-			if(StateMachineRef.CurrentState == MenuState.Chest) {
-				Log.Info("Closing Chest");
-				StateMachineRef.TransitionTo(MenuState.Game);
-			}
-			else {
-				Log.Info("Opening Chest");
-				StateMachineRef.TransitionTo(MenuState.Chest);
-			}
-		}
-
-		public void OpenChest(Inventory chestInventory, Player player) {
-			if(chestInventory == null || player == null) {
-				Log.Error("chestInventory or player is null");
-				return;
-			}
-
-			chestInventory.Name = "Chest";
-
-			Chest.Initialize(chestInventory, player);
-			Chest.SetLabelText("Chest");
-
-			if(!StateMachineRef.IsSettled) {
-				StateMachineRef.Start(MenuState.Game);
-			}
-
-			if(StateMachineRef.CurrentState != MenuState.Chest) {
-				ToggleChest();
-			}
+		if(StateMachineRef.CurrentState != MenuState.Chest) {
+			ToggleChest();
 		}
 	}
 }

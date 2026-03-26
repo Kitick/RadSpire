@@ -1,35 +1,35 @@
-namespace Components {
-	using Camera;
-	using Core;
-	using Godot;
-	using Services;
+namespace Components;
 
-	public sealed class KeyInput {
-		public Vector3 HorizontalInput { get; private set; }
+using Camera;
+using Godot;
+using Root;
+using Services;
 
-		public bool SprintHeld { get; private set; }
-		public bool CrouchHeld { get; private set; }
-		public bool JumpPressed { get; private set; }
-		public bool AttackPressed { get; private set; }
+public sealed class KeyInput {
+	public Vector3 HorizontalInput { get; private set; }
 
-		public bool IsMoving => HorizontalInput.Length() >= Numbers.EPSILON;
+	public bool SprintHeld { get; private set; }
+	public bool CrouchHeld { get; private set; }
+	public bool JumpPressed { get; private set; }
+	public bool AttackPressed { get; private set; }
 
-		public void Update(CameraRig camera) {
-			HorizontalInput = GetHorizontalMovement(camera);
-			JumpPressed = ActionEvent.Jump.IsJustPressed();
-			SprintHeld = ActionEvent.Sprint.IsPressed();
-			CrouchHeld = ActionEvent.Crouch.IsPressed();
-			AttackPressed = ActionEvent.Attack.IsJustPressed();
-		}
+	public bool IsMoving => HorizontalInput.Length() >= Numbers.EPSILON;
 
-		private static Vector3 GetHorizontalMovement(CameraRig camera) {
-			Vector2 inputVector = Input.GetVector(ActionEvent.MoveLeft.Name, ActionEvent.MoveRight.Name, ActionEvent.MoveForward.Name, ActionEvent.MoveBack.Name);
+	public void Update(CameraRig camera) {
+		HorizontalInput = GetHorizontalMovement(camera);
+		JumpPressed = ActionEvent.Jump.IsJustPressed();
+		SprintHeld = ActionEvent.Sprint.IsPressed();
+		CrouchHeld = ActionEvent.Crouch.IsPressed();
+		AttackPressed = ActionEvent.Attack.IsJustPressed();
+	}
 
-			Vector3 direction = new Vector3(inputVector.X, 0, inputVector.Y);
+	private static Vector3 GetHorizontalMovement(CameraRig camera) {
+		Vector2 inputVector = Input.GetVector(ActionEvent.MoveLeft.Name, ActionEvent.MoveRight.Name, ActionEvent.MoveForward.Name, ActionEvent.MoveBack.Name);
 
-			Vector3 rotated = camera.Pose.AlignVector(direction);
+		Vector3 direction = new Vector3(inputVector.X, 0, inputVector.Y);
 
-			return rotated.Normalized();
-		}
+		Vector3 rotated = camera.Pose.AlignVector(direction);
+
+		return rotated.Normalized();
 	}
 }

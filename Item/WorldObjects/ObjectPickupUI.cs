@@ -1,76 +1,76 @@
-namespace Objects {
-    using System;
-    using Godot;
-    using ItemSystem;
-    using Services;
+namespace Objects;
 
-    public sealed class ObjectPickupUI {
-        private static readonly LogService Log = new(nameof(ObjectPickupUI), enabled: true);
-        private readonly ObjectPickup ObjectPickup;
-        private readonly PackedScene? ObjectPickupUINodeTemplate;
-        private readonly Vector3 PromptOffset;
-        private Node3D? CurrentPromptInstance;
+using System;
+using Godot;
+using ItemSystem;
+using Services;
 
-        public ObjectPickupUI(ObjectPickup objectPickup, Vector3? promptOffset = null) {
-            ObjectPickup = objectPickup;
-            ObjectPickupUINodeTemplate = GD.Load<PackedScene>("res://Item/WorldObjects/ObjectPickupUINodeTemplate.tscn");
-            if(promptOffset != null){
-                PromptOffset = promptOffset.Value;
-            }
-            else {
-                PromptOffset = new Vector3(0f, 1.35f, 0f);
-            }
+public sealed class ObjectPickupUI {
+	private static readonly LogService Log = new(nameof(ObjectPickupUI), enabled: true);
+	private readonly ObjectPickup ObjectPickup;
+	private readonly PackedScene? ObjectPickupUINodeTemplate;
+	private readonly Vector3 PromptOffset;
+	private Node3D? CurrentPromptInstance;
 
-            ObjectPickup.AddedTargetObjectNode += HandleAddedTargetObjectNode;
-            ObjectPickup.RemovedTargetObjectNode += HandleRemovedTargetObjectNode;
+	public ObjectPickupUI(ObjectPickup objectPickup, Vector3? promptOffset = null) {
+		ObjectPickup = objectPickup;
+		ObjectPickupUINodeTemplate = GD.Load<PackedScene>("res://Item/WorldObjects/ObjectPickupUINodeTemplate.tscn");
+		if(promptOffset != null) {
+			PromptOffset = promptOffset.Value;
+		}
+		else {
+			PromptOffset = new Vector3(0f, 1.35f, 0f);
+		}
 
-            if(ObjectPickup.currentTargetObjectNode != null) {
-                Show(ObjectPickup.currentTargetObjectNode);
-            }
-        }
+		ObjectPickup.AddedTargetObjectNode += HandleAddedTargetObjectNode;
+		ObjectPickup.RemovedTargetObjectNode += HandleRemovedTargetObjectNode;
 
-        public void Dispose() {
-            ObjectPickup.AddedTargetObjectNode -= HandleAddedTargetObjectNode;
-            ObjectPickup.RemovedTargetObjectNode -= HandleRemovedTargetObjectNode;
-            Hide();
-        }
+		if(ObjectPickup.currentTargetObjectNode != null) {
+			Show(ObjectPickup.currentTargetObjectNode);
+		}
+	}
 
-        private void HandleAddedTargetObjectNode(ObjectNode objectNode) => Show(objectNode);
+	public void Dispose() {
+		ObjectPickup.AddedTargetObjectNode -= HandleAddedTargetObjectNode;
+		ObjectPickup.RemovedTargetObjectNode -= HandleRemovedTargetObjectNode;
+		Hide();
+	}
 
-        private void HandleRemovedTargetObjectNode(ObjectNode objectNode) => Hide();
+	private void HandleAddedTargetObjectNode(ObjectNode objectNode) => Show(objectNode);
 
-        public void Show(ObjectNode objectNode) {
-            Hide();
+	private void HandleRemovedTargetObjectNode(ObjectNode objectNode) => Hide();
 
-            if(ObjectPickupUINodeTemplate == null) {
-                Log.Error("Show: ObjectPickupUINodeTemplate is null.");
-                return;
-            }
+	public void Show(ObjectNode objectNode) {
+		Hide();
 
-            ItemDefinition? itemDef = ItemDataBaseManager.Instance.GetItemDefinitionById(objectNode.Data.ItemId);
-            if(itemDef == null) {
-                Log.Error($"Show: ItemDefinition not found for ID {objectNode.Data.ItemId}.");
-                return;
-            }
+		if(ObjectPickupUINodeTemplate == null) {
+			Log.Error("Show: ObjectPickupUINodeTemplate is null.");
+			return;
+		}
 
-            Node3D promptNode = ObjectPickupUINodeTemplate.Instantiate<Node3D>();
-            Control promptControl = promptNode.GetNode<Control>("SubViewport/Item3DIconPickupPrompt");
-            promptControl.GetNode<Label>("GlassPanel/Label").Text = itemDef.Name;
-            promptControl.GetNode<TextureRect>("GlassPanel/TextureRect").Texture = itemDef.IconTexture;
+		ItemDefinition? itemDef = ItemDataBaseManager.Instance.GetItemDefinitionById(objectNode.Data.ItemId);
+		if(itemDef == null) {
+			Log.Error($"Show: ItemDefinition not found for ID {objectNode.Data.ItemId}.");
+			return;
+		}
 
-            objectNode.AddChild(promptNode);
-            promptNode.Position = PromptOffset;
-            CurrentPromptInstance = promptNode;
-        }
+		Node3D promptNode = ObjectPickupUINodeTemplate.Instantiate<Node3D>();
+		Control promptControl = promptNode.GetNode<Control>("SubViewport/Item3DIconPickupPrompt");
+		promptControl.GetNode<Label>("GlassPanel/Label").Text = itemDef.Name;
+		promptControl.GetNode<TextureRect>("GlassPanel/TextureRect").Texture = itemDef.IconTexture;
 
-        public void Hide() {
-            if(CurrentPromptInstance == null) {
-                return;
-            }
-            if(GodotObject.IsInstanceValid(CurrentPromptInstance)) {
-                CurrentPromptInstance.QueueFree();
-            }
-            CurrentPromptInstance = null;
-        }
-    }
+		objectNode.AddChild(promptNode);
+		promptNode.Position = PromptOffset;
+		CurrentPromptInstance = promptNode;
+	}
+
+	public void Hide() {
+		if(CurrentPromptInstance == null) {
+			return;
+		}
+		if(GodotObject.IsInstanceValid(CurrentPromptInstance)) {
+			CurrentPromptInstance.QueueFree();
+		}
+		CurrentPromptInstance = null;
+	}
 }

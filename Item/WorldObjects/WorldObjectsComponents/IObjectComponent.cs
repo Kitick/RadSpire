@@ -1,4 +1,5 @@
-namespace Objects {
+namespace Objects;
+
     using System;
     using Godot;
     using Services;
@@ -11,4 +12,3 @@ namespace Objects {
     public interface IInteract {
         public bool Interact<TEntity>(TEntity interactor);
     }
-}

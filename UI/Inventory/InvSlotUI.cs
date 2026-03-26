@@ -1,9 +1,10 @@
+namespace UI;
 using System;
 using Godot;
 using Services;
 using ItemSystem;
 
-namespace UI {
+
 	public partial class InvSlotUI : Panel {
 		private static readonly LogService Log = new(nameof(InvSlotUI), enabled: true);
 
@@ -71,4 +72,4 @@ namespace UI {
 			Log.Info($"Slot {SlotIndex} hovered.");
 		}
 	}
-}
+
