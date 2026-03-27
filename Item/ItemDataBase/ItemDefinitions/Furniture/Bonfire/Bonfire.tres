@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://bdvnhypfm0ix3"]
+
+[ext_resource type="Script" uid="uid://cnm5iegiuj4xu" path="res://Item/Definitions/ItemComponentDefinition.cs" id="1_2v2f8"]
+[ext_resource type="Texture2D" uid="uid://ml8djmwtssf5" path="res://Item/Icons/Bonfire.png" id="2_6kh03"]
+[ext_resource type="Script" uid="uid://bxmh4fd7kjvv1" path="res://Item/Definitions/ItemDefinition.cs" id="2_g5wnp"]
+[ext_resource type="PackedScene" uid="uid://biwkp42fo758r" path="res://Item/ItemDataBase/ItemDefinitions/Furniture/Bonfire/Bonfire.tscn" id="3_6kh03"]
+
+[resource]
+script = ExtResource("2_g5wnp")
+Id = "Bonfire"
+Name = "Bonfire"
+Description = "A cozy little bonfire."
+IsConsumable = false
+IsPlaceable = true
+IconTexture = ExtResource("2_6kh03")
+ItemScene = ExtResource("3_6kh03")
+metadata/_custom_type_script = "uid://bxmh4fd7kjvv1"

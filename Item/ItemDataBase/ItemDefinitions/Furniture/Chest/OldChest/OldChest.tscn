@@ -1,0 +1,26 @@
+[gd_scene format=3 uid="uid://dna00eg1jcs3j"]
+
+[ext_resource type="PackedScene" uid="uid://cu5k0lhvyg6nv" path="res://Item/ItemDataBase/ItemDefinitions/Furniture/Chest/OldChest/OldChest.fbx" id="1_vwmbp"]
+[ext_resource type="Texture2D" uid="uid://blr40q8mpxr8y" path="res://Item/ItemDataBase/ItemDefinitions/Furniture/Chest/OldChest/OldChest.png" id="2_ioc72"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_yssrx"]
+albedo_texture = ExtResource("2_ioc72")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vjj6i"]
+albedo_texture = ExtResource("2_ioc72")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_crge3"]
+albedo_texture = ExtResource("2_ioc72")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ca7pu"]
+albedo_texture = ExtResource("2_ioc72")
+
+[node name="Old Chest" unique_id=745494050 instance=ExtResource("1_vwmbp")]
+
+[node name="chest " parent="." index="0" unique_id=1091614268]
+surface_material_override/0 = SubResource("StandardMaterial3D_yssrx")
+surface_material_override/1 = SubResource("StandardMaterial3D_vjj6i")
+
+[node name="chest cover" parent="." index="1" unique_id=779486146]
+surface_material_override/0 = SubResource("StandardMaterial3D_crge3")
+surface_material_override/1 = SubResource("StandardMaterial3D_ca7pu")

@@ -1,6 +1,0 @@
-[gd_scene format=3 uid="uid://daq87poi5sslo"]
-
-[ext_resource type="Script" uid="uid://cbgeureeilnfw" path="res://Item/Icons/Item3DIconManager.cs" id="1_aie8g"]
-
-[node name="Item3dIconManagerTemplate" type="Node" unique_id=1465290179]
-script = ExtResource("1_aie8g")

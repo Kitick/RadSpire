@@ -1,6 +1,6 @@
 namespace Crafting;
 
-using ItemSystem;
+using InventorySystem;
 
 public enum CraftStatus {
 	Success,
