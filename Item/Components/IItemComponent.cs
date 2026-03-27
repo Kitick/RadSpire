@@ -1,8 +1,5 @@
 namespace ItemSystem;
 
-	using System.Dynamic;
-	using Godot;
-
 	public interface IItemComponent {
 		public int priority { get; init; }
 		public string[] getComponentDescription();

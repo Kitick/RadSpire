@@ -1,13 +1,9 @@
-namespace Components;
+namespace ItemSystem;
 
-	using System;
-	using ItemSystem;
-	using Character;
-	using Services;
+using Character;
+using Components;
 
-	public interface IWeaponBase { WeaponBase Weapon { get; set; } }
-	
-	
+public interface IWeaponBase { WeaponBase Weapon { get; set; } }
 
 	public sealed class WeaponBase : Component<WeaponBaseData>, IItemComponent, IItemEquipable {
 		public int priority { get; init; } = 0;
@@ -16,9 +12,9 @@ namespace Components;
 
 		public string[] getComponentDescription() {
 			string[] componentDescriptions = new string[] {
-				$"+{BaseAttack} Attack",
-				$"{AttackSpeed}x Attack Speed"
-			};
+					$"+{BaseAttack} Attack",
+					$"{AttackSpeed}x Attack Speed"
+				};
 			return componentDescriptions;
 		}
 
