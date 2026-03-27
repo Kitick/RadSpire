@@ -1,4 +1,4 @@
-namespace UI;
+namespace UI.PauseMenu;
 
 using Godot;
 using Network;

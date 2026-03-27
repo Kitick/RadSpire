@@ -8,6 +8,7 @@ namespace Components;
 	using Root;
 	using Services;
 	using UI;
+	using UI.HUD;
 
 	public interface IInventoryComponent { InventoryComponent InventoryComponent { get; set; } }
 

@@ -11,7 +11,8 @@ using Objects;
 using Root;
 using Services;
 using Settings;
-using UI;
+using UI.Hotbar;
+using UI.HUD;
 
 public sealed partial class GameManager : Node {
 	private static readonly LogService Log = new(nameof(GameManager), enabled: true);

@@ -4,7 +4,7 @@ using System;
 using Components;
 using Godot;
 using Services;
-using UI;
+using UI.HUD;
 
 public sealed partial class NPC : CharacterBody3D {
 	private static readonly LogService Log = new(nameof(NPC), enabled: true);

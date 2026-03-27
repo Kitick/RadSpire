@@ -1,4 +1,4 @@
-namespace UI;
+namespace UI.HUD;
 
 using System;
 using Character;
@@ -9,6 +9,10 @@ using Network.Panels;
 using Root;
 using Services;
 using Settings.Interface;
+using UI.Hotbar;
+using UI.PauseMenu;
+using UI.RespawnMenu;
+using UI.SaveMenu;
 using MenuState = GameWorld.GameManager.MenuState;
 
 public sealed partial class HUD : Control {

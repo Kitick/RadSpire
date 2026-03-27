@@ -1,4 +1,4 @@
-namespace UI;
+namespace UI.RespawnMenu;
 
 using Godot;
 

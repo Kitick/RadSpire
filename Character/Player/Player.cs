@@ -7,7 +7,7 @@ using Godot;
 using ItemSystem;
 using Objects;
 using Services;
-using UI;
+using UI.Hotbar;
 
 public sealed partial class Player : CharacterBase, ISaveable<PlayerData> {
 	private static readonly LogService Log = new(nameof(Player), enabled: true);

@@ -5,7 +5,7 @@ using Character;
 using Godot;
 using ItemSystem;
 using Services;
-using UI;
+using UI.Hotbar;
 
 public static class ItemInteractions {
 	public static bool EquipItem<TEntity, TItem>(this TEntity user, TItem item)

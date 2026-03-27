@@ -1,4 +1,4 @@
-namespace UI;
+namespace UI.Hotbar;
 
 using System;
 using System.Collections.Generic;

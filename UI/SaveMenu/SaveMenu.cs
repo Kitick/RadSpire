@@ -1,4 +1,4 @@
-namespace UI;
+namespace UI.SaveMenu;
 
 using System;
 using Godot;

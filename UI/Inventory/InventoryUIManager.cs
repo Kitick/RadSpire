@@ -14,7 +14,7 @@ using ItemSystem;
 		public override void _Ready() {
 			base._Ready();
 			SetProcess(true);
-			InventoryManager = GetParent<InventoryUI>().GetParent<HUD>().Player.InventoryManager;
+			InventoryManager = GetParent<InventoryUI>().GetParent<UI.HUD.HUD>().Player.InventoryManager;
 			LoadTemplate();
 			InventoryManager.StartMoveItemEvent += CreateHeldItemSlotUI;
 			InventoryManager.EndMoveItemEvent += DestroyHeldItemSlotUI;

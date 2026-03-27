@@ -7,7 +7,7 @@ using Godot;
 using ItemSystem;
 using Root;
 using Services;
-using UI;
+using UI.Hotbar;
 
 public partial class ObjectPlacementManager : Node {
 	private static readonly LogService Log = new(nameof(ObjectPlacementManager), enabled: true);
