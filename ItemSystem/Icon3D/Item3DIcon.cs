@@ -16,7 +16,7 @@ public partial class Item3DIcon : Entity, ISaveable<Item3DIconData> {
 
 	public override void _Ready() {
 		if(Item3DSceneTemplate == null) {
-			Item3DSceneTemplate = GD.Load<PackedScene>("res://Item/ItemIcon3D/ItemIcon3DTemplete.tscn");
+			Item3DSceneTemplate = GD.Load<PackedScene>("res://ItemSystem/Icon3D/ItemIcon3DTemplete.tscn");
 		}
 		if(Item3DSceneTemplate == null) {
 			Log.Error("Item3DIcon _Ready: Failed to load fallback Item3DSceneTemplate.");
@@ -44,7 +44,7 @@ public partial class Item3DIcon : Entity, ISaveable<Item3DIconData> {
 
 		// Load template if needed
 		if(Item3DSceneTemplate == null)
-			Item3DSceneTemplate = GD.Load<PackedScene>("res://Item/ItemIcon3D/ItemIcon3DTemplete.tscn");
+			Item3DSceneTemplate = GD.Load<PackedScene>("res://ItemSystem/Icon3D/ItemIcon3DTemplete.tscn");
 
 		CurrentItem3DScene = Item3DSceneTemplate.Instantiate<Node3D>();
 		AddChild(CurrentItem3DScene);

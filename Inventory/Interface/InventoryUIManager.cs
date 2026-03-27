@@ -32,7 +32,7 @@ public sealed partial class InventoryUIManager : Control {
 
 	public void LoadTemplate() {
 		if(InvSlotTemplate == null) {
-			InvSlotTemplate = GD.Load<PackedScene>("res://UI/Inventory/InvSlotUITemplate.tscn");
+			InvSlotTemplate = GD.Load<PackedScene>("res://Inventory/ItemSlot/InvSlotUITemplate.tscn");
 		}
 	}
 

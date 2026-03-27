@@ -15,12 +15,12 @@ public sealed class ObjectNodeFactory {
 	}
 
 	public ObjectNode? Spawn(Object obj) {
-		ItemDefinition? ItemDefinition = ItemDataBaseManager.Instance.GetItemDefinitionById(obj.ItemId);
+		ItemDefinition? ItemDefinition = DatabaseManager.Instance.GetItemDefinitionById(obj.ItemId);
 		if(ItemDefinition == null) {
 			Log.Error($"Failed to spawn object. ItemDefinition with ID {obj.ItemId} not found.");
 			return null;
 		}
-		ItemDataBaseManager.Instance.BuildObjectComponents(obj, ItemDefinition);
+		DatabaseManager.Instance.BuildObjectComponents(obj, ItemDefinition);
 		obj.ApplyComponentData();
 		PackedScene? Scene = ItemDefinition.ItemScene;
 		if(Scene == null) {

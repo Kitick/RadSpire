@@ -39,7 +39,7 @@ public partial class InventoryManager : Node {
 
 	public void LoadInventoryUIManager() {
 		if(InventoryUIManagerTemplate == null) {
-			InventoryUIManagerTemplate = GD.Load<PackedScene>("res://UI/Inventory/InventoryUIManager.tscn");
+			InventoryUIManagerTemplate = GD.Load<PackedScene>("res://Inventory/Interface/InventoryUIManager.tscn");
 		}
 		if(InventoryUIManager != null && IsInstanceValid(InventoryUIManager)) {
 			return;

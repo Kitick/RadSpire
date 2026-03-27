@@ -74,7 +74,7 @@ public partial class ObjectPlacementUI : Node {
 	public bool BeginPreview(string itemId) {
 		EndPreview();
 
-		ItemDefinition? itemDefinition = ItemDataBaseManager.Instance.GetItemDefinitionById(itemId);
+		ItemDefinition? itemDefinition = DatabaseManager.Instance.GetItemDefinitionById(itemId);
 		if(itemDefinition?.ItemScene == null) {
 			Log.Error($"BeginPreview failed: ItemScene missing for ItemId '{itemId}'.");
 			return false;

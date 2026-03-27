@@ -1,7 +1,5 @@
 [gd_scene format=3 uid="uid://bfiyahye18w1t"]
 
-[ext_resource type="Script" uid="uid://rn8pxohrw6oe" path="res://UI/RespawnMenu/RespawnMenu.cs" id="1_w6qhy"]
-
 [node name="WinMenu" type="Control" unique_id=48555054]
 layout_mode = 3
 anchors_preset = 15
@@ -11,7 +9,6 @@ offset_right = -1676.0
 offset_bottom = -1017.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_w6qhy")
 
 [node name="DeadBG" type="ColorRect" parent="." unique_id=819048088]
 layout_mode = 1

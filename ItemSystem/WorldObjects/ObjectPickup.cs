@@ -99,7 +99,7 @@ public partial class ObjectPickup : Node3D {
 			return;
 		}
 		string targetItemId = currentTargetObjectNode.Data.ItemId;
-		Item targetItem = ItemDataBaseManager.Instance.CreateItemInstanceById(targetItemId);
+		Item targetItem = DatabaseManager.Instance.CreateItemInstanceById(targetItemId);
 		ItemSlot targetItemSlot = new ItemSlot(targetItem, 1);
 		ItemSlot remainSlot = InventoryManager.AddItemSlotToPlayerInventory(targetItemSlot);
 		if(remainSlot.IsEmpty()) {

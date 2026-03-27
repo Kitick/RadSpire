@@ -33,7 +33,7 @@ public partial class InventoryItemInformationUI : Control {
 		ItemIconTextureRect = GetNode<TextureRect>("ColorRect/ColorRect2/VBoxContainer/GridContainer/InvSlot1/ItemIconTextureRect");
 		ItemCountLabel = GetNode<Label>("ColorRect/ColorRect2/VBoxContainer/GridContainer/InvSlot1/ItemCountLabel");
 		ComponentsContainer = GetNode<VBoxContainer>("ColorRect/ColorRect2/VBoxContainer/ComponentsContainer");
-		ComponentLabelTemplate = GD.Load<PackedScene>("res://UI/Inventory/ComponentLabelTemplate.tscn");
+		ComponentLabelTemplate = GD.Load<PackedScene>("res://Inventory/InventoryItem/ComponentLabelTemplate.tscn");
 	}
 
 	public void UpdateInventoryItemInformationUI(ItemSlot itemSlot) {

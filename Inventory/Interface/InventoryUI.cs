@@ -125,7 +125,7 @@ public partial class InventoryUI : Control, IInventoryUI {
 			gridBackground.MouseFilter = Control.MouseFilterEnum.Pass;
 		}
 		if(InvSlotTemplate == null) {
-			InvSlotTemplate = GD.Load<PackedScene>("res://UI/Inventory/InvSlotUITemplate.tscn");
+			InvSlotTemplate = GD.Load<PackedScene>("res://Inventory/ItemSlot/InvSlotUITemplate.tscn");
 		}
 		InventorySlots = Inventory.MaxRows * Inventory.MaxColumns;
 		for(int i = 0; i < InventorySlots; i++) {

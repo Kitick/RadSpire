@@ -17,10 +17,10 @@ albedo_texture = ExtResource("2_ioc72")
 
 [node name="Old Chest" unique_id=745494050 instance=ExtResource("1_vwmbp")]
 
-[node name="chest " parent="." index="0" unique_id=1091614268]
+[node name="chest " parent="." index="0" unique_id=2081435089]
 surface_material_override/0 = SubResource("StandardMaterial3D_yssrx")
 surface_material_override/1 = SubResource("StandardMaterial3D_vjj6i")
 
-[node name="chest cover" parent="." index="1" unique_id=779486146]
+[node name="chest cover" parent="." index="1" unique_id=1458926607]
 surface_material_override/0 = SubResource("StandardMaterial3D_crge3")
 surface_material_override/1 = SubResource("StandardMaterial3D_ca7pu")

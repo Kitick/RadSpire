@@ -9,6 +9,7 @@ using Services;
 
 public partial class Item : ISaveable<ItemData> {
 	private static readonly LogService Log = new(nameof(Item), enabled: true);
+
 	[Export]
 	public string Id {
 		get;
@@ -108,7 +109,7 @@ public partial class Item : ISaveable<ItemData> {
 	}
 
 	public void Import(ItemData data) {
-		Item item = ItemDataBaseManager.Instance.CreateItemInstanceById(data.Id);
+		Item item = DatabaseManager.Instance.CreateItemInstanceById(data.Id);
 		Id = item.Id;
 		Name = item.Name;
 		Description = item.Description;
@@ -188,8 +189,7 @@ public static class ItemExtensions {
 			return false;
 		}
 		Type componentType = component.GetType();
-		bool success = false;
-		success = item.ComponentDictionary.Add(componentType, component);
+		bool success = item.ComponentDictionary.Add(componentType, component);
 		return success;
 	}
 

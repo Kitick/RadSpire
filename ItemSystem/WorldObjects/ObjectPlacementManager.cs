@@ -4,11 +4,11 @@ using System;
 using Character;
 using GameWorld;
 using Godot;
+using InventorySystem;
+using InventorySystem.Interface;
 using ItemSystem;
 using Root;
 using Services;
-using InventorySystem;
-using InventorySystem.Interface;
 
 public partial class ObjectPlacementManager : Node {
 	private static readonly LogService Log = new(nameof(ObjectPlacementManager), enabled: true);
@@ -275,7 +275,7 @@ public partial class ObjectPlacementManager : Node {
 		if(string.IsNullOrWhiteSpace(itemId)) {
 			return false;
 		}
-		ItemDefinition? itemDef = ItemDataBaseManager.Instance.GetItemDefinitionById(itemId);
+		ItemDefinition? itemDef = DatabaseManager.Instance.GetItemDefinitionById(itemId);
 		return itemDef != null && itemDef.IsPlaceable;
 	}
 }

@@ -78,7 +78,7 @@ public static class CraftingSystem {
 		List<ItemSlot> outputs = [];
 
 		foreach(RecipeItem output in recipe.Outputs) {
-			Item item = ItemDataBaseManager.Instance.CreateItemInstanceById(output.ItemId);
+			Item item = DatabaseManager.Instance.CreateItemInstanceById(output.ItemId);
 			if(item == null) {
 				Log.Error($"BuildOutputs: failed to create item with ID '{output.ItemId}'. Output skipped.");
 				continue;

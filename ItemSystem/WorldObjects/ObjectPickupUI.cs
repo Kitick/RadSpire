@@ -14,7 +14,7 @@ public sealed class ObjectPickupUI {
 
 	public ObjectPickupUI(ObjectPickup objectPickup, Vector3? promptOffset = null) {
 		ObjectPickup = objectPickup;
-		ObjectPickupUINodeTemplate = GD.Load<PackedScene>("res://Item/WorldObjects/ObjectPickupUINodeTemplate.tscn");
+		ObjectPickupUINodeTemplate = GD.Load<PackedScene>("res://ItemSystem/WorldObjects/ObjectPickupUINodeTemplate.tscn");
 		if(promptOffset != null) {
 			PromptOffset = promptOffset.Value;
 		}
@@ -48,7 +48,7 @@ public sealed class ObjectPickupUI {
 			return;
 		}
 
-		ItemDefinition? itemDef = ItemDataBaseManager.Instance.GetItemDefinitionById(objectNode.Data.ItemId);
+		ItemDefinition? itemDef = DatabaseManager.Instance.GetItemDefinitionById(objectNode.Data.ItemId);
 		if(itemDef == null) {
 			Log.Error($"Show: ItemDefinition not found for ID {objectNode.Data.ItemId}.");
 			return;

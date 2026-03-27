@@ -36,7 +36,7 @@ public partial class Item3DIconManager : Node, ISaveable<Item3DIconManagerData> 
 	}
 
 	public void SpawnItem(string itemID, Vector3 position, float scaleFactor = 1.0f) {
-		Item? item = ItemDataBaseManager.Instance.CreateItemInstanceById(itemID);
+		Item? item = DatabaseManager.Instance.CreateItemInstanceById(itemID);
 		if(item == null) {
 			Log.Error($"Failed to load item with ID: {itemID}");
 			return;

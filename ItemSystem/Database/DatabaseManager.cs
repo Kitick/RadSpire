@@ -1,23 +1,26 @@
 namespace ItemSystem;
 
 using System.Collections.Generic;
-using Components;
-using ItemSystem.WorldObjects;
 using Godot;
 using GodotResourceGroups;
+using ItemSystem.WorldObjects;
 using Services;
 
-public partial class ItemDataBaseManager : Node {
-	private static readonly LogService Log = new(nameof(ItemDataBaseManager), enabled: true);
-	public static ItemDataBaseManager Instance { get; private set; } = null!;
+public sealed partial class DatabaseManager : Node {
+	private static readonly LogService Log = new(nameof(DatabaseManager), enabled: true);
 
-	public ResourceGroup AllItemDefinitions { get; set; } = ResourceGroup.Of("res://Item/ItemDataBase/AllItemDefinitions.tres");
-	public Dictionary<string, ItemDefinition> ItemsDefinitions { get; private set; } = new();
+	public static DatabaseManager Instance { get; private set; } = null!;
+
+	public ResourceGroup AllItemDefinitions { get; set; } = ResourceGroup.Of("res://ItemSystem/Database/AllItemDefinitions.tres");
+
+	public Dictionary<string, ItemDefinition> ItemsDefinitions { get; private set; } = [];
 
 	public override void _Ready() {
 		Instance = this;
-		List<ItemDefinition> resources = new List<ItemDefinition>();
+
+		List<ItemDefinition> resources = [];
 		AllItemDefinitions.LoadAllInto(resources);
+
 		foreach(ItemDefinition itemDef in resources) {
 			if(ItemsDefinitions.ContainsKey(itemDef.Id)) {
 				Log.Error($"Duplicate ItemDefinition ID detected: {itemDef.Id}. Skipping duplicate.");

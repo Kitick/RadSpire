@@ -126,7 +126,7 @@ public sealed partial class Hotbar : Control, IInventoryUI {
 		}
 		GridContainer = GetNode<Control>("Background/GridBackground/HotbarSlots");
 		if(InvSlotTemplate == null) {
-			InvSlotTemplate = GD.Load<PackedScene>("res://UI/Inventory/InvSlotUITemplate.tscn");
+			InvSlotTemplate = GD.Load<PackedScene>("res://Inventory/ItemSlot/InvSlotUITemplate.tscn");
 		}
 		NumHotbarSlots = Inventory.MaxRows * Inventory.MaxColumns;
 		for(int i = 0; i < NumHotbarSlots; i++) {

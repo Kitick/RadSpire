@@ -70,7 +70,7 @@ points = PackedVector3Array(1.3481116, 4.579853, 1.1381813, -0.83961236, 4.79876
 
 [node name="tree_1_b" unique_id=420325627 instance=ExtResource("1_d3p85")]
 
-[node name="StaticBody3D" type="StaticBody3D" parent="trunk_1_b" parent_id_path=PackedInt32Array(631526325) index="0" unique_id=1142543231]
+[node name="StaticBody3D" type="StaticBody3D" parent="trunk_1_b" parent_id_path=PackedInt32Array(953326486) index="0" unique_id=1142543231]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="trunk_1_b/StaticBody3D" index="0" unique_id=1684102886]
 shape = SubResource("ConvexPolygonShape3D_etxg1")
@@ -132,7 +132,7 @@ shape = SubResource("ConvexPolygonShape3D_vui3i")
 [node name="CollisionShape3D20" type="CollisionShape3D" parent="trunk_1_b/StaticBody3D" index="19" unique_id=119135923]
 shape = SubResource("ConvexPolygonShape3D_0dcv3")
 
-[node name="StaticBody3D" type="StaticBody3D" parent="crown_1_b" parent_id_path=PackedInt32Array(1443003705) index="0" unique_id=1707208754]
+[node name="StaticBody3D" type="StaticBody3D" parent="crown_1_b" parent_id_path=PackedInt32Array(1497540453) index="0" unique_id=1707208754]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="crown_1_b/StaticBody3D" index="0" unique_id=1831772942]
 shape = SubResource("ConvexPolygonShape3D_06iml")

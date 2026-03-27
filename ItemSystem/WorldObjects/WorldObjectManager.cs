@@ -46,7 +46,7 @@ public partial class WorldObjectManager : Node, ISaveable<WorldObjectManagerData
 				continue;
 			}
 
-			if(ItemDataBaseManager.Instance.GetItemDefinitionById(itemId) == null) {
+			if(DatabaseManager.Instance.GetItemDefinitionById(itemId) == null) {
 				Log.Warn($"Skipping spawn point '{objNode.Name}' because ItemId '{itemId}' is not registered.");
 				continue;
 			}
@@ -136,11 +136,11 @@ public partial class WorldObjectManager : Node, ISaveable<WorldObjectManagerData
 			if(entry == null) {
 				continue;
 			}
-			if(ItemDataBaseManager.Instance.GetItemDefinitionById(entry.ItemId) == null) {
+			if(DatabaseManager.Instance.GetItemDefinitionById(entry.ItemId) == null) {
 				Log.Warn($"Spawn point '{spawnPointName}' contains unknown item '{entry.ItemId}'. Skipping entry.");
 				continue;
 			}
-			Item itemInstance = ItemDataBaseManager.Instance.CreateItemInstanceById(entry.ItemId);
+			Item itemInstance = DatabaseManager.Instance.CreateItemInstanceById(entry.ItemId);
 			int quantity = Math.Max(1, entry.Quantity);
 			while(quantity > 0) {
 				int quantityToAdd = Math.Min(quantity, itemInstance.MaxStackSize);
