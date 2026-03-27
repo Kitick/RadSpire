@@ -1,0 +1,127 @@
+[gd_scene format=3 uid="uid://n150xowq1ipg"]
+
+[ext_resource type="Texture2D" uid="uid://8ykhw0g480u8" path="res://Assets/Images/Icons/sword.png" id="1_rcgbh"]
+[ext_resource type="PackedScene" uid="uid://c1v3ulswhaxdt" path="res://Inventory/InventoryItem/ComponentLabelTemplate.tscn" id="2_r1v4f"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_r1v4f"]
+bg_color = Color(0.6066884, 0.5630471, 0.49756545, 1)
+border_width_left = 5
+border_width_top = 5
+border_color = Color(0.39688924, 0.3968893, 0.396889, 1)
+border_blend = true
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[node name="Control" type="Control" unique_id=1729341677]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=2024211783]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.078
+anchor_bottom = 0.36400002
+offset_right = -70.76001
+offset_bottom = -225.12003
+color = Color(0.4509804, 0.2627451, 0.1882353, 1)
+
+[node name="ColorRect2" type="ColorRect" parent="ColorRect" unique_id=640361303]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.053000003
+anchor_top = 0.027
+anchor_right = 0.938
+anchor_bottom = 0.97200006
+offset_left = 0.049999714
+offset_top = 0.46399975
+offset_right = -0.004989624
+offset_bottom = 0.003967285
+color = Color(1, 1, 1, 0.60784316)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ColorRect/ColorRect2" unique_id=487155514]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.009000001
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -0.23699999
+offset_top = 4.5753
+offset_right = -0.09701538
+offset_bottom = -22.299973
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 2
+
+[node name="GridContainer" type="GridContainer" parent="ColorRect/ColorRect2/VBoxContainer" unique_id=1012528812]
+custom_minimum_size = Vector2(57, 62)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_constants/h_separation = 7
+theme_override_constants/v_separation = 5
+
+[node name="InvSlot1" type="Panel" parent="ColorRect/ColorRect2/VBoxContainer/GridContainer" unique_id=342073645]
+custom_minimum_size = Vector2(57, 62)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_r1v4f")
+
+[node name="ItemIconTextureRect" type="TextureRect" parent="ColorRect/ColorRect2/VBoxContainer/GridContainer/InvSlot1" unique_id=1426315598]
+custom_minimum_size = Vector2(47, 52)
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 6.0
+offset_top = 5.0
+offset_right = -4.0
+offset_bottom = -5.0
+texture = ExtResource("1_rcgbh")
+expand_mode = 1
+
+[node name="ItemCountLabel" type="Label" parent="ColorRect/ColorRect2/VBoxContainer/GridContainer/InvSlot1" unique_id=1053994550]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.536
+anchor_top = 0.661
+anchor_right = 0.96500003
+anchor_bottom = 1.0320001
+offset_left = 0.44799805
+offset_top = 0.017997742
+offset_right = -0.005001068
+offset_bottom = 0.015995026
+text = "1"
+horizontal_alignment = 2
+
+[node name="ItemNameLabel" type="Label" parent="ColorRect/ColorRect2/VBoxContainer" unique_id=1015296290]
+custom_minimum_size = Vector2(57, 11)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 9
+text = "Default Item"
+
+[node name="ItemDescriptionLabel" type="Label" parent="ColorRect/ColorRect2/VBoxContainer" unique_id=1404991167]
+custom_minimum_size = Vector2(57, 10)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(0.27, 0.27, 0.27, 1)
+theme_override_constants/line_spacing = -3
+theme_override_font_sizes/font_size = 8
+text = "Default Item Description"
+autowrap_mode = 2
+
+[node name="ComponentsContainer" type="VBoxContainer" parent="ColorRect/ColorRect2/VBoxContainer" unique_id=188726548]
+custom_minimum_size = Vector2(57, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="ComponentLabelTemplate" parent="ColorRect/ColorRect2/VBoxContainer/ComponentsContainer" unique_id=642645573 instance=ExtResource("2_r1v4f")]
+layout_mode = 2

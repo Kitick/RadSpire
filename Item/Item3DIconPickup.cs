@@ -1,9 +1,11 @@
-namespace ItemSystem;
+namespace ItemSystem.Icons;
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Character;
+using InventorySystem;
+using InventorySystem.Interface;
 using Components;
 using Godot;
 using Services;

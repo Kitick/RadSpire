@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="WeaponBaseDefinition" format=3 uid="uid://bnsrrwohkd27v"]
 
-[ext_resource type="Script" uid="uid://b3r1li6nl8bs3" path="res://Item/ItemDataBase/ItemDataBaseScripts/ItemComponentDefinitions/WeaponBaseDefinition.cs" id="1_bfqry"]
+[ext_resource type="Script" uid="uid://b3r1li6nl8bs3" path="res://Item/Definitions/WeaponBaseDefinition.cs" id="1_bfqry"]
 
 [resource]
 script = ExtResource("1_bfqry")

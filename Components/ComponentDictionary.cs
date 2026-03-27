@@ -4,15 +4,16 @@ using System;
 using System.Collections.Generic;
 using Services;
 
-public class ComponentDictionary<TComponent> where TComponent : class {
-	private static readonly LogService Log = new(nameof(ComponentDictionary<TComponent>), enabled: true);
-	private readonly Dictionary<Type, TComponent> Components = new();
+public sealed class ComponentDictionary<TComp> where TComp : class {
+	private static readonly LogService Log = new(nameof(ComponentDictionary<>), enabled: true);
+
+	private readonly Dictionary<Type, TComp> Components = [];
 
 	public int Count => Components.Count;
 
-	public IReadOnlyDictionary<Type, TComponent> All => Components;
+	public IReadOnlyDictionary<Type, TComp> All => Components;
 
-	public bool Add<T>(T component) where T : class, TComponent {
+	public bool Add<T>(T component) where T : class, TComp {
 		if(component == null) {
 			return false;
 		}
@@ -24,7 +25,7 @@ public class ComponentDictionary<TComponent> where TComponent : class {
 		return true;
 	}
 
-	public bool Add(Type type, TComponent component) {
+	public bool Add(Type type, TComp component) {
 		if(component == null || type == null) {
 			return false;
 		}
@@ -35,11 +36,11 @@ public class ComponentDictionary<TComponent> where TComponent : class {
 		return true;
 	}
 
-	public bool Has<T>() where T : class, TComponent {
+	public bool Has<T>() where T : class, TComp {
 		return Components.ContainsKey(typeof(T));
 	}
 
-	public T Get<T>() where T : class, TComponent {
+	public T Get<T>() where T : class, TComp {
 		if(Has<T>()) {
 			return (T) Components[typeof(T)];
 		}
@@ -49,7 +50,7 @@ public class ComponentDictionary<TComponent> where TComponent : class {
 		}
 	}
 
-	public bool Remove<T>() where T : class, TComponent {
+	public bool Remove<T>() where T : class, TComp {
 		return Components.Remove(typeof(T));
 	}
 

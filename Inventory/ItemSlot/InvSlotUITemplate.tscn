@@ -1,0 +1,42 @@
+[gd_scene format=3 uid="uid://cig7jb0af3f64"]
+
+[ext_resource type="Script" uid="uid://crotl6q7hlhqx" path="res://Inventory/ItemSlot/InvSlotUI.cs" id="1_o54w3"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7pfaa"]
+bg_color = Color(0.6066884, 0.5630471, 0.49756545, 1)
+border_width_left = 5
+border_width_top = 5
+border_color = Color(0.39688924, 0.3968893, 0.396889, 1)
+border_blend = true
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[node name="InvSlotUI" type="Panel" unique_id=932717418]
+z_index = 5
+custom_minimum_size = Vector2(57, 62)
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 1
+theme_override_styles/panel = SubResource("StyleBoxFlat_7pfaa")
+script = ExtResource("1_o54w3")
+
+[node name="TextureRect" type="TextureRect" parent="." unique_id=1042940833]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = -5.0
+offset_bottom = -5.0
+expand_mode = 1
+
+[node name="ItemCountLabel" type="Label" parent="." unique_id=1763674765]
+layout_mode = 0
+offset_left = 0.9375
+offset_top = 39.8475
+offset_right = 55.9375
+offset_bottom = 62.8475
+horizontal_alignment = 2

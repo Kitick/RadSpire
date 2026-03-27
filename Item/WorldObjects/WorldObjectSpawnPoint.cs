@@ -1,4 +1,4 @@
-namespace Objects;
+namespace ItemSystem.WorldObjects;
 
 using Godot;
 using Root;

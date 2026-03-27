@@ -36,7 +36,7 @@ buses/default_bus_layout="uid://cpvwo1bhm4q26"
 
 InputSystem="*res://Systems/InputSystem.cs"
 Server="*res://Network/System/Server.cs"
-ItemDataBaseManager="*res://Item/ItemDataBase/ItemDataBaseScripts/ItemDataBaseManager.cs"
+ItemDataBaseManager="*res://Item/Definitions/ItemDataBaseManager.cs"
 
 [display]
 

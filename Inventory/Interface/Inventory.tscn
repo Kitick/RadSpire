@@ -1,0 +1,57 @@
+[gd_scene format=3 uid="uid://bffohbw4kmhwa"]
+
+[node name="Inventory" type="Control" unique_id=162888265]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 350.0
+offset_bottom = 250.0
+mouse_filter = 2
+
+[node name="Background" type="ColorRect" parent="." unique_id=1713365477]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.1
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 1
+color = Color(0.45054996, 0.2622559, 0.190151, 1)
+
+[node name="GridBackground" type="ColorRect" parent="Background" unique_id=1559468652]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.025
+anchor_top = 0.035
+anchor_right = 0.975
+anchor_bottom = 0.965
+mouse_filter = 1
+color = Color(1, 1, 1, 0.60784316)
+
+[node name="GridContainer" type="GridContainer" parent="Background/GridBackground" unique_id=117769349]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.025
+anchor_top = 0.03
+anchor_right = 0.975
+anchor_bottom = 0.97
+theme_override_constants/h_separation = 7
+theme_override_constants/v_separation = 5
+columns = 5
+
+[node name="TabBackground" type="ColorRect" parent="." unique_id=687082978]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.3
+anchor_bottom = 0.1
+offset_bottom = 1.0
+mouse_filter = 1
+color = Color(0.4509804, 0.2627451, 0.1882353, 1)
+
+[node name="Label" type="RichTextLabel" parent="TabBackground" unique_id=2014058201]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 1
+text = "INVENTORY"
+horizontal_alignment = 1
+vertical_alignment = 1

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using Crafting;
 using Godot;
+using InventorySystem;
 using ItemSystem;
 using Root;
 using Services;

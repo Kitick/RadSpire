@@ -3,6 +3,7 @@ namespace Crafting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using InventorySystem;
 using ItemSystem;
 using Services;
 

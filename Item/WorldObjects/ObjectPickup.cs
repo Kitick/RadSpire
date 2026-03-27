@@ -1,9 +1,10 @@
-namespace Objects;
+namespace ItemSystem.WorldObjects;
 
 using System;
 using System.Collections.Generic;
 using Components;
 using Godot;
+using InventorySystem;
 using ItemSystem;
 using Root;
 using Services;

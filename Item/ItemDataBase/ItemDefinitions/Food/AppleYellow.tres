@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://dhx4gdrvb1a56"]
 
-[ext_resource type="Script" uid="uid://cnm5iegiuj4xu" path="res://Item/ItemDataBase/ItemDataBaseScripts/ItemComponentDefinitions/ItemComponentDefinition.cs" id="1_8fbpk"]
+[ext_resource type="Script" uid="uid://cnm5iegiuj4xu" path="res://Item/Definitions/ItemComponentDefinition.cs" id="1_8fbpk"]
 [ext_resource type="Texture2D" uid="uid://cwuh4vb48fpcr" path="res://Assets/scrimsy fruit icons/color/yellow/yellow apple.png" id="1_m5abc"]
 [ext_resource type="Resource" uid="uid://ds7c545y5smpx" path="res://Item/ItemDataBase/ComponentDefinitions/HealItemDefinition/Level2FoodHeal.tres" id="2_7e84q"]
-[ext_resource type="Script" uid="uid://bxmh4fd7kjvv1" path="res://Item/ItemDataBase/ItemDataBaseScripts/ItemDefinition.cs" id="3_mm6ou"]
+[ext_resource type="Script" uid="uid://bxmh4fd7kjvv1" path="res://Item/Definitions/ItemDefinition.cs" id="3_mm6ou"]
 
 [resource]
 script = ExtResource("3_mm6ou")

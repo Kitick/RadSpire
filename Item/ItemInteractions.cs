@@ -1,11 +1,11 @@
-namespace Components;
+namespace ItemSystem;
 
 using System;
 using Character;
 using Godot;
-using ItemSystem;
+using InventorySystem;
+using InventorySystem.Interface;
 using Services;
-using UI.Hotbar;
 
 public static class ItemInteractions {
 	public static bool EquipItem<TEntity, TItem>(this TEntity user, TItem item)

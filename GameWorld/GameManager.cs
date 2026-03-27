@@ -6,12 +6,12 @@ using Camera;
 using Character;
 using Components;
 using Godot;
-using ItemSystem;
-using Objects;
+using InventorySystem.Interface;
+using ItemSystem.Icons;
+using ItemSystem.WorldObjects;
 using Root;
 using Services;
 using Settings;
-using UI.Hotbar;
 using UI.HUD;
 
 public sealed partial class GameManager : Node {

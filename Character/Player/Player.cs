@@ -4,10 +4,12 @@ using System;
 using Components;
 using GameWorld;
 using Godot;
+using InventorySystem;
+using InventorySystem.Interface;
 using ItemSystem;
-using Objects;
+using ItemSystem.Icons;
+using ItemSystem.WorldObjects;
 using Services;
-using UI.Hotbar;
 
 public sealed partial class Player : CharacterBase, ISaveable<PlayerData> {
 	private static readonly LogService Log = new(nameof(Player), enabled: true);

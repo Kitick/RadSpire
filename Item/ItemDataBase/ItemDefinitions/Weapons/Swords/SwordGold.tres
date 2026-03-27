@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://cb0xcqyjh6ty7"]
 
-[ext_resource type="Script" uid="uid://cnm5iegiuj4xu" path="res://Item/ItemDataBase/ItemDataBaseScripts/ItemComponentDefinitions/ItemComponentDefinition.cs" id="1_o8fd3"]
+[ext_resource type="Script" uid="uid://cnm5iegiuj4xu" path="res://Item/Definitions/ItemComponentDefinition.cs" id="1_o8fd3"]
 [ext_resource type="Resource" uid="uid://bnsrrwohkd27v" path="res://Item/ItemDataBase/ComponentDefinitions/WeaponBaseDefinition/Level3_WeaponBase.tres" id="2_4vt86"]
 [ext_resource type="Texture2D" uid="uid://dmf7o5bt45qs2" path="res://Assets/Images/Icons/GoldenSword.png" id="2_7s7a7"]
-[ext_resource type="Script" uid="uid://bxmh4fd7kjvv1" path="res://Item/ItemDataBase/ItemDataBaseScripts/ItemDefinition.cs" id="2_8jkfa"]
+[ext_resource type="Script" uid="uid://bxmh4fd7kjvv1" path="res://Item/Definitions/ItemDefinition.cs" id="2_8jkfa"]
 
 [resource]
 script = ExtResource("2_8jkfa")

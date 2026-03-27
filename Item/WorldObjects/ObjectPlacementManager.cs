@@ -1,4 +1,4 @@
-namespace Objects;
+namespace ItemSystem.WorldObjects;
 
 using System;
 using Character;
@@ -7,7 +7,8 @@ using Godot;
 using ItemSystem;
 using Root;
 using Services;
-using UI.Hotbar;
+using InventorySystem;
+using InventorySystem.Interface;
 
 public partial class ObjectPlacementManager : Node {
 	private static readonly LogService Log = new(nameof(ObjectPlacementManager), enabled: true);

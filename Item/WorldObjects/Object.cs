@@ -1,4 +1,4 @@
-namespace Objects;
+namespace ItemSystem.WorldObjects;
 
 using System;
 using Components;

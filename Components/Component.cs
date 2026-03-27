@@ -1,6 +1,7 @@
 namespace Components;
 
 using System;
+using ItemSystem;
 using Services;
 
 public abstract class Component<TData> : ISaveable<TData> where TData : struct, ISaveData {
