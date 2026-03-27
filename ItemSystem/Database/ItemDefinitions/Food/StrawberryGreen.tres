@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://cx03lm8w7yhmy"]
+
+[ext_resource type="Texture2D" uid="uid://cjnvforli3ks" path="res://ItemSystem/Database/ItemDefinitions/Food/ScrimsyIcons/color/green/green strawberry.png" id="1_dlhq7"]
+[ext_resource type="Script" uid="uid://cnm5iegiuj4xu" path="res://ItemSystem/Definitions/ItemComponentDefinition.cs" id="1_m1wcb"]
+[ext_resource type="Resource" uid="uid://cw2hegmrmnxk2" path="res://ItemSystem/Database/ComponentDefinitions/HealItemDefinition/Level1FoodHeal.tres" id="2_x7l6m"]
+[ext_resource type="Script" uid="uid://bxmh4fd7kjvv1" path="res://ItemSystem/Definitions/ItemDefinition.cs" id="3_impec"]
+
+[resource]
+script = ExtResource("3_impec")
+Id = "StrawberryGreen"
+Name = "Green Strawberry"
+Description = "An unripe green strawberry. I guess it was picked too early ..."
+MaxStackSize = 64
+IconTexture = ExtResource("1_dlhq7")
+ComponentsResources = Array[ExtResource("1_m1wcb")]([ExtResource("2_x7l6m")])
+metadata/_custom_type_script = "uid://3l5yftlfas15"

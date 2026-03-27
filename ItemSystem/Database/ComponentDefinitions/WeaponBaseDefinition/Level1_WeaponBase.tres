@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="WeaponBaseDefinition" format=3 uid="uid://dfl8tea43u4y6"]
+
+[ext_resource type="Script" uid="uid://b3r1li6nl8bs3" path="res://ItemSystem/Definitions/WeaponBaseDefinition.cs" id="1_j5llr"]
+
+[resource]
+script = ExtResource("1_j5llr")
+BaseAttack = 5
+metadata/_custom_type_script = "uid://b3r1li6nl8bs3"

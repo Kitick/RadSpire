@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://n150xowq1ipg"]
 
-[ext_resource type="Texture2D" uid="uid://8ykhw0g480u8" path="res://Item/Icons/sword.png" id="1_rcgbh"]
+[ext_resource type="Texture2D" uid="uid://8ykhw0g480u8" path="res://Assets/Images/sword.png" id="1_rcgbh"]
 [ext_resource type="PackedScene" uid="uid://c1v3ulswhaxdt" path="res://Inventory/InventoryItem/ComponentLabelTemplate.tscn" id="2_r1v4f"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_r1v4f"]

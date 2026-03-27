@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://dstp878jks8c6"]
+
+[ext_resource type="Script" uid="uid://cnm5iegiuj4xu" path="res://ItemSystem/Definitions/ItemComponentDefinition.cs" id="1_bmta8"]
+[ext_resource type="Texture2D" uid="uid://c7lpl1mq5ov6s" path="res://ItemSystem/Database/ItemDefinitions/Weapons/Swords/WoodenSword.png" id="2_8rg2x"]
+[ext_resource type="Resource" uid="uid://dfl8tea43u4y6" path="res://ItemSystem/Database/ComponentDefinitions/WeaponBaseDefinition/Level1_WeaponBase.tres" id="2_cy42f"]
+[ext_resource type="Script" uid="uid://bxmh4fd7kjvv1" path="res://ItemSystem/Definitions/ItemDefinition.cs" id="2_fxrcd"]
+
+[resource]
+script = ExtResource("2_fxrcd")
+Id = "SwordWood"
+Name = "Sword Wood"
+Description = "A lightweight wooden sword. Cheap, but better than bare hands."
+MaxStackSize = 16
+IsConsumable = false
+IconTexture = ExtResource("2_8rg2x")
+ComponentsResources = Array[ExtResource("1_bmta8")]([ExtResource("2_cy42f")])
+metadata/_custom_type_script = "uid://bxmh4fd7kjvv1"

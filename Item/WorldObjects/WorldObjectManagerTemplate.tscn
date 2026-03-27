@@ -1,6 +1,0 @@
-[gd_scene format=3 uid="uid://bv2uoskjxvybn"]
-
-[ext_resource type="Script" uid="uid://dprk1u71ij1qh" path="res://Item/WorldObjects/WorldObjectManager.cs" id="1_opwar"]
-
-[node name="WorldObjectManagerTemplate" type="Node" unique_id=1036369263]
-script = ExtResource("1_opwar")

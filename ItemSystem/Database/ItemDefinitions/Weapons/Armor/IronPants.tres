@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://mesci0hyhxs"]
+
+[ext_resource type="Script" uid="uid://cnm5iegiuj4xu" path="res://ItemSystem/Definitions/ItemComponentDefinition.cs" id="1_ui6jr"]
+[ext_resource type="Texture2D" uid="uid://bhelsadobf0in" path="res://ItemSystem/Database/ItemDefinitions/Weapons/Armor/IronPants.png" id="2_hlifd"]
+[ext_resource type="Script" uid="uid://bxmh4fd7kjvv1" path="res://ItemSystem/Definitions/ItemDefinition.cs" id="2_n3qaw"]
+
+[resource]
+script = ExtResource("2_n3qaw")
+Id = "PantpieceIron"
+Name = "Pantpiece Iron"
+Description = "Iron leg armor that improves lower-body protection."
+MaxStackSize = 16
+IsConsumable = false
+IconTexture = ExtResource("2_hlifd")
+metadata/_custom_type_script = "uid://bxmh4fd7kjvv1"

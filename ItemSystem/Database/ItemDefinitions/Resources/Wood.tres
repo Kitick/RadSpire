@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://buinlpnpes1ok"]
+
+[ext_resource type="Script" uid="uid://cnm5iegiuj4xu" path="res://ItemSystem/Definitions/ItemComponentDefinition.cs" id="1_gpm57"]
+[ext_resource type="Script" uid="uid://bxmh4fd7kjvv1" path="res://ItemSystem/Definitions/ItemDefinition.cs" id="2_6tnqa"]
+[ext_resource type="Texture2D" uid="uid://cy0b6i53j31wh" path="res://ItemSystem/Database/ItemDefinitions/Resources/Wood.png" id="2_egbsx"]
+
+[resource]
+script = ExtResource("2_6tnqa")
+Id = "Wood"
+Name = "Wood"
+Description = "A sturdy piece of wood used in basic crafting."
+MaxStackSize = 16
+IsConsumable = false
+IconTexture = ExtResource("2_egbsx")
+metadata/_custom_type_script = "uid://bxmh4fd7kjvv1"

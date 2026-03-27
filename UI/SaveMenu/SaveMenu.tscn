@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cnc1drhp35q8y" path="res://UI/SaveMenu/SaveMenu.cs" id="1_ck8wv"]
 [ext_resource type="Texture2D" uid="uid://ey80t6hrma51" path="res://UI/SaveMenu/KneelingBackground.png" id="2_fc0yl"]
-[ext_resource type="Texture2D" uid="uid://8ykhw0g480u8" path="res://Item/Icons/sword.png" id="3_cru22"]
+[ext_resource type="Texture2D" uid="uid://8ykhw0g480u8" path="res://Assets/Images/sword.png" id="3_cru22"]
 
 [node name="LoadMenu" type="Control" unique_id=728771275 node_paths=PackedStringArray("BackButton", "TitleLabel", "SlotContainer")]
 layout_mode = 3

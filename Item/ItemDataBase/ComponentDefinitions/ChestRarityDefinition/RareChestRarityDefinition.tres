@@ -1,7 +1,0 @@
-[gd_resource type="Resource" script_class="ChestRarityDefinition" format=3 uid="uid://ciovc0daoe5t0"]
-
-[ext_resource type="Script" uid="uid://s1h6oci73fa6" path="res://Item/Definitions/ChestRarityDefinition.cs" id="1_rarity"]
-
-[resource]
-script = ExtResource("1_rarity")
-RarityLevel = 1

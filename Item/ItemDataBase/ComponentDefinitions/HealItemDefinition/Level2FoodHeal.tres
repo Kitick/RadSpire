@@ -1,8 +1,0 @@
-[gd_resource type="Resource" script_class="HealItemDefinition" format=3 uid="uid://ds7c545y5smpx"]
-
-[ext_resource type="Script" uid="uid://dsdlapupe10ec" path="res://Item/Definitions/HealItemDefinition.cs" id="1_1id4x"]
-
-[resource]
-script = ExtResource("1_1id4x")
-HealAmount = 20
-metadata/_custom_type_script = "uid://goc1tlurjd5v"

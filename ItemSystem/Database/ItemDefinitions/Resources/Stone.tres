@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://ci5ntcgvj2pdj"]
+
+[ext_resource type="Script" uid="uid://cnm5iegiuj4xu" path="res://ItemSystem/Definitions/ItemComponentDefinition.cs" id="1_6ll1x"]
+[ext_resource type="Script" uid="uid://bxmh4fd7kjvv1" path="res://ItemSystem/Definitions/ItemDefinition.cs" id="2_47w3y"]
+[ext_resource type="Texture2D" uid="uid://boshukc572fv" path="res://ItemSystem/Database/ItemDefinitions/Resources/Stone.png" id="2_tsvyh"]
+
+[resource]
+script = ExtResource("2_47w3y")
+Id = "Stone"
+Name = "Stone"
+Description = "A rough stone used for building and crafting."
+MaxStackSize = 16
+IsConsumable = false
+IconTexture = ExtResource("2_tsvyh")
+metadata/_custom_type_script = "uid://bxmh4fd7kjvv1"

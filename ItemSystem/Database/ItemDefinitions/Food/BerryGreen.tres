@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://bc1kyi8tgjufg"]
+
+[ext_resource type="Script" uid="uid://cnm5iegiuj4xu" path="res://ItemSystem/Definitions/ItemComponentDefinition.cs" id="1_8s03o"]
+[ext_resource type="Texture2D" uid="uid://bhkjqpmrdll58" path="res://ItemSystem/Database/ItemDefinitions/Food/ScrimsyIcons/color/green/green berry.png" id="2_ifsyk"]
+[ext_resource type="Resource" uid="uid://cw2hegmrmnxk2" path="res://ItemSystem/Database/ComponentDefinitions/HealItemDefinition/Level1FoodHeal.tres" id="2_nkqjy"]
+[ext_resource type="Script" uid="uid://bxmh4fd7kjvv1" path="res://ItemSystem/Definitions/ItemDefinition.cs" id="3_ifsyk"]
+
+[resource]
+script = ExtResource("3_ifsyk")
+Id = "BerryGreen"
+Name = "Unripe Berry"
+Description = "An unripened berry. I guess it got picked too early ...c"
+MaxStackSize = 64
+IconTexture = ExtResource("2_ifsyk")
+ComponentsResources = Array[ExtResource("1_8s03o")]([ExtResource("2_nkqjy")])
+metadata/_custom_type_script = "uid://3l5yftlfas15"

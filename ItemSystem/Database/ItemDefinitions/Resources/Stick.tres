@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://qd3rax61jjai"]
+
+[ext_resource type="Script" uid="uid://cnm5iegiuj4xu" path="res://ItemSystem/Definitions/ItemComponentDefinition.cs" id="1_bco88"]
+[ext_resource type="Texture2D" uid="uid://d0n575kogbmtd" path="res://ItemSystem/Database/ItemDefinitions/Resources/Stick.png" id="2_lq8ok"]
+[ext_resource type="Script" uid="uid://bxmh4fd7kjvv1" path="res://ItemSystem/Definitions/ItemDefinition.cs" id="2_tym4a"]
+
+[resource]
+script = ExtResource("2_tym4a")
+Id = "Stick"
+Name = "Stick"
+Description = "A simple wooden stick useful for early crafting recipes."
+MaxStackSize = 16
+IsConsumable = false
+IconTexture = ExtResource("2_lq8ok")
+metadata/_custom_type_script = "uid://bxmh4fd7kjvv1"
