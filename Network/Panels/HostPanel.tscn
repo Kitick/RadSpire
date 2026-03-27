@@ -1,0 +1,98 @@
+[gd_scene format=3 uid="uid://bnjymb23oq215"]
+
+[ext_resource type="Script" uid="uid://dn5n8ctbi8x1" path="res://Network/Panels/HostPanel.cs" id="1_8i2cy"]
+
+[node name="HostPanel" type="Control" unique_id=376884895]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_8i2cy")
+
+[node name="PanelArea" type="ColorRect" parent="." unique_id=839389980]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 800.0
+offset_top = 256.0
+offset_right = -800.0
+offset_bottom = -444.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.75000006)
+
+[node name="lblHostText" type="Label" parent="PanelArea" unique_id=169561335]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 14.0
+offset_right = 102.0
+offset_bottom = 37.0
+theme_override_font_sizes/font_size = 32
+
+[node name="GameNameContainer" type="VBoxContainer" parent="PanelArea" unique_id=1109539192]
+layout_mode = 0
+offset_left = 64.0
+offset_top = 64.0
+offset_right = 256.0
+offset_bottom = 144.0
+
+[node name="lblGameName" type="Label" parent="PanelArea/GameNameContainer" unique_id=1292996381]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_font_sizes/font_size = 32
+text = "Game Name"
+
+[node name="InputGameName" type="LineEdit" parent="PanelArea/GameNameContainer" unique_id=309323700]
+layout_mode = 2
+placeholder_text = "Input Game Name"
+
+[node name="PasswordContainer" type="VBoxContainer" parent="PanelArea" unique_id=1686827641]
+layout_mode = 0
+offset_left = 64.0
+offset_top = 160.0
+offset_right = 256.0
+offset_bottom = 240.0
+
+[node name="lblPassword" type="Label" parent="PanelArea/PasswordContainer" unique_id=74530617]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Password"
+
+[node name="PasswordCheckbox" type="CheckBox" parent="PanelArea/PasswordContainer/lblPassword" unique_id=2080543044]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -40.0
+offset_top = -18.0
+offset_bottom = 6.0
+grow_horizontal = 0
+grow_vertical = 2
+scale = Vector2(1.5, 1.5)
+button_pressed = true
+
+[node name="InputPassword" type="LineEdit" parent="PanelArea/PasswordContainer" unique_id=725340809]
+layout_mode = 2
+placeholder_text = "Input Password"
+
+[node name="OptionContainer" type="HBoxContainer" parent="PanelArea" unique_id=1711373632]
+layout_mode = 0
+offset_left = 51.0
+offset_top = 288.0
+offset_right = 176.0
+offset_bottom = 328.0
+
+[node name="CancelButton" type="Button" parent="PanelArea/OptionContainer" unique_id=572246679]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Cancel"
+
+[node name="HostButton" type="Button" parent="PanelArea/OptionContainer" unique_id=1932808557]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "  Host  "

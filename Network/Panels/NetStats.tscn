@@ -1,0 +1,33 @@
+[gd_scene format=3 uid="uid://bk0xjvm6hnmls"]
+
+[ext_resource type="Script" uid="uid://cs4024k3u0gw5" path="res://Network/Panels/NetStats.cs" id="1_f216x"]
+
+[node name="NetStats" type="Control" unique_id=1296131544]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_f216x")
+
+[node name="NetStatsPanel" type="HBoxContainer" parent="." unique_id=1423241982]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -105.0
+offset_top = -40.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="LblPing" type="Label" parent="NetStatsPanel" unique_id=1459028536]
+layout_mode = 2
+
+[node name="LblLoss" type="Label" parent="NetStatsPanel" unique_id=892735789]
+layout_mode = 2
+
+[node name="LblFPS" type="Label" parent="NetStatsPanel" unique_id=1114996124]
+layout_mode = 2

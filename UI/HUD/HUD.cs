@@ -2,12 +2,13 @@ namespace UI;
 
 using System;
 using Character;
+using Crafting.Interface;
 using Godot;
 using ItemSystem;
+using Network.Panels;
 using Root;
 using Services;
-using UI.Multiplayer;
-using UI.Settings;
+using Settings.Interface;
 using MenuState = GameWorld.GameManager.MenuState;
 
 public sealed partial class HUD : Control {

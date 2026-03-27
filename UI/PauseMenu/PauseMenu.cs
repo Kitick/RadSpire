@@ -1,8 +1,8 @@
 namespace UI;
 
 using Godot;
+using Network;
 using Root;
-using Services.Network;
 
 public sealed partial class PauseMenu : Control {
 	[ExportCategory("Buttons")]

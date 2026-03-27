@@ -10,7 +10,7 @@ using ItemSystem;
 using Objects;
 using Root;
 using Services;
-using Services.Settings;
+using Settings;
 using UI;
 
 public sealed partial class GameManager : Node {

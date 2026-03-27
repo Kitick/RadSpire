@@ -3,7 +3,7 @@ namespace Camera;
 using System;
 using Godot;
 using Services;
-using Services.Settings;
+using Settings;
 
 public sealed partial class CameraRig {
 	[Export] public float PanSensitivity = 0.1f;

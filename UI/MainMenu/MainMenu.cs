@@ -2,10 +2,10 @@ namespace UI.MainMenu;
 
 using System;
 using Godot;
+using Network.Panels;
 using Root;
 using Services;
-using UI.Multiplayer;
-using UI.Settings;
+using Settings.Interface;
 
 public sealed partial class MainMenu : BaseUIControl {
 	private static readonly LogService Log = new(nameof(MainMenu), enabled: true);

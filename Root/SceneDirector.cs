@@ -3,7 +3,7 @@ namespace Root;
 using GameWorld;
 using Godot;
 using Services;
-using Services.Settings;
+using Settings;
 using UI.MainMenu;
 
 public sealed partial class SceneDirector : Node {

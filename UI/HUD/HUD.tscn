@@ -1,9 +1,9 @@
 [gd_scene format=3 uid="uid://dxvau62v0efr7"]
 
 [ext_resource type="Script" uid="uid://bee1n6ixna6g5" path="res://UI/HUD/HUD.cs" id="1_10ibt"]
-[ext_resource type="PackedScene" uid="uid://bnjymb23oq215" path="res://UI/MultiplayerPanels/HostPanel/HostPanel.tscn" id="2_3o8sq"]
+[ext_resource type="PackedScene" uid="uid://bnjymb23oq215" path="res://Network/Panels/HostPanel.tscn" id="2_3o8sq"]
 [ext_resource type="Texture2D" uid="uid://bka8hfkmuqsgi" path="res://Assets/Images/Icons/pause.png" id="2_785o0"]
-[ext_resource type="PackedScene" uid="uid://eqxx1dru7wg3" path="res://UI/SettingsMenu/SettingsMenu.tscn" id="2_o30d6"]
+[ext_resource type="PackedScene" uid="uid://eqxx1dru7wg3" path="res://Settings/Interface/SettingsMenu.tscn" id="2_o30d6"]
 [ext_resource type="PackedScene" uid="uid://dv4igypq0dbv8" path="res://UI/SaveMenu/SaveMenu.tscn" id="3_o30d6"]
 [ext_resource type="PackedScene" uid="uid://etextx8i4ksr" path="res://UI/Hotbar/Hotbar.tscn" id="5_c358i"]
 [ext_resource type="PackedScene" uid="uid://crye0f0yw8xrb" path="res://UI/PauseMenu/PauseMenu.tscn" id="5_jmlhc"]
@@ -12,7 +12,7 @@
 [ext_resource type="PackedScene" uid="uid://bjql4hi1q0ouh" path="res://UI/QuestLog/QuestLog.tscn" id="8_6ymr8"]
 [ext_resource type="PackedScene" uid="uid://2mdnsh082j66" path="res://UI/RespawnMenu/RespawnMenu.tscn" id="8_10ibt"]
 [ext_resource type="PackedScene" uid="uid://n150xowq1ipg" path="res://UI/Inventory/InventoryItemInformationUITemplate.tscn" id="9_2y2n3"]
-[ext_resource type="PackedScene" uid="uid://bmo8vs5v4lyqv" path="res://UI/Crafting/CraftingUI.tscn" id="9_y8qxg"]
+[ext_resource type="PackedScene" uid="uid://bmo8vs5v4lyqv" path="res://Crafting/Interface/CraftingUI.tscn" id="9_y8qxg"]
 [ext_resource type="Script" uid="uid://cl6aplc7wunof" path="res://UI/Inventory/InventoryItemInformationUI.cs" id="10_y8qxg"]
 [ext_resource type="PackedScene" uid="uid://bfiyahye18w1t" path="res://UI/HUD/WinMenu.tscn" id="15_cgpfr"]
 

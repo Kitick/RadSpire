@@ -1,12 +1,12 @@
 [gd_scene format=3 uid="uid://udkefarjp6kf"]
 
 [ext_resource type="Script" uid="uid://ctdqi1hddclge" path="res://UI/MainMenu/MainMenu.cs" id="1_7b88o"]
-[ext_resource type="PackedScene" uid="uid://eqxx1dru7wg3" path="res://UI/SettingsMenu/SettingsMenu.tscn" id="2_a712v"]
+[ext_resource type="PackedScene" uid="uid://eqxx1dru7wg3" path="res://Settings/Interface/SettingsMenu.tscn" id="2_a712v"]
 [ext_resource type="Texture2D" uid="uid://dfr168nswrve8" path="res://UI/MainMenu/StandingBackground.png" id="2_vpabl"]
 [ext_resource type="PackedScene" uid="uid://dv4igypq0dbv8" path="res://UI/SaveMenu/SaveMenu.tscn" id="3_1dhmk"]
 [ext_resource type="Texture2D" uid="uid://howutpu3c584" path="res://UI/MainMenu/Title.png" id="3_ectev"]
-[ext_resource type="PackedScene" uid="uid://bnjymb23oq215" path="res://UI/MultiplayerPanels/HostPanel/HostPanel.tscn" id="4_jhcbk"]
-[ext_resource type="PackedScene" uid="uid://bg5jxcp2jtwjp" path="res://UI/MultiplayerPanels/JoinPanel/JoinPanel.tscn" id="5_32jca"]
+[ext_resource type="PackedScene" uid="uid://bnjymb23oq215" path="res://Network/Panels/HostPanel.tscn" id="4_jhcbk"]
+[ext_resource type="PackedScene" uid="uid://bg5jxcp2jtwjp" path="res://Network/Panels/JoinPanel.tscn" id="5_32jca"]
 [ext_resource type="AudioStream" uid="uid://c085xb2ydxxcg" path="res://Assets/Audio/Bpm100_G_Escape_Brass.wav" id="8_1dhmk"]
 
 [node name="MainMenu" type="Control" unique_id=2104341140 node_paths=PackedStringArray("ButtonPanel", "SingleplayerButton", "MultiplayerButton", "SettingsButton", "ExtrasButton", "QuitButton", "SingleplayerPanel", "ContinueButton", "LoadSavedButton", "StartNewButton", "MultiplayerPanel", "HostNewButton", "HostSavedButton", "JoinGameButton")]
