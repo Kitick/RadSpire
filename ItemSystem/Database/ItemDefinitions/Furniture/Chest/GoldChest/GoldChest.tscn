@@ -8,5 +8,5 @@ albedo_texture = ExtResource("2_rcxa8")
 
 [node name="Gold chest" unique_id=1729713802 instance=ExtResource("1_pic2y")]
 
-[node name="Gold Chest" parent="Armature Gold chest/Skeleton3D" parent_id_path=PackedInt32Array(2025761310) index="0" unique_id=1323161201]
+[node name="Gold Chest" parent="Armature Gold chest/Skeleton3D" parent_id_path=PackedInt32Array(1180540663) index="0" unique_id=865632103]
 surface_material_override/0 = SubResource("StandardMaterial3D_pryhy")
