@@ -59,6 +59,7 @@ public sealed partial class HUD : Control {
 		StateMachineRef = stateMachine;
 		Inventory.Initialize(player.Inventory, player);
 		Hotbar.Initialize(player.Hotbar, player);
+		InventoryItemInformationUI.SetUpInventoryItemInformationUI();
 		ConfigureStateMachine(stateMachine);
 	}
 
@@ -126,7 +127,7 @@ public sealed partial class HUD : Control {
 			Chest.Visible = true;
 			ChestRequested?.Invoke(true);
 			Inventory.Visible = true;
-			InventoryItemInformationUI.Visible = false;
+			InventoryItemInformationUI.Visible = true;
 			Hotbar.Visible = true;
 			InventoryRequested?.Invoke(true);
 		});

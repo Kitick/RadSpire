@@ -27,6 +27,11 @@ public partial class InventoryItemInformationUI : Control {
 	}
 
 	public void SetUpInventoryItemInformationUI() {
+		if(InventoryManager == null) {
+			Log.Warn("InventoryManager is null, deferring SetUpInventoryItemInformationUI setup");
+			CallDeferred(nameof(SetUpInventoryItemInformationUI));
+			return;
+		}
 		InventoryManager.ItemSlotHovered += UpdateInventoryItemInformationUI;
 		ItemNameLabel = GetNode<Label>("ColorRect/ColorRect2/VBoxContainer/ItemNameLabel");
 		ItemDescriptionLabel = GetNode<Label>("ColorRect/ColorRect2/VBoxContainer/ItemDescriptionLabel");
