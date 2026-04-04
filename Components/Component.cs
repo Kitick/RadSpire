@@ -1,6 +1,7 @@
 namespace Components;
 
 using System;
+using Godot;
 using ItemSystem;
 using Services;
 
@@ -47,7 +48,15 @@ public static class Interactions {
 		physicalDamage = Math.Max(0, physicalDamage - physicalDefense);
 		magicDamage = Math.Max(0, magicDamage - magicDefense);
 
-		defender.Hurt(physicalDamage + magicDamage);
+		int totalDamage = physicalDamage + magicDamage;
+
+		float critChance = Math.Clamp(attacker.Offense.CritChance, 0f, 1f);
+		float critMultiplier = Math.Max(1f, attacker.Offense.CritMultiplier);
+		if(GD.Randf() < critChance) {
+			totalDamage = (int) MathF.Ceiling(totalDamage * critMultiplier);
+		}
+
+		defender.Hurt(totalDamage);
 
 		if(attacker is IDurable weapon) {
 			weapon.Damage(1);

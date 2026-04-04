@@ -18,7 +18,7 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData> {
 	[Export] public MeshInstance3D ShieldMesh = null!;
 
 	[Export] private int InitialHealthValue = 100;
-	[Export] public int InitialDamagePhysical = 10;
+	[Export] public int InitialDamagePhysical = 5;
 	[Export] private int InitialDamageMagic = 0;
 	[Export] private int InitialDefensePhysical = 5;
 	[Export] private int InitialDefenseMagic = 2;

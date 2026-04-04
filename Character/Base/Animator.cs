@@ -1,3 +1,5 @@
+using System;
+
 namespace Character;
 
 using Godot;
@@ -21,9 +23,13 @@ public sealed partial class Animator : AnimationPlayer {
 	[Export] private StringName LANDING = null!;
 	[Export] private StringName ATTACK = null!;
 	[Export] private StringName DEATH = null!;
+	[Export] private StringName[] AttackVariations = Array.Empty<StringName>();
+	[Export] private bool CycleAttackVariations = false;
 
 	[ExportCategory("Animation Settings")]
 	[Export] private float SprintSpeed = 1.0f;
+	[Export] private float AttackSpeed = 3.0f;
+	[Export] private float AttackBlend = 0.02f;
 
 	public enum AnimState { Idle, Walking, Sprinting, Crouching, Jumping, Falling, Landing, Attacking, Dying }
 
@@ -39,11 +45,13 @@ public sealed partial class Animator : AnimationPlayer {
 				case AnimState.Jumping: Play(JUMPING); break;
 				case AnimState.Falling: Play(FALLING); break;
 				case AnimState.Landing: Play(LANDING); break;
-				case AnimState.Attacking: Play(ATTACK); break;
+				case AnimState.Attacking: Play(GetAttackAnimation(), AttackBlend, AttackSpeed); break;
 				case AnimState.Dying: Play(DEATH); break;
 			}
 		}
 	}
+
+	private int AttackVariationIndex = 0;
 
 	public override void _Ready() {
 		this.ValidateExports();
@@ -68,7 +76,7 @@ public sealed partial class Animator : AnimationPlayer {
 
 	public void OnAnimationFinished(StringName name) {
 		if(name == JUMPING || name == LANDING) { SyncAnimation(Character.CurrentState); }
-		else if(name == ATTACK) { Character.OnAttackFinished(); }
+		else if(IsAttackAnimation(name)) { Character.OnAttackFinished(); }
 	}
 
 	public void SyncAnimation(CharState state) {
@@ -95,5 +103,29 @@ public sealed partial class Animator : AnimationPlayer {
 		if(jumped) { PlayingAnimation = AnimState.Jumping; }
 		else if(landed) { PlayingAnimation = AnimState.Landing; }
 		else { SyncAnimation(to); }
+	}
+
+	private bool IsAttackAnimation(StringName name) {
+		if(name == ATTACK) { return true; }
+		for(int i = 0; i < AttackVariations.Length; i++) {
+			if(AttackVariations[i] == name) { return true; }
+		}
+		return false;
+	}
+
+	private StringName GetAttackAnimation() {
+		if(AttackVariations.Length == 0) { return ATTACK; }
+		if(!CycleAttackVariations) {
+			int idx = (int) GD.RandRange(0, AttackVariations.Length - 1);
+			return AttackVariations[idx];
+		}
+
+		if(AttackVariationIndex < 0 || AttackVariationIndex >= AttackVariations.Length) {
+			AttackVariationIndex = 0;
+		}
+
+		StringName picked = AttackVariations[AttackVariationIndex];
+		AttackVariationIndex = (AttackVariationIndex + 1) % AttackVariations.Length;
+		return picked;
 	}
 }

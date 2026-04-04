@@ -10,9 +10,9 @@ using Network.Panels;
 using Root;
 using Services;
 using Settings.Interface;
-using UI.PauseMenu;
-using UI.RespawnMenu;
-using UI.SaveMenu;
+using PauseMenu;
+using RespawnMenu;
+using SaveMenu;
 using MenuState = GameWorld.GameManager.MenuState;
 
 public sealed partial class HUD : Control {
