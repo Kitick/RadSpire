@@ -220,6 +220,42 @@ public sealed partial class GameManager : Node {
 		}
 	}
 
+	public bool SwitchToGameWorld(string gameWorldId, Vector3? playerSpawnPosition = null) {
+		if(GameWorldManager == null) {
+			Log.Error("SwitchToGameWorld failed: GameWorldManager is not available.");
+			return false;
+		}
+		if(LocalPlayer == null || !IsInstanceValid(LocalPlayer)) {
+			Log.Error("SwitchToGameWorld failed: LocalPlayer is not available.");
+			return false;
+		}
+		if(HUD == null) {
+			Log.Error("SwitchToGameWorld failed: HUD is not available.");
+			return false;
+		}
+
+		GameWorldManager.UnbindPlayer(LocalPlayer);
+		if(!GameWorldManager.SwitchToGameWorld(gameWorldId)) {
+			GameWorldManager.BindPlayer(LocalPlayer);
+			return false;
+		}
+		if(GameWorldManager.WorldObjectManager == null) {
+			Log.Error("SwitchToGameWorld failed: active world does not have a WorldObjectManager.");
+			GameWorldManager.BindPlayer(LocalPlayer);
+			return false;
+		}
+
+		LocalPlayer.ConfigureObjectPickup(GameWorldManager.WorldObjectManager);
+		LocalPlayer.ConfigureObjectPlacement(GameWorldManager.WorldObjectManager, this, HUD.GetNode<Hotbar>("Hotbar"));
+		GameWorldManager.BindPlayer(LocalPlayer);
+
+		if(playerSpawnPosition.HasValue) {
+			LocalPlayer.GlobalPosition = playerSpawnPosition.Value;
+		}
+
+		return true;
+	}
+
 	public void ReturnToMainMenu() {
 		QuickSave();
 		CleanupGame();
