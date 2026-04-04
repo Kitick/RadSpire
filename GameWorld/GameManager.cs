@@ -205,9 +205,19 @@ public sealed partial class GameManager : Node {
 	private void LoadData(string file) {
 		var data = SaveService.Load<GameState>(file);
 
+		if(LocalPlayer != null) {
+			GameWorldManager?.UnbindPlayer(LocalPlayer);
+		}
+
 		LocalPlayer!.Import(data.Player);
 		CameraRig!.Import(data.CameraRig);
 		GameWorldManager!.Import(data.GameWorldManager);
+
+		if(LocalPlayer != null && GameWorldManager.WorldObjectManager != null && HUD != null) {
+			LocalPlayer.ConfigureObjectPickup(GameWorldManager.WorldObjectManager);
+			LocalPlayer.ConfigureObjectPlacement(GameWorldManager.WorldObjectManager, this, HUD.GetNode<Hotbar>("Hotbar"));
+			GameWorldManager.BindPlayer(LocalPlayer);
+		}
 	}
 
 	public void ReturnToMainMenu() {

@@ -38,7 +38,12 @@ public partial class ObjectPlacementManager : Node {
 
 	public void Initialize(WorldObjectManager worldObjectManager, InventoryManager inventoryManager, GameManager gameManager, Hotbar playerHotbar, Player player) {
 		if(_isInitialized) {
-			Log.Info("Initialize called more than once; ignoring duplicate initialization.");
+			WorldObjectManager = worldObjectManager;
+			InventoryManager = inventoryManager;
+			GameManager = gameManager;
+			PlayerHotbar = playerHotbar;
+			Player = player;
+			Log.Info("Initialize called more than once; refreshed placement dependencies.");
 			return;
 		}
 		WorldObjectManager = worldObjectManager;

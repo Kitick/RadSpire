@@ -129,6 +129,10 @@ public partial class GameWorldManager : Node, ISaveable<GameWorldManagerData> {
 	};
 
 	public void Import(GameWorldManagerData data) {
+		foreach(GameWorldState existingWorld in GameWorlds.Values) {
+			CleanupGameWorld(existingWorld);
+		}
+
 		CurrentGameWorldId = data.CurrentGameWorldId;
 		GameWorlds = new Dictionary<string, GameWorldState>();
 

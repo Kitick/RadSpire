@@ -1,9 +1,7 @@
 namespace ItemSystem.WorldObjects.House;
 
 using System;
-using System.Collections.Generic;
 using Godot;
-using GameWorld;
 using ItemSystem.Icons;
 using ItemSystem.WorldObjects;
 using Services;
@@ -32,7 +30,7 @@ public sealed partial class GameWorldState : Node, ISaveable<GameWorldStateData>
 			ApplySavedData(SavedData.Value);
 		}
 		else {
-			SpawnItemIcons(worldNode);
+			Item3DIconManager?.SetUpItem3DIconManager(worldNode);
 		}
 	}
 
@@ -119,33 +117,6 @@ public sealed partial class GameWorldState : Node, ISaveable<GameWorldStateData>
 		}
 	}
 
-	private void SpawnItemIcons(Node worldNode) {
-		if(Item3DIconManager == null) {
-			return;
-		}
-
-		var itemSpawnEntries = new List<ItemSpawnEntry>();
-		CollectItemSpawnEntries(worldNode, itemSpawnEntries);
-
-		foreach(var entry in itemSpawnEntries) {
-			if(entry == null || string.IsNullOrWhiteSpace(entry.ItemId)) {
-				continue;
-			}
-
-			Item3DIconManager.SpawnItem(entry.ItemId, entry.GlobalPosition);
-			entry.QueueFree();
-		}
-	}
-
-	private static void CollectItemSpawnEntries(Node node, ICollection<ItemSpawnEntry> results) {
-		foreach(Node child in node.GetChildren()) {
-			if(child is ItemSpawnEntry itemSpawnEntry) {
-				results.Add(itemSpawnEntry);
-			}
-
-			CollectItemSpawnEntries(child, results);
-		}
-	}
 }
 
 public readonly record struct GameWorldStateData : ISaveData {
