@@ -8,7 +8,7 @@ using Components;
 using Godot;
 using InventorySystem.Interface;
 using ItemSystem.Icons;
-using ItemSystem.WorldObjects;
+using ItemSystem.WorldObjects.House;
 using Root;
 using Services;
 using Settings;
@@ -24,19 +24,16 @@ public sealed partial class GameManager : Node {
 	[Export] private PackedScene HUDScene = null!;
 	[Export] private PackedScene PlayerScene = null!;
 	[Export] private PackedScene EnemyScene = null!;
-	[Export] private PackedScene Item3DIconManagerScene = null!;
+	[Export] private PackedScene GameWorldManagerScene = null!;
 
 	private readonly List<Enemy> SpawnedEnemies = [];
-	[Export] private PackedScene WorldObjectManageScene = null!;
 	[Export] private PackedScene NPCScene = null!;
-	[Export] private Node WorldObjectParentNode = null!;
 
 	private readonly KeyInput KeyInput = new();
 	private CameraRig CameraRig = null!;
 	private Player? LocalPlayer;
 	private HUD? HUD;
-	private Item3DIconManager? Item3DIconManager;
-	private WorldObjectManager? WorldObjectManager;
+	private GameWorldManager? GameWorldManager;
 	public Action? MainMenuRequested;
 
 	public enum MenuState { Game, Paused, Settings, Inventory, Chest, Host, Death }
@@ -52,16 +49,13 @@ public sealed partial class GameManager : Node {
 	[Export] private Marker3D PlayerSpawnMarker = null!;
 	[Export] private Marker3D NPCSpawnMarker = null!;
 	[Export] private Godot.Collections.Array<Marker3D> EnemySpawnPoints = [];
-	[Export] private Godot.Collections.Array<ItemSpawnEntry> ItemSpawnEntries = [];
 
 	public override void _Ready() {
 		DisplaySettings.SetWorldEnvironment(WorldEnvironment);
 
 		CameraRig = this.AddScene<CameraRig>(CameraScene);
-		Item3DIconManager = this.AddScene<Item3DIconManager>(Item3DIconManagerScene);
-		WorldObjectManager = this.AddScene<WorldObjectManager>(WorldObjectManageScene);
-		Node worldRoot = GetParent() ?? this;
-		WorldObjectManager.SetUpWorldObjectManager(WorldObjectParentNode, worldRoot);
+		GameWorldManager = this.AddScene<GameWorldManager>(GameWorldManagerScene);
+		GameWorldManager.Initialize(GetParent() ?? this);
 		ConfigureStateMachine();
 
 		StartGame();
@@ -109,16 +103,16 @@ public sealed partial class GameManager : Node {
 
 		LocalPlayer.WhenDead(() => StateMachine.TransitionTo(MenuState.Death));
 
-		if(WorldObjectManager != null) {
-			LocalPlayer.ConfigureObjectPickup(WorldObjectManager);
+		if(GameWorldManager?.WorldObjectManager != null) {
+			LocalPlayer.ConfigureObjectPickup(GameWorldManager.WorldObjectManager);
 		}
-		SubscribeToPlayerItem3DIconEvents(LocalPlayer);
+		GameWorldManager?.BindPlayer(LocalPlayer);
 
 		CameraRig.Target = LocalPlayer;
 		UpdateEnemyTargets(LocalPlayer);
 
 		AttachHUD();
-		LocalPlayer.ConfigureObjectPlacement(WorldObjectManager!, this, HUD!.GetNode<Hotbar>("Hotbar"));
+		LocalPlayer.ConfigureObjectPlacement(GameWorldManager!.WorldObjectManager!, this, HUD!.GetNode<Hotbar>("Hotbar"));
 	}
 
 	private void AttachHUD() {
@@ -152,7 +146,7 @@ public sealed partial class GameManager : Node {
 		var inventoryData = LocalPlayer.Inventory.Export();
 		var hotbarData = LocalPlayer.Hotbar.Export();
 
-		UnsubscribeFromPlayerItem3DIconEvents(LocalPlayer);
+		GameWorldManager?.UnbindPlayer(LocalPlayer);
 		LocalPlayer.QueueFree();
 		LocalPlayer = null;
 
@@ -167,7 +161,7 @@ public sealed partial class GameManager : Node {
 	}
 
 	public bool SaveGame(string fileName) {
-		if(!IsInstanceValid(LocalPlayer) || !IsInstanceValid(CameraRig)) {
+		if(!IsInstanceValid(LocalPlayer) || !IsInstanceValid(CameraRig) || GameWorldManager == null) {
 			Log.Error("Cannot save game: game objects are not valid");
 			return false;
 		}
@@ -175,8 +169,7 @@ public sealed partial class GameManager : Node {
 		var data = new GameState {
 			Player = LocalPlayer.Export(),
 			CameraRig = CameraRig.Export(),
-			Item3DIconManager = Item3DIconManager!.Export(),
-			WorldObjectManager = WorldObjectManager!.Export(),
+			GameWorldManager = GameWorldManager.Export(),
 		};
 
 		data.Save(fileName);
@@ -202,7 +195,6 @@ public sealed partial class GameManager : Node {
 		SpawnLocalPlayer();
 		SpawnNPC();
 		SpawnEnemies();
-		SpawnItems();
 		if(LoadFile != null) {
 			LoadData(LoadFile);
 			LoadFile = null;
@@ -215,8 +207,7 @@ public sealed partial class GameManager : Node {
 
 		LocalPlayer!.Import(data.Player);
 		CameraRig!.Import(data.CameraRig);
-		Item3DIconManager!.Import(data.Item3DIconManager);
-		WorldObjectManager!.Import(data.WorldObjectManager);
+		GameWorldManager!.Import(data.GameWorldManager);
 	}
 
 	public void ReturnToMainMenu() {
@@ -234,14 +225,14 @@ public sealed partial class GameManager : Node {
 		HUD = null;
 
 		if(IsInstanceValid(LocalPlayer)) {
-			UnsubscribeFromPlayerItem3DIconEvents(LocalPlayer!);
+			GameWorldManager?.UnbindPlayer(LocalPlayer!);
 		}
 
 		Cleanup(LocalPlayer);
 		LocalPlayer = null;
 
-		Cleanup(Item3DIconManager);
-		Item3DIconManager = null;
+		GameWorldManager?.Cleanup();
+		GameWorldManager = null;
 
 		foreach(var enemy in SpawnedEnemies) { Cleanup(enemy); }
 		SpawnedEnemies.Clear();
@@ -262,21 +253,6 @@ public sealed partial class GameManager : Node {
 		}
 	}
 
-	private void SpawnItems() {
-		if(Item3DIconManager == null) {
-			Log.Error("Cannot spawn items: Item3DIconManager is not initialized");
-			return;
-		}
-		if(ItemSpawnEntries.Count == 0) {
-			Log.Info("No ItemSpawnEntries assigned — skipping item spawn.");
-			return;
-		}
-		foreach(var entry in ItemSpawnEntries) {
-			Item3DIconManager.SpawnItem(entry.ItemId, entry.GlobalPosition);
-			Log.Info($"Item '{entry.ItemId}' spawned at {entry.Name} ({entry.GlobalPosition})");
-		}
-	}
-
 	private void UpdateEnemyTargets(Node3D target) {
 		foreach(var enemy in SpawnedEnemies) {
 			if(IsInstanceValid(enemy)) enemy.SetTarget(target);
@@ -293,26 +269,10 @@ public sealed partial class GameManager : Node {
 		return randomPoint;
 	}
 
-	private void SubscribeToPlayerItem3DIconEvents(Player player) {
-		if(Item3DIconManager == null) {
-			return;
-		}
-		player.InventoryManager.SpawnItem3DIconRequested += (item, position) => Item3DIconManager.RequestSpawnItem(item, position);
-		player.PickupComponent.DespawnItem3DIconRequested += Item3DIconManager.RequestDespawnItem;
-	}
-
-	private void UnsubscribeFromPlayerItem3DIconEvents(Player player) {
-		if(Item3DIconManager == null) {
-			return;
-		}
-		player.InventoryManager.SpawnItem3DIconRequested -= (item, position) => Item3DIconManager.RequestSpawnItem(item, position);
-		player.PickupComponent.DespawnItem3DIconRequested -= Item3DIconManager.RequestDespawnItem;
-	}
 }
 
 public readonly struct GameState : ISaveData {
 	public PlayerData Player { get; init; }
 	public CameraRigData CameraRig { get; init; }
-	public Item3DIconManagerData Item3DIconManager { get; init; }
-	public WorldObjectManagerData WorldObjectManager { get; init; }
+	public GameWorldManagerData GameWorldManager { get; init; }
 }
