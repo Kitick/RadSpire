@@ -61,6 +61,10 @@ import/blender/enabled=false
 
 auto_rebuild=true
 
+[gui]
+
+theme/custom="uid://dybcnmrgg2gx7"
+
 [input]
 
 ui_accept={
