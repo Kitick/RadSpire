@@ -34,6 +34,13 @@ public sealed partial class GameWorldState : Node, ISaveable<GameWorldStateData>
 		}
 	}
 
+	public GameWorldState(PackedScene baseScene, Node worldRoot) {
+		BaseScene = baseScene;
+		Initialize(worldRoot);
+	}
+
+	public GameWorldState() { }
+
 	public GameWorldStateData Export() {
 		GameWorldStateData data = new() {
 			Id = Id,

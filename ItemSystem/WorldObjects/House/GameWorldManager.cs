@@ -64,6 +64,20 @@ public partial class GameWorldManager : Node, ISaveable<GameWorldManagerData> {
 		return true;
 	}
 
+	public string CreateNewGameWorld(PackedScene scene) {
+		if(scene == null) {
+			Log.Error("Cannot create new game world: scene is null.");
+			return null!;
+		}
+		if(!IsInitialized) {
+			Log.Error("Cannot create new game world: GameWorldManager is not initialized.");
+			return null!;
+		}
+		GameWorldState newWorld = new GameWorldState(scene, WorldRoot!);
+		RegisterGameWorld(newWorld);
+		return newWorld.Id;
+	}
+
 	public bool HasGameWorld(string gameWorldId) {
 		return GameWorlds.ContainsKey(gameWorldId);
 	}
