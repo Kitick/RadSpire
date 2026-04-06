@@ -137,6 +137,28 @@
       "resource_name": {
         "visibility": 0.0
       }
+    },
+    "res://ItemSystem/Database/ComponentDefinitions/": {
+      "metadata/_custom_type_script": {
+        "visibility": 0.0
+      },
+      "resource_local_to_scene": {
+        "visibility": 0.0
+      },
+      "resource_name": {
+        "visibility": 0.0
+      }
+    },
+    "res://ItemSystem/Database/ItemDefinitions/": {
+      "metadata/_custom_type_script": {
+        "visibility": 0.0
+      },
+      "resource_local_to_scene": {
+        "visibility": 0.0
+      },
+      "resource_name": {
+        "visibility": 0.0
+      }
     }
   },
   "recent_paths": [
@@ -151,7 +173,9 @@
     "res://Item/ItemDataBase/ItemDefinitions/ComponentDefinition/",
     "res://Item/ItemDataBase/ComponentDefinition/",
     "res://Item/ItemDataBase/ComponentDefinitions/WeaponBaseDefinition/",
-    "res://Item/ItemDataBase/ItemDefinition/"
+    "res://Item/ItemDataBase/ItemDefinition/",
+    "res://ItemSystem/Database/ComponentDefinitions/",
+    "res://ItemSystem/Database/ItemDefinitions/"
   ],
   "table_functions": {
     "filter": [

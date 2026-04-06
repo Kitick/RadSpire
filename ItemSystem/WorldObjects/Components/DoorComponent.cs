@@ -30,42 +30,35 @@ public sealed class DoorComponent : IObjectComponent, IInteract, ISaveable<DoorC
 	}
 
 	public bool Interact<TEntity>(TEntity interactor) {
-		if(interactor is Player player) {
-			if(HasWorldID) {
-				Log.Info($"Player is entering door to WorldID: {WorldID}");
-				if(SpawnPosition.HasValue) {
-					Log.Info($"Door has spawn position: {SpawnPosition.Value}");
-					GameManager.SwitchToGameWorld(WorldID, SpawnPosition);
-				}
-				else {
-					Log.Info("Door has no spawn position set.");
-					GameManager.SwitchToGameWorld(WorldID);
-				}
-				return true;
-			}
-			else {
-				Log.Info("Door has no target WorldID set.");
-				string NewWorldId = GameWorldManager.CreateNewGameWorld(DefaultScene);
-				Log.Info($"Created new world with ID: {NewWorldId} for door.");
-				WorldID = NewWorldId;
-				if(!HasWorldID) {
-					Log.Error("Failed to create new world for door.");
-					return false;
-				}
-				if(SpawnPosition.HasValue) {
-					Log.Info($"Door has spawn position: {SpawnPosition.Value}");
-					GameManager.SwitchToGameWorld(WorldID, SpawnPosition);
-				}
-				else {
-					Log.Info("Door has no spawn position set.");
-					GameManager.SwitchToGameWorld(WorldID);
-				}
-				return true;
-			}
-		}
-		else {
+		if(interactor is not Player) {
 			return false;
 		}
+
+		if(HasWorldID) {
+			Log.Info($"Player is entering door to WorldID: {WorldID}");
+			return TrySwitchToWorld();
+		}
+
+		Log.Info("Door has no target WorldID set.");
+		string newWorldId = GameWorldManager.CreateNewGameWorld(DefaultScene);
+		if(string.IsNullOrEmpty(newWorldId)) {
+			Log.Error("Failed to create new world for door.");
+			return false;
+		}
+
+		Log.Info($"Created new world with ID: {newWorldId} for door.");
+		WorldID = newWorldId;
+		return TrySwitchToWorld();
+	}
+
+	private bool TrySwitchToWorld() {
+		if(SpawnPosition.HasValue) {
+			Log.Info($"Door has spawn position: {SpawnPosition.Value}");
+			return GameManager.SwitchToGameWorld(WorldID, SpawnPosition);
+		}
+
+		Log.Info("Door has no spawn position set.");
+		return GameManager.SwitchToGameWorld(WorldID);
 	}
 
 	public DoorComponentData Export() => new DoorComponentData {
