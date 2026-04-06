@@ -100,6 +100,10 @@ public partial class ObjectPickup : Node3D {
 		}
 		string targetItemId = currentTargetObjectNode.Data.ItemId;
 		Item targetItem = DatabaseManager.Instance.CreateItemInstanceById(targetItemId);
+		if(!targetItem.Pickupable) {
+			Log.Info($"Item {targetItem.Id} is not pickupable.");
+			return;
+		}
 		ItemSlot targetItemSlot = new ItemSlot(targetItem, 1);
 		ItemSlot remainSlot = InventoryManager.AddItemSlotToPlayerInventory(targetItemSlot);
 		if(remainSlot.IsEmpty()) {

@@ -14,6 +14,7 @@ Name = "Common Chest"
 Description = "A common wooden chest with 4x8 storage capacity."
 IsConsumable = false
 IsPlaceable = true
+Pickupable = true
 IconTexture = ExtResource("3_bqbbc")
 ItemScene = ExtResource("4_v1teg")
 ComponentsResources = Array[ExtResource("1_fwpe3")]([ExtResource("2_f3fuy"), ExtResource("3_9s18h")])

@@ -53,6 +53,7 @@ public partial class ItemDefinition : Resource {
 
 	[Export] public bool IsConsumable { get; set; } = true;
 	[Export] public bool IsPlaceable { get; set; } = false;
+	[Export] public bool Pickupable { get; set; } = false;
 
 	[Export] public Texture2D IconTexture { get; set; } = null!;
 

@@ -79,6 +79,10 @@ public partial class Item3DIconPickup : Node3D {
 			Log.Error("TryPickupItem: Item is null.");
 			return false;
 		}
+		if(!itemIcon3D.Item.Pickupable) {
+			Log.Info($"TryPickupItem: Item {itemIcon3D.Item.Id} is not pickupable.");
+			return false;
+		}
 		if(PlayerHotbar.AddItem(itemIcon3D.Item) || PlayerInventory.AddItem(itemIcon3D.Item)) {
 			RemoveItemIconPrompt(itemIcon3D);
 			if(DespawnItem3DIconRequested != null) {
