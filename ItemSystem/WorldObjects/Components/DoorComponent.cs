@@ -19,6 +19,7 @@ public sealed class DoorComponent : IObjectComponent, IInteract, ISaveable<DoorC
 	public GameWorldManager GameWorldManager = null!;
 	public GameManager GameManager = null!;
 	public PackedScene DefaultScene { get; set; } = null!;
+	public bool ReturnToMainWorld { get; set; }
 	public string WorldID { get; set; } = string.Empty;
 	public bool HasWorldID => !string.IsNullOrEmpty(WorldID);
 	public Vector3? SpawnPosition { get; set; }
@@ -46,6 +47,15 @@ public sealed class DoorComponent : IObjectComponent, IInteract, ISaveable<DoorC
 
 		if(HasWorldID) {
 			Log.Info($"Player is entering door to WorldID: {WorldID}");
+			return TrySwitchToWorld();
+		}
+		if(ReturnToMainWorld) {
+			if(string.IsNullOrEmpty(GameWorldManager.MainGameWorldId)) {
+				Log.Error("Door is configured to return to main world, but MainGameWorldId is not set.");
+				return false;
+			}
+			WorldID = GameWorldManager.MainGameWorldId;
+			Log.Info($"Door returning player to main world: {WorldID}");
 			return TrySwitchToWorld();
 		}
 
@@ -79,17 +89,20 @@ public sealed class DoorComponent : IObjectComponent, IInteract, ISaveable<DoorC
 		WorldID = WorldID,
 		SpawnPosition = SpawnPosition,
 		DefaultScene = DefaultScene,
+		ReturnToMainWorld = ReturnToMainWorld,
 	};
 
 	public void Import(DoorComponentData data) {
 		WorldID = data.WorldID;
 		SpawnPosition = data.SpawnPosition;
 		DefaultScene = data.DefaultScene;
+		ReturnToMainWorld = data.ReturnToMainWorld;
 	}
 }
 
 public readonly record struct DoorComponentData : ISaveData {
 	public string WorldID { get; init; }
 	public PackedScene DefaultScene { get; init; }
+	public bool ReturnToMainWorld { get; init; }
 	public Vector3? SpawnPosition { get; init; }
 }

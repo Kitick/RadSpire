@@ -1,5 +1,7 @@
 [gd_scene format=3 uid="uid://dagcff6s8q7t2"]
 
+[ext_resource type="PackedScene" uid="uid://cam02wkgiun0" path="res://ItemSystem/Database/ItemDefinitions/Furniture/Door/Return_Door.tscn" id="1_yg02e"]
+
 [sub_resource type="PlaneMesh" id="PlaneMesh_cqnqw"]
 size = Vector2(1, 1)
 
@@ -60,3 +62,6 @@ shape = SubResource("BoxShape3D_0143i")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1834725726]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 10.094604, 0)
+
+[node name="ReturnDoor" parent="." unique_id=539945399 instance=ExtResource("1_yg02e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.13474317, 0.046704292, -3.9369411)

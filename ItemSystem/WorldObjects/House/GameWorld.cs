@@ -18,7 +18,6 @@ public sealed partial class GameWorldState : Node, ISaveable<GameWorldStateData>
 	public Item3DIconManager? Item3DIconManager;
 	public WorldObjectManager? WorldObjectManager;
 	private GameWorldStateData? SavedData;
-	private bool OwnsActiveWorldNode;
 
 	public void Initialize(Node worldRoot, GameWorldManager gameWorldManager, GameManager? gameManager) {
 		WorldRoot = worldRoot;
@@ -49,6 +48,7 @@ public sealed partial class GameWorldState : Node, ISaveable<GameWorldStateData>
 	public GameWorldStateData Export() {
 		GameWorldStateData data = new() {
 			Id = Id,
+			BaseScene = BaseScene,
 			Item3DIconManager = Item3DIconManager?.Export() ?? SavedData?.Item3DIconManager ?? new Item3DIconManagerData(),
 			WorldObjectManager = WorldObjectManager?.Export() ?? SavedData?.WorldObjectManager ?? new WorldObjectManagerData(),
 		};
@@ -59,6 +59,9 @@ public sealed partial class GameWorldState : Node, ISaveable<GameWorldStateData>
 
 	public void Import(GameWorldStateData data) {
 		Id = data.Id;
+		if(data.BaseScene != null) {
+			BaseScene = data.BaseScene;
+		}
 		SavedData = data;
 
 		if(Item3DIconManager != null) {
@@ -76,7 +79,7 @@ public sealed partial class GameWorldState : Node, ISaveable<GameWorldStateData>
 		if(IsInstanceValid(WorldObjectManager)) {
 			WorldObjectManager.QueueFree();
 		}
-		if(OwnsActiveWorldNode && IsInstanceValid(ActiveWorldNode)) {
+		if(IsInstanceValid(ActiveWorldNode)) {
 			ActiveWorldNode.QueueFree();
 		}
 
@@ -84,7 +87,6 @@ public sealed partial class GameWorldState : Node, ISaveable<GameWorldStateData>
 		WorldObjectManager = null;
 		ActiveWorldNode = null;
 		WorldRoot = null;
-		OwnsActiveWorldNode = false;
 	}
 
 	private void ApplySavedData(GameWorldStateData data) {
@@ -101,20 +103,18 @@ public sealed partial class GameWorldState : Node, ISaveable<GameWorldStateData>
 			return;
 		}
 
-		if(BaseScene != null) {
-			ActiveWorldNode = BaseScene.Instantiate<Node>();
-			if(WorldRoot != null) {
-				WorldRoot.AddChild(ActiveWorldNode);
-			}
-			else {
-				AddChild(ActiveWorldNode);
-			}
-			OwnsActiveWorldNode = true;
+		if(BaseScene == null) {
+			GD.PushError($"GameWorldState '{Id}' cannot initialize because BaseScene is null.");
 			return;
 		}
 
-		ActiveWorldNode = WorldRoot ?? this;
-		OwnsActiveWorldNode = false;
+		ActiveWorldNode = BaseScene.Instantiate<Node>();
+		if(WorldRoot != null) {
+			WorldRoot.AddChild(ActiveWorldNode);
+		}
+		else {
+			AddChild(ActiveWorldNode);
+		}
 	}
 
 	private void SetupManagers() {
@@ -133,6 +133,7 @@ public sealed partial class GameWorldState : Node, ISaveable<GameWorldStateData>
 
 public readonly record struct GameWorldStateData : ISaveData {
 	public string Id { get; init; }
+	public PackedScene BaseScene { get; init; }
 	public Item3DIconManagerData Item3DIconManager { get; init; }
 	public WorldObjectManagerData WorldObjectManager { get; init; }
 }

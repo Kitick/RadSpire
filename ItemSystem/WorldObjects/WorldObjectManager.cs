@@ -63,8 +63,8 @@ public partial class WorldObjectManager : Node, ISaveable<WorldObjectManagerData
 			}
 		}
 		foreach(WorldObjectSpawnPoint spawnPoint in spawnPoints) {
-			ObjectNode? node = spawnPoint.GetParent<ObjectNode>();
-			if(node != null) {
+			Node? spawnPointParent = spawnPoint.GetParent();
+			if(spawnPointParent is ObjectNode node) {
 				node.QueueFree();
 			}
 			else {
@@ -174,6 +174,7 @@ public partial class WorldObjectManager : Node, ISaveable<WorldObjectManagerData
 		DoorComponent doorComponent = obj.ComponentDictionary.Get<DoorComponent>();
 		doorComponent.SpawnPosition = doorSpawnDefinition.SpawnPositionMarker;
 		doorComponent.DefaultScene = doorSpawnDefinition.BaseScene;
+		doorComponent.ReturnToMainWorld = doorSpawnDefinition.ReturnToMainWorld;
 	}
 
 	public bool CreateWorldObject(string itemId, Vector3 position, Vector3 rotation) {

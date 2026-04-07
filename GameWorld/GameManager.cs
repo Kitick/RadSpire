@@ -17,7 +17,7 @@ using UI.HUD;
 public sealed partial class GameManager : Node {
 	private static readonly LogService Log = new(nameof(GameManager), enabled: true);
 
-	[Export] private WorldEnvironment WorldEnvironment = null!;
+	[Export] private WorldEnvironment? WorldEnvironment;
 
 	[ExportCategory("Scene References")]
 	[Export] private PackedScene CameraScene = null!;
@@ -28,6 +28,7 @@ public sealed partial class GameManager : Node {
 
 	private readonly List<Enemy> SpawnedEnemies = [];
 	[Export] private PackedScene NPCScene = null!;
+	[Export] private Node WorldContentRoot = null!;
 
 	private readonly KeyInput KeyInput = new();
 	private CameraRig CameraRig = null!;
@@ -46,19 +47,70 @@ public sealed partial class GameManager : Node {
 	private const int SpawnRadius = 10;
 
 	[ExportCategory("Spawn Points")]
-	[Export] private Marker3D PlayerSpawnMarker = null!;
-	[Export] private Marker3D NPCSpawnMarker = null!;
+	[Export] private Marker3D? PlayerSpawnMarker;
+	[Export] private Marker3D? NPCSpawnMarker;
 	[Export] private Godot.Collections.Array<Marker3D> EnemySpawnPoints = [];
 
 	public override void _Ready() {
-		DisplaySettings.SetWorldEnvironment(WorldEnvironment);
-
 		CameraRig = this.AddScene<CameraRig>(CameraScene);
 		GameWorldManager = this.AddScene<GameWorldManager>(GameWorldManagerScene);
-		GameWorldManager.Initialize(GetParent() ?? this, this);
+		Node worldRoot = ResolveWorldRoot();
+		GameWorldManager.Initialize(worldRoot, this);
+		RefreshWorldReferences();
+		DisplaySettings.SetWorldEnvironment(WorldEnvironment);
 		ConfigureStateMachine();
 
 		StartGame();
+	}
+
+	private Node ResolveWorldRoot() {
+		if(IsInstanceValid(WorldContentRoot)) {
+			return WorldContentRoot;
+		}
+
+		Node? fallback = GetNodeOrNull<Node>("Node") ?? GetParent();
+		if(fallback != null) {
+			Log.Warn("WorldContentRoot is not assigned. Falling back to auto-detected world root node.");
+			return fallback;
+		}
+
+		Log.Warn("WorldContentRoot is not assigned and no fallback root node was found. Using GameManager as world root.");
+		return this;
+	}
+
+	private Node? GetActiveWorldNode() {
+		if(!IsInstanceValid(WorldContentRoot) || WorldContentRoot.GetChildCount() == 0) {
+			return null;
+		}
+
+		return WorldContentRoot.GetChild(0);
+	}
+
+	private void RefreshWorldReferences() {
+		Node? activeWorld = GetActiveWorldNode();
+		if(activeWorld == null) {
+			return;
+		}
+
+		WorldEnvironment = activeWorld.GetNodeOrNull<WorldEnvironment>("WorldEnvironment") ?? WorldEnvironment;
+		PlayerSpawnMarker = activeWorld.GetNodeOrNull<Marker3D>("SpawnLocations/PlayerSpawn") ?? PlayerSpawnMarker;
+		NPCSpawnMarker = activeWorld.GetNodeOrNull<Marker3D>("SpawnLocations/NPCSpawn") ?? NPCSpawnMarker;
+
+		Node? spawnLocations = activeWorld.GetNodeOrNull<Node>("SpawnLocations");
+		if(spawnLocations == null) {
+			return;
+		}
+
+		Godot.Collections.Array<Marker3D> markers = [];
+		foreach(Node child in spawnLocations.GetChildren()) {
+			if(child is Marker3D marker && marker.Name.ToString().StartsWith("Enemy")) {
+				markers.Add(marker);
+			}
+		}
+
+		if(markers.Count > 0) {
+			EnemySpawnPoints = markers;
+		}
 	}
 
 	public override void _ExitTree() {
@@ -93,11 +145,19 @@ public sealed partial class GameManager : Node {
 	}
 
 	private void SpawnNPC() {
+		if(!IsInstanceValid(NPCSpawnMarker)) {
+			Log.Warn("NPCSpawn marker not found in active world. Skipping NPC spawn.");
+			return;
+		}
 		var npc = this.AddScene<NPC>(NPCScene);
 		npc.GlobalPosition = NPCSpawnMarker.GlobalPosition;
 	}
 
 	private void SpawnLocalPlayer() {
+		if(!IsInstanceValid(PlayerSpawnMarker)) {
+			Log.Error("PlayerSpawn marker not found in active world. Cannot spawn player.");
+			return;
+		}
 		LocalPlayer = this.AddScene<Player>(PlayerScene);
 		LocalPlayer.GlobalPosition = PlayerSpawnMarker.GlobalPosition;
 
@@ -212,6 +272,8 @@ public sealed partial class GameManager : Node {
 		LocalPlayer!.Import(data.Player);
 		CameraRig!.Import(data.CameraRig);
 		GameWorldManager!.Import(data.GameWorldManager);
+		RefreshWorldReferences();
+		DisplaySettings.SetWorldEnvironment(WorldEnvironment);
 
 		if(LocalPlayer != null && GameWorldManager.WorldObjectManager != null && HUD != null) {
 			LocalPlayer.ConfigureObjectPickup(GameWorldManager.WorldObjectManager);
@@ -248,6 +310,8 @@ public sealed partial class GameManager : Node {
 		LocalPlayer.ConfigureObjectPickup(GameWorldManager.WorldObjectManager);
 		LocalPlayer.ConfigureObjectPlacement(GameWorldManager.WorldObjectManager, this, HUD.GetNode<Hotbar>("Hotbar"));
 		GameWorldManager.BindPlayer(LocalPlayer);
+		RefreshWorldReferences();
+		DisplaySettings.SetWorldEnvironment(WorldEnvironment);
 
 		if(playerSpawnPosition.HasValue) {
 			LocalPlayer.GlobalPosition = playerSpawnPosition.Value;
@@ -285,6 +349,7 @@ public sealed partial class GameManager : Node {
 	}
 
 	private void SpawnEnemies() {
+		RefreshWorldReferences();
 		if(EnemySpawnPoints.Count == 0) {
 			Log.Info("No EnemySpawnPoints assigned — skipping enemy spawn.");
 			return;
@@ -306,7 +371,7 @@ public sealed partial class GameManager : Node {
 	}
 
 	private Vector3 RandomLocationNearPlayer() {
-		Vector3 center = IsInstanceValid(LocalPlayer) ? LocalPlayer!.GlobalPosition : PlayerSpawnMarker.GlobalPosition;
+		Vector3 center = IsInstanceValid(LocalPlayer) ? LocalPlayer!.GlobalPosition : PlayerSpawnMarker?.GlobalPosition ?? Vector3.Zero;
 		Vector3 randomPoint = new Vector3(
 			center.X + GD.RandRange(-SpawnRadius, SpawnRadius),
 			center.Y + SpawnHeight,

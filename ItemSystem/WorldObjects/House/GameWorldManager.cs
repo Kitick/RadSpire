@@ -12,12 +12,14 @@ using Services;
 
 public partial class GameWorldManager : Node, ISaveable<GameWorldManagerData> {
 	private static readonly LogService Log = new(nameof(GameWorldManager), enabled: true);
+	[Export] private PackedScene MainWorldScene = null!;
 
 	private Node? WorldRoot;
 	private bool IsInitialized;
 	private GameManager? GameManager;
 
 	public string CurrentGameWorldId = null!;
+	public string MainGameWorldId = null!;
 	public Dictionary<string, GameWorldState> GameWorlds = new();
 
 	public GameWorldState? CurrentGameWorld => GetCurrentGameWorld();
@@ -29,14 +31,22 @@ public partial class GameWorldManager : Node, ISaveable<GameWorldManagerData> {
 		GameManager = gameManager;
 
 		if(GameWorlds.Count == 0) {
-			var mainWorld = new GameWorldState();
+			if(MainWorldScene == null) {
+				Log.Error("Cannot initialize GameWorldManager: MainWorldScene is not assigned.");
+				return;
+			}
+
+			var mainWorld = new GameWorldState(MainWorldScene, WorldRoot, this, GameManager);
 			RegisterGameWorld(mainWorld);
 			CurrentGameWorldId = mainWorld.Id;
-			mainWorld.Initialize(WorldRoot, this, GameManager);
+			MainGameWorldId = mainWorld.Id;
 		}
 		else if(CurrentGameWorld == null) {
 			CurrentGameWorldId = FirstGameWorldId();
 			CurrentGameWorld?.Initialize(WorldRoot ?? this, this, GameManager);
+		}
+		if(string.IsNullOrEmpty(MainGameWorldId)) {
+			MainGameWorldId = CurrentGameWorldId;
 		}
 
 		IsInitialized = true;
@@ -141,6 +151,7 @@ public partial class GameWorldManager : Node, ISaveable<GameWorldManagerData> {
 
 	public GameWorldManagerData Export() => new GameWorldManagerData {
 		CurrentGameWorldId = CurrentGameWorldId,
+		MainGameWorldId = MainGameWorldId,
 		GameWorlds = ExportGameWorlds(),
 	};
 
@@ -150,6 +161,7 @@ public partial class GameWorldManager : Node, ISaveable<GameWorldManagerData> {
 		}
 
 		CurrentGameWorldId = data.CurrentGameWorldId;
+		MainGameWorldId = data.MainGameWorldId;
 		GameWorlds = new Dictionary<string, GameWorldState>();
 
 		foreach(KeyValuePair<string, GameWorldStateData> pair in data.GameWorlds) {
@@ -157,6 +169,9 @@ public partial class GameWorldManager : Node, ISaveable<GameWorldManagerData> {
 			gameWorld.Import(pair.Value);
 			GameWorlds.Add(pair.Key, gameWorld);
 			AddChild(gameWorld);
+		}
+		if(string.IsNullOrEmpty(MainGameWorldId) && GameWorlds.Count > 0) {
+			MainGameWorldId = FirstGameWorldId();
 		}
 
 		if(IsInitialized && WorldRoot != null && CurrentGameWorld != null && CurrentGameWorld.Item3DIconManager == null) {
@@ -173,6 +188,7 @@ public partial class GameWorldManager : Node, ISaveable<GameWorldManagerData> {
 		WorldRoot = null;
 		IsInitialized = false;
 		CurrentGameWorldId = null!;
+		MainGameWorldId = null!;
 	}
 
 	private Dictionary<string, GameWorldStateData> ExportGameWorlds() {
@@ -209,5 +225,6 @@ public partial class GameWorldManager : Node, ISaveable<GameWorldManagerData> {
 
 public readonly record struct GameWorldManagerData : ISaveData {
 	public string CurrentGameWorldId { get; init; }
+	public string MainGameWorldId { get; init; }
 	public Dictionary<string, GameWorldStateData> GameWorlds { get; init; }
 }
