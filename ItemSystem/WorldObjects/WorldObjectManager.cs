@@ -79,6 +79,7 @@ public partial class WorldObjectManager : Node, ISaveable<WorldObjectManagerData
 				Log.Error($"Failed to spawn world object with ID {obj.Id} and ItemId {obj.ItemId}");
 				continue;
 			}
+			InitializeObjectComponents(obj);
 			bool hasInventorySpawnDefinition = false;
 			string spawnPointName = "UnknownSpawnPoint";
 			if(pendingSpawnComponents.TryGetValue(obj.Id, out var pendingData)) {
@@ -173,9 +174,6 @@ public partial class WorldObjectManager : Node, ISaveable<WorldObjectManagerData
 		DoorComponent doorComponent = obj.ComponentDictionary.Get<DoorComponent>();
 		doorComponent.SpawnPosition = doorSpawnDefinition.SpawnPositionMarker;
 		doorComponent.DefaultScene = doorSpawnDefinition.BaseScene;
-		if(GameWorldManager != null && GameManager != null) {
-			doorComponent.Initialize(GameWorldManager, GameManager);
-		}
 	}
 
 	public bool CreateWorldObject(string itemId, Vector3 position, Vector3 rotation) {
@@ -224,7 +222,19 @@ public partial class WorldObjectManager : Node, ISaveable<WorldObjectManagerData
 			Log.Error($"Failed to spawn world object with ID {obj.Id} and ItemId {obj.ItemId}");
 			return;
 		}
+		InitializeObjectComponents(obj);
 		WorldObjectNodes.AddObjectNode(node);
+	}
+
+	private void InitializeObjectComponents(Object obj) {
+		if(GameWorldManager == null || GameManager == null) {
+			return;
+		}
+
+		if(obj.ComponentDictionary.Has<DoorComponent>()) {
+			DoorComponent doorComponent = obj.ComponentDictionary.Get<DoorComponent>();
+			doorComponent.Initialize(GameWorldManager, GameManager);
+		}
 	}
 
 	private void HandleOnWorldObjectRemoved(string objectId) {

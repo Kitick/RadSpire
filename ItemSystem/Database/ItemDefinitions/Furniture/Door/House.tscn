@@ -1,0 +1,32 @@
+[gd_scene format=3 uid="uid://b3pmhq4qbl3np"]
+
+[ext_resource type="PackedScene" uid="uid://cagvmojl3m2yq" path="res://ItemSystem/Database/ItemDefinitions/Furniture/Door/House_01_full.fbx" id="1_n86oa"]
+[ext_resource type="Script" uid="uid://klsonhpw4auo" path="res://ItemSystem/WorldObjects/ObjectNode.cs" id="1_ts0mo"]
+[ext_resource type="PackedScene" uid="uid://b7gv62rlbjt5l" path="res://ItemSystem/WorldObjects/SpawnPoint/WorldObjectSpawnPoint.tscn" id="2_lukph"]
+[ext_resource type="Script" uid="uid://cvyjpeuc2pm1x" path="res://ItemSystem/WorldObjects/SpawnPoint/Components/WorldObjectSpawnComponentDefinition.cs" id="3_ww6q7"]
+[ext_resource type="PackedScene" uid="uid://dagcff6s8q7t2" path="res://ItemSystem/WorldObjects/House/Scenes/TestRoom.tscn" id="4_ts0mo"]
+[ext_resource type="Script" uid="uid://c2531e5uu51o6" path="res://ItemSystem/WorldObjects/SpawnPoint/Components/Door/WorldObjectDoorSpawnDefinition.cs" id="5_pt0sl"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_xscly"]
+size = Vector3(5.982025, 5.4608765, 4.9189453)
+
+[sub_resource type="Resource" id="Resource_dpnfh"]
+script = ExtResource("5_pt0sl")
+SpawnPositionMarker = Vector3(0, 1, 0)
+BaseScene = ExtResource("4_ts0mo")
+metadata/_custom_type_script = "uid://c2531e5uu51o6"
+
+[node name="House" type="Node3D" unique_id=1154107609]
+script = ExtResource("1_ts0mo")
+
+[node name="House_01_full" parent="." unique_id=67085972 instance=ExtResource("1_n86oa")]
+
+[node name="StaticBody3D" type="StaticBody3D" parent="House_01_full" unique_id=678640799]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="House_01_full/StaticBody3D" unique_id=1578719940]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.038345337, 2.7919006, 0.03173828)
+shape = SubResource("BoxShape3D_xscly")
+
+[node name="WorldObjectSpawnPoint" parent="." unique_id=2064846928 instance=ExtResource("2_lukph")]
+ItemId = "House1"
+ComponentDefinitions = Array[ExtResource("3_ww6q7")]([SubResource("Resource_dpnfh")])

@@ -39,6 +39,10 @@ public sealed class DoorComponent : IObjectComponent, IInteract, ISaveable<DoorC
 		if(interactor is not Player) {
 			return false;
 		}
+		if(!IsInitalized) {
+			Log.Error("DoorComponent is not initialized properly.");
+			return false;
+		}
 
 		if(HasWorldID) {
 			Log.Info($"Player is entering door to WorldID: {WorldID}");
@@ -89,4 +93,3 @@ public readonly record struct DoorComponentData : ISaveData {
 	public PackedScene DefaultScene { get; init; }
 	public Vector3? SpawnPosition { get; init; }
 }
-
