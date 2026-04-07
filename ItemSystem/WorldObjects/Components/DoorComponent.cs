@@ -22,9 +22,15 @@ public sealed class DoorComponent : IObjectComponent, IInteract, ISaveable<DoorC
 	public string WorldID { get; set; } = string.Empty;
 	public bool HasWorldID => !string.IsNullOrEmpty(WorldID);
 	public Vector3? SpawnPosition { get; set; }
+	public bool IsInitalized => GameWorldManager != null && GameManager != null;
 
-	public DoorComponent(Object owner, GameWorldManager gameWorldManager, GameManager gameManager) {
+	public DoorComponent(PackedScene defaultScene, Vector3? spawnPosition, Object owner){
+		DefaultScene = defaultScene;
+		SpawnPosition = spawnPosition;
 		ComponentOwner = owner;
+	}
+
+	public void Initialize(GameWorldManager gameWorldManager, GameManager gameManager) {
 		GameWorldManager = gameWorldManager;
 		GameManager = gameManager;
 	}
@@ -52,6 +58,10 @@ public sealed class DoorComponent : IObjectComponent, IInteract, ISaveable<DoorC
 	}
 
 	private bool TrySwitchToWorld() {
+		if(!IsInitalized) {
+			Log.Error("DoorComponent is not initialized properly.");
+			return false;
+		}
 		if(SpawnPosition.HasValue) {
 			Log.Info($"Door has spawn position: {SpawnPosition.Value}");
 			return GameManager.SwitchToGameWorld(WorldID, SpawnPosition);
@@ -64,16 +74,19 @@ public sealed class DoorComponent : IObjectComponent, IInteract, ISaveable<DoorC
 	public DoorComponentData Export() => new DoorComponentData {
 		WorldID = WorldID,
 		SpawnPosition = SpawnPosition,
+		DefaultScene = DefaultScene,
 	};
 
 	public void Import(DoorComponentData data) {
 		WorldID = data.WorldID;
 		SpawnPosition = data.SpawnPosition;
+		DefaultScene = data.DefaultScene;
 	}
 }
 
 public readonly record struct DoorComponentData : ISaveData {
 	public string WorldID { get; init; }
+	public PackedScene DefaultScene { get; init; }
 	public Vector3? SpawnPosition { get; init; }
 }
 

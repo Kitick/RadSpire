@@ -55,7 +55,7 @@ public sealed partial class GameManager : Node {
 
 		CameraRig = this.AddScene<CameraRig>(CameraScene);
 		GameWorldManager = this.AddScene<GameWorldManager>(GameWorldManagerScene);
-		GameWorldManager.Initialize(GetParent() ?? this);
+		GameWorldManager.Initialize(GetParent() ?? this, this);
 		ConfigureStateMachine();
 
 		StartGame();

@@ -3,9 +3,11 @@ namespace ItemSystem.WorldObjects;
 using System;
 using System.Collections.Generic;
 using Components;
+using GameWorld;
 using Godot;
 using InventorySystem;
 using ItemSystem;
+using ItemSystem.WorldObjects.House;
 using Services;
 
 public partial class WorldObjectManager : Node, ISaveable<WorldObjectManagerData> {
@@ -16,9 +18,11 @@ public partial class WorldObjectManager : Node, ISaveable<WorldObjectManagerData
 	private ObjectNodeFactory ObjectNodeFactory = null!;
 	private Node GameWorldNode = null!;
 	private Node WorldObjectParentNode = null!;
+	private GameWorldManager? GameWorldManager;
+	private GameManager? GameManager;
 	private bool SetUpComplete = false;
 
-	public void SetUpWorldObjectManager(Node parentNode, Node gameWorldNode) {
+	public void SetUpWorldObjectManager(Node parentNode, Node gameWorldNode, ItemSystem.WorldObjects.House.GameWorldManager gameWorldManager, GameManager? gameManager) {
 		if(SetUpComplete) {
 			Log.Warn("SetUpWorldObjectManager called more than once. Ignoring duplicate call.");
 			return;
@@ -33,6 +37,8 @@ public partial class WorldObjectManager : Node, ISaveable<WorldObjectManagerData
 		}
 		GameWorldNode = gameWorldNode;
 		WorldObjectParentNode = parentNode;
+		GameWorldManager = gameWorldManager;
+		GameManager = gameManager;
 		List<WorldObjectSpawnPoint> spawnPoints = GetSpawnPointsRecursive(GameWorldNode);
 		Dictionary<string, (string SpawnPointName, Godot.Collections.Array<WorldObjectSpawnComponentDefinition> ComponentDefinitions)> pendingSpawnComponents = new();
 		foreach(WorldObjectSpawnPoint objNode in spawnPoints) {
@@ -122,6 +128,9 @@ public partial class WorldObjectManager : Node, ISaveable<WorldObjectManagerData
 				hasInventorySpawnDefinition = true;
 				ApplyInventorySpawnDefinition(obj, pendingData.SpawnPointName, inventorySpawnDefinition);
 			}
+			if(definition is WorldObjectDoorSpawnDefinition doorSpawnDefinition) {
+				ApplyDoorSpawnDefinition(obj, pendingData.SpawnPointName, doorSpawnDefinition);
+			}
 		}
 		return hasInventorySpawnDefinition;
 	}
@@ -153,6 +162,19 @@ public partial class WorldObjectManager : Node, ISaveable<WorldObjectManagerData
 				}
 				quantity -= added;
 			}
+		}
+	}
+
+	private void ApplyDoorSpawnDefinition(Object obj, string spawnPointName, WorldObjectDoorSpawnDefinition doorSpawnDefinition) {
+		if(!obj.ComponentDictionary.Has<DoorComponent>()) {
+			Log.Warn($"Spawn point '{spawnPointName}' has door spawn data but object ItemId '{obj.ItemId}' has no DoorComponent.");
+			return;
+		}
+		DoorComponent doorComponent = obj.ComponentDictionary.Get<DoorComponent>();
+		doorComponent.SpawnPosition = doorSpawnDefinition.SpawnPositionMarker;
+		doorComponent.DefaultScene = doorSpawnDefinition.BaseScene;
+		if(GameWorldManager != null && GameManager != null) {
+			doorComponent.Initialize(GameWorldManager, GameManager);
 		}
 	}
 

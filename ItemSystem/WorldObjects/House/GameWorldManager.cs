@@ -15,6 +15,7 @@ public partial class GameWorldManager : Node, ISaveable<GameWorldManagerData> {
 
 	private Node? WorldRoot;
 	private bool IsInitialized;
+	private GameManager? GameManager;
 
 	public string CurrentGameWorldId = null!;
 	public Dictionary<string, GameWorldState> GameWorlds = new();
@@ -23,18 +24,19 @@ public partial class GameWorldManager : Node, ISaveable<GameWorldManagerData> {
 	public Item3DIconManager? Item3DIconManager => CurrentGameWorld?.Item3DIconManager;
 	public WorldObjectManager? WorldObjectManager => CurrentGameWorld?.WorldObjectManager;
 
-	public void Initialize(Node worldRoot) {
+	public void Initialize(Node worldRoot, GameManager? gameManager) {
 		WorldRoot = worldRoot;
+		GameManager = gameManager;
 
 		if(GameWorlds.Count == 0) {
 			var mainWorld = new GameWorldState();
 			RegisterGameWorld(mainWorld);
 			CurrentGameWorldId = mainWorld.Id;
-			mainWorld.Initialize(WorldRoot);
+			mainWorld.Initialize(WorldRoot, this, GameManager);
 		}
 		else if(CurrentGameWorld == null) {
 			CurrentGameWorldId = FirstGameWorldId();
-			CurrentGameWorld?.Initialize(WorldRoot ?? this);
+			CurrentGameWorld?.Initialize(WorldRoot ?? this, this, GameManager);
 		}
 
 		IsInitialized = true;
@@ -58,7 +60,7 @@ public partial class GameWorldManager : Node, ISaveable<GameWorldManagerData> {
 		CurrentGameWorldId = gameWorldId;
 
 		if(IsInitialized && WorldRoot != null) {
-			gameWorld.Initialize(WorldRoot);
+			gameWorld.Initialize(WorldRoot, this, GameManager);
 		}
 
 		return true;
@@ -73,7 +75,7 @@ public partial class GameWorldManager : Node, ISaveable<GameWorldManagerData> {
 			Log.Error("Cannot create new game world: GameWorldManager is not initialized.");
 			return null!;
 		}
-		GameWorldState newWorld = new GameWorldState(scene, WorldRoot!);
+		GameWorldState newWorld = new GameWorldState(scene, WorldRoot!, this, GameManager);
 		RegisterGameWorld(newWorld);
 		return newWorld.Id;
 	}
@@ -158,7 +160,7 @@ public partial class GameWorldManager : Node, ISaveable<GameWorldManagerData> {
 		}
 
 		if(IsInitialized && WorldRoot != null && CurrentGameWorld != null && CurrentGameWorld.Item3DIconManager == null) {
-			CurrentGameWorld.Initialize(WorldRoot);
+			CurrentGameWorld.Initialize(WorldRoot, this, GameManager);
 		}
 	}
 

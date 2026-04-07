@@ -1,6 +1,7 @@
 namespace ItemSystem.WorldObjects.House;
 
 using System;
+using GameWorld;
 using Godot;
 using ItemSystem.Icons;
 using ItemSystem.WorldObjects;
@@ -12,19 +13,23 @@ public sealed partial class GameWorldState : Node, ISaveable<GameWorldStateData>
 
 	private Node? WorldRoot;
 	private Node? ActiveWorldNode;
+	private GameWorldManager? GameWorldManager;
+	private GameManager? GameManager;
 	public Item3DIconManager? Item3DIconManager;
 	public WorldObjectManager? WorldObjectManager;
 	private GameWorldStateData? SavedData;
 	private bool OwnsActiveWorldNode;
 
-	public void Initialize(Node worldRoot) {
+	public void Initialize(Node worldRoot, GameWorldManager gameWorldManager, GameManager? gameManager) {
 		WorldRoot = worldRoot;
+		GameWorldManager = gameWorldManager;
+		GameManager = gameManager;
 
 		SetupActiveWorldNode();
 		SetupManagers();
 
 		Node worldNode = ActiveWorldNode ?? WorldRoot ?? this;
-		WorldObjectManager!.SetUpWorldObjectManager(worldNode, worldNode);
+		WorldObjectManager!.SetUpWorldObjectManager(worldNode, worldNode, GameWorldManager!, GameManager!);
 
 		if(SavedData.HasValue) {
 			ApplySavedData(SavedData.Value);
@@ -34,9 +39,9 @@ public sealed partial class GameWorldState : Node, ISaveable<GameWorldStateData>
 		}
 	}
 
-	public GameWorldState(PackedScene baseScene, Node worldRoot) {
+	public GameWorldState(PackedScene baseScene, Node worldRoot, GameWorldManager gameWorldManager, GameManager? gameManager) {
 		BaseScene = baseScene;
-		Initialize(worldRoot);
+		Initialize(worldRoot, gameWorldManager, gameManager);
 	}
 
 	public GameWorldState() { }

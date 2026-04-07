@@ -101,6 +101,10 @@ public sealed partial class DatabaseManager : Node {
 					ChestRarityComponent rarityComp = new ChestRarityComponent(chestRarityDef.RarityLevel, obj);
 					obj.ComponentDictionary.Add(rarityComp);
 				}
+				else if(comp is DoorDefinition doorDef) {
+					DoorComponent doorComp = new DoorComponent(doorDef.BaseScene, doorDef.SpawnPositionMarker, obj);
+					obj.ComponentDictionary.Add(doorComp);
+				}
 			}
 		}
 	}
