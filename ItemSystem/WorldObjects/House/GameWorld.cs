@@ -56,7 +56,7 @@ public sealed partial class GameWorldState : Node, ISaveable<GameWorldStateData>
 	public GameWorldStateData Export() {
 		GameWorldStateData data = new() {
 			Id = Id,
-			BaseScene = BaseScene,
+			BaseScenePath = BaseScene?.ResourcePath ?? string.Empty,
 			Item3DIconManager = Item3DIconManager?.Export() ?? SavedData?.Item3DIconManager ?? new Item3DIconManagerData(),
 			WorldObjectManager = WorldObjectManager?.Export() ?? SavedData?.WorldObjectManager ?? new WorldObjectManagerData(),
 		};
@@ -67,8 +67,14 @@ public sealed partial class GameWorldState : Node, ISaveable<GameWorldStateData>
 
 	public void Import(GameWorldStateData data) {
 		Id = data.Id;
-		if(data.BaseScene != null) {
-			BaseScene = data.BaseScene;
+		if(!string.IsNullOrEmpty(data.BaseScenePath)) {
+			PackedScene? scene = ResourceLoader.Load<PackedScene>(data.BaseScenePath);
+			if(scene != null) {
+				BaseScene = scene;
+			}
+			else {
+				GD.PushWarning($"GameWorldState '{Id}' failed to load BaseScene from '{data.BaseScenePath}'.");
+			}
 		}
 		SavedData = data;
 
@@ -142,7 +148,7 @@ public sealed partial class GameWorldState : Node, ISaveable<GameWorldStateData>
 
 public readonly record struct GameWorldStateData : ISaveData {
 	public string Id { get; init; }
-	public PackedScene BaseScene { get; init; }
+	public string BaseScenePath { get; init; }
 	public Item3DIconManagerData Item3DIconManager { get; init; }
 	public WorldObjectManagerData WorldObjectManager { get; init; }
 }

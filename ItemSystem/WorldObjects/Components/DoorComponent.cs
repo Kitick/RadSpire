@@ -74,6 +74,10 @@ public sealed class DoorComponent : IObjectComponent, IInteract, ISaveable<DoorC
 		}
 
 		Log.Info("Door has no target WorldID set.");
+		if(DefaultScene == null) {
+			Log.Error("Door has no target WorldID and no DefaultScene configured.");
+			return false;
+		}
 		string newWorldId = GameWorldManager.CreateNewGameWorld(DefaultScene);
 		if(string.IsNullOrEmpty(newWorldId)) {
 			Log.Error("Failed to create new world for door.");
@@ -123,21 +127,26 @@ public sealed class DoorComponent : IObjectComponent, IInteract, ISaveable<DoorC
 	public DoorComponentData Export() => new DoorComponentData {
 		WorldID = WorldID,
 		SpawnPosition = SpawnPosition,
-		DefaultScene = DefaultScene,
+		DefaultScenePath = DefaultScene?.ResourcePath ?? string.Empty,
 		ReturnToMainWorld = ReturnToMainWorld,
 	};
 
 	public void Import(DoorComponentData data) {
 		WorldID = data.WorldID;
 		SpawnPosition = data.SpawnPosition;
-		DefaultScene = data.DefaultScene;
+		if(!string.IsNullOrEmpty(data.DefaultScenePath)) {
+			PackedScene? scene = ResourceLoader.Load<PackedScene>(data.DefaultScenePath);
+			if(scene != null) {
+				DefaultScene = scene;
+			}
+		}
 		ReturnToMainWorld = data.ReturnToMainWorld;
 	}
 }
 
 public readonly record struct DoorComponentData : ISaveData {
 	public string WorldID { get; init; }
-	public PackedScene DefaultScene { get; init; }
+	public string DefaultScenePath { get; init; }
 	public bool ReturnToMainWorld { get; init; }
 	public Vector3? SpawnPosition { get; init; }
 }
