@@ -1,5 +1,6 @@
 namespace Character;
 
+using System;
 using Components;
 using Godot;
 using Services;
@@ -7,6 +8,7 @@ using Services;
 public sealed partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 
 	private static readonly LogService Log = new(nameof(Enemy), enabled: true);
+	public string Id { get; set; } = Guid.NewGuid().ToString();
 
 	[Export] private int InitialHealthValue = 50;
 	[Export] private int InitialDamagePhysical = 5;
@@ -150,6 +152,7 @@ public sealed partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 	}
 
 	public EnemyData Export() => new EnemyData {
+		Id = Id,
 		Health = Health.Export(),
 		Movement = Movement.Export(),
 		Offense = Offense.Export(),
@@ -157,6 +160,9 @@ public sealed partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 	};
 
 	public void Import(EnemyData data) {
+		if(!string.IsNullOrEmpty(data.Id)) {
+			Id = data.Id;
+		}
 		Health.Import(data.Health);
 		Movement.Import(data.Movement);
 		Offense.Import(data.Offense);
@@ -165,6 +171,7 @@ public sealed partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 }
 
 public readonly record struct EnemyData : ISaveData {
+	public string Id { get; init; }
 	public HealthData Health { get; init; }
 	public MovementData Movement { get; init; }
 	public OffenseData Offense { get; init; }

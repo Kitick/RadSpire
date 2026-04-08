@@ -6,8 +6,9 @@ using Godot;
 using Services;
 using UI.HUD;
 
-public sealed partial class NPC : CharacterBody3D {
+public sealed partial class NPC : CharacterBody3D, ISaveable<NPCData> {
 	private static readonly LogService Log = new(nameof(NPC), enabled: true);
+	public string Id { get; set; } = Guid.NewGuid().ToString();
 
 	[Export] private string NPCName = "Villager";
 	[Export(PropertyHint.MultilineText)] private string Dialogue = "Craft a sword and defeat the guys at the gas station";
@@ -88,4 +89,30 @@ public sealed partial class NPC : CharacterBody3D {
 	private void Interact() {
 		Hud?.ShowInteractionPrompt($"{NPCName}: {Dialogue}");
 	}
+
+	public NPCData Export() => new NPCData {
+		Id = Id,
+		NPCName = NPCName,
+		Dialogue = Dialogue,
+		GlobalPosition = GlobalPosition,
+		GlobalRotation = GlobalRotation,
+	};
+
+	public void Import(NPCData data) {
+		if(!string.IsNullOrEmpty(data.Id)) {
+			Id = data.Id;
+		}
+		NPCName = data.NPCName;
+		Dialogue = data.Dialogue;
+		GlobalPosition = data.GlobalPosition;
+		GlobalRotation = data.GlobalRotation;
+	}
+}
+
+public readonly record struct NPCData : ISaveData {
+	public string Id { get; init; }
+	public string NPCName { get; init; }
+	public string Dialogue { get; init; }
+	public Vector3 GlobalPosition { get; init; }
+	public Vector3 GlobalRotation { get; init; }
 }
