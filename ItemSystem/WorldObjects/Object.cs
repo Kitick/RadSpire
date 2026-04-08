@@ -42,6 +42,7 @@ public partial class Object : IWorldLocation, ISaveable<ObjectData> {
 	public WorldLocation WorldLocation { get; private set; } = null!;
 	public ComponentDictionary<IObjectComponent> ComponentDictionary { get; } = new();
 	private InventoryComponentData? InventoryComponentData;
+	private DoorComponentData? SavedDoorComponentData;
 
 	public Object(string itemId, Vector3 pos, Vector3 rot) {
 		ItemId = itemId;
@@ -55,11 +56,19 @@ public partial class Object : IWorldLocation, ISaveable<ObjectData> {
 		ItemId = ItemId,
 		WorldLocation = WorldLocation.Export(),
 		InventoryComponentData = ExportInventoryComponent(),
+		DoorComponentData = ExportDoorComponent(),
 	};
 
 	public InventoryComponentData? ExportInventoryComponent() {
 		if(ComponentDictionary.Has<InventoryComponent>()) {
 			return ComponentDictionary.Get<InventoryComponent>().Export();
+		}
+		return null;
+	}
+
+	public DoorComponentData? ExportDoorComponent() {
+		if(ComponentDictionary.Has<DoorComponent>()) {
+			return ComponentDictionary.Get<DoorComponent>().Export();
 		}
 		return null;
 	}
@@ -76,17 +85,18 @@ public partial class Object : IWorldLocation, ISaveable<ObjectData> {
 		}
 
 		InventoryComponentData = data.InventoryComponentData;
+		SavedDoorComponentData = data.DoorComponentData;
 		ApplyComponentData();
 	}
 
 	public void ApplyComponentData() {
-		if(InventoryComponentData == null) {
-			return;
-		}
-
-		if(ComponentDictionary.Has<InventoryComponent>()) {
+		if(InventoryComponentData.HasValue && ComponentDictionary.Has<InventoryComponent>()) {
 			ComponentDictionary.Get<InventoryComponent>().Import(InventoryComponentData.Value);
 			InventoryComponentData = null;
+		}
+		if(SavedDoorComponentData.HasValue && ComponentDictionary.Has<DoorComponent>()) {
+			ComponentDictionary.Get<DoorComponent>().Import(SavedDoorComponentData.Value);
+			SavedDoorComponentData = null;
 		}
 	}
 }
@@ -96,6 +106,7 @@ public readonly record struct ObjectData : ISaveData {
 	public string ItemId { get; init; }
 	public WorldLocationData WorldLocation { get; init; }
 	public InventoryComponentData? InventoryComponentData { get; init; }
+	public DoorComponentData? DoorComponentData { get; init; }
 
 }
 

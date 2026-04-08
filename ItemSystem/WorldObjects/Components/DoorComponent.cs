@@ -37,7 +37,7 @@ public sealed class DoorComponent : IObjectComponent, IInteract, ISaveable<DoorC
 	}
 
 	public bool Interact<TEntity>(TEntity interactor) {
-		if(interactor is not Player) {
+		if(interactor is not Player player) {
 			return false;
 		}
 		if(!IsInitalized) {
@@ -45,18 +45,32 @@ public sealed class DoorComponent : IObjectComponent, IInteract, ISaveable<DoorC
 			return false;
 		}
 
-		if(HasWorldID) {
-			Log.Info($"Player is entering door to WorldID: {WorldID}");
-			return TrySwitchToWorld();
-		}
 		if(ReturnToMainWorld) {
 			if(string.IsNullOrEmpty(GameWorldManager.MainGameWorldId)) {
 				Log.Error("Door is configured to return to main world, but MainGameWorldId is not set.");
 				return false;
 			}
-			WorldID = GameWorldManager.MainGameWorldId;
+
+			string currentWorldId = GameWorldManager.CurrentGameWorldId;
+			string mainWorldId = GameWorldManager.MainGameWorldId;
+			WorldID = mainWorldId;
+
+			Vector3? resolvedSpawnPosition = HasConfiguredSpawnPosition(SpawnPosition) ? SpawnPosition : null;
+			if(!resolvedSpawnPosition.HasValue && !string.IsNullOrEmpty(currentWorldId) && currentWorldId != mainWorldId) {
+				resolvedSpawnPosition = GameManager.GetMainWorldReturnPosition(currentWorldId);
+				if(!resolvedSpawnPosition.HasValue) {
+					resolvedSpawnPosition = GameManager.GetLastKnownMainWorldPlayerPosition();
+				}
+			}
+
 			Log.Info($"Door returning player to main world: {WorldID}");
-			return TrySwitchToWorld();
+			return TrySwitchToWorld(WorldID, resolvedSpawnPosition);
+		}
+
+		if(HasWorldID) {
+			Log.Info($"Player is entering door to WorldID: {WorldID}");
+			TryCaptureMainWorldReturnPosition(player, WorldID);
+			return TrySwitchToWorld(WorldID, HasConfiguredSpawnPosition(SpawnPosition) ? SpawnPosition : null);
 		}
 
 		Log.Info("Door has no target WorldID set.");
@@ -68,21 +82,42 @@ public sealed class DoorComponent : IObjectComponent, IInteract, ISaveable<DoorC
 
 		Log.Info($"Created new world with ID: {newWorldId} for door.");
 		WorldID = newWorldId;
-		return TrySwitchToWorld();
+		TryCaptureMainWorldReturnPosition(player, WorldID);
+		return TrySwitchToWorld(WorldID, HasConfiguredSpawnPosition(SpawnPosition) ? SpawnPosition : null);
 	}
 
-	private bool TrySwitchToWorld() {
+	private static bool HasConfiguredSpawnPosition(Vector3? spawnPosition) {
+		return spawnPosition.HasValue && spawnPosition.Value != Vector3.Zero;
+	}
+
+	private void TryCaptureMainWorldReturnPosition(Player player, string destinationWorldId) {
+		if(GameWorldManager.CurrentGameWorldId != GameWorldManager.MainGameWorldId) {
+			return;
+		}
+		if(string.IsNullOrEmpty(destinationWorldId) || destinationWorldId == GameWorldManager.MainGameWorldId) {
+			return;
+		}
+
+		if(GameManager.TryRecordMainWorldReturnPosition(destinationWorldId, player.GlobalPosition)) {
+		}
+	}
+
+	private bool TrySwitchToWorld(string targetWorldId, Vector3? targetSpawnPosition) {
 		if(!IsInitalized) {
 			Log.Error("DoorComponent is not initialized properly.");
 			return false;
 		}
-		if(SpawnPosition.HasValue) {
-			Log.Info($"Door has spawn position: {SpawnPosition.Value}");
-			return GameManager.SwitchToGameWorld(WorldID, SpawnPosition);
+		if(string.IsNullOrEmpty(targetWorldId)) {
+			Log.Error("Door has no target world id.");
+			return false;
+		}
+		if(targetSpawnPosition.HasValue) {
+			Log.Info($"Door has spawn position: {targetSpawnPosition.Value}");
+			return GameManager.SwitchToGameWorld(targetWorldId, targetSpawnPosition);
 		}
 
 		Log.Info("Door has no spawn position set.");
-		return GameManager.SwitchToGameWorld(WorldID);
+		return GameManager.SwitchToGameWorld(targetWorldId);
 	}
 
 	public DoorComponentData Export() => new DoorComponentData {

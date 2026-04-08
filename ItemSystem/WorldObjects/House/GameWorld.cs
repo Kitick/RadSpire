@@ -15,11 +15,17 @@ public sealed partial class GameWorldState : Node, ISaveable<GameWorldStateData>
 	private Node? ActiveWorldNode;
 	private GameWorldManager? GameWorldManager;
 	private GameManager? GameManager;
+	private bool IsInitialized;
 	public Item3DIconManager? Item3DIconManager;
 	public WorldObjectManager? WorldObjectManager;
 	private GameWorldStateData? SavedData;
+	public Node? CurrentWorldNode => ActiveWorldNode;
 
 	public void Initialize(Node worldRoot, GameWorldManager gameWorldManager, GameManager? gameManager) {
+		if(IsInitialized) {
+			return;
+		}
+
 		WorldRoot = worldRoot;
 		GameWorldManager = gameWorldManager;
 		GameManager = gameManager;
@@ -36,6 +42,8 @@ public sealed partial class GameWorldState : Node, ISaveable<GameWorldStateData>
 		else {
 			Item3DIconManager?.SetUpItem3DIconManager(worldNode);
 		}
+
+		IsInitialized = true;
 	}
 
 	public GameWorldState(PackedScene baseScene, Node worldRoot, GameWorldManager gameWorldManager, GameManager? gameManager) {
@@ -87,6 +95,7 @@ public sealed partial class GameWorldState : Node, ISaveable<GameWorldStateData>
 		WorldObjectManager = null;
 		ActiveWorldNode = null;
 		WorldRoot = null;
+		IsInitialized = false;
 	}
 
 	private void ApplySavedData(GameWorldStateData data) {

@@ -42,6 +42,8 @@ public sealed partial class GameManager : Node {
 
 	private string? LoadFile;
 	private bool Won = false;
+	private Dictionary<string, Vector3> MainWorldReturnPositions = [];
+	private Vector3? LastKnownMainWorldPlayerPosition;
 
 	private const int SpawnHeight = 5;
 	private const int SpawnRadius = 10;
@@ -79,6 +81,10 @@ public sealed partial class GameManager : Node {
 	}
 
 	private Node? GetActiveWorldNode() {
+		if(GameWorldManager?.CurrentGameWorld?.CurrentWorldNode != null && IsInstanceValid(GameWorldManager.CurrentGameWorld.CurrentWorldNode)) {
+			return GameWorldManager.CurrentGameWorld.CurrentWorldNode;
+		}
+
 		if(!IsInstanceValid(WorldContentRoot) || WorldContentRoot.GetChildCount() == 0) {
 			return null;
 		}
@@ -92,7 +98,7 @@ public sealed partial class GameManager : Node {
 			return;
 		}
 
-		WorldEnvironment = activeWorld.GetNodeOrNull<WorldEnvironment>("WorldEnvironment") ?? WorldEnvironment;
+		WorldEnvironment = activeWorld.GetNodeOrNull<WorldEnvironment>("WorldEnvironment");
 		PlayerSpawnMarker = activeWorld.GetNodeOrNull<Marker3D>("SpawnLocations/PlayerSpawn") ?? PlayerSpawnMarker;
 		NPCSpawnMarker = activeWorld.GetNodeOrNull<Marker3D>("SpawnLocations/NPCSpawn") ?? NPCSpawnMarker;
 
@@ -135,6 +141,10 @@ public sealed partial class GameManager : Node {
 
 		KeyInput.Update(CameraRig);
 		LocalPlayer.Update(dt, KeyInput);
+
+		if(GameWorldManager != null && GameWorldManager.CurrentGameWorldId == GameWorldManager.MainGameWorldId) {
+			LastKnownMainWorldPlayerPosition = LocalPlayer.GlobalPosition;
+		}
 	}
 
 	private void ConfigureStateMachine() {
@@ -230,6 +240,8 @@ public sealed partial class GameManager : Node {
 			Player = LocalPlayer.Export(),
 			CameraRig = CameraRig.Export(),
 			GameWorldManager = GameWorldManager.Export(),
+			MainWorldReturnPositions = new Dictionary<string, Vector3>(MainWorldReturnPositions),
+			LastKnownMainWorldPlayerPosition = LastKnownMainWorldPlayerPosition,
 		};
 
 		data.Save(fileName);
@@ -264,6 +276,8 @@ public sealed partial class GameManager : Node {
 
 	private void LoadData(string file) {
 		var data = SaveService.Load<GameState>(file);
+		MainWorldReturnPositions = data.MainWorldReturnPositions ?? new Dictionary<string, Vector3>();
+		LastKnownMainWorldPlayerPosition = data.LastKnownMainWorldPlayerPosition;
 
 		if(LocalPlayer != null) {
 			GameWorldManager?.UnbindPlayer(LocalPlayer);
@@ -301,6 +315,7 @@ public sealed partial class GameManager : Node {
 			GameWorldManager.BindPlayer(LocalPlayer);
 			return false;
 		}
+		
 		if(GameWorldManager.WorldObjectManager == null) {
 			Log.Error("SwitchToGameWorld failed: active world does not have a WorldObjectManager.");
 			GameWorldManager.BindPlayer(LocalPlayer);
@@ -320,6 +335,42 @@ public sealed partial class GameManager : Node {
 		return true;
 	}
 
+	public bool TryRecordMainWorldReturnPosition(string destinationWorldId, Vector3 playerPosition) {
+		if(GameWorldManager == null) {
+			Log.Warn("Cannot record return position: GameWorldManager is not available.");
+			return false;
+		}
+		if(string.IsNullOrEmpty(destinationWorldId)) {
+			Log.Warn("Cannot record return position: destination world id is empty.");
+			return false;
+		}
+
+		string mainWorldId = GameWorldManager.MainGameWorldId;
+		if(string.IsNullOrEmpty(mainWorldId) || destinationWorldId == mainWorldId) {
+			return false;
+		}
+
+		MainWorldReturnPositions[destinationWorldId] = playerPosition;
+		LastKnownMainWorldPlayerPosition = playerPosition;
+		return true;
+	}
+
+	public Vector3? GetMainWorldReturnPosition(string sourceWorldId) {
+		if(string.IsNullOrEmpty(sourceWorldId)) {
+			return null;
+		}
+
+		if(MainWorldReturnPositions.TryGetValue(sourceWorldId, out Vector3 position)) {
+			return position;
+		}
+
+		return null;
+	}
+
+	public Vector3? GetLastKnownMainWorldPlayerPosition() {
+		return LastKnownMainWorldPlayerPosition;
+	}
+
 	public void ReturnToMainMenu() {
 		QuickSave();
 		CleanupGame();
@@ -333,6 +384,8 @@ public sealed partial class GameManager : Node {
 
 	private void CleanupGame() {
 		HUD = null;
+		MainWorldReturnPositions.Clear();
+		LastKnownMainWorldPlayerPosition = null;
 
 		if(IsInstanceValid(LocalPlayer)) {
 			GameWorldManager?.UnbindPlayer(LocalPlayer!);
@@ -386,4 +439,6 @@ public readonly struct GameState : ISaveData {
 	public PlayerData Player { get; init; }
 	public CameraRigData CameraRig { get; init; }
 	public GameWorldManagerData GameWorldManager { get; init; }
+	public Dictionary<string, Vector3>? MainWorldReturnPositions { get; init; }
+	public Vector3? LastKnownMainWorldPlayerPosition { get; init; }
 }
