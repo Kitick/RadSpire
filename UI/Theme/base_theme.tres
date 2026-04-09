@@ -26,10 +26,12 @@ expand_margin_bottom = 20.0
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_eilpt"]
 texture = ExtResource("3_iku0p")
-expand_margin_left = 60.0
-expand_margin_top = 30.0
-expand_margin_right = 60.0
-expand_margin_bottom = 30.0
+texture_margin_left = 20.0
+texture_margin_right = 20.0
+expand_margin_left = 5.0
+expand_margin_top = 20.0
+expand_margin_right = 5.0
+expand_margin_bottom = 20.0
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_rlbu0"]
 texture = ExtResource("4_f26rp")
