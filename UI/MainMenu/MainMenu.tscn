@@ -76,6 +76,7 @@ theme_override_font_sizes/font_size = 40
 text = "Singleplayer"
 
 [node name="Singleplayer_Popup" type="VBoxContainer" parent="ButtonPanel/Singleplayer_Button" unique_id=1125284422]
+visible = false
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 1.0
@@ -112,15 +113,14 @@ disabled = true
 text = "Multiplayer"
 
 [node name="Multiplayer_Popup" type="VBoxContainer" parent="ButtonPanel/Multiplayer_Button" unique_id=1142054968]
-visible = false
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 1.0
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
-offset_left = 5.0
-offset_top = -25.0
+offset_left = 15.0
+offset_top = -20.0
 offset_right = 140.0
 
 [node name="Host_New_Button" type="Button" parent="ButtonPanel/Multiplayer_Button/Multiplayer_Popup" unique_id=337774414]
