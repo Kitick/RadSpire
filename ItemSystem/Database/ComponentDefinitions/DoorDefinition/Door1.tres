@@ -1,10 +1,10 @@
 [gd_resource type="Resource" script_class="DoorDefinition" format=3 uid="uid://bls1glagl8hol"]
 
-[ext_resource type="PackedScene" uid="uid://dagcff6s8q7t2" path="res://ItemSystem/WorldObjects/House/Scenes/TestRoom.tscn" id="1_4w54k"]
+[ext_resource type="PackedScene" uid="uid://c3squ8yof2me2" path="res://ItemSystem/WorldObjects/House/Scenes/Room.tscn" id="1_4w54k"]
 [ext_resource type="Script" uid="uid://xfkn1s54secg" path="res://ItemSystem/Definitions/DoorDefinition.cs" id="1_e6a6x"]
 
 [resource]
 script = ExtResource("1_e6a6x")
-SpawnPositionMarker = Vector3(0, 1, 0)
+SpawnPositionMarker = Vector3(2.6152735, 1.8797724, 6.2099457)
 BaseScene = ExtResource("1_4w54k")
 metadata/_custom_type_script = "uid://xfkn1s54secg"

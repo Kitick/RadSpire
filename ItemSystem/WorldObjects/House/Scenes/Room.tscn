@@ -103,6 +103,11 @@ uv1_scale = Vector3(2, 2, 2)
 [sub_resource type="BoxShape3D" id="BoxShape3D_1vvam"]
 size = Vector3(11.326111, 0.4741211, 16.964233)
 
+[sub_resource type="Environment" id="Environment_wqm31"]
+background_mode = 1
+ambient_light_source = 2
+ambient_light_color = Color(0.9956241, 0.95775825, 0.9508212, 1)
+
 [node name="Room" type="Node3D" unique_id=382221319]
 
 [node name="Wall2" type="Node3D" parent="." unique_id=686578471]
@@ -231,3 +236,13 @@ surface_material_override/0 = SubResource("StandardMaterial3D_xvaq5")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Floor/StaticBody3D" unique_id=777170962]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.037017822, -0.23401672, -0.10760498)
 shape = SubResource("BoxShape3D_1vvam")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=321662597]
+transform = Transform3D(1, 0, 0, 0, -0.19363526, 0.98107356, 0, -0.98107356, -0.19363526, 0, 13.884514, 4.2616568)
+light_color = Color(0.9984246, 0.8986004, 0.82265735, 1)
+light_energy = 0.807
+shadow_enabled = true
+sky_mode = 1
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1970066663]
+environment = SubResource("Environment_wqm31")
