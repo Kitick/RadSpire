@@ -48,4 +48,5 @@ Button/styles/disabled = SubResource("StyleBoxTexture_m2oi8")
 Button/styles/hover = SubResource("StyleBoxTexture_3nmei")
 Button/styles/normal = SubResource("StyleBoxTexture_eilpt")
 Button/styles/pressed = SubResource("StyleBoxTexture_rlbu0")
+HBoxContainer/constants/separation = 20
 VBoxContainer/constants/separation = 45

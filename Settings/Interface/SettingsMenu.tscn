@@ -46,12 +46,10 @@ layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -520.0
-offset_top = 16.0
-offset_right = 516.0
-offset_bottom = 53.0
-grow_horizontal = 2
-theme_override_constants/separation = 8
+offset_left = -707.0
+offset_top = 32.0
+offset_right = 711.0
+offset_bottom = 83.0
 
 [node name="General_Button" type="Button" parent="NavBar" unique_id=1431747125]
 layout_mode = 2
