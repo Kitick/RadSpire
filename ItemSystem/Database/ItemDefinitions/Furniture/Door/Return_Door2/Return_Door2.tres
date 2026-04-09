@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://s14k2mb6f74i"]
+
+[ext_resource type="Script" uid="uid://cnm5iegiuj4xu" path="res://ItemSystem/Definitions/ItemComponentDefinition.cs" id="1_2www5"]
+[ext_resource type="Script" uid="uid://bxmh4fd7kjvv1" path="res://ItemSystem/Definitions/ItemDefinition.cs" id="2_1sp0b"]
+[ext_resource type="Resource" uid="uid://bhogeyhkf1mo4" path="res://ItemSystem/Database/ComponentDefinitions/DoorDefinition/Door2.tres" id="2_j6l80"]
+[ext_resource type="Texture2D" uid="uid://c7303urhojgpn" path="res://Assets/Steam/Library_Logo.png" id="3_jso1d"]
+[ext_resource type="PackedScene" uid="uid://c82hwrne65tg5" path="res://ItemSystem/Database/ItemDefinitions/Furniture/Door/Return_Door2/Return_Door2.tscn" id="4_q3stb"]
+
+[resource]
+script = ExtResource("2_1sp0b")
+Id = "ReturnDoor2"
+Name = "Return Door 2"
+Description = "Return to outside world."
+IsConsumable = false
+IsPlaceable = true
+IconTexture = ExtResource("3_jso1d")
+ItemScene = ExtResource("4_q3stb")
+ComponentsResources = Array[ExtResource("1_2www5")]([ExtResource("2_j6l80")])
+metadata/_custom_type_script = "uid://bxmh4fd7kjvv1"

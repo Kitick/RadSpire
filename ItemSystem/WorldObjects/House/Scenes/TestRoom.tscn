@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://dagcff6s8q7t2"]
 
-[ext_resource type="PackedScene" uid="uid://cam02wkgiun0" path="res://ItemSystem/Database/ItemDefinitions/Furniture/Door/Return_Door.tscn" id="1_yg02e"]
+[ext_resource type="PackedScene" uid="uid://cam02wkgiun0" path="res://ItemSystem/Database/ItemDefinitions/Furniture/Door/Return_Door/Return_Door.tscn" id="1_yg02e"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_cqnqw"]
 size = Vector2(1, 1)

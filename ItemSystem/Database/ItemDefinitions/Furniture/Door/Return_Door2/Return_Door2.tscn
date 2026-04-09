@@ -1,0 +1,31 @@
+[gd_scene format=3 uid="uid://c82hwrne65tg5"]
+
+[ext_resource type="ArrayMesh" uid="uid://bugdadhtrhica" path="res://ItemSystem/WorldObjects/House/Scenes/3d_objects - free/door.obj" id="1_4bme7"]
+[ext_resource type="PackedScene" uid="uid://b7gv62rlbjt5l" path="res://ItemSystem/WorldObjects/SpawnPoint/WorldObjectSpawnPoint.tscn" id="2_xna7p"]
+[ext_resource type="Script" uid="uid://cvyjpeuc2pm1x" path="res://ItemSystem/WorldObjects/SpawnPoint/Components/WorldObjectSpawnComponentDefinition.cs" id="3_liu10"]
+[ext_resource type="PackedScene" uid="uid://dpm2alxlwbkpr" path="res://GameWorld/WorldScene.tscn" id="4_dgbc5"]
+[ext_resource type="Script" uid="uid://c2531e5uu51o6" path="res://ItemSystem/WorldObjects/SpawnPoint/Components/Door/WorldObjectDoorSpawnDefinition.cs" id="5_qyhue"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_liu10"]
+size = Vector3(0.6960449, 2.9515991, 1.5290527)
+
+[sub_resource type="Resource" id="Resource_upbfb"]
+script = ExtResource("5_qyhue")
+BaseScene = ExtResource("4_dgbc5")
+ReturnToMainWorld = true
+metadata/_custom_type_script = "uid://c2531e5uu51o6"
+
+[node name="Return_Door2" type="Node3D" unique_id=1517200146]
+
+[node name="Door" type="MeshInstance3D" parent="." unique_id=1092200246]
+mesh = ExtResource("1_4bme7")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Door" unique_id=2030703068]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Door/StaticBody3D" unique_id=338415023]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0037841797, 1.5055237, 0.027954102)
+shape = SubResource("BoxShape3D_liu10")
+
+[node name="WorldObjectSpawnPoint" parent="." unique_id=2064846928 instance=ExtResource("2_xna7p")]
+ItemId = "ReturnDoor2"
+ComponentDefinitions = Array[ExtResource("3_liu10")]([SubResource("Resource_upbfb")])

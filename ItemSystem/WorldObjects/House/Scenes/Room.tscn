@@ -1,9 +1,9 @@
 [gd_scene format=4 uid="uid://c3squ8yof2me2"]
 
 [ext_resource type="Texture2D" uid="uid://pvyapirwd8ro" path="res://ItemSystem/WorldObjects/House/Scenes/50 Free Stylized Wall Textures/17-32/Asset 11.png" id="1_43332"]
+[ext_resource type="PackedScene" uid="uid://c82hwrne65tg5" path="res://ItemSystem/Database/ItemDefinitions/Furniture/Door/Return_Door2/Return_Door2.tscn" id="2_4v2ty"]
 [ext_resource type="Texture2D" uid="uid://d3dp7wgmf2e7d" path="res://ItemSystem/WorldObjects/House/Scenes/50 Free Stylized Wall Textures/1-16/Asset 14.png" id="2_wqm31"]
 [ext_resource type="ArrayMesh" uid="uid://dk4mifq2c6juj" path="res://ItemSystem/WorldObjects/House/Scenes/3d_objects - free/galery.obj" id="3_wqm31"]
-[ext_resource type="ArrayMesh" uid="uid://bugdadhtrhica" path="res://ItemSystem/WorldObjects/House/Scenes/3d_objects - free/door.obj" id="4_4v2ty"]
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_iijcu"]
 _surfaces = [{
@@ -189,6 +189,9 @@ surface_material_override/0 = SubResource("StandardMaterial3D_iijcu")
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 5.1316466, 2.4694738, 3.0646641)
 shape = SubResource("ConcavePolygonShape3D_nktm6")
 
+[node name="Return_Door2" parent="Wall4" unique_id=1517200146 instance=ExtResource("2_4v2ty")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.3443694, -0.055336237, 0.49181223)
+
 [node name="Wall8" type="Node3D" parent="." unique_id=588208483]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 3.04973, 0, -5.2887216)
 
@@ -215,10 +218,6 @@ shape = SubResource("ConcavePolygonShape3D_3c3ku")
 [node name="Galery" type="MeshInstance3D" parent="." unique_id=424966573]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.8651444, 0, 0.7885659)
 mesh = ExtResource("3_wqm31")
-
-[node name="Door" type="MeshInstance3D" parent="." unique_id=1522844815]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 2.550796, -0.036692142, 8.134628)
-mesh = ExtResource("4_4v2ty")
 
 [node name="Floor" type="Node3D" parent="." unique_id=2097442509]
 
