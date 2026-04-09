@@ -56,7 +56,7 @@ layout_mode = 2
 focus_neighbor_left = NodePath("../Accessibility_Button")
 focus_neighbor_right = NodePath("../Display_Button")
 focus_neighbor_bottom = NodePath("../../General")
-theme_override_font_sizes/font_size = 40
+theme_override_font_sizes/font_size = 35
 text = "General"
 
 [node name="Display_Button" type="Button" parent="NavBar" unique_id=465923652]
@@ -64,7 +64,7 @@ layout_mode = 2
 focus_neighbor_left = NodePath("../General_Button")
 focus_neighbor_right = NodePath("../Sound_Button")
 focus_neighbor_bottom = NodePath("../../Display")
-theme_override_font_sizes/font_size = 40
+theme_override_font_sizes/font_size = 35
 text = "Display"
 
 [node name="Sound_Button" type="Button" parent="NavBar" unique_id=1150145720]
@@ -72,7 +72,7 @@ layout_mode = 2
 focus_neighbor_left = NodePath("../Display_Button")
 focus_neighbor_right = NodePath("../Controller_Button")
 focus_neighbor_bottom = NodePath("../../Sound")
-theme_override_font_sizes/font_size = 40
+theme_override_font_sizes/font_size = 35
 text = "Sound"
 
 [node name="Controller_Button" type="Button" parent="NavBar" unique_id=1841363012]
@@ -80,7 +80,7 @@ layout_mode = 2
 focus_neighbor_left = NodePath("../Sound_Button")
 focus_neighbor_right = NodePath("../MK_Button")
 focus_neighbor_bottom = NodePath("../../Controller")
-theme_override_font_sizes/font_size = 40
+theme_override_font_sizes/font_size = 35
 text = "Controller"
 
 [node name="MK_Button" type="Button" parent="NavBar" unique_id=1818435186]
@@ -88,7 +88,7 @@ layout_mode = 2
 focus_neighbor_left = NodePath("../Controller_Button")
 focus_neighbor_right = NodePath("../Accessibility_Button")
 focus_neighbor_bottom = NodePath("../../MK")
-theme_override_font_sizes/font_size = 40
+theme_override_font_sizes/font_size = 35
 text = "Mouse & Keyboard"
 
 [node name="Accessibility_Button" type="Button" parent="NavBar" unique_id=1538897931]
@@ -96,7 +96,7 @@ layout_mode = 2
 focus_neighbor_left = NodePath("../MK_Button")
 focus_neighbor_right = NodePath("../General_Button")
 focus_neighbor_bottom = NodePath("../../Accessibility")
-theme_override_font_sizes/font_size = 40
+theme_override_font_sizes/font_size = 35
 text = "Accessibility"
 
 [node name="General" type="VBoxContainer" parent="." unique_id=75046396 node_paths=PackedStringArray("LanguageOption", "UIScaleSlider", "ThemeOption")]
@@ -286,19 +286,12 @@ offset_bottom = 16.0
 theme_override_font_sizes/font_size = 20
 
 [node name="Sound" type="VBoxContainer" parent="." unique_id=626981101 node_paths=PackedStringArray("MasterSlider", "MusicSlider", "SFXSlider", "MuteAllCheckBox", "OutputDeviceOption")]
-visible = false
 layout_mode = 1
-anchors_preset = 14
-anchor_top = 0.5
-anchor_right = 1.0
-anchor_bottom = 0.5
-offset_left = 63.5
-offset_top = -440.0
-offset_right = -1621.5
-offset_bottom = -215.0
+anchors_preset = -1
+offset_left = 384.0
+offset_top = 768.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 0
 script = ExtResource("4_jxq57")
 MasterSlider = NodePath("Master/HSlider")
 MusicSlider = NodePath("Music/HSlider")
@@ -328,6 +321,7 @@ focus_neighbor_top = NodePath("../../../NavBar/Sound_Button")
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
 text = "Music Volume"
+horizontal_alignment = 1
 
 [node name="HSlider" type="HSlider" parent="Sound/Music" unique_id=616946594]
 layout_mode = 1
@@ -345,6 +339,7 @@ offset_bottom = 16.0
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
 text = "SFX Volume"
+horizontal_alignment = 1
 
 [node name="HSlider" type="HSlider" parent="Sound/SFX" unique_id=1212596604]
 layout_mode = 1
@@ -362,6 +357,7 @@ offset_bottom = 16.0
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
 text = "Mute All"
+horizontal_alignment = 1
 
 [node name="CheckBox" type="CheckBox" parent="Sound/Mute" unique_id=1436120856]
 layout_mode = 1
@@ -379,6 +375,7 @@ scale = Vector2(1.5, 1.5)
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
 text = "Output Device"
+horizontal_alignment = 1
 
 [node name="OptionButton" type="OptionButton" parent="Sound/OutputDevice" unique_id=2087250848]
 layout_mode = 1
@@ -555,6 +552,7 @@ disabled = true
 text = "Remap Keys"
 
 [node name="Accessibility" type="VBoxContainer" parent="." unique_id=229276971 node_paths=PackedStringArray("SubtitlesCheckBox", "SubtitleSizeSlider", "ColorblindModeOption", "TextToSpeechCheckBox", "HighContrastUICheckBox")]
+visible = false
 layout_mode = 1
 anchors_preset = 14
 anchor_top = 0.5

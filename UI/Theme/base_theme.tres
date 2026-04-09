@@ -42,6 +42,15 @@ expand_margin_top = 20.0
 expand_margin_right = 5.0
 expand_margin_bottom = 20.0
 
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_c0f2r"]
+texture = ExtResource("3_iku0p")
+texture_margin_left = 20.0
+texture_margin_right = 20.0
+expand_margin_left = 5.0
+expand_margin_top = 20.0
+expand_margin_right = 5.0
+expand_margin_bottom = 20.0
+
 [resource]
 default_font = ExtResource("1_eilpt")
 Button/styles/disabled = SubResource("StyleBoxTexture_m2oi8")
@@ -49,4 +58,5 @@ Button/styles/hover = SubResource("StyleBoxTexture_3nmei")
 Button/styles/normal = SubResource("StyleBoxTexture_eilpt")
 Button/styles/pressed = SubResource("StyleBoxTexture_rlbu0")
 HBoxContainer/constants/separation = 20
+Label/styles/normal = SubResource("StyleBoxTexture_c0f2r")
 VBoxContainer/constants/separation = 45
