@@ -311,10 +311,10 @@ anchor_left = 1.0
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
-offset_left = 31.0
-offset_top = -16.0
-offset_right = 256.0
-offset_bottom = 16.0
+offset_left = 85.0
+offset_top = -18.0
+offset_right = 200.0
+offset_bottom = 18.0
 focus_neighbor_top = NodePath("../../../NavBar/Sound_Button")
 
 [node name="Music" type="Label" parent="Sound" unique_id=1613468907]
@@ -330,10 +330,10 @@ anchor_left = 1.0
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
-offset_left = 31.0
-offset_top = -16.0
-offset_right = 256.0
-offset_bottom = 16.0
+offset_left = 85.0
+offset_top = -18.0
+offset_right = 200.0
+offset_bottom = 18.0
 
 [node name="SFX" type="Label" parent="Sound" unique_id=1434505635]
 layout_mode = 2
@@ -348,10 +348,10 @@ anchor_left = 1.0
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
-offset_left = 31.0
-offset_top = -16.0
-offset_right = 256.0
-offset_bottom = 16.0
+offset_left = 85.0
+offset_top = -18.0
+offset_right = 200.0
+offset_bottom = 18.0
 
 [node name="Mute" type="Label" parent="Sound" unique_id=520914139]
 layout_mode = 2

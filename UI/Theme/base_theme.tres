@@ -5,6 +5,10 @@
 [ext_resource type="Texture2D" uid="uid://yk8h74lch6f0" path="res://UI/Theme/Button_Sprites/hover.png" id="2_rtuaj"]
 [ext_resource type="Texture2D" uid="uid://cyw7qbg3hqpww" path="res://UI/Theme/Button_Sprites/normal.png" id="3_iku0p"]
 [ext_resource type="Texture2D" uid="uid://50q141a6le28" path="res://UI/Theme/Button_Sprites/pressed.png" id="4_f26rp"]
+[ext_resource type="Texture2D" uid="uid://dhlj8my37x2d" path="res://UI/Theme/Button_Sprites/wood_normal.png" id="5_f26rp"]
+[ext_resource type="Texture2D" uid="uid://d1u6kko2ducxi" path="res://UI/Theme/Button_Sprites/wood_disabled.png" id="5_m2oi8"]
+[ext_resource type="Texture2D" uid="uid://dsfy28aegjmpo" path="res://UI/Theme/Button_Sprites/SwordSprite.png" id="5_rtuaj"]
+[ext_resource type="Texture2D" uid="uid://cxu7frnbrneml" path="res://UI/Theme/Button_Sprites/wood_pressed.png" id="6_m2oi8"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_m2oi8"]
 texture = ExtResource("1_c0f2r")
@@ -42,6 +46,48 @@ expand_margin_top = 20.0
 expand_margin_right = 5.0
 expand_margin_bottom = 20.0
 
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_pe8ub"]
+texture = ExtResource("5_m2oi8")
+expand_margin_left = 10.0
+expand_margin_top = 5.0
+expand_margin_right = 10.0
+expand_margin_bottom = 5.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_8sf77"]
+texture = ExtResource("6_m2oi8")
+expand_margin_left = 10.0
+expand_margin_top = 5.0
+expand_margin_right = 10.0
+expand_margin_bottom = 5.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_jolmn"]
+texture = ExtResource("6_m2oi8")
+expand_margin_left = 10.0
+expand_margin_top = 5.0
+expand_margin_right = 10.0
+expand_margin_bottom = 5.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_6f4ek"]
+texture = ExtResource("5_f26rp")
+expand_margin_left = 10.0
+expand_margin_top = 5.0
+expand_margin_right = 10.0
+expand_margin_bottom = 5.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_nbw33"]
+texture = ExtResource("6_m2oi8")
+expand_margin_left = 10.0
+expand_margin_top = 5.0
+expand_margin_right = 10.0
+expand_margin_bottom = 5.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_iku0p"]
+texture = ExtResource("5_rtuaj")
+expand_margin_left = 65.0
+expand_margin_top = 25.0
+expand_margin_right = 25.0
+expand_margin_bottom = 25.0
+
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_c0f2r"]
 texture = ExtResource("3_iku0p")
 texture_margin_left = 20.0
@@ -51,12 +97,24 @@ expand_margin_top = 20.0
 expand_margin_right = 5.0
 expand_margin_bottom = 20.0
 
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_2m8xr"]
+texture = ExtResource("5_f26rp")
+expand_margin_left = 20.0
+expand_margin_right = 20.0
+
 [resource]
 default_font = ExtResource("1_eilpt")
 Button/styles/disabled = SubResource("StyleBoxTexture_m2oi8")
 Button/styles/hover = SubResource("StyleBoxTexture_3nmei")
 Button/styles/normal = SubResource("StyleBoxTexture_eilpt")
 Button/styles/pressed = SubResource("StyleBoxTexture_rlbu0")
+CheckBox/styles/disabled = SubResource("StyleBoxTexture_pe8ub")
+CheckBox/styles/hover = SubResource("StyleBoxTexture_8sf77")
+CheckBox/styles/hover_pressed = SubResource("StyleBoxTexture_jolmn")
+CheckBox/styles/normal = SubResource("StyleBoxTexture_6f4ek")
+CheckBox/styles/pressed = SubResource("StyleBoxTexture_nbw33")
 HBoxContainer/constants/separation = 20
+HSlider/styles/slider = SubResource("StyleBoxTexture_iku0p")
 Label/styles/normal = SubResource("StyleBoxTexture_c0f2r")
+OptionButton/styles/normal = SubResource("StyleBoxTexture_2m8xr")
 VBoxContainer/constants/separation = 45
