@@ -1,0 +1,25 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://crppexldi433n"
+path="res://.godot/imported/carpet.obj-3270d86c7e09b9349ba9287f459b7d97.mesh"
+
+[deps]
+
+files=["res://.godot/imported/carpet.obj-3270d86c7e09b9349ba9287f459b7d97.mesh"]
+
+source_file="res://ItemSystem/WorldObjects/House/Scenes/living_room_game_assets_free/3d_objects_free/carpet.obj"
+dest_files=["res://.godot/imported/carpet.obj-3270d86c7e09b9349ba9287f459b7d97.mesh", "res://.godot/imported/carpet.obj-3270d86c7e09b9349ba9287f459b7d97.mesh"]
+
+[params]
+
+generate_tangents=true
+generate_lods=true
+generate_shadow_mesh=true
+generate_lightmap_uv2=false
+generate_lightmap_uv2_texel_size=0.2
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+force_disable_mesh_compression=false

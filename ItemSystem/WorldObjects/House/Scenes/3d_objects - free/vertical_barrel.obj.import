@@ -1,0 +1,25 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://bh0lyo5q4hcun"
+path="res://.godot/imported/vertical_barrel.obj-bc707e66028c9ab58b4126cf2d299968.mesh"
+
+[deps]
+
+files=["res://.godot/imported/vertical_barrel.obj-bc707e66028c9ab58b4126cf2d299968.mesh"]
+
+source_file="res://ItemSystem/WorldObjects/House/Scenes/3d_objects - free/vertical_barrel.obj"
+dest_files=["res://.godot/imported/vertical_barrel.obj-bc707e66028c9ab58b4126cf2d299968.mesh", "res://.godot/imported/vertical_barrel.obj-bc707e66028c9ab58b4126cf2d299968.mesh"]
+
+[params]
+
+generate_tangents=true
+generate_lods=true
+generate_shadow_mesh=true
+generate_lightmap_uv2=false
+generate_lightmap_uv2_texel_size=0.2
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+force_disable_mesh_compression=false

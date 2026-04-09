@@ -1,0 +1,25 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://dyvnjiu5k25xj"
+path="res://.godot/imported/wall_cabinet.obj-8afd936aaf90e5629ff1f72399784dcf.mesh"
+
+[deps]
+
+files=["res://.godot/imported/wall_cabinet.obj-8afd936aaf90e5629ff1f72399784dcf.mesh"]
+
+source_file="res://ItemSystem/WorldObjects/House/Scenes/christmas_assets_[free]/3d_objects-free/wall_cabinet.obj"
+dest_files=["res://.godot/imported/wall_cabinet.obj-8afd936aaf90e5629ff1f72399784dcf.mesh", "res://.godot/imported/wall_cabinet.obj-8afd936aaf90e5629ff1f72399784dcf.mesh"]
+
+[params]
+
+generate_tangents=true
+generate_lods=true
+generate_shadow_mesh=true
+generate_lightmap_uv2=false
+generate_lightmap_uv2_texel_size=0.2
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+force_disable_mesh_compression=false

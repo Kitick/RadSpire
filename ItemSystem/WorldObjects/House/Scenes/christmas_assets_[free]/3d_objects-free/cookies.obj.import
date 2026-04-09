@@ -1,0 +1,25 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://djs4qe2biux34"
+path="res://.godot/imported/cookies.obj-b1569de10f9b515aa108a5cb44f00e1d.mesh"
+
+[deps]
+
+files=["res://.godot/imported/cookies.obj-b1569de10f9b515aa108a5cb44f00e1d.mesh"]
+
+source_file="res://ItemSystem/WorldObjects/House/Scenes/christmas_assets_[free]/3d_objects-free/cookies.obj"
+dest_files=["res://.godot/imported/cookies.obj-b1569de10f9b515aa108a5cb44f00e1d.mesh", "res://.godot/imported/cookies.obj-b1569de10f9b515aa108a5cb44f00e1d.mesh"]
+
+[params]
+
+generate_tangents=true
+generate_lods=true
+generate_shadow_mesh=true
+generate_lightmap_uv2=false
+generate_lightmap_uv2_texel_size=0.2
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+force_disable_mesh_compression=false
