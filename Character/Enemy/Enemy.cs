@@ -29,7 +29,7 @@ public sealed partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 	[Export] private float DamageNumberRise = 0.6f;
 	[Export] private float DamageNumberHorizontalJitter = 0.25f;
 	[Export] private Color DamageNumberColor = new(1f, 0.85f, 0.2f);
-	[Export] private int DamageNumberFontSize = 40;
+	[Export] private int DamageNumberFontSize = 55;
 
 	protected override int InitialHealth => InitialHealthValue;
 	protected override (int phys, int mag) InitialDamage => (InitialDamagePhysical, InitialDamageMagic);
@@ -65,6 +65,10 @@ public sealed partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 		base._Ready();
 
 		EnemyMesh = GetNodeOrNull<MeshInstance3D>("MeshInstance3D");
+		var animator = GetNodeOrNull<Animator>("Model/AnimationPlayer");
+		if(animator != null) {
+			animator.SetAttackSpeed(1.5f);
+		}
 		SetupHealthUI();
 
 		if(EnemyMesh != null) {
@@ -213,7 +217,7 @@ public sealed partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 		HealthBarFill.Position = new Vector3(-(HealthBarWidth - scale.X) * 0.5f, 0f, 0f);
 
 		HealthLabel.Text = $"{Health.Current}/{Health.Max}";
-		HealthUIRoot.Visible = Health.Current < Health.Max;
+		HealthUIRoot.Visible = Health.Current > 0 && Health.Current < Health.Max;
 	}
 
 	private void SpawnDamageNumber(int amount) {

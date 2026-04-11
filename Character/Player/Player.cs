@@ -1,3 +1,5 @@
+using Root;
+
 namespace Character;
 
 using System;
@@ -29,6 +31,7 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData> {
 
 	[Export] private float SprintMultiplier = 3.25f;
 	[Export] private float CrouchMultiplier = 0.5f;
+	[Export] private float DodgeSpeedMultiplier = 3.0f;
 
 	// Inventories
 	public readonly Inventory Inventory = new Inventory(3, 5);
@@ -49,6 +52,8 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData> {
 	private Action? UnsubscribePlace;
 
 	public bool HoldingSword = false;
+	private Vector3 DodgeDirection = Vector3.Zero;
+	private Animator? Animator;
 
 	public Player() {
 		Movement = new Movement(this);
@@ -59,6 +64,10 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData> {
 	public override void _Ready() {
 		base._Ready();
 		PickupComponent.HandleInteractInput = false;
+		Animator = GetNodeOrNull<Animator>("Model/AnimationPlayer");
+		if(Animator != null) {
+			Animator.SetAttackSpeed(3.0f);
+		}
 		AddToGroup("player");
 		AddChild(PickupComponent);
 		AddChild(InventoryManager);
@@ -84,6 +93,12 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData> {
 			return;
 		}
 
+		if(CurrentState == State.Dodging) {
+			Movement.Move(DodgeDirection, DodgeSpeedMultiplier);
+			Movement.Update(dt);
+			return;
+		}
+
 		float multiplier = GetMultiplier();
 
 		if(IsOnFloor()) {
@@ -98,6 +113,11 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData> {
 	}
 
 	private void UpdateMovementState(KeyInput keyInput) {
+		if(keyInput.DodgePressed) {
+			StartDodge(keyInput);
+			return;
+		}
+
 		if(keyInput.AttackPressed) {
 			StateMachine.TransitionTo(State.Attacking);
 			return;
@@ -123,6 +143,46 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData> {
 		if(StateMachine.CurrentState == State.Crouching) { multiplier *= CrouchMultiplier; }
 
 		return multiplier;
+	}
+
+	private void StartDodge(KeyInput keyInput) {
+		if(CurrentState == State.Dodging) { return; }
+
+		Vector3 dir = keyInput.HorizontalInput;
+		if(dir.Length() < Numbers.EPSILON) {
+			dir = -GlobalTransform.Basis.Z;
+			dir.Y = 0f;
+		}
+
+		DodgeDirection = dir.Normalized();
+		// Skip idle recovery when sprinting to keep it snappy.
+		Animator?.SetDodgeIdleRecovery(!keyInput.SprintHeld);
+		SetDodgeAnimationFromInput();
+		StateMachine.TransitionTo(State.Dodging);
+	}
+
+	public override void OnDodgeFinished() {
+		StateMachine.TransitionTo(State.Idle);
+	}
+
+	private void SetDodgeAnimationFromInput() {
+		if(Animator == null) { return; }
+
+		Vector2 input = Input.GetVector(ActionEvent.MoveLeft.Name, ActionEvent.MoveRight.Name, ActionEvent.MoveForward.Name, ActionEvent.MoveBack.Name);
+		if(input.Length() < Numbers.EPSILON) {
+			return;
+		}
+
+		float ax = Mathf.Abs(input.X);
+		float az = Mathf.Abs(input.Y);
+
+		if(ax > az) {
+			if(input.X < 0f) { Animator.SetDodgeAnimation(new StringName("Dodge_Left")); }
+			else { Animator.SetDodgeAnimation(new StringName("Dodge_Right")); }
+		}
+		else {
+			Animator.SetDodgeAnimation(new StringName("Dodge_Forward"));
+		}
 	}
 
 	private void SetupChildren() {

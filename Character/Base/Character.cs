@@ -14,7 +14,7 @@ public abstract partial class CharacterBase : CharacterBody3D, IHealth, IOffense
 	public Offense Offense { get; protected set; } = null!;
 	public Defense Defense { get; protected set; } = null!;
 
-	public enum State { Idle, Walking, Sprinting, Crouching, Falling, Attacking, Dead }
+	public enum State { Idle, Walking, Sprinting, Crouching, Falling, Attacking, Dodging, Dead }
 
 	protected readonly StateMachine<State> StateMachine = new(State.Idle);
 
@@ -22,6 +22,7 @@ public abstract partial class CharacterBase : CharacterBody3D, IHealth, IOffense
 	public event Action<State, State>? OnStateChanged;
 
 	public virtual void OnAttackFinished() { }
+	public virtual void OnDodgeFinished() { }
 
 	public override void _Ready() {
 		Health = new Health(InitialHealth);

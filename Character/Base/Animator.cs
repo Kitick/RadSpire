@@ -23,15 +23,29 @@ public sealed partial class Animator : AnimationPlayer {
 	[Export] private StringName LANDING = null!;
 	[Export] private StringName ATTACK = null!;
 	[Export] private StringName DEATH = null!;
+	[Export] private StringName DODGE = null!;
 	[Export] private StringName[] AttackVariations = Array.Empty<StringName>();
 	[Export] private bool CycleAttackVariations = false;
 
 	[ExportCategory("Animation Settings")]
 	[Export] private float SprintSpeed = 1.0f;
-	[Export] private float AttackSpeed = 3.0f;
+	[Export] private float AttackSpeed = 1.0f;
 	[Export] private float AttackBlend = 0.02f;
+	[Export] private float DodgeSpeed = 1.6f;
+	[Export] private float DodgeBlend = 0.2f;
+	[Export] private float DodgeToMoveBlend = 0.25f;
+	[Export] private float DodgeIdleRecoveryTime = 0.15f;
+	private bool UseDodgeIdleRecovery = true;
 
-	public enum AnimState { Idle, Walking, Sprinting, Crouching, Jumping, Falling, Landing, Attacking, Dying }
+	public void SetAttackSpeed(float speed) {
+		AttackSpeed = Math.Max(0.1f, speed);
+	}
+
+	public void SetDodgeIdleRecovery(bool enabled) {
+		UseDodgeIdleRecovery = enabled;
+	}
+
+	public enum AnimState { Idle, Walking, Sprinting, Crouching, Jumping, Falling, Landing, Attacking, Dying, Dodging }
 
 	private AnimState PlayingAnimation {
 		get;
@@ -45,6 +59,7 @@ public sealed partial class Animator : AnimationPlayer {
 				case AnimState.Jumping: Play(JUMPING); break;
 				case AnimState.Falling: Play(FALLING); break;
 				case AnimState.Landing: Play(LANDING); break;
+				case AnimState.Dodging: Play(DODGE, DodgeBlend, DodgeSpeed); break;
 				case AnimState.Attacking: Play(GetAttackAnimation(), AttackBlend, AttackSpeed); break;
 				case AnimState.Dying: Play(DEATH); break;
 			}
@@ -52,6 +67,11 @@ public sealed partial class Animator : AnimationPlayer {
 	}
 
 	private int AttackVariationIndex = 0;
+
+	public void SetDodgeAnimation(StringName name) {
+		DODGE = name;
+		ApplyDodgeBlendTimes();
+	}
 
 	public override void _Ready() {
 		this.ValidateExports();
@@ -67,6 +87,8 @@ public sealed partial class Animator : AnimationPlayer {
 		SetLoopMode(CROUCHING);
 		SetLoopMode(FALLING);
 
+		ApplyDodgeBlendTimes();
+
 		AnimationFinished += OnAnimationFinished;
 	}
 
@@ -76,6 +98,7 @@ public sealed partial class Animator : AnimationPlayer {
 
 	public void OnAnimationFinished(StringName name) {
 		if(name == JUMPING || name == LANDING) { SyncAnimation(Character.CurrentState); }
+		else if(name == DODGE) { _ = StartDodgeIdleRecovery(); }
 		else if(IsAttackAnimation(name)) { Character.OnAttackFinished(); }
 	}
 
@@ -89,6 +112,7 @@ public sealed partial class Animator : AnimationPlayer {
 			CharState.Crouching => AnimState.Crouching,
 			CharState.Falling => AnimState.Falling,
 			CharState.Attacking => AnimState.Attacking,
+			CharState.Dodging => AnimState.Dodging,
 			CharState.Dead => AnimState.Dying,
 			_ => PlayingAnimation,
 		};
@@ -127,5 +151,30 @@ public sealed partial class Animator : AnimationPlayer {
 		StringName picked = AttackVariations[AttackVariationIndex];
 		AttackVariationIndex = (AttackVariationIndex + 1) % AttackVariations.Length;
 		return picked;
+	}
+
+	private StringName CurrentDodgeAnimation() => DODGE;
+
+	private async System.Threading.Tasks.Task StartDodgeIdleRecovery() {
+		if(!UseDodgeIdleRecovery || DodgeIdleRecoveryTime <= 0f) {
+			Character.OnDodgeFinished();
+			return;
+		}
+
+		// Briefly play idle as a recovery pose to reduce snapping.
+		Play(IDLE);
+		if(DodgeIdleRecoveryTime > 0f) {
+			var timer = GetTree().CreateTimer(DodgeIdleRecoveryTime);
+			await ToSignal(timer, SceneTreeTimer.SignalName.Timeout);
+		}
+		Character.OnDodgeFinished();
+	}
+
+	private void ApplyDodgeBlendTimes() {
+		if(DODGE == null) { return; }
+		SetBlendTime(DODGE, IDLE, 0.4f);
+		SetBlendTime(DODGE, WALKING, 0.4f);
+		SetBlendTime(DODGE, SPRINTING, DodgeToMoveBlend);
+		SetBlendTime(DODGE, CROUCHING, DodgeToMoveBlend);
 	}
 }
