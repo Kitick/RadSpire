@@ -98,16 +98,8 @@ expand_margin_right = 5.0
 expand_margin_bottom = 20.0
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_3a7ju"]
-texture = ExtResource("5_f26rp")
-expand_margin_left = 20.0
-expand_margin_right = 20.0
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_2m8xr"]
-texture = ExtResource("5_f26rp")
-expand_margin_left = 20.0
-expand_margin_right = 20.0
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_7nr1q"]
 texture = ExtResource("5_f26rp")
 expand_margin_left = 20.0
 expand_margin_right = 20.0
@@ -128,5 +120,4 @@ HSlider/styles/slider = SubResource("StyleBoxTexture_iku0p")
 Label/styles/normal = SubResource("StyleBoxTexture_c0f2r")
 OptionButton/styles/hover = SubResource("StyleBoxTexture_3a7ju")
 OptionButton/styles/normal = SubResource("StyleBoxTexture_2m8xr")
-OptionButton/styles/pressed = SubResource("StyleBoxTexture_7nr1q")
 VBoxContainer/constants/separation = 45

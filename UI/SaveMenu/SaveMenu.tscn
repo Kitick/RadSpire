@@ -51,11 +51,14 @@ vertical_alignment = 1
 [node name="SaveSlots" type="VBoxContainer" parent="Panel" unique_id=1349601993]
 layout_mode = 1
 anchors_preset = -1
-anchor_top = 0.2
 anchor_right = 4.0
 anchor_bottom = 4.0
+offset_left = 28.0
+offset_top = 148.0
+offset_right = 28.0
+offset_bottom = 148.0
 scale = Vector2(0.25, 0.25)
-theme_override_constants/separation = 5
+alignment = 1
 
 [node name="BackButton" type="Button" parent="." unique_id=1195950355]
 layout_mode = 1
