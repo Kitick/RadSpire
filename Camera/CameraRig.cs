@@ -237,7 +237,7 @@ public record struct CameraPose {
 	public const float Height = 1.5f;
 	public const float MinDistance = 1.5f;
 	public const float MaxDistance = 8f;
-	public const float BufferDistance = 0.25f;
+	public const float BufferDistance = 0.5f;
 
 	public float Distance { get; set => field = Math.Clamp(value, MinDistance, MaxDistance); }
 	public float Heading { get; set => field = (value + 360) % 360; }

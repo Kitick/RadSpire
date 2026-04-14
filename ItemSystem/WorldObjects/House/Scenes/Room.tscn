@@ -292,10 +292,40 @@ environment = SubResource("Environment_wqm31")
 [node name="Lights" type="Node3D" parent="." unique_id=1502089135]
 
 [node name="OmniLight3D" type="OmniLight3D" parent="Lights" unique_id=1221741812]
-transform = Transform3D(0.87699133, -0.4731352, -0.08384119, 0.10106049, 0.011037756, 0.99481905, -0.4697585, -0.8809207, 0.057495285, 0.27067208, 1.6359783, 3.192038)
+transform = Transform3D(0.87699133, -0.4731352, -0.08384119, 0.10106049, 0.011037756, 0.99481905, -0.4697585, -0.8809207, 0.057495285, -0.5566611, 1.9340758, 6.943558)
 light_color = Color(1, 0.9490196, 0.8, 1)
-light_energy = 2.0
-omni_range = 10.0
+light_energy = 0.5
+omni_range = 15.0
+
+[node name="OmniLight3D6" type="OmniLight3D" parent="Lights" unique_id=1978344554]
+transform = Transform3D(0.87699133, -0.4731352, -0.08384119, 0.10106049, 0.011037756, 0.99481905, -0.4697585, -0.8809207, 0.057495285, -4.2417784, 1.8038027, 3.823893)
+light_color = Color(1, 0.9490196, 0.8, 1)
+light_energy = 0.5
+omni_range = 15.0
+
+[node name="OmniLight3D7" type="OmniLight3D" parent="Lights" unique_id=533513116]
+transform = Transform3D(0.87699133, -0.4731352, -0.08384119, 0.10106049, 0.011037756, 0.99481905, -0.4697585, -0.8809207, 0.057495285, -4.3964767, 2.2462971, -4.058004)
+light_color = Color(1, 0.9490196, 0.8, 1)
+light_energy = 0.5
+omni_range = 15.0
+
+[node name="OmniLight3D8" type="OmniLight3D" parent="Lights" unique_id=1757932794]
+transform = Transform3D(0.87699133, -0.4731352, -0.08384119, 0.10106049, 0.011037756, 0.99481905, -0.4697585, -0.8809207, 0.057495285, 0.08688389, 1.8932636, -7.1891665)
+light_color = Color(1, 0.9490196, 0.8, 1)
+light_energy = 0.5
+omni_range = 15.0
+
+[node name="OmniLight3D9" type="OmniLight3D" parent="Lights" unique_id=1176868496]
+transform = Transform3D(0.87699133, -0.4731352, -0.08384119, 0.10106049, 0.011037756, 0.99481905, -0.4697585, -0.8809207, 0.057495285, 4.2385974, 1.7249672, -3.833671)
+light_color = Color(1, 0.9490196, 0.8, 1)
+light_energy = 0.5
+omni_range = 15.0
+
+[node name="OmniLight3D5" type="OmniLight3D" parent="Lights" unique_id=2008738519]
+transform = Transform3D(0.87699133, -0.4731352, -0.08384119, 0.10106049, 0.011037756, 0.99481905, -0.4697585, -0.8809207, 0.057495285, 4.2556405, 1.8138503, 3.7636206)
+light_color = Color(1, 0.9490196, 0.8, 1)
+light_energy = 0.5
+omni_range = 15.0
 
 [node name="OmniLight3D3" type="OmniLight3D" parent="Lights" unique_id=1218621114]
 transform = Transform3D(0.87699133, -0.4731352, -0.08384119, 0.10106049, 0.011037756, 0.99481905, -0.4697585, -0.8809207, 0.057495285, -4.9590373, 2.9607196, 3.9034016)
@@ -310,10 +340,9 @@ light_energy = 0.5
 light_size = 0.39
 
 [node name="OmniLight3D2" type="OmniLight3D" parent="Lights" unique_id=81919565]
-transform = Transform3D(0.87699133, -0.4731352, -0.08384119, 0.10106049, 0.011037756, 0.99481905, -0.4697585, -0.8809207, 0.057495285, 0.25818023, 1.7841994, -4.312745)
+transform = Transform3D(0.87699133, -0.4731352, -0.08384119, 0.10106049, 0.011037756, 0.99481905, -0.4697585, -0.8809207, 0.057495285, -0.052143484, 5.4663506, -4.099936)
 light_color = Color(1, 0.9490196, 0.8, 1)
-light_energy = 2.0
-omni_range = 10.0
+omni_range = 15.0
 
 [node name="SpotLight3D" type="SpotLight3D" parent="Lights" unique_id=669940203]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 1.2568438, 8.257869, -4.0465193)
