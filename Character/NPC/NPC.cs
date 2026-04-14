@@ -11,6 +11,9 @@ public sealed partial class NPC : CharacterBody3D {
 
 	[Export] private string NPCName = "Villager";
 	[Export(PropertyHint.MultilineText)] private string Dialogue = "Craft a sword and defeat the guys at the gas station";
+	[Export] public string NPCId { get; set; } = "";
+
+	public event Action<string>? Talked;
 
 	private bool PlayerInRange;
 	private Action? UnsubscribeInteract;
@@ -87,5 +90,6 @@ public sealed partial class NPC : CharacterBody3D {
 
 	private void Interact() {
 		Hud?.ShowInteractionPrompt($"{NPCName}: {Dialogue}");
+		Talked?.Invoke(NPCId);
 	}
 }

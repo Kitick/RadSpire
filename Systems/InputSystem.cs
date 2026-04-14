@@ -100,6 +100,7 @@ public readonly struct ActionEvent {
 	public static readonly ActionEvent Consume = new("Consume");
 	public static readonly ActionEvent Inventory = new("Inventory");
 	public static readonly ActionEvent Attack = new("Attack");
+	public static readonly ActionEvent QuestLog = new("QuestLog");
 
 	public static readonly ActionEvent MenuSelect = new("ui_accept");
 	public static readonly ActionEvent MenuExit = new("ui_cancel");
@@ -142,6 +143,7 @@ public readonly struct ActionEvent {
 		yield return Consume;
 		yield return Inventory;
 		yield return Attack;
+		yield return QuestLog;
 
 		yield return MenuSelect;
 		yield return MenuExit;

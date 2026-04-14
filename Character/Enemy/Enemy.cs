@@ -14,6 +14,8 @@ public sealed partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 	[Export] private int InitialDefensePhysical = 0;
 	[Export] private int InitialDefenseMagic = 0;
 
+	[Export] public string EnemyGroup { get; set; } = "";
+
 	[Export] private float KnockbackForce = 15f;
 	[Export] private float KnockbackDecay = 12f;
 	[Export] private float DamageFlashTime = 0.5f;

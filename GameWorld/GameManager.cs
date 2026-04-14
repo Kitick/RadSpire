@@ -6,9 +6,11 @@ using Camera;
 using Character;
 using Components;
 using Godot;
+using InventorySystem;
 using InventorySystem.Interface;
 using ItemSystem.Icons;
 using ItemSystem.WorldObjects;
+using QuestSystem;
 using Root;
 using Services;
 using Settings;
@@ -32,6 +34,7 @@ public sealed partial class GameManager : Node {
 	[Export] private Node WorldObjectParentNode = null!;
 
 	private readonly KeyInput KeyInput = new();
+	private readonly QuestManager QuestManager = new();
 	private CameraRig CameraRig = null!;
 	private Player? LocalPlayer;
 	private HUD? HUD;
@@ -62,9 +65,11 @@ public sealed partial class GameManager : Node {
 		WorldObjectManager = this.AddScene<WorldObjectManager>(WorldObjectManageScene);
 		Node worldRoot = GetParent() ?? this;
 		WorldObjectManager.SetUpWorldObjectManager(WorldObjectParentNode, worldRoot);
+		AddChild(QuestManager);
 		ConfigureStateMachine();
 
 		StartGame();
+		ConnectLocationTriggers();
 	}
 
 	public override void _ExitTree() {
@@ -76,7 +81,7 @@ public sealed partial class GameManager : Node {
 
 		if(!Won) {
 			int killed = 0;
-			foreach(var enemy in SpawnedEnemies) {
+			foreach(Enemy enemy in SpawnedEnemies) {
 				if(enemy.Health.Current == 0) {
 					killed += 1;
 				}
@@ -99,8 +104,9 @@ public sealed partial class GameManager : Node {
 	}
 
 	private void SpawnNPC() {
-		var npc = this.AddScene<NPC>(NPCScene);
+		NPC npc = this.AddScene<NPC>(NPCScene);
 		npc.GlobalPosition = NPCSpawnMarker.GlobalPosition;
+		npc.Talked += QuestManager.NotifyPlayerTalkedToNPC;
 	}
 
 	private void SpawnLocalPlayer() {
@@ -117,6 +123,9 @@ public sealed partial class GameManager : Node {
 		CameraRig.Target = LocalPlayer;
 		UpdateEnemyTargets(LocalPlayer);
 
+		QuestManager.Init(LocalPlayer);
+		WireEnemyKillEvents();
+
 		AttachHUD();
 		LocalPlayer.ConfigureObjectPlacement(WorldObjectManager!, this, HUD!.GetNode<Hotbar>("Hotbar"));
 	}
@@ -124,10 +133,14 @@ public sealed partial class GameManager : Node {
 	private void AttachHUD() {
 		HUD = HUDScene.Instantiate<HUD>();
 		SubscribeToEvents(HUD);
-		HUD.Init(LocalPlayer!, StateMachine);
+		HUD.Init(LocalPlayer!, StateMachine, QuestManager);
 		Hotbar hotbar = HUD.GetNode<Hotbar>("Hotbar");
 		LocalPlayer!.UseItemComponent.UserHotbar = hotbar;
 		LocalPlayer.EquipItemComponent.Initalize(LocalPlayer, hotbar);
+
+		QuestManager.QuestStarted += id => HUD?.ShowQuestNotification($"Quest Started: {id}");
+		QuestManager.QuestCompleted += id => HUD?.ShowQuestNotification($"Quest Completed: {id}");
+		QuestManager.StageAdvanced += stage => HUD?.ShowQuestNotification($"Stage {stage} reached!");
 
 		AddChild(HUD);
 	}
@@ -149,8 +162,8 @@ public sealed partial class GameManager : Node {
 			return;
 		}
 
-		var inventoryData = LocalPlayer.Inventory.Export();
-		var hotbarData = LocalPlayer.Hotbar.Export();
+		InventoryData inventoryData = LocalPlayer.Inventory.Export();
+		InventoryData hotbarData = LocalPlayer.Hotbar.Export();
 
 		UnsubscribeFromPlayerItem3DIconEvents(LocalPlayer);
 		LocalPlayer.QueueFree();
@@ -172,11 +185,12 @@ public sealed partial class GameManager : Node {
 			return false;
 		}
 
-		var data = new GameState {
+		GameState data = new GameState {
 			Player = LocalPlayer.Export(),
 			CameraRig = CameraRig.Export(),
 			Item3DIconManager = Item3DIconManager!.Export(),
 			WorldObjectManager = WorldObjectManager!.Export(),
+			Progression = QuestManager.Export(),
 		};
 
 		data.Save(fileName);
@@ -211,12 +225,13 @@ public sealed partial class GameManager : Node {
 	}
 
 	private void LoadData(string file) {
-		var data = SaveService.Load<GameState>(file);
+		GameState data = SaveService.Load<GameState>(file);
 
 		LocalPlayer!.Import(data.Player);
 		CameraRig!.Import(data.CameraRig);
 		Item3DIconManager!.Import(data.Item3DIconManager);
 		WorldObjectManager!.Import(data.WorldObjectManager);
+		QuestManager.Import(data.Progression);
 	}
 
 	public void ReturnToMainMenu() {
@@ -243,7 +258,7 @@ public sealed partial class GameManager : Node {
 		Cleanup(Item3DIconManager);
 		Item3DIconManager = null;
 
-		foreach(var enemy in SpawnedEnemies) { Cleanup(enemy); }
+		foreach(Enemy enemy in SpawnedEnemies) { Cleanup(enemy); }
 		SpawnedEnemies.Clear();
 	}
 
@@ -252,9 +267,9 @@ public sealed partial class GameManager : Node {
 			Log.Info("No EnemySpawnPoints assigned — skipping enemy spawn.");
 			return;
 		}
-		foreach(var spawnPoint in EnemySpawnPoints) {
+		foreach(Marker3D spawnPoint in EnemySpawnPoints) {
 			if(!IsInstanceValid(spawnPoint)) continue;
-			var enemy = this.AddScene<Enemy>(EnemyScene);
+			Enemy enemy = this.AddScene<Enemy>(EnemyScene);
 			enemy.GlobalPosition = spawnPoint.GlobalPosition;
 			if(LocalPlayer != null) enemy.SetTarget(LocalPlayer);
 			SpawnedEnemies.Add(enemy);
@@ -271,15 +286,30 @@ public sealed partial class GameManager : Node {
 			Log.Info("No ItemSpawnEntries assigned — skipping item spawn.");
 			return;
 		}
-		foreach(var entry in ItemSpawnEntries) {
+		foreach(ItemSpawnEntry entry in ItemSpawnEntries) {
 			Item3DIconManager.SpawnItem(entry.ItemId, entry.GlobalPosition);
 			Log.Info($"Item '{entry.ItemId}' spawned at {entry.Name} ({entry.GlobalPosition})");
 		}
 	}
 
 	private void UpdateEnemyTargets(Node3D target) {
-		foreach(var enemy in SpawnedEnemies) {
+		foreach(Enemy enemy in SpawnedEnemies) {
 			if(IsInstanceValid(enemy)) enemy.SetTarget(target);
+		}
+	}
+
+	private void WireEnemyKillEvents() {
+		foreach(Enemy enemy in SpawnedEnemies) {
+			if(!IsInstanceValid(enemy)) { continue; }
+			enemy.WhenDead(() => QuestManager.NotifyEnemyKilled(enemy.EnemyGroup));
+		}
+	}
+
+	private void ConnectLocationTriggers() {
+		foreach(Node node in GetTree().GetNodesInGroup("quest_location_triggers")) {
+			if(node is QuestLocationTrigger trigger) {
+				trigger.PlayerReachedLocation += QuestManager.NotifyLocationReached;
+			}
 		}
 	}
 
@@ -315,4 +345,5 @@ public readonly struct GameState : ISaveData {
 	public CameraRigData CameraRig { get; init; }
 	public Item3DIconManagerData Item3DIconManager { get; init; }
 	public WorldObjectManagerData WorldObjectManager { get; init; }
+	public QuestProgressionData Progression { get; init; }
 }
