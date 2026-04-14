@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://bvh4sdjsgj067" path="res://Camera/CameraRig.cs" id="1_f42p2"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_npc1t"]
+radius = 2.5
 
 [node name="Camera Rig" type="Node3D" unique_id=140567749]
 script = ExtResource("1_f42p2")

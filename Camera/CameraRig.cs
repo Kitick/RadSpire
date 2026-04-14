@@ -19,7 +19,14 @@ public sealed partial class CameraRig : Node3D, ISaveable<CameraRigData> {
 	[Export] private Camera3D Camera = null!;
 	[Export] private ShapeCast3D CameraShapeCast = null!;
 	[Export] private Vector3 TargetOffset = new Vector3(0, 1.5f, 0);
+	[Export(PropertyHint.Range, "1,30,0.5")] private float CollisionZoomInSpeed = 18f;
+	[Export(PropertyHint.Range, "1,30,0.5")] private float CollisionZoomOutSpeed = 8f;
+	[Export(PropertyHint.Range, "1,10,1")] private int WallFadeDebounceFrames = 4;
+	[Export(PropertyHint.Range, "0,2,0.05")] private float BackfaceProbeRadius = 0.45f;
+	[Export(PropertyHint.Range, "0,1,0.01")] private float BackfaceDotThreshold = 0.05f;
 	private readonly CameraDrag Drag = new();
+	private float CurrentCollisionDistance;
+	private bool HasCollisionDistance;
 
 	public Node3D? Target;
 	public CollidingObjects CollidingObjects { get; } = new CollidingObjects();
@@ -65,7 +72,7 @@ public sealed partial class CameraRig : Node3D, ISaveable<CameraRigData> {
 
 		Pose.Ground += Drag.Velocity * dt;
 
-		GlobalPosition = Pose.CalcPosition(this);
+		UpdateCameraPosition(dt);
 
 		LookAt(Pose.Anchor, Vector3.Up);
 		UpdateShapeCastTarget();
@@ -83,11 +90,37 @@ public sealed partial class CameraRig : Node3D, ISaveable<CameraRigData> {
 		CameraShapeCast.TargetPosition = CameraShapeCast.ToLocal(targetGlobalPosition);
 	}
 
+	private void UpdateCameraPosition(float dt) {
+		Vector3 direction = MathExtensions.ToPolar(Mathf.DegToRad(Pose.Heading), Mathf.DegToRad(Pose.Pitch));
+		float targetDistance = CalculateCollisionLimitedDistance(direction);
+		if(!HasCollisionDistance) {
+			CurrentCollisionDistance = targetDistance;
+			HasCollisionDistance = true;
+		}
+
+		float smoothingSpeed = targetDistance < CurrentCollisionDistance ? CollisionZoomInSpeed : CollisionZoomOutSpeed;
+		CurrentCollisionDistance = Mathf.Lerp(CurrentCollisionDistance, targetDistance, MathExtensions.SmoothDecay(smoothingSpeed, dt));
+		GlobalPosition = Pose.Anchor + direction * CurrentCollisionDistance;
+	}
+
+	private float CalculateCollisionLimitedDistance(Vector3 direction) {
+		float rayDistance = this.IntersectRay(
+			Pose.Anchor + direction * CameraPose.MinDistance,
+			Pose.Anchor + direction * CameraPose.MaxDistance,
+			CameraCollisionExclusions.GetAll()
+		) - CameraPose.BufferDistance;
+
+		float unclampedDistance = Math.Min(Pose.Distance, rayDistance);
+		return Math.Clamp(unclampedDistance, CameraPose.MinDistance, Pose.Distance);
+	}
+
 	private void UpdateCollidingWalls() {
 		if(!IsInstanceValid(CameraShapeCast)) { return; }
+		CollidingObjects.FadeDebounceFrames = WallFadeDebounceFrames;
 		try {
 			CameraShapeCast.ForceShapecastUpdate();
 			CollidingObjects.BeginFrame();
+			PhysicsDirectSpaceState3D spaceState = GetWorld3D().DirectSpaceState;
 
 			int collisionCount = CameraShapeCast.GetCollisionCount();
 			for(int i = 0; i < collisionCount; i++) {
@@ -101,12 +134,69 @@ public sealed partial class CameraRig : Node3D, ISaveable<CameraRigData> {
 			if(IsInstanceValid(desiredZoomBlockingWall)) {
 				CollidingObjects.AddCurrentWall(desiredZoomBlockingWall);
 			}
+			AddBackfaceVisibleWalls(spaceState);
 
 			CollidingObjects.EndFrame();
 		}
 		catch(Exception ex) {
 			GD.PushWarning($"Wall fading failed: {ex.Message}");
 			CollidingObjects.Clear();
+		}
+	}
+
+	private void AddBackfaceVisibleWalls(PhysicsDirectSpaceState3D spaceState) {
+		if(BackfaceProbeRadius <= 0f) {
+			return;
+		}
+
+		Vector3 cameraPosition = GlobalPosition;
+		Vector3 anchor = Pose.Anchor;
+		Vector3 horizontalToCamera = (cameraPosition - anchor).Horizontal();
+		if(horizontalToCamera.LengthSquared() < 0.0001f) {
+			return;
+		}
+
+		Vector3 forward = horizontalToCamera.Normalized();
+		Vector3 right = forward.Cross(Vector3.Up).Normalized();
+		Vector3[] probePoints = [
+			anchor,
+			anchor + right * BackfaceProbeRadius,
+			anchor - right * BackfaceProbeRadius,
+			anchor + forward * BackfaceProbeRadius,
+			anchor - forward * BackfaceProbeRadius,
+		];
+
+		foreach(Vector3 probePoint in probePoints) {
+			PhysicsRayQueryParameters3D query = PhysicsRayQueryParameters3D.Create(cameraPosition, probePoint);
+			query.CollideWithAreas = false;
+
+			if(CameraCollisionExclusions.GetAll().Count > 0) {
+				Godot.Collections.Array<Rid> exclude = new Godot.Collections.Array<Rid>();
+				foreach(Rid rid in CameraCollisionExclusions.GetAll()) {
+					if(rid.IsValid) {
+						exclude.Add(rid);
+					}
+				}
+				query.Exclude = exclude;
+			}
+
+			Godot.Collections.Dictionary result = spaceState.IntersectRay(query);
+			if(result.Count == 0) {
+				continue;
+			}
+
+			Node? colliderNode = result.ContainsKey("collider") ? result["collider"].AsGodotObject() as Node : null;
+			Node3D? wall = FindFadeWallRoot(colliderNode);
+			if(!IsInstanceValid(wall) || !result.ContainsKey("normal")) {
+				continue;
+			}
+
+			Vector3 hitNormal = (Vector3) result["normal"];
+			Vector3 rayDirection = (probePoint - cameraPosition).Normalized();
+			bool isBackfaceHit = hitNormal.Dot(rayDirection) > BackfaceDotThreshold;
+			if(isBackfaceHit) {
+				CollidingObjects.AddCurrentWall(wall);
+			}
 		}
 	}
 
@@ -206,7 +296,7 @@ public record struct CameraPose {
 
 	public const float Height = 1.5f;
 	public const float MinDistance = 1.5f;
-	public const float MaxDistance = 20f;
+	public const float MaxDistance = 8f;
 	public const float BufferDistance = 0.25f;
 
 	public float Distance { get; set => field = Math.Clamp(value, MinDistance, MaxDistance); }
