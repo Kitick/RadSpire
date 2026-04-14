@@ -14,7 +14,7 @@ public sealed class ObjectNodeFactory {
 		ParentNode = parent;
 	}
 
-	public ObjectNode? Spawn(Object obj) {
+	public ObjectNode? Spawn(Object obj, Node? parentNode = null) {
 		ItemDefinition? ItemDefinition = DatabaseManager.Instance.GetItemDefinitionById(obj.ItemId);
 		if(ItemDefinition == null) {
 			Log.Error($"Failed to spawn object. ItemDefinition with ID {obj.ItemId} not found.");
@@ -29,7 +29,8 @@ public sealed class ObjectNodeFactory {
 		}
 		ObjectNode ChildNode = Scene.Instantiate<ObjectNode>();
 
-		ParentNode.AddChild(ChildNode);
+		Node targetParent = parentNode ?? ParentNode;
+		targetParent.AddChild(ChildNode);
 		ChildNode.Bind(obj);
 
 		return ChildNode;

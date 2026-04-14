@@ -40,7 +40,7 @@ public partial class WorldObjectManager : Node, ISaveable<WorldObjectManagerData
 		GameWorldManager = gameWorldManager;
 		GameManager = gameManager;
 		List<WorldObjectSpawnPoint> spawnPoints = GetSpawnPointsRecursive(GameWorldNode);
-		Dictionary<string, (string SpawnPointName, Godot.Collections.Array<WorldObjectSpawnComponentDefinition> ComponentDefinitions)> pendingSpawnComponents = new();
+		Dictionary<string, (string SpawnPointName, Godot.Collections.Array<WorldObjectSpawnComponentDefinition> ComponentDefinitions, Node SpawnParentNode)> pendingSpawnComponents = new();
 		foreach(WorldObjectSpawnPoint objNode in spawnPoints) {
 			if(!GodotObject.IsInstanceValid(objNode)) {
 				continue;
@@ -57,7 +57,11 @@ public partial class WorldObjectManager : Node, ISaveable<WorldObjectManagerData
 				continue;
 			}
 			Object obj = new Object(itemId, objNode.GlobalPosition, objNode.GlobalRotation);
-			pendingSpawnComponents[obj.Id] = (objNode.Name, objNode.ComponentDefinitions);
+			Node spawnParentNode = WorldObjectParentNode;
+			if(objNode.GetParent() is ObjectNode objectNodeParent && GodotObject.IsInstanceValid(objectNodeParent.GetParent())) {
+				spawnParentNode = objectNodeParent.GetParent();
+			}
+			pendingSpawnComponents[obj.Id] = (objNode.Name, objNode.ComponentDefinitions, spawnParentNode);
 			if(!WorldObjects.RegisterWorldObject(obj)) {
 				Log.Warn($"Skipping spawn point '{objNode.Name}' because world object registration failed.");
 			}
@@ -74,7 +78,11 @@ public partial class WorldObjectManager : Node, ISaveable<WorldObjectManagerData
 		}
 		ObjectNodeFactory = new ObjectNodeFactory(WorldObjectParentNode);
 		foreach(Object obj in WorldObjects.Objects.Values) {
-			ObjectNode? node = ObjectNodeFactory.Spawn(obj);
+			Node spawnParentNode = WorldObjectParentNode;
+			if(pendingSpawnComponents.TryGetValue(obj.Id, out var pendingDataForParent) && GodotObject.IsInstanceValid(pendingDataForParent.SpawnParentNode)) {
+				spawnParentNode = pendingDataForParent.SpawnParentNode;
+			}
+			ObjectNode? node = ObjectNodeFactory.Spawn(obj, spawnParentNode);
 			if(node == null) {
 				Log.Error($"Failed to spawn world object with ID {obj.Id} and ItemId {obj.ItemId}");
 				continue;
@@ -119,7 +127,7 @@ public partial class WorldObjectManager : Node, ISaveable<WorldObjectManagerData
 		}
 	}
 
-	private bool ApplyPendingSpawnComponents(Object obj, (string SpawnPointName, Godot.Collections.Array<WorldObjectSpawnComponentDefinition> ComponentDefinitions) pendingData) {
+	private bool ApplyPendingSpawnComponents(Object obj, (string SpawnPointName, Godot.Collections.Array<WorldObjectSpawnComponentDefinition> ComponentDefinitions, Node SpawnParentNode) pendingData) {
 		bool hasInventorySpawnDefinition = false;
 		foreach(WorldObjectSpawnComponentDefinition definition in pendingData.ComponentDefinitions) {
 			if(definition == null) {
