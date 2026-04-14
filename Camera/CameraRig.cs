@@ -16,11 +16,15 @@ public sealed partial class CameraRig : Node3D, ISaveable<CameraRigData> {
 	};
 
 	[Export] private Camera3D Camera = null!;
+	[Export] private ShapeCast3D CameraShapeCast = null!;
+	[Export] private Vector3 TargetOffset = new Vector3(0, 1.5f, 0);
 	private readonly CameraDrag Drag = new();
 
 	public Node3D? Target;
 
 	public override void _Ready() {
+		CameraShapeCast ??= Camera.GetNodeOrNull<ShapeCast3D>("ShapeCast3D");
+
 		Drag.ResetTimer.Timeout += Reset;
 		AddChild(Drag.ResetTimer);
 
@@ -50,6 +54,18 @@ public sealed partial class CameraRig : Node3D, ISaveable<CameraRigData> {
 		GlobalPosition = Pose.CalcPosition(this);
 
 		LookAt(Pose.Anchor, Vector3.Up);
+		UpdateShapeCastTarget();
+	}
+
+	private void UpdateShapeCastTarget() {
+		if(!IsInstanceValid(CameraShapeCast)) { return; }
+
+		Vector3 targetGlobalPosition = GlobalPosition;
+		if(IsInstanceValid(Target)) {
+			targetGlobalPosition = Target.GlobalPosition + TargetOffset;
+		}
+
+		CameraShapeCast.TargetPosition = CameraShapeCast.ToLocal(targetGlobalPosition);
 	}
 
 	private void Reset() {
