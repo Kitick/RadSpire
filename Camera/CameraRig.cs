@@ -22,8 +22,6 @@ public sealed partial class CameraRig : Node3D, ISaveable<CameraRigData> {
 	[Export(PropertyHint.Range, "1,30,0.5")] private float CollisionZoomInSpeed = 18f;
 	[Export(PropertyHint.Range, "1,30,0.5")] private float CollisionZoomOutSpeed = 8f;
 	[Export(PropertyHint.Range, "1,10,1")] private int WallFadeDebounceFrames = 4;
-	[Export(PropertyHint.Range, "0,2,0.05")] private float BackfaceProbeRadius = 0.45f;
-	[Export(PropertyHint.Range, "0,1,0.01")] private float BackfaceDotThreshold = 0.05f;
 	private readonly CameraDrag Drag = new();
 	private float CurrentCollisionDistance;
 	private bool HasCollisionDistance;
@@ -120,7 +118,6 @@ public sealed partial class CameraRig : Node3D, ISaveable<CameraRigData> {
 		try {
 			CameraShapeCast.ForceShapecastUpdate();
 			CollidingObjects.BeginFrame();
-			PhysicsDirectSpaceState3D spaceState = GetWorld3D().DirectSpaceState;
 
 			int collisionCount = CameraShapeCast.GetCollisionCount();
 			for(int i = 0; i < collisionCount; i++) {
@@ -134,69 +131,12 @@ public sealed partial class CameraRig : Node3D, ISaveable<CameraRigData> {
 			if(IsInstanceValid(desiredZoomBlockingWall)) {
 				CollidingObjects.AddCurrentWall(desiredZoomBlockingWall);
 			}
-			AddBackfaceVisibleWalls(spaceState);
 
 			CollidingObjects.EndFrame();
 		}
 		catch(Exception ex) {
 			GD.PushWarning($"Wall fading failed: {ex.Message}");
 			CollidingObjects.Clear();
-		}
-	}
-
-	private void AddBackfaceVisibleWalls(PhysicsDirectSpaceState3D spaceState) {
-		if(BackfaceProbeRadius <= 0f) {
-			return;
-		}
-
-		Vector3 cameraPosition = GlobalPosition;
-		Vector3 anchor = Pose.Anchor;
-		Vector3 horizontalToCamera = (cameraPosition - anchor).Horizontal();
-		if(horizontalToCamera.LengthSquared() < 0.0001f) {
-			return;
-		}
-
-		Vector3 forward = horizontalToCamera.Normalized();
-		Vector3 right = forward.Cross(Vector3.Up).Normalized();
-		Vector3[] probePoints = [
-			anchor,
-			anchor + right * BackfaceProbeRadius,
-			anchor - right * BackfaceProbeRadius,
-			anchor + forward * BackfaceProbeRadius,
-			anchor - forward * BackfaceProbeRadius,
-		];
-
-		foreach(Vector3 probePoint in probePoints) {
-			PhysicsRayQueryParameters3D query = PhysicsRayQueryParameters3D.Create(cameraPosition, probePoint);
-			query.CollideWithAreas = false;
-
-			if(CameraCollisionExclusions.GetAll().Count > 0) {
-				Godot.Collections.Array<Rid> exclude = new Godot.Collections.Array<Rid>();
-				foreach(Rid rid in CameraCollisionExclusions.GetAll()) {
-					if(rid.IsValid) {
-						exclude.Add(rid);
-					}
-				}
-				query.Exclude = exclude;
-			}
-
-			Godot.Collections.Dictionary result = spaceState.IntersectRay(query);
-			if(result.Count == 0) {
-				continue;
-			}
-
-			Node? colliderNode = result.ContainsKey("collider") ? result["collider"].AsGodotObject() as Node : null;
-			Node3D? wall = FindFadeWallRoot(colliderNode);
-			if(!IsInstanceValid(wall) || !result.ContainsKey("normal")) {
-				continue;
-			}
-
-			Vector3 hitNormal = (Vector3) result["normal"];
-			Vector3 rayDirection = (probePoint - cameraPosition).Normalized();
-			bool isBackfaceHit = hitNormal.Dot(rayDirection) > BackfaceDotThreshold;
-			if(isBackfaceHit) {
-				CollidingObjects.AddCurrentWall(wall);
-			}
 		}
 	}
 

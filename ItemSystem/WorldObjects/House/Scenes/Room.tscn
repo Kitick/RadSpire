@@ -137,8 +137,6 @@ ambient_light_energy = 0.01
 [node name="Wall2" type="Node3D" parent="." unique_id=686578471]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.251806, 0, 0)
 script = ExtResource("6_lyj8n")
-FadedAlpha = null
-FadeDuration = null
 
 [node name="WallParent" type="Node" parent="Wall2" unique_id=1444769958]
 script = ExtResource("2_xvaq5")
@@ -174,8 +172,6 @@ mesh = ExtResource("2_8fwau")
 [node name="Wall6" type="Node3D" parent="." unique_id=1019365750]
 transform = Transform3D(1, 0, 0, 0, -1, 8.742278e-08, 0, -8.742278e-08, -1, -0.013007641, 4.931899, -8.239174)
 script = ExtResource("6_lyj8n")
-FadedAlpha = null
-FadeDuration = null
 
 [node name="WallParent" type="Node" parent="Wall6" unique_id=1703204905]
 script = ExtResource("2_xvaq5")
@@ -205,8 +201,6 @@ shape = SubResource("ConcavePolygonShape3D_xvaq5")
 [node name="Wall3" type="Node3D" parent="." unique_id=2125842046]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -3.0378299, 0, -2.9741907)
 script = ExtResource("6_lyj8n")
-FadedAlpha = null
-FadeDuration = null
 
 [node name="WallParent" type="Node" parent="Wall3" unique_id=2080887292]
 script = ExtResource("2_xvaq5")
@@ -227,8 +221,6 @@ shape = SubResource("ConcavePolygonShape3D_iijcu")
 [node name="Wall4" type="Node3D" parent="." unique_id=1680492741]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 3.0497296, 0, 2.7633607)
 script = ExtResource("6_lyj8n")
-FadedAlpha = null
-FadeDuration = null
 
 [node name="WallParent" type="Node" parent="Wall4" unique_id=2066915542]
 script = ExtResource("2_xvaq5")

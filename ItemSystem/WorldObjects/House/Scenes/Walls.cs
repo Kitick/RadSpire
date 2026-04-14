@@ -7,7 +7,7 @@ using Godot;
 
 public partial class Walls : Node3D, ICameraFadingObject {
     [Export(PropertyHint.Range, "0.0,1.0,0.05")] private float FadedAlpha = 0.0f;
-    [Export(PropertyHint.Range, "0.01,1.0,0.01")] private float FadeDuration = 0.12f;
+    [Export(PropertyHint.Range, "0.01,1.0,0.01")] private float FadeDuration = 0.25f;
 
     private readonly List<MeshInstance3D> FadingMeshes = new();
     private readonly List<CollisionObject3D> WallColliders = new();
@@ -46,7 +46,6 @@ public partial class Walls : Node3D, ICameraFadingObject {
     }
 
     public void FindFadingMeshesRecursively() {
-        // Keep the list fresh to match dynamic house scene children.
         FadingMeshes.Clear();
         WallColliders.Clear();
         CollectMeshes(this);
