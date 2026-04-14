@@ -40,6 +40,7 @@ public sealed class ObjectNodeFactory {
 public partial class Object : IWorldLocation, ISaveable<ObjectData> {
 	public string Id { get; private set; } = Guid.NewGuid().ToString();
 	public string ItemId { get; private set; } = null!;
+	public string ParentAnchorId { get; set; } = string.Empty;
 	public WorldLocation WorldLocation { get; private set; } = null!;
 	public ComponentDictionary<IObjectComponent> ComponentDictionary { get; } = new();
 	private InventoryComponentData? InventoryComponentData;
@@ -55,6 +56,7 @@ public partial class Object : IWorldLocation, ISaveable<ObjectData> {
 	public ObjectData Export() => new ObjectData {
 		Id = Id,
 		ItemId = ItemId,
+		ParentAnchorId = ParentAnchorId,
 		WorldLocation = WorldLocation.Export(),
 		InventoryComponentData = ExportInventoryComponent(),
 		DoorComponentData = ExportDoorComponent(),
@@ -77,6 +79,7 @@ public partial class Object : IWorldLocation, ISaveable<ObjectData> {
 	public void Import(ObjectData data) {
 		Id = data.Id;
 		ItemId = data.ItemId;
+		ParentAnchorId = data.ParentAnchorId ?? string.Empty;
 
 		if(WorldLocation == null) {
 			WorldLocation = new WorldLocation(data.WorldLocation.Position, data.WorldLocation.Rotation);
@@ -105,6 +108,7 @@ public partial class Object : IWorldLocation, ISaveable<ObjectData> {
 public readonly record struct ObjectData : ISaveData {
 	public string Id { get; init; }
 	public string ItemId { get; init; }
+	public string ParentAnchorId { get; init; }
 	public WorldLocationData WorldLocation { get; init; }
 	public InventoryComponentData? InventoryComponentData { get; init; }
 	public DoorComponentData? DoorComponentData { get; init; }
