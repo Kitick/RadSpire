@@ -13,7 +13,7 @@ public readonly record struct LogService {
 	}
 
 	private readonly string FormatMessage(string message, string? method = null) {
-		var methodPart = method != null ? $"({method})" : "";
+		string methodPart = method != null ? $"({method})" : "";
 		return $"[{Prefix}] {methodPart} {message}";
 	}
 

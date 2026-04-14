@@ -7,8 +7,8 @@ using System.Text.Json;
 public interface ISaveData;
 
 public interface ISaveable<T> where T : ISaveData {
-	T Export();
-	void Import(T data);
+	public T Export();
+	public void Import(T data);
 }
 
 public static class SaveService {
@@ -79,6 +79,6 @@ public static class SaveService {
 	public static string[] List() {
 		FileInfo[] files = GetSaveDir().GetFiles("*.json");
 
-		return files.Select(file => Path.GetFileNameWithoutExtension(file.Name)).ToArray();
+		return [.. files.Select(file => Path.GetFileNameWithoutExtension(file.Name))];
 	}
 }

@@ -9,8 +9,8 @@ public static class JsonService {
 	];
 
 	private static JsonSerializerOptions InjectConverters(this JsonSerializerOptions options) {
-		var newOptions = new JsonSerializerOptions(options);
-		foreach(var converter in Converters) {
+		JsonSerializerOptions newOptions = new JsonSerializerOptions(options);
+		foreach(JsonConverter converter in Converters) {
 			newOptions.Converters.Add(converter);
 		}
 		return newOptions;
