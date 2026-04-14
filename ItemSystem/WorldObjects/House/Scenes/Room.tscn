@@ -136,6 +136,8 @@ ambient_light_energy = 0.01
 [node name="Wall2" type="Node3D" parent="." unique_id=686578471]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.251806, 0, 0)
 script = ExtResource("6_lyj8n")
+FadedAlpha = null
+FadeDuration = null
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Wall2" unique_id=48720226]
 
@@ -151,27 +153,23 @@ mesh = SubResource("ArrayMesh_nas1y")
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 5.009902, -0.66336894, -4.079361)
 mesh = ExtResource("2_8fwau")
 
-[node name="Wall5" type="Node3D" parent="." unique_id=868430309]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.251806, 0, 8.104879)
-script = ExtResource("6_lyj8n")
-
-[node name="StaticBody3D" type="StaticBody3D" parent="Wall5" unique_id=380917705]
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Wall5/StaticBody3D" unique_id=1142541675]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 5.1243224, 2.465751, -4.093732)
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Wall2/StaticBody3D" unique_id=1142541675]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 5.1243224, 2.465751, 4.0111475)
 shape = SubResource("ConcavePolygonShape3D_4v2ty")
 
-[node name="CSGBakedMeshInstance3D2" type="MeshInstance3D" parent="Wall5/StaticBody3D" unique_id=1938454798]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 5.1342797, 2.4863129, -4.218315)
+[node name="CSGBakedMeshInstance3D2" type="MeshInstance3D" parent="Wall2/StaticBody3D" unique_id=1938454798]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 5.1342797, 2.4863129, 3.8865643)
 mesh = SubResource("ArrayMesh_nas1y")
 
-[node name="Window" type="MeshInstance3D" parent="Wall5/StaticBody3D" unique_id=853530212]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 5.0099025, -0.6847184, -4.213659)
+[node name="Window" type="MeshInstance3D" parent="Wall2/StaticBody3D" unique_id=853530212]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 5.0099025, -0.6847184, 3.8912206)
 mesh = ExtResource("2_8fwau")
 
 [node name="Wall6" type="Node3D" parent="." unique_id=1019365750]
 transform = Transform3D(1, 0, 0, 0, -1, 8.742278e-08, 0, -8.742278e-08, -1, -0.013007641, 4.931899, -8.239174)
 script = ExtResource("6_lyj8n")
+FadedAlpha = null
+FadeDuration = null
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Wall6" unique_id=1393981764]
 
@@ -184,24 +182,20 @@ surface_material_override/0 = SubResource("StandardMaterial3D_nktm6")
 transform = Transform3D(1, 0, 0, 0, -4.371138e-08, -1, 0, 1, -4.371138e-08, 5.1243224, 2.465751, -4.093732)
 shape = SubResource("ConcavePolygonShape3D_8fwau")
 
-[node name="Wall7" type="Node3D" parent="." unique_id=1188035984]
-transform = Transform3D(1, 0, 0, 0, -1, 8.742278e-08, 0, -8.742278e-08, -1, -0.013007641, 4.931899, -0.13429408)
-script = ExtResource("6_lyj8n")
-
-[node name="StaticBody3D" type="StaticBody3D" parent="Wall7" unique_id=1790389022]
-
-[node name="CSGBakedMeshInstance3D" type="MeshInstance3D" parent="Wall7/StaticBody3D" unique_id=2128704447]
-transform = Transform3D(1, 0, 0, 0, -4.371138e-08, -1, 0, 1, -4.371138e-08, 5.1243224, 2.4657512, -4.093732)
+[node name="CSGBakedMeshInstance3D2" type="MeshInstance3D" parent="Wall6/StaticBody3D" unique_id=2128704447]
+transform = Transform3D(1, 0, 0, 0, -4.371138e-08, -1, 0, 1, -4.371138e-08, 5.1243224, 2.4657505, -12.198611)
 mesh = SubResource("ArrayMesh_iijcu")
 surface_material_override/0 = SubResource("StandardMaterial3D_nktm6")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Wall7/StaticBody3D" unique_id=339447021]
-transform = Transform3D(1, 0, 0, 0, -4.371138e-08, -1, 0, 1, -4.371138e-08, 5.1243224, 2.4657512, -4.093732)
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="Wall6/StaticBody3D" unique_id=339447021]
+transform = Transform3D(1, 0, 0, 0, -4.371138e-08, -1, 0, 1, -4.371138e-08, 5.1243224, 2.4657505, -12.198611)
 shape = SubResource("ConcavePolygonShape3D_xvaq5")
 
 [node name="Wall3" type="Node3D" parent="." unique_id=2125842046]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -3.0378299, 0, -2.9741907)
 script = ExtResource("6_lyj8n")
+FadedAlpha = null
+FadeDuration = null
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Wall3" unique_id=681610207]
 
@@ -217,6 +211,8 @@ shape = SubResource("ConcavePolygonShape3D_iijcu")
 [node name="Wall4" type="Node3D" parent="." unique_id=1680492741]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 3.0497296, 0, 2.7633607)
 script = ExtResource("6_lyj8n")
+FadedAlpha = null
+FadeDuration = null
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Wall4" unique_id=1780118589]
 

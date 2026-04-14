@@ -1,6 +1,7 @@
 namespace Camera;
 
 using System;
+using System.Collections.Generic;
 using Godot;
 using Root;
 using Services;
@@ -29,8 +30,13 @@ public sealed partial class CameraRig : Node3D, ISaveable<CameraRigData> {
 			GD.PushWarning("CameraRig: Camera3D export is not assigned and no child camera was found.");
 		}
 
-		CameraShapeCast ??= Camera?.GetNodeOrNull<ShapeCast3D>("ShapeCast3D");
-		CameraShapeCast ??= GetNodeOrNull<ShapeCast3D>("ShapeCast3D");
+		if(CameraShapeCast is null && IsInstanceValid(Camera)) {
+			CameraShapeCast = Camera.GetNodeOrNull<ShapeCast3D>("ShapeCast3D");
+		}
+
+		if(CameraShapeCast is null) {
+			CameraShapeCast = GetNodeOrNull<ShapeCast3D>("ShapeCast3D");
+		}
 
 		Drag.ResetTimer.Timeout += Reset;
 		AddChild(Drag.ResetTimer);
@@ -91,6 +97,10 @@ public sealed partial class CameraRig : Node3D, ISaveable<CameraRigData> {
 
 				CollidingObjects.AddCurrentWall(wall);
 			}
+			Node3D? desiredZoomBlockingWall = FindDesiredZoomBlockingWall();
+			if(IsInstanceValid(desiredZoomBlockingWall)) {
+				CollidingObjects.AddCurrentWall(desiredZoomBlockingWall);
+			}
 
 			CollidingObjects.EndFrame();
 		}
@@ -108,6 +118,49 @@ public sealed partial class CameraRig : Node3D, ISaveable<CameraRigData> {
 			}
 
 			current = current.GetParent();
+		}
+
+		return null;
+	}
+
+	private Node3D? FindDesiredZoomBlockingWall() {
+		if(GetWorld3D() is null) { return null; }
+		PhysicsDirectSpaceState3D spaceState = GetWorld3D().DirectSpaceState;
+
+		Vector3 desiredPosition = Pose.CalcDesiredPosition();
+		HashSet<Rid> exclusions = new(CameraCollisionExclusions.GetAll());
+
+		for(int i = 0; i < 8; i++) {
+			PhysicsRayQueryParameters3D query = PhysicsRayQueryParameters3D.Create(Pose.Anchor, desiredPosition);
+			query.CollideWithAreas = false;
+			if(exclusions.Count > 0) {
+				Godot.Collections.Array<Rid> exclude = new Godot.Collections.Array<Rid>();
+				foreach(Rid rid in exclusions) {
+					if(rid.IsValid) {
+						exclude.Add(rid);
+					}
+				}
+				query.Exclude = exclude;
+			}
+
+			Godot.Collections.Dictionary result = spaceState.IntersectRay(query);
+			if(result.Count == 0) { return null; }
+
+			Node? colliderNode = result.ContainsKey("collider") ? result["collider"].AsGodotObject() as Node : null;
+			Node3D? wall = FindFadeWallRoot(colliderNode);
+			if(IsInstanceValid(wall)) {
+				return wall;
+			}
+
+			if(result.ContainsKey("rid")) {
+				Rid hitRid = (Rid) result["rid"];
+				if(hitRid.IsValid) {
+					exclusions.Add(hitRid);
+					continue;
+				}
+			}
+
+			return null;
 		}
 
 		return null;
@@ -165,6 +218,7 @@ public record struct CameraPose {
 
 	public readonly Vector2 AlignVector(Vector2 direction) => direction.Rotated(-RadHDG);
 	public readonly Vector3 AlignVector(Vector3 direction) => direction.Rotated(Vector3.Up, RadHDG);
+	public readonly Vector3 CalcDesiredPosition() => Anchor + MathExtensions.ToPolar(RadHDG, RadPIT) * Distance;
 
 	public readonly Vector3 CalcPosition(Node3D space) {
 		Vector3 direction = MathExtensions.ToPolar(RadHDG, RadPIT);
