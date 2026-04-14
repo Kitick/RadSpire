@@ -21,7 +21,7 @@ public sealed partial class QuestLocationTrigger : Area3D {
 
 	private void HandleBodyEntered(Node3D body) {
 		if(Fired) { return; }
-		if(!body.IsInGroup("player")) { return; }
+		if(!body.IsInGroup(Groups.Player)) { return; }
 		if(string.IsNullOrWhiteSpace(LocationId)) {
 			Log.Error("QuestLocationTrigger: LocationId is empty — trigger will not fire.");
 			return;

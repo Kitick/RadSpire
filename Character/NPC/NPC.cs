@@ -3,6 +3,7 @@ namespace Character;
 using System;
 using Components;
 using Godot;
+using Root;
 using Services;
 using UI.HUD;
 
@@ -47,7 +48,7 @@ public sealed partial class NPC : CharacterBody3D {
 	}
 
 	private void SetupInteraction() {
-		var interactionArea = GetNodeOrNull<InteractionArea>("InteractionArea");
+		InteractionArea interactionArea = GetNodeOrNull<InteractionArea>("InteractionArea");
 
 		if(interactionArea == null) {
 			Log.Error("NPC InteractionArea not found.");
@@ -67,7 +68,7 @@ public sealed partial class NPC : CharacterBody3D {
 	}
 
 	private void HandleBodyEntered(Node3D body) {
-		if(body.IsInGroup("player")) {
+		if(body.IsInGroup(Groups.Player)) {
 			PlayerInRange = true;
 			Player = body;
 
@@ -78,7 +79,7 @@ public sealed partial class NPC : CharacterBody3D {
 	}
 
 	private void HandleBodyExited(Node3D body) {
-		if(body.IsInGroup("player")) {
+		if(body.IsInGroup(Groups.Player)) {
 			PlayerInRange = false;
 			Player = null;
 

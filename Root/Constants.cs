@@ -23,6 +23,11 @@ public static class Items {
 	public const string StrawberryRed = $"{Food}/StrawberryRed.tres";
 }
 
+public static class Groups {
+	public static readonly StringName Player = "player";
+	public static readonly StringName QuestLocationTriggers = "quest_location_triggers";
+}
+
 public static class QuestID {
 	public static readonly StringName Stage0_KillPatrol = "Stage0_KillPatrol";
 }

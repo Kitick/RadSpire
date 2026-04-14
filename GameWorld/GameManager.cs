@@ -306,7 +306,7 @@ public sealed partial class GameManager : Node {
 	}
 
 	private void ConnectLocationTriggers() {
-		foreach(Node node in GetTree().GetNodesInGroup("quest_location_triggers")) {
+		foreach(Node node in GetTree().GetNodesInGroup(Groups.QuestLocationTriggers)) {
 			if(node is QuestLocationTrigger trigger) {
 				trigger.PlayerReachedLocation += QuestManager.NotifyLocationReached;
 			}

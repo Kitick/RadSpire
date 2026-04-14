@@ -9,6 +9,7 @@ using InventorySystem.Interface;
 using ItemSystem;
 using ItemSystem.Icons;
 using ItemSystem.WorldObjects;
+using Root;
 using Services;
 
 public sealed partial class Player : CharacterBase, ISaveable<PlayerData> {
@@ -59,7 +60,7 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData> {
 	public override void _Ready() {
 		base._Ready();
 		PickupComponent.HandleInteractInput = false;
-		AddToGroup("player");
+		AddToGroup(Groups.Player);
 		AddChild(PickupComponent);
 		AddChild(InventoryManager);
 		AddChild(UseItemComponent);
