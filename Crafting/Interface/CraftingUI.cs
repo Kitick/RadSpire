@@ -5,23 +5,27 @@ using System.Collections.Generic;
 using Crafting;
 using Godot;
 using InventorySystem;
-using ItemSystem;
 using Root;
 using Services;
 
 public sealed partial class CraftingUI : Control {
 	private static readonly LogService Log = new(nameof(CraftingUI), enabled: true);
 
-	[Export] public OptionButton CraftableDropdown = null!;
-	[Export] public OptionButton NonCraftableDropdown = null!;
-	[Export] public ItemList RequirementsList = null!;
-	[Export] public Button CraftButton = null!;
-	[Export] public LineEdit QuantityDisplay = null!;
-	[Export] public Button PosButton = null!;
-	[Export] public Button NegButton = null!;
+	[Export] private OptionButton CraftableDropdown = null!;
+	[Export] private OptionButton NonCraftableDropdown = null!;
+	[Export] private ItemList RequirementsList = null!;
+	[Export] private Button CraftButton = null!;
+	[Export] private LineEdit QuantityDisplay = null!;
+	[Export] private Button PosButton = null!;
+	[Export] private Button NegButton = null!;
+	[Export] private Control MainBackground = null!;
+	[Export] private Control LightBackground = null!;
+	[Export] private Control TabBackground = null!;
 
 	private readonly List<CraftingRecipe> CraftableRecipes = [];
 	private readonly List<CraftingRecipe> NonCraftableRecipes = [];
+
+	public readonly List<Inventory> Inventories = [];
 
 	private CraftingRecipe? SelectedRecipe;
 
@@ -33,30 +37,17 @@ public sealed partial class CraftingUI : Control {
 		}
 	} = 1;
 
-	public readonly List<Inventory> Inventories = [];
-
 	public override void _Ready() {
+		this.ValidateExports();
 		ConfigureMouseFilters();
 		SetCallbacks();
 	}
 
 	private void ConfigureMouseFilters() {
 		MouseFilter = MouseFilterEnum.Ignore;
-
-		Control? mainBackground = GetNodeOrNull<Control>("MainBackground");
-		if(mainBackground != null) {
-			mainBackground.MouseFilter = MouseFilterEnum.Ignore;
-		}
-
-		Control? lightBackground = GetNodeOrNull<Control>("MainBackground/LightBackground");
-		if(lightBackground != null) {
-			lightBackground.MouseFilter = MouseFilterEnum.Ignore;
-		}
-
-		Control? tabBackground = GetNodeOrNull<Control>("TabBackground");
-		if(tabBackground != null) {
-			tabBackground.MouseFilter = MouseFilterEnum.Ignore;
-		}
+		MainBackground.MouseFilter = MouseFilterEnum.Ignore;
+		LightBackground.MouseFilter = MouseFilterEnum.Ignore;
+		TabBackground.MouseFilter = MouseFilterEnum.Ignore;
 	}
 
 	private void SetCallbacks() {
@@ -64,16 +55,16 @@ public sealed partial class CraftingUI : Control {
 		PosButton.Pressed += () => Quantity++;
 		NegButton.Pressed += () => Quantity--;
 
-		CraftableDropdown.ItemSelected += OnCraftableSelected;
-		NonCraftableDropdown.ItemSelected += OnNonCraftableSelected;
+		CraftableDropdown.ItemSelected += (_) => OnCraftableSelected();
+		NonCraftableDropdown.ItemSelected += (_) => OnNonCraftableSelected();
 	}
 
-	private void OnCraftableSelected(long _) {
+	private void OnCraftableSelected() {
 		SelectedRecipe = CraftableDropdown.GetSelectedItem(CraftableRecipes);
 		UpdateSelectedRequirements();
 	}
 
-	private void OnNonCraftableSelected(long _) {
+	private void OnNonCraftableSelected() {
 		SelectedRecipe = NonCraftableDropdown.GetSelectedItem(NonCraftableRecipes);
 		UpdateSelectedRequirements();
 	}
@@ -82,11 +73,10 @@ public sealed partial class CraftingUI : Control {
 		CraftableRecipes.Clear();
 		NonCraftableRecipes.Clear();
 
-		foreach(var recipe in Recipes.AllRecipes) {
+		foreach(CraftingRecipe recipe in Recipes.AllRecipes) {
 			if(CraftingSystem.CanCraft(recipe, Inventories, out _)) {
 				CraftableRecipes.Add(recipe);
-			}
-			else {
+			} else {
 				NonCraftableRecipes.Add(recipe);
 			}
 		}
@@ -94,9 +84,13 @@ public sealed partial class CraftingUI : Control {
 		CraftableDropdown.Populate(CraftableRecipes);
 		NonCraftableDropdown.Populate(NonCraftableRecipes);
 
-		if(CraftableRecipes.Count > 0) { SelectedRecipe = CraftableRecipes[0]; }
-		else if(NonCraftableRecipes.Count > 0) { SelectedRecipe = NonCraftableRecipes[0]; }
-		else { SelectedRecipe = null; }
+		if(CraftableRecipes.Count > 0) {
+			SelectedRecipe = CraftableRecipes[0];
+		} else if(NonCraftableRecipes.Count > 0) {
+			SelectedRecipe = NonCraftableRecipes[0];
+		} else {
+			SelectedRecipe = null;
+		}
 
 		RefreshQuantity();
 	}
@@ -110,7 +104,7 @@ public sealed partial class CraftingUI : Control {
 		RequirementsList.Clear();
 		if(recipe.Inputs == null) { return; }
 
-		foreach(var ingredient in recipe.Inputs) {
+		foreach(RecipeItem ingredient in recipe.Inputs) {
 			Log.Info($"Ingredient: {ingredient.ItemId} x {ingredient.Quantity}");
 			int totalCost = ingredient.Quantity * Quantity;
 			RequirementsList.AddItem($"{ingredient.ItemId} x {totalCost}");
@@ -137,13 +131,12 @@ public sealed partial class CraftingUI : Control {
 			CraftResult result = CraftingSystem.Craft(SelectedRecipe, Inventories);
 
 			if(result.Status == CraftStatus.Success) {
-				foreach(var slot in result.Items) {
+				foreach(ItemSlot slot in result.Items) {
 					Inventories[0].AddItem(slot);
 				}
 				Log.Info($"Crafted '{SelectedRecipe.RecipeName}' x {Quantity}.");
 				craftedAtLeastOne = true;
-			}
-			else {
+			} else {
 				Log.Warn($"Crafting failed: {result.Status}");
 				break;
 			}
