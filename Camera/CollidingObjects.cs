@@ -1,37 +1,62 @@
 namespace Camera;
 
-using System;
-using Godot;
-using Services;
-using Root;
 using System.Collections.Generic;
-using System.ComponentModel;
+using Godot;
 
 public class CollidingObjects {
-    public List<Node3D> Objects { get; } = new List<Node3D>();
+    private HashSet<Node3D> PreviousWalls = new();
+    private HashSet<Node3D> CurrentWalls = new();
 
-    public void Add(Node3D obj) {
-        if(!Objects.Contains(obj)) {
-            Objects.Add(obj);
-            if(obj is ICameraFadingObject fadingObj) {
-                fadingObj.FadeOut();
-            }
-        }
+    public void BeginFrame() {
+        CurrentWalls.Clear();
     }
 
-    public void Remove(Node3D obj) {
-        Objects.Remove(obj);
-        if(obj is ICameraFadingObject fadingObj) {
-            fadingObj.FadeIn();
+    public void AddCurrentWall(Node3D wall) {
+        CurrentWalls.Add(wall);
+    }
+
+    public void EndFrame() {
+        foreach(Node3D wall in CurrentWalls) {
+            if(!PreviousWalls.Contains(wall)) {
+                FadeOutWall(wall);
+            }
         }
+
+        foreach(Node3D wall in PreviousWalls) {
+            if(!CurrentWalls.Contains(wall)) {
+                FadeInWall(wall);
+            }
+        }
+
+        HashSet<Node3D> temp = PreviousWalls;
+        PreviousWalls = CurrentWalls;
+        CurrentWalls = temp;
     }
 
     public void Clear() {
-        foreach(Node3D obj in Objects) {
-            if(obj is ICameraFadingObject fadingObj) {
-                fadingObj.FadeIn();
+        foreach(Node3D wall in PreviousWalls) {
+            FadeInWall(wall);
+        }
+
+        foreach(Node3D wall in CurrentWalls) {
+            if(!PreviousWalls.Contains(wall)) {
+                FadeInWall(wall);
             }
         }
-        Objects.Clear();
+
+        PreviousWalls.Clear();
+        CurrentWalls.Clear();
+    }
+
+    private static void FadeOutWall(Node3D wall) {
+        if(GodotObject.IsInstanceValid(wall) && wall is ICameraFadingObject fadingWall) {
+            fadingWall.FadeOut();
+        }
+    }
+
+    private static void FadeInWall(Node3D wall) {
+        if(GodotObject.IsInstanceValid(wall) && wall is ICameraFadingObject fadingWall) {
+            fadingWall.FadeIn();
+        }
     }
 }

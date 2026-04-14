@@ -24,7 +24,13 @@ public sealed partial class CameraRig : Node3D, ISaveable<CameraRigData> {
 	public CollidingObjects CollidingObjects { get; } = new CollidingObjects();
 
 	public override void _Ready() {
-		CameraShapeCast ??= Camera.GetNodeOrNull<ShapeCast3D>("ShapeCast3D");
+		Camera ??= GetNodeOrNull<Camera3D>("Camera3D") ?? GetNodeOrNull<Camera3D>("Camera");
+		if(!IsInstanceValid(Camera)) {
+			GD.PushWarning("CameraRig: Camera3D export is not assigned and no child camera was found.");
+		}
+
+		CameraShapeCast ??= Camera?.GetNodeOrNull<ShapeCast3D>("ShapeCast3D");
+		CameraShapeCast ??= GetNodeOrNull<ShapeCast3D>("ShapeCast3D");
 
 		Drag.ResetTimer.Timeout += Reset;
 		AddChild(Drag.ResetTimer);
@@ -33,6 +39,7 @@ public sealed partial class CameraRig : Node3D, ISaveable<CameraRigData> {
 	}
 
 	public override void _ExitTree() {
+		RestoreAllFadedWalls();
 		Unsubscribe?.Invoke();
 	}
 
@@ -56,6 +63,7 @@ public sealed partial class CameraRig : Node3D, ISaveable<CameraRigData> {
 
 		LookAt(Pose.Anchor, Vector3.Up);
 		UpdateShapeCastTarget();
+		UpdateCollidingWalls();
 	}
 
 	private void UpdateShapeCastTarget() {
@@ -67,6 +75,46 @@ public sealed partial class CameraRig : Node3D, ISaveable<CameraRigData> {
 		}
 
 		CameraShapeCast.TargetPosition = CameraShapeCast.ToLocal(targetGlobalPosition);
+	}
+
+	private void UpdateCollidingWalls() {
+		if(!IsInstanceValid(CameraShapeCast)) { return; }
+		try {
+			CameraShapeCast.ForceShapecastUpdate();
+			CollidingObjects.BeginFrame();
+
+			int collisionCount = CameraShapeCast.GetCollisionCount();
+			for(int i = 0; i < collisionCount; i++) {
+				Node? colliderNode = CameraShapeCast.GetCollider(i) as Node;
+				Node3D? wall = FindFadeWallRoot(colliderNode);
+				if(!IsInstanceValid(wall)) { continue; }
+
+				CollidingObjects.AddCurrentWall(wall);
+			}
+
+			CollidingObjects.EndFrame();
+		}
+		catch(Exception ex) {
+			GD.PushWarning($"Wall fading failed: {ex.Message}");
+			CollidingObjects.Clear();
+		}
+	}
+
+	private static Node3D? FindFadeWallRoot(Node? node) {
+		Node? current = node;
+		while(current is not null) {
+			if(current is Node3D wallNode && wallNode is ICameraFadingObject) {
+				return wallNode;
+			}
+
+			current = current.GetParent();
+		}
+
+		return null;
+	}
+
+	private void RestoreAllFadedWalls() {
+		CollidingObjects.Clear();
 	}
 
 	private void Reset() {
@@ -121,7 +169,14 @@ public record struct CameraPose {
 	public readonly Vector3 CalcPosition(Node3D space) {
 		Vector3 direction = MathExtensions.ToPolar(RadHDG, RadPIT);
 
-		float distance = Math.Min(Distance, space.IntersectRay(Anchor + direction * MinDistance, direction, MaxDistance) - BufferDistance);
+		float distance = Math.Min(
+			Distance,
+			space.IntersectRay(
+				Anchor + direction * MinDistance,
+				Anchor + direction * MaxDistance,
+				CameraCollisionExclusions.GetAll()
+			) - BufferDistance
+		);
 		distance = Math.Max(distance, MinDistance);
 
 		Vector3 orbit = direction * distance;

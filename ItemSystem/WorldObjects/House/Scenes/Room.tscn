@@ -269,7 +269,7 @@ mesh = SubResource("PlaneMesh_8fwau")
 surface_material_override/0 = SubResource("StandardMaterial3D_xvaq5")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Floor/StaticBody3D" unique_id=777170962]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.9298582, -3.8553813, -1.522582)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.9298582, -0.23254442, -1.522582)
 shape = SubResource("BoxShape3D_1vvam")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1970066663]
