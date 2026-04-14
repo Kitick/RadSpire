@@ -21,6 +21,7 @@ public sealed partial class CameraRig : Node3D, ISaveable<CameraRigData> {
 	private readonly CameraDrag Drag = new();
 
 	public Node3D? Target;
+	public CollidingObjects CollidingObjects { get; } = new CollidingObjects();
 
 	public override void _Ready() {
 		CameraShapeCast ??= Camera.GetNodeOrNull<ShapeCast3D>("ShapeCast3D");
