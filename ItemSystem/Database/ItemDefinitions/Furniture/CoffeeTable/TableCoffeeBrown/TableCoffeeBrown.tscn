@@ -1,0 +1,29 @@
+[gd_scene format=3 uid="uid://bprc5h5exoxa4"]
+
+[ext_resource type="Script" uid="uid://klsonhpw4auo" path="res://ItemSystem/WorldObjects/ObjectNode.cs" id="1_qsvb6"]
+[ext_resource type="ArrayMesh" uid="uid://phol0h6gqqq2" path="res://ItemSystem/WorldObjects/House/Scenes/living_room_game_assets_free/3d_objects_free/table.obj" id="2_lvjq0"]
+[ext_resource type="Texture2D" uid="uid://dleale4rqqpeh" path="res://Assets/Textures/Nature/Bark_NormalTree.png" id="3_kewfn"]
+[ext_resource type="PackedScene" uid="uid://b7gv62rlbjt5l" path="res://ItemSystem/WorldObjects/SpawnPoint/WorldObjectSpawnPoint.tscn" id="4_sgwoo"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_i470a"]
+albedo_texture = ExtResource("3_kewfn")
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_xta1f"]
+size = Vector3(0.87835693, 0.503479, 1.241333)
+
+[node name="Node3D" type="Node3D" unique_id=1369960815]
+script = ExtResource("1_qsvb6")
+
+[node name="Table" type="MeshInstance3D" parent="." unique_id=924343336]
+transform = Transform3D(1.75, 0, 0, 0, 1.75, 0, 0, 0, 1.75, 0, 0, 0)
+mesh = ExtResource("2_lvjq0")
+surface_material_override/0 = SubResource("StandardMaterial3D_i470a")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Table" unique_id=1148529751]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Table/StaticBody3D" unique_id=747552689]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.003753663, 0.25424194, -0.026306162)
+shape = SubResource("BoxShape3D_xta1f")
+
+[node name="WorldObjectSpawnPoint" parent="." unique_id=2064846928 instance=ExtResource("4_sgwoo")]
+ItemId = "TableCoffeeBrown"

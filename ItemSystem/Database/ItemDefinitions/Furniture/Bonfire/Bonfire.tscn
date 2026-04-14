@@ -2,7 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://cxl1oqrbo14fc" path="res://ItemSystem/Database/ItemDefinitions/Furniture/MedievalVillagePack/Props/Bonfire.fbx" id="1_ddsqa"]
 [ext_resource type="Script" uid="uid://klsonhpw4auo" path="res://ItemSystem/WorldObjects/ObjectNode.cs" id="1_n1odn"]
-[ext_resource type="PackedScene" uid="uid://b7gv62rlbjt5l" path="res://ItemSystem/WorldObjects/WorldObjectSpawnPoint.tscn" id="3_5vv3f"]
+[ext_resource type="PackedScene" uid="uid://b7gv62rlbjt5l" path="res://ItemSystem/WorldObjects/SpawnPoint/WorldObjectSpawnPoint.tscn" id="3_5vv3f"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_n1odn"]
 size = Vector3(0.32592773, 0.055923462, 0.3076172)
@@ -11,7 +11,7 @@ size = Vector3(0.32592773, 0.055923462, 0.3076172)
 script = ExtResource("1_n1odn")
 
 [node name="Bonfire" parent="." unique_id=2075722032 instance=ExtResource("1_ddsqa")]
-transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 0)
+transform = Transform3D(6, 0, 0, 0, 6, 0, 0, 0, 6, 0, 0, 0)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Bonfire" unique_id=1893377970]
 

@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://dlshv0yy8vor"]
+
+[ext_resource type="Script" uid="uid://klsonhpw4auo" path="res://ItemSystem/WorldObjects/ObjectNode.cs" id="1_aq2rt"]
+[ext_resource type="PackedScene" uid="uid://b7gv62rlbjt5l" path="res://ItemSystem/WorldObjects/SpawnPoint/WorldObjectSpawnPoint.tscn" id="1_qjn6t"]
+
+[node name="Node3D" type="Node3D" unique_id=1369960815]
+script = ExtResource("1_aq2rt")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="." unique_id=1148529751]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" unique_id=747552689]
+
+[node name="WorldObjectSpawnPoint" parent="." unique_id=2064846928 instance=ExtResource("1_qjn6t")]

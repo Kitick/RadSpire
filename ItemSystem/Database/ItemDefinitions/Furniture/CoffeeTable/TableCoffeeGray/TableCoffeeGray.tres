@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://ckwd8inb7vsyx"]
+
+[ext_resource type="Script" uid="uid://cnm5iegiuj4xu" path="res://ItemSystem/Definitions/ItemComponentDefinition.cs" id="1_tue2r"]
+[ext_resource type="Texture2D" uid="uid://dah6hy0non7gu" path="res://ItemSystem/WorldObjects/House/Scenes/living_room_game_assets_free/2d_textures_free/table.png" id="2_uh611"]
+[ext_resource type="PackedScene" uid="uid://pxuggmi8r6v4" path="res://ItemSystem/Database/ItemDefinitions/Furniture/CoffeeTable/TableCoffeeGray/TableCoffeeGray.tscn" id="3_4c1lu"]
+[ext_resource type="Script" uid="uid://bxmh4fd7kjvv1" path="res://ItemSystem/Definitions/ItemDefinition.cs" id="4_necdx"]
+
+[resource]
+script = ExtResource("4_necdx")
+Id = "TableCoffeeGray"
+Name = "Gray Coffee Table"
+Description = "A low gray coffee table."
+IsConsumable = false
+IsPlaceable = true
+Pickupable = true
+IconTexture = ExtResource("2_uh611")
+ItemScene = ExtResource("3_4c1lu")
+metadata/_custom_type_script = "uid://bxmh4fd7kjvv1"
