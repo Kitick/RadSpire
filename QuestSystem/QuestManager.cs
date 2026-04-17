@@ -41,8 +41,7 @@ public sealed partial class QuestManager : Node, ISaveable<QuestProgressionData>
 
 			if(progress.Status == QuestStatus.Active) {
 				string[] hints = def.ActiveDialogue;
-				if(hints == null || hints.Length == 0) { return []; }
-				return [hints[Rng.Next(hints.Length)]];
+				return hints == null || hints.Length == 0 ? [] : [hints[Rng.Next(hints.Length)]];
 			}
 
 			if(progress.Status == QuestStatus.Completed) {

@@ -130,9 +130,7 @@ public sealed partial class Hotbar : Control, IInventoryUI {
 			return;
 		}
 		GridContainer = GetNode<Control>("Background/GridBackground/HotbarSlots");
-		if(InvSlotTemplate == null) {
-			InvSlotTemplate = GD.Load<PackedScene>("res://Inventory/ItemSlot/InvSlotUITemplate.tscn");
-		}
+		InvSlotTemplate ??= GD.Load<PackedScene>("res://Inventory/ItemSlot/InvSlotUITemplate.tscn");
 		NumHotbarSlots = Inventory.MaxRows * Inventory.MaxColumns;
 		for(int i = 0; i < NumHotbarSlots; i++) {
 			InvSlotUI slotInstance = InvSlotTemplate.Instantiate<InvSlotUI>();
@@ -195,9 +193,9 @@ public sealed partial class Hotbar : Control, IInventoryUI {
 
 	public Item? GetSelectedItem() {
 		int index = SelectedSlot;
-		if(Inventory.IsEmptySlot(Inventory.GetRow(index), Inventory.GetColumn(index))) { return null; }
-
-		return Inventory.GetItem(Inventory.GetRow(index), Inventory.GetColumn(index));
+		return Inventory.IsEmptySlot(Inventory.GetRow(index), Inventory.GetColumn(index))
+			? null
+			: Inventory.GetItem(Inventory.GetRow(index), Inventory.GetColumn(index));
 	}
 
 	private ItemSlot? GetItemSlotAtSlotIndex(int index) {

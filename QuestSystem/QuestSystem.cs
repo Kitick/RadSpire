@@ -8,9 +8,7 @@ using Root;
 
 public static class QuestSystem {
 	public static bool CanMakePending(QuestDefinition def, bool alreadyRegistered, int currentStage) {
-		if(alreadyRegistered) { return false; }
-		if(def.StageRequirement != currentStage) { return false; }
-		return true;
+		return !alreadyRegistered && def.StageRequirement == currentStage;
 	}
 
 	public static QuestProgress ApplyKill(QuestDefinition def, QuestProgress progress, EnemyType enemyType) {
