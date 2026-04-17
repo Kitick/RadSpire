@@ -6,7 +6,6 @@ using Godot;
 using QuestSystem;
 using Root;
 using Services;
-using UI.HUD;
 
 public sealed partial class NPC : CharacterBody3D {
 	private static readonly LogService Log = new(nameof(NPC), enabled: true);
@@ -14,27 +13,24 @@ public sealed partial class NPC : CharacterBody3D {
 	[Export] private NPCID Identity = NPCID.None;
 
 	public event Action<NPCID>? Talked;
+	public event Action<string?>? InteractionPromptChanged;
 
 	private bool PlayerInRange;
 	private Action? UnsubscribeInteract;
 	private Node3D? Player;
-	private HUD? Hud;
 	private QuestManager? QuestManager;
 
 	private string[] CurrentLines = [];
 	private int CurrentLineIndex = 0;
 	private bool InDialogue = false;
 
-	public void Init(QuestManager questManager) {
-		QuestManager = questManager;
-	}
+	public void Init(QuestManager questManager) => QuestManager = questManager;
 
 	public override void _Ready() {
 		if(Identity == NPCID.None) {
 			Log.Error($"{Name}: Identity not assigned.");
 			return;
 		}
-		Hud = GetTree().Root.GetNodeOrNull<HUD>("SceneDirector/GameManager/HUD");
 		SetupInteraction();
 	}
 
@@ -79,7 +75,7 @@ public sealed partial class NPC : CharacterBody3D {
 		if(!body.IsInGroup(Group.Player.ToString())) { return; }
 		PlayerInRange = true;
 		Player = body;
-		Hud?.ShowInteractionPrompt("Press F to talk");
+		InteractionPromptChanged?.Invoke("Press F to talk");
 		Log.Info("Player entered NPC interaction range");
 	}
 
@@ -88,7 +84,7 @@ public sealed partial class NPC : CharacterBody3D {
 		PlayerInRange = false;
 		Player = null;
 		InDialogue = false;
-		Hud?.HideInteractionPrompt();
+		InteractionPromptChanged?.Invoke(null);
 		Log.Info("Player left NPC interaction range");
 	}
 
@@ -102,12 +98,12 @@ public sealed partial class NPC : CharacterBody3D {
 		}
 
 		if(CurrentLineIndex < CurrentLines.Length) {
-			Hud?.ShowInteractionPrompt($"{Identity}: {CurrentLines[CurrentLineIndex]}");
+			InteractionPromptChanged?.Invoke($"{Identity}: {CurrentLines[CurrentLineIndex]}");
 			CurrentLineIndex++;
 			return;
 		}
 
-		Hud?.HideInteractionPrompt();
+		InteractionPromptChanged?.Invoke(null);
 		InDialogue = false;
 		QuestManager?.NotifyDialogueFinished(Identity);
 	}

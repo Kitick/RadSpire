@@ -96,6 +96,10 @@ public sealed partial class GameManager : Node {
 		npc.GlobalPosition = NPCSpawnMarker.GlobalPosition;
 		npc.Init(QuestManager);
 		npc.Talked += QuestManager.NotifyPlayerTalkedToNPC;
+		npc.InteractionPromptChanged += prompt => {
+			if(prompt == null) { HUD?.HideInteractionPrompt(); }
+			else { HUD?.ShowInteractionPrompt(prompt); }
+		};
 	}
 
 	private void SpawnLocalPlayer() {
