@@ -25,6 +25,12 @@ script = ExtResource("1_e30fb")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.49505615, 1.501709, -0.003540039)
 shape = SubResource("BoxShape3D_5s4xj")
 
+[node name="Area3D" type="Area3D" parent="DOOR_01_1" unique_id=1722273361]
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="DOOR_01_1/Area3D" unique_id=1853738947]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.49505615, 1.501709, -0.003540039)
+shape = SubResource("BoxShape3D_5s4xj")
+
 [node name="WorldObjectSpawnPoint" parent="." unique_id=2064846928 instance=ExtResource("3_f54bx")]
 ItemId = "ReturnDoor"
 ComponentDefinitions = Array[ExtResource("4_5s4xj")]([SubResource("Resource_p16fc")])

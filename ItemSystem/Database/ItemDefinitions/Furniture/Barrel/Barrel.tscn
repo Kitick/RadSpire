@@ -20,5 +20,11 @@ transform = Transform3D(5.5, 0, 0, 0, 5.5, 0, 0, 0, 5.5, 0, 0, 0)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.09741211, 0)
 shape = SubResource("CylinderShape3D_d8rp4")
 
+[node name="Area3D" type="Area3D" parent="Barrel" unique_id=1235740204]
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="Barrel/Area3D" unique_id=1751731008]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.09741211, 0)
+shape = SubResource("CylinderShape3D_d8rp4")
+
 [node name="WorldObjectSpawnPoint" parent="." unique_id=2064846928 instance=ExtResource("3_rby6q")]
 ItemId = "Barrel"

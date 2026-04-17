@@ -19,5 +19,11 @@ transform = Transform3D(6, 0, 0, 0, 6, 0, 0, 0, 6, 0, 0, 0)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0052490234, 0.0069351196, -0.00048828125)
 shape = SubResource("BoxShape3D_n1odn")
 
+[node name="Area3D" type="Area3D" parent="Bonfire" unique_id=667761995]
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="Bonfire/Area3D" unique_id=1917944164]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0052490234, 0.0069351196, -0.00048828125)
+shape = SubResource("BoxShape3D_n1odn")
+
 [node name="WorldObjectSpawnPoint" parent="." unique_id=2064846928 instance=ExtResource("3_5vv3f")]
 ItemId = "Bonfire"

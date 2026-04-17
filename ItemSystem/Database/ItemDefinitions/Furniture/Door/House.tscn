@@ -27,6 +27,12 @@ script = ExtResource("1_ts0mo")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.038345337, 2.7919006, 0.03173828)
 shape = SubResource("BoxShape3D_xscly")
 
+[node name="Area3D" type="Area3D" parent="House_01_full" unique_id=1589183624]
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="House_01_full/Area3D" unique_id=1391249269]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.038345337, 2.7919006, 0.03173828)
+shape = SubResource("BoxShape3D_xscly")
+
 [node name="WorldObjectSpawnPoint" parent="." unique_id=2064846928 instance=ExtResource("2_lukph")]
 ItemId = "House1"
 ComponentDefinitions = Array[ExtResource("3_ww6q7")]([SubResource("Resource_dpnfh")])

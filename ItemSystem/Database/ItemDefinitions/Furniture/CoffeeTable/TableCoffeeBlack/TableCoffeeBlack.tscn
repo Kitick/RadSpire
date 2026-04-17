@@ -25,5 +25,11 @@ surface_material_override/0 = SubResource("StandardMaterial3D_vm68d")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.003753663, 0.25424194, -0.026306162)
 shape = SubResource("BoxShape3D_xta1f")
 
+[node name="Area3D" type="Area3D" parent="Table" unique_id=293829015]
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="Table/Area3D" unique_id=1527978789]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0037536633, 0.25424194, -0.026306162)
+shape = SubResource("BoxShape3D_xta1f")
+
 [node name="WorldObjectSpawnPoint" parent="." unique_id=2064846928 instance=ExtResource("4_ks8kl")]
 ItemId = "TableCoffeeBlack"

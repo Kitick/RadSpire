@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cffvxgmw1ctjw"
-path.s3tc="res://.godot/imported/GoldChest.png-400682c579131dd866d686e9c7e6096d.s3tc.ctex"
+path.s3tc="res://.godot/imported/GoldChest.png-03281feefebe13dd578f46cdc6e6f080.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://ItemSystem/Database/ItemDefinitions/Furniture/Chest/GoldChest/GoldChest.png"
-dest_files=["res://.godot/imported/GoldChest.png-400682c579131dd866d686e9c7e6096d.s3tc.ctex"]
+source_file="res://ItemSystem/Database/ItemDefinitions/Furniture/Chest/Models/GoldChest/GoldChest.png"
+dest_files=["res://.godot/imported/GoldChest.png-03281feefebe13dd578f46cdc6e6f080.s3tc.ctex"]
 
 [params]
 

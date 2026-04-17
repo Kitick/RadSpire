@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://dna00eg1jcs3j"]
 
-[ext_resource type="PackedScene" uid="uid://cu5k0lhvyg6nv" path="res://ItemSystem/Database/ItemDefinitions/Furniture/Chest/OldChest/OldChest.fbx" id="1_vwmbp"]
-[ext_resource type="Texture2D" uid="uid://blr40q8mpxr8y" path="res://ItemSystem/Database/ItemDefinitions/Furniture/Chest/OldChest/OldChest.png" id="2_ioc72"]
+[ext_resource type="PackedScene" uid="uid://cu5k0lhvyg6nv" path="res://ItemSystem/Database/ItemDefinitions/Furniture/Chest/Models/OldChest/OldChest.fbx" id="1_vwmbp"]
+[ext_resource type="Texture2D" uid="uid://blr40q8mpxr8y" path="res://ItemSystem/Database/ItemDefinitions/Furniture/Chest/Models/OldChest/OldChest.png" id="2_ioc72"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_yssrx"]
 albedo_texture = ExtResource("2_ioc72")

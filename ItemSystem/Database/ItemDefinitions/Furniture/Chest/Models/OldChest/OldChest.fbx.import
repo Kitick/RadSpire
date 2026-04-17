@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://yy0k5knn0gp3"
-path="res://.godot/imported/GoldChest.fbx-960a3c59905082b58600e9a194e8b61c.scn"
+uid="uid://cu5k0lhvyg6nv"
+path="res://.godot/imported/OldChest.fbx-2510b3ccc9f66fe6810b2c8e2c5a1a1e.scn"
 
 [deps]
 
-source_file="res://ItemSystem/Database/ItemDefinitions/Furniture/Chest/GoldChest/GoldChest.fbx"
-dest_files=["res://.godot/imported/GoldChest.fbx-960a3c59905082b58600e9a194e8b61c.scn"]
+source_file="res://ItemSystem/Database/ItemDefinitions/Furniture/Chest/Models/OldChest/OldChest.fbx"
+dest_files=["res://.godot/imported/OldChest.fbx-2510b3ccc9f66fe6810b2c8e2c5a1a1e.scn"]
 
 [params]
 
