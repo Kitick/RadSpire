@@ -3,7 +3,6 @@ namespace QuestSystem;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Godot;
 using InventorySystem;
 using Root;
 
@@ -14,11 +13,10 @@ public static class QuestSystem {
 		return true;
 	}
 
-	public static QuestProgress ApplyKill(QuestDefinition def, QuestProgress progress, Group enemyGroup) {
-		StringName groupId = enemyGroup.ToString();
+	public static QuestProgress ApplyKill(QuestDefinition def, QuestProgress progress, EnemyType enemyType) {
 		return ApplyToObjectives(def, progress, (objectives, i) => {
 			if(def.Objectives[i] is not KillObjective kill) { return; }
-			if(kill.EnemyGroup != null && kill.EnemyGroup != groupId) { return; }
+			if(kill.EnemyType != enemyType) { return; }
 			int next = objectives[i].CurrentCount + 1;
 			objectives[i] = new QuestObjectiveProgress { CurrentCount = next, IsCompleted = next >= kill.RequiredCount };
 		});
@@ -33,19 +31,17 @@ public static class QuestSystem {
 	}
 
 	public static QuestProgress ApplyLocationReached(QuestDefinition def, QuestProgress progress, LocationID location) {
-		StringName locationId = location.ToString();
 		return ApplyToObjectives(def, progress, (objectives, i) => {
 			if(def.Objectives[i] is not LocationObjective loc) { return; }
-			if(loc.LocationId != locationId) { return; }
+			if(loc.LocationId != location) { return; }
 			objectives[i] = new QuestObjectiveProgress { CurrentCount = 1, IsCompleted = true };
 		});
 	}
 
 	public static QuestProgress ApplyTalk(QuestDefinition def, QuestProgress progress, NPCID npc) {
-		StringName npcId = npc.ToString();
 		return ApplyToObjectives(def, progress, (objectives, i) => {
 			if(def.Objectives[i] is not TalkObjective talk) { return; }
-			if(talk.NpcId != npcId) { return; }
+			if(talk.NpcId != npc) { return; }
 			objectives[i] = new QuestObjectiveProgress { CurrentCount = 1, IsCompleted = true };
 		});
 	}

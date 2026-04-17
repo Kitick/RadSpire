@@ -6,16 +6,15 @@ using Root;
 using Services;
 
 public sealed partial class Enemy : CharacterBase, ISaveable<EnemyData> {
-
 	private static readonly LogService Log = new(nameof(Enemy), enabled: true);
+
+	[Export] public EnemyType EnemyType { get; set; } = EnemyType.None;
 
 	[Export] private int InitialHealthValue = 50;
 	[Export] private int InitialDamagePhysical = 5;
 	[Export] private int InitialDamageMagic = 0;
 	[Export] private int InitialDefensePhysical = 0;
 	[Export] private int InitialDefenseMagic = 0;
-
-	[Export] public Group EnemyGroup { get; set; } = Group.MeldoranWarrior;
 
 	[Export] private float KnockbackForce = 15f;
 	[Export] private float KnockbackDecay = 12f;
@@ -48,6 +47,7 @@ public sealed partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 
 	public override void _Ready() {
 		base._Ready();
+		AddToGroup(Group.Enemy.ToString());
 
 		EnemyMesh = GetNodeOrNull<MeshInstance3D>("MeshInstance3D");
 
@@ -67,7 +67,7 @@ public sealed partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 			DamageFlashTimer = DamageFlashTime;
 			SetDamageFlash(true);
 
-			if(AttackTarget == null || !GodotObject.IsInstanceValid(AttackTarget)) {
+			if(AttackTarget == null || !IsInstanceValid(AttackTarget)) {
 				return;
 			}
 
@@ -139,7 +139,7 @@ public sealed partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 
 	public override void OnAttackFinished() {
 		if(AttackTarget != null &&
-			GodotObject.IsInstanceValid(AttackTarget) &&
+			IsInstanceValid(AttackTarget) &&
 			AttackTarget is IHealth healthTarget) {
 
 			Log.Info($"Enemy attacking {AttackTarget.Name}");

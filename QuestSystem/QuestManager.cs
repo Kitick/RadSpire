@@ -12,15 +12,16 @@ using Services;
 public sealed partial class QuestManager : Node, ISaveable<QuestProgressionData> {
 	private static readonly LogService Log = new(nameof(QuestManager), enabled: true);
 
-	public event Action<string>? QuestBecamePending;
-	public event Action<string>? QuestActivated;
-	public event Action<string>? QuestCompleted;
+	public event Action<QuestID>? QuestBecamePending;
+	public event Action<QuestID>? QuestActivated;
+	public event Action<QuestID>? QuestCompleted;
 	public event Action<int>? StageAdvanced;
-	public event Action<string, int>? ObjectiveUpdated;
+	public event Action<QuestID, int>? ObjectiveUpdated;
 	public event Action? GameWon;
 
+	private event Action? OnExit;
 	private int CurrentStage = 0;
-	private readonly Dictionary<string, QuestProgress> Progresses = [];
+	private readonly Dictionary<QuestID, QuestProgress> Progresses = [];
 	private readonly Random Rng = new();
 
 	public void Init(Player player) {
@@ -30,10 +31,9 @@ public sealed partial class QuestManager : Node, ISaveable<QuestProgressionData>
 	}
 
 	public string[] GetDialogueFor(NPCID npc) {
-		StringName npcId = npc.ToString();
-		foreach(QuestDefinition def in Quests.All) {
-			if(def.NpcId != npcId) { continue; }
-			if(!Progresses.TryGetValue(def.Title, out QuestProgress progress)) { continue; }
+		foreach((QuestID id, QuestDefinition def) in Quests.All) {
+			if(def.NpcId != npc) { continue; }
+			if(!Progresses.TryGetValue(id, out QuestProgress progress)) { continue; }
 
 			if(progress.Status == QuestStatus.Pending) {
 				return def.InitialDialogue ?? [];
@@ -53,48 +53,47 @@ public sealed partial class QuestManager : Node, ISaveable<QuestProgressionData>
 	}
 
 	public void NotifyDialogueFinished(NPCID npc) {
-		StringName npcId = npc.ToString();
-		foreach(QuestDefinition def in Quests.All) {
-			if(def.NpcId != npcId) { continue; }
-			if(!Progresses.TryGetValue(def.Title, out QuestProgress progress)) { continue; }
+		foreach((QuestID id, QuestDefinition def) in Quests.All) {
+			if(def.NpcId != npc) { continue; }
+			if(!Progresses.TryGetValue(id, out QuestProgress progress)) { continue; }
 			if(progress.Status != QuestStatus.Pending) { continue; }
 
-			Progresses[def.Title] = QuestProgress.Active(def);
-			Log.Info($"Quest activated after dialogue: '{def.Title}'");
-			QuestActivated?.Invoke(def.Title);
+			Progresses[id] = QuestProgress.Active(def);
+			Log.Info($"Quest activated after dialogue: '{id}'");
+			QuestActivated?.Invoke(id);
 			CheckCollectsForAllInventories();
 			return;
 		}
 	}
 
-	public void NotifyEnemyKilled(Group enemyGroup) {
-		foreach(QuestDefinition def in ActiveQuestDefs()) {
-			QuestProgress updated = QuestSystem.ApplyKill(def, Progresses[def.Title], enemyGroup);
-			UpdateProgress(def.Title, updated);
+	public void NotifyEnemyKilled(EnemyType enemyType) {
+		foreach((QuestID id, QuestDefinition def) in ActiveQuestDefs()) {
+			QuestProgress updated = QuestSystem.ApplyKill(def, Progresses[id], enemyType);
+			UpdateProgress(id, updated);
 		}
 	}
 
 	public void NotifyPlayerTalkedToNPC(NPCID npc) {
-		foreach(QuestDefinition def in ActiveQuestDefs()) {
-			QuestProgress updated = QuestSystem.ApplyTalk(def, Progresses[def.Title], npc);
-			UpdateProgress(def.Title, updated);
+		foreach((QuestID id, QuestDefinition def) in ActiveQuestDefs()) {
+			QuestProgress updated = QuestSystem.ApplyTalk(def, Progresses[id], npc);
+			UpdateProgress(id, updated);
 		}
 	}
 
 	public void NotifyLocationReached(LocationID location) {
-		foreach(QuestDefinition def in ActiveQuestDefs()) {
-			QuestProgress updated = QuestSystem.ApplyLocationReached(def, Progresses[def.Title], location);
-			UpdateProgress(def.Title, updated);
+		foreach((QuestID id, QuestDefinition def) in ActiveQuestDefs()) {
+			QuestProgress updated = QuestSystem.ApplyLocationReached(def, Progresses[id], location);
+			UpdateProgress(id, updated);
 		}
 	}
 
-	public IReadOnlyDictionary<string, QuestProgress> GetAllProgresses() => Progresses;
+	public IReadOnlyDictionary<QuestID, QuestProgress> GetAllProgresses() => Progresses;
 
-	public QuestProgress GetProgress(string id) =>
+	public QuestProgress GetProgress(QuestID id) =>
 		Progresses.TryGetValue(id, out QuestProgress p) ? p : default;
 
-	public QuestDefinition? GetDefinition(string id) =>
-		Array.Find(Quests.All, q => q.Title == id);
+	public QuestDefinition? GetDefinition(QuestID id) =>
+		Quests.All.TryGetValue(id, out QuestDefinition? def) ? def : null;
 
 	public QuestProgressionData Export() => new() {
 		CurrentStage = CurrentStage,
@@ -115,21 +114,21 @@ public sealed partial class QuestManager : Node, ISaveable<QuestProgressionData>
 		}
 	}
 
-	private void TryMakePending(QuestDefinition def) {
-		bool alreadyRegistered = Progresses.ContainsKey(def.Title);
+	private void TryMakePending(QuestID id, QuestDefinition def) {
+		bool alreadyRegistered = Progresses.ContainsKey(id);
 		if(!QuestSystem.CanMakePending(def, alreadyRegistered, CurrentStage)) { return; }
-		Progresses[def.Title] = QuestProgress.Pending(def);
-		Log.Info($"Quest pending: '{def.Title}'");
-		QuestBecamePending?.Invoke(def.Title);
+		Progresses[id] = QuestProgress.Pending(def);
+		Log.Info($"Quest pending: '{id}'");
+		QuestBecamePending?.Invoke(id);
 	}
 
 	private void TryMakeQuestsPending() {
-		foreach(QuestDefinition def in Quests.All) {
-			TryMakePending(def);
+		foreach((QuestID id, QuestDefinition def) in Quests.All) {
+			TryMakePending(id, def);
 		}
 	}
 
-	private void UpdateProgress(string id, QuestProgress updated) {
+	private void UpdateProgress(QuestID id, QuestProgress updated) {
 		QuestProgress previous = Progresses[id];
 		if(previous.Equals(updated)) { return; }
 		Progresses[id] = updated;
@@ -143,7 +142,7 @@ public sealed partial class QuestManager : Node, ISaveable<QuestProgressionData>
 		EvaluateQuest(id);
 	}
 
-	private void EvaluateQuest(string id) {
+	private void EvaluateQuest(QuestID id) {
 		QuestProgress progress = Progresses[id];
 		if(progress.Status != QuestStatus.Active) { return; }
 		if(!QuestSystem.AreAllComplete(progress)) { return; }
@@ -158,8 +157,8 @@ public sealed partial class QuestManager : Node, ISaveable<QuestProgressionData>
 
 	private void TryAdvanceStage() {
 		IEnumerable<(QuestDefinition def, QuestProgress)> allQuests = Quests.All
-			.Where(def => Progresses.ContainsKey(def.Title))
-			.Select(def => (def, Progresses[def.Title]));
+			.Where(kvp => Progresses.ContainsKey(kvp.Key))
+			.Select(kvp => (kvp.Value, Progresses[kvp.Key]));
 
 		(bool advanced, int newStage) = QuestSystem.TryAdvanceStage(CurrentStage, allQuests);
 		if(!advanced) { return; }
@@ -171,9 +170,9 @@ public sealed partial class QuestManager : Node, ISaveable<QuestProgressionData>
 	}
 
 	private void CheckCollectObjectives(Inventory inventory) {
-		foreach(QuestDefinition def in ActiveQuestDefs()) {
-			QuestProgress updated = QuestSystem.ApplyCollect(def, Progresses[def.Title], inventory);
-			UpdateProgress(def.Title, updated);
+		foreach((QuestID id, QuestDefinition def) in ActiveQuestDefs()) {
+			QuestProgress updated = QuestSystem.ApplyCollect(def, Progresses[id], inventory);
+			UpdateProgress(id, updated);
 		}
 	}
 
@@ -181,8 +180,8 @@ public sealed partial class QuestManager : Node, ISaveable<QuestProgressionData>
 
 	private void CheckGameWon() {
 		bool allMainComplete = Quests.All
-			.Where(def => def.Type == QuestType.Main)
-			.All(def => Progresses.TryGetValue(def.Title, out QuestProgress p) && p.Status == QuestStatus.Completed);
+			.Where(kvp => kvp.Value.Type == QuestType.Main)
+			.All(kvp => Progresses.TryGetValue(kvp.Key, out QuestProgress p) && p.Status == QuestStatus.Completed);
 
 		if(allMainComplete) {
 			Log.Info("All main quests completed — game won.");
@@ -190,8 +189,22 @@ public sealed partial class QuestManager : Node, ISaveable<QuestProgressionData>
 		}
 	}
 
-	private IEnumerable<QuestDefinition> ActiveQuestDefs() {
-		return Quests.All.Where(def =>
-			Progresses.TryGetValue(def.Title, out QuestProgress p) && p.Status == QuestStatus.Active);
+	private IEnumerable<KeyValuePair<QuestID, QuestDefinition>> ActiveQuestDefs() {
+		return Quests.All.Where(kvp =>
+			Progresses.TryGetValue(kvp.Key, out QuestProgress p) && p.Status == QuestStatus.Active);
+	}
+
+	public override void _ExitTree() {
+		OnExit?.Invoke();
+		ClearEvents();
+	}
+
+	private void ClearEvents() {
+		QuestBecamePending = null;
+		QuestActivated = null;
+		QuestCompleted = null;
+		StageAdvanced = null;
+		ObjectiveUpdated = null;
+		GameWon = null;
 	}
 }

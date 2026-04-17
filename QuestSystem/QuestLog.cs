@@ -14,7 +14,7 @@ public sealed partial class QuestLog : Control {
 
 	private QuestManager? QuestManagerRef;
 	private QuestStatus CurrentFilter = QuestStatus.Active;
-	private readonly List<string> FilteredIds = [];
+	private readonly List<QuestID> FilteredIds = [];
 
 	public void Init(QuestManager questManager) {
 		QuestManagerRef = questManager;
@@ -46,7 +46,7 @@ public sealed partial class QuestLog : Control {
 		FilteredIds.Clear();
 		DescriptionText.Text = "";
 
-		foreach((string? id, QuestProgress progress) in QuestManagerRef.GetAllProgresses()) {
+		foreach((QuestID id, QuestProgress progress) in QuestManagerRef.GetAllProgresses()) {
 			if(progress.Status != CurrentFilter) { continue; }
 			QuestDefinition? def = QuestManagerRef.GetDefinition(id);
 			if(def == null) { continue; }
@@ -60,7 +60,7 @@ public sealed partial class QuestLog : Control {
 		if(index < 0 || index >= FilteredIds.Count) { return; }
 		if(QuestManagerRef == null) { return; }
 
-		string id = FilteredIds[(int) index];
+		QuestID id = FilteredIds[(int) index];
 		QuestDefinition? def = QuestManagerRef.GetDefinition(id);
 		if(def == null) { return; }
 

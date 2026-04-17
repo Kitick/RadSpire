@@ -12,6 +12,7 @@ public sealed partial class QuestLocationTrigger : Area3D {
 
 	public event Action<LocationID>? PlayerReachedLocation;
 
+	private event Action? OnExit;
 	private bool Fired = false;
 
 	public override void _Ready() {
@@ -28,5 +29,14 @@ public sealed partial class QuestLocationTrigger : Area3D {
 		Fired = true;
 		Log.Info($"Player reached location '{Location}'");
 		PlayerReachedLocation?.Invoke(Location);
+	}
+
+	public override void _ExitTree() {
+		OnExit?.Invoke();
+		ClearEvents();
+	}
+
+	private void ClearEvents() {
+		PlayerReachedLocation = null;
 	}
 }

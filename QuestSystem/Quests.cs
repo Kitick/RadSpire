@@ -1,20 +1,20 @@
 namespace QuestSystem;
 
-using Godot;
+using System.Collections.Generic;
 using Root;
 
 public abstract record QuestObjective(string Description, int RequiredCount = 1);
 
-public sealed record KillObjective(string Description, int RequiredCount, StringName EnemyGroup = default!)
+public sealed record KillObjective(string Description, int RequiredCount, EnemyType EnemyType)
 	: QuestObjective(Description, RequiredCount);
 
 public sealed record CollectObjective(string Description, int RequiredCount, string ItemId)
 	: QuestObjective(Description, RequiredCount);
 
-public sealed record LocationObjective(string Description, StringName LocationId)
+public sealed record LocationObjective(string Description, LocationID LocationId)
 	: QuestObjective(Description, RequiredCount: 1);
 
-public sealed record TalkObjective(string Description, StringName NpcId)
+public sealed record TalkObjective(string Description, NPCID NpcId)
 	: QuestObjective(Description, RequiredCount: 1);
 
 public sealed record QuestDefinition(
@@ -23,7 +23,7 @@ public sealed record QuestDefinition(
 	QuestType Type,
 	int StageRequirement,
 	QuestObjective[] Objectives,
-	StringName? NpcId = null,
+	NPCID NpcId = NPCID.None,
 	string[] InitialDialogue = null!,
 	string[] ActiveDialogue = null!,
 	string[] CompletionDialogue = null!
@@ -35,7 +35,7 @@ public static class Quests {
 		Description: "Defeat the enemies guarding the area.",
 		Type: QuestType.Main,
 		StageRequirement: 0,
-		Objectives: [new KillObjective("Kill 3 enemies", RequiredCount: 3)]
+		Objectives: [new KillObjective("Kill 3 enemies", RequiredCount: 3, EnemyType: EnemyType.MeldoranWarrior)]
 	);
 
 	public static readonly QuestDefinition LeftForDead = new(
@@ -43,7 +43,7 @@ public static class Quests {
 		Description: "Ambushed and stripped of your weapons, you need to find shelter and help.",
 		Type: QuestType.Main,
 		StageRequirement: 0,
-		Objectives: [new LocationObjective("Find shelter", LocationID.OfficeBuilding.ToString())]
+		Objectives: [new LocationObjective("Find shelter", LocationID.OfficeBuilding)]
 	);
 
 	public static readonly QuestDefinition AFairTrade = new(
@@ -52,9 +52,9 @@ public static class Quests {
 		Type: QuestType.Main,
 		StageRequirement: 1,
 		Objectives: [
-			new KillObjective("Defeat the Warriors of Meldoran at the gas station", RequiredCount: 5, EnemyGroup: Group.MeldoranWarrior.ToString()),
+			new KillObjective("Defeat the Warriors of Meldoran at the gas station", RequiredCount: 5, EnemyType: EnemyType.MeldoranWarrior),
 		],
-		NpcId: NPCID.Sera.ToString(),
+		NpcId: NPCID.Sera,
 		InitialDialogue: [
 			"Hey. Hey, over here. You look like you're about to fall over.",
 			"Get inside. Those were Meldoran men that did this to you, weren't they? I can tell by the way they left you. They don't finish what they start.",
@@ -90,7 +90,7 @@ public static class Quests {
 			new CollectObjective("Craft a helmet", RequiredCount: 1, ItemId: ItemID.HeadpieceIron),
 			new CollectObjective("Craft a shield", RequiredCount: 1, ItemId: ItemID.ShieldIron),
 		],
-		NpcId: NPCID.Sera.ToString(),
+		NpcId: NPCID.Sera,
 		InitialDialogue: [],
 		ActiveDialogue: [
 			"Sword needs two iron bars, two sticks, and a stone. Iron ore comes from the craters — process it into chunks, smelt the chunks into bars, then you can work with it.",
@@ -103,5 +103,10 @@ public static class Quests {
 		]
 	);
 
-	public static readonly QuestDefinition[] All = [KillPatrol, LeftForDead, AFairTrade, ArmYourself];
+	public static readonly Dictionary<QuestID, QuestDefinition> All = new() {
+		[QuestID.ClearThePatrol] = KillPatrol,
+		[QuestID.LeftForDead] = LeftForDead,
+		[QuestID.AFairTrade] = AFairTrade,
+		[QuestID.ArmYourself] = ArmYourself,
+	};
 }

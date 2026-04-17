@@ -8,6 +8,7 @@ using Components;
 using Godot;
 using InventorySystem;
 using InventorySystem.Interface;
+using ItemSystem;
 using ItemSystem.Icons;
 using ItemSystem.WorldObjects;
 using QuestSystem;
@@ -29,6 +30,7 @@ public sealed partial class GameManager : Node {
 	[Export] private PackedScene Item3DIconManagerScene = null!;
 
 	private readonly List<Enemy> SpawnedEnemies = [];
+	private readonly List<NPC> SpawnedNPCs = [];
 	[Export] private PackedScene WorldObjectManageScene = null!;
 	[Export] private PackedScene NPCScene = null!;
 	[Export] private Node WorldObjectParentNode = null!;
@@ -95,11 +97,8 @@ public sealed partial class GameManager : Node {
 		NPC npc = this.AddScene<NPC>(NPCScene);
 		npc.GlobalPosition = NPCSpawnMarker.GlobalPosition;
 		npc.Init(QuestManager);
-		npc.Talked += QuestManager.NotifyPlayerTalkedToNPC;
-		npc.InteractionPromptChanged += prompt => {
-			if(prompt == null) { HUD?.HideInteractionPrompt(); }
-			else { HUD?.ShowInteractionPrompt(prompt); }
-		};
+		SubscribeToNPCEvents(npc);
+		SpawnedNPCs.Add(npc);
 	}
 
 	private void SpawnLocalPlayer() {
@@ -130,12 +129,6 @@ public sealed partial class GameManager : Node {
 		Hotbar hotbar = HUD.GetNode<Hotbar>("Hotbar");
 		LocalPlayer!.UseItemComponent.UserHotbar = hotbar;
 		LocalPlayer.EquipItemComponent.Initalize(LocalPlayer, hotbar);
-
-		QuestManager.QuestActivated += id => HUD?.ShowQuestNotification($"Quest Started: {id}");
-		QuestManager.QuestCompleted += id => HUD?.ShowQuestNotification($"Quest Completed: {id}");
-		QuestManager.StageAdvanced += stage => HUD?.ShowQuestNotification($"Stage {stage} reached!");
-		QuestManager.GameWon += () => HUD?.Win();
-
 		AddChild(HUD);
 	}
 
@@ -146,7 +139,28 @@ public sealed partial class GameManager : Node {
 		hud.HostRequested += () => StateMachine.TransitionTo(MenuState.Host);
 		hud.MainMenuRequested += ReturnToMainMenu;
 		hud.RespawnRequested += RespawnPlayer;
-		hud.SaveRequested += (fileName) => SaveGame(fileName);
+		hud.SaveRequested += OnSaveRequested;
+
+		QuestManager.QuestActivated += OnQuestActivated;
+		QuestManager.QuestCompleted += OnQuestCompleted;
+		QuestManager.StageAdvanced += OnStageAdvanced;
+		QuestManager.GameWon += OnGameWon;
+	}
+
+	private void OnQuestActivated(QuestID id) => HUD?.ShowQuestNotification($"Quest Started: {id}");
+	private void OnQuestCompleted(QuestID id) => HUD?.ShowQuestNotification($"Quest Completed: {id}");
+	private void OnStageAdvanced(int stage) => HUD?.ShowQuestNotification($"Stage {stage} reached!");
+	private void OnGameWon() => HUD?.Win();
+
+	private void SubscribeToNPCEvents(NPC npc) {
+		npc.Talked += QuestManager.NotifyPlayerTalkedToNPC;
+		npc.InteractionPromptChanged += OnNPCInteractionPromptChanged;
+	}
+
+	private void OnSaveRequested(string fileName) => SaveGame(fileName);
+
+	private void OnNPCInteractionPromptChanged(string? prompt) {
+		if(prompt == null) { HUD?.HideInteractionPrompt(); } else { HUD?.ShowInteractionPrompt(prompt); }
 	}
 
 	public void RespawnPlayer() {
@@ -159,7 +173,6 @@ public sealed partial class GameManager : Node {
 		InventoryData inventoryData = LocalPlayer.Inventory.Export();
 		InventoryData hotbarData = LocalPlayer.Hotbar.Export();
 
-		UnsubscribeFromPlayerItem3DIconEvents(LocalPlayer);
 		LocalPlayer.QueueFree();
 		LocalPlayer = null;
 
@@ -241,18 +254,19 @@ public sealed partial class GameManager : Node {
 	private void CleanupGame() {
 		HUD = null;
 
-		if(IsInstanceValid(LocalPlayer)) {
-			UnsubscribeFromPlayerItem3DIconEvents(LocalPlayer!);
-		}
-
 		Cleanup(LocalPlayer);
 		LocalPlayer = null;
 
-		Cleanup(Item3DIconManager);
-		Item3DIconManager = null;
+		foreach(NPC npc in SpawnedNPCs) {
+			Cleanup(npc);
+		}
+		SpawnedNPCs.Clear();
 
 		foreach(Enemy enemy in SpawnedEnemies) { Cleanup(enemy); }
 		SpawnedEnemies.Clear();
+
+		Cleanup(Item3DIconManager);
+		Item3DIconManager = null;
 	}
 
 	private void SpawnEnemies() {
@@ -300,7 +314,7 @@ public sealed partial class GameManager : Node {
 	private void WireEnemyKillEvents() {
 		foreach(Enemy enemy in SpawnedEnemies) {
 			if(!IsInstanceValid(enemy)) { continue; }
-			enemy.WhenDead(() => QuestManager.NotifyEnemyKilled(enemy.EnemyGroup));
+			enemy.WhenDead(() => QuestManager.NotifyEnemyKilled(enemy.EnemyType));
 		}
 	}
 
@@ -324,15 +338,12 @@ public sealed partial class GameManager : Node {
 
 	private void SubscribeToPlayerItem3DIconEvents(Player player) {
 		if(Item3DIconManager == null) { return; }
-		player.InventoryManager.SpawnItem3DIconRequested += (item, position) => Item3DIconManager.RequestSpawnItem(item, position);
+		player.InventoryManager.SpawnItem3DIconRequested += OnSpawnItem3DIconRequested;
 		player.PickupComponent.DespawnItem3DIconRequested += Item3DIconManager.RequestDespawnItem;
 	}
 
-	private void UnsubscribeFromPlayerItem3DIconEvents(Player player) {
-		if(Item3DIconManager == null) { return; }
-		player.InventoryManager.SpawnItem3DIconRequested -= (item, position) => Item3DIconManager.RequestSpawnItem(item, position);
-		player.PickupComponent.DespawnItem3DIconRequested -= Item3DIconManager.RequestDespawnItem;
-	}
+	private void OnSpawnItem3DIconRequested(Item item, Vector3 position) =>
+		Item3DIconManager?.RequestSpawnItem(item, position);
 }
 
 public readonly struct GameState : ISaveData {

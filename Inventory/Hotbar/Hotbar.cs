@@ -3,8 +3,8 @@ namespace InventorySystem.Interface;
 using System;
 using System.Collections.Generic;
 using Character;
-using InventorySystem;
 using Godot;
+using InventorySystem;
 using ItemSystem;
 using Services;
 
@@ -35,13 +35,11 @@ public sealed partial class Hotbar : Control, IInventoryUI {
 		}
 	}
 
-	private readonly List<Panel> HotbarSlots = new List<Panel>();
+	private readonly List<Panel> HotbarSlots = [];
 
 	private static readonly Color NormalColor = Colors.White;
-	private static readonly Color SelectColor = new Color(1f, 1f, 0.3f);
-	private static readonly Vector2 SelectedScale = new Vector2(1.05f, 1.05f);
-
-	private const string HOTBAR = "Background/GridBackground/HotbarSlots";
+	private static readonly Color SelectColor = new(1f, 1f, 0.3f);
+	private static readonly Vector2 SelectedScale = new(1.05f, 1.05f);
 
 	private event Action? OnExit;
 
@@ -50,18 +48,16 @@ public sealed partial class Hotbar : Control, IInventoryUI {
 	private bool IsInitialized = false;
 	private bool IsRegisteredToInventory = false;
 	public Inventory Inventory { get; set; } = null!;
-	private List<InvSlotUI> HotbarSlotUIs = new List<InvSlotUI>();
+	private readonly List<InvSlotUI> HotbarSlotUIs = [];
 	private int NumHotbarSlots = 0;
-	private PackedScene? InvSlotTemplate = null!;
-	private Control? GridContainer = null!;
+	private PackedScene? InvSlotTemplate = null;
+	private Control? GridContainer = null;
+
 	public event Action<string, int, MouseButton>? OnSlotPressed;
 	public event Action<string, int, MouseButton>? OnSlotReleased;
 	public event Action<string, int>? OnSlotHovered;
 	public event Action<ItemSlot>? OnSlotSelected;
 	public event Action<ItemSlot>? OnSlotDeselected;
-
-	public Hotbar() {
-	}
 
 	public Hotbar(Inventory inventory, Player player) {
 		Initialize(inventory, player);
@@ -105,6 +101,15 @@ public sealed partial class Hotbar : Control, IInventoryUI {
 		if(IsInitialized && Player != null && Player.InventoryManager != null && Inventory != null) {
 			Player.InventoryManager.UnregisterInventory(Inventory.Name);
 		}
+		ClearEvents();
+	}
+
+	private void ClearEvents() {
+		OnSlotPressed = null;
+		OnSlotReleased = null;
+		OnSlotHovered = null;
+		OnSlotSelected = null;
+		OnSlotDeselected = null;
 	}
 
 	public void SetUpInventoryUI() {
@@ -175,7 +180,7 @@ public sealed partial class Hotbar : Control, IInventoryUI {
 			OnSlotSelected?.Invoke(selectedItemSlot);
 		}
 
-		foreach(var other in HotbarSlots) {
+		foreach(Panel other in HotbarSlots) {
 			bool selected = other == slot;
 
 			other.SelfModulate = selected ? SelectColor : NormalColor;

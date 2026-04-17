@@ -16,7 +16,7 @@ public sealed partial class NPC : CharacterBody3D {
 	public event Action<string?>? InteractionPromptChanged;
 
 	private bool PlayerInRange;
-	private Action? UnsubscribeInteract;
+	private event Action? OnExit;
 	private Node3D? Player;
 	private QuestManager? QuestManager;
 
@@ -51,7 +51,13 @@ public sealed partial class NPC : CharacterBody3D {
 	}
 
 	public override void _ExitTree() {
-		UnsubscribeInteract?.Invoke();
+		OnExit?.Invoke();
+		ClearEvents();
+	}
+
+	private void ClearEvents() {
+		Talked = null;
+		InteractionPromptChanged = null;
 	}
 
 	private void SetupInteraction() {
@@ -65,7 +71,7 @@ public sealed partial class NPC : CharacterBody3D {
 		interactionArea.OnBodyEnteredArea += HandleBodyEntered;
 		interactionArea.OnBodyExitedArea += HandleBodyExited;
 
-		UnsubscribeInteract = ActionEvent.Interact.WhenPressed(() => {
+		OnExit += ActionEvent.Interact.WhenPressed(() => {
 			if(!PlayerInRange) { return; }
 			Interact();
 		});

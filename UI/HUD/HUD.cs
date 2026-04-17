@@ -40,7 +40,7 @@ public sealed partial class HUD : Control {
 	public Player Player = null!;
 
 	private StateMachine<MenuState> StateMachineRef = null!;
-	private Action? Unsubscribe;
+	private event Action? OnExit;
 	private Label InteractionPrompt = null!;
 
 	public event Action? ResumeRequested;
@@ -78,18 +78,30 @@ public sealed partial class HUD : Control {
 	}
 
 	public override void _ExitTree() {
-		Unsubscribe?.Invoke();
+		OnExit?.Invoke();
+		ClearEvents();
+	}
+
+	private void ClearEvents() {
+		ResumeRequested = null;
+		PauseRequested = null;
+		SettingsRequested = null;
+		HostRequested = null;
+		MainMenuRequested = null;
+		RespawnRequested = null;
+		InventoryRequested = null;
+		ChestRequested = null;
+		SaveRequested = null;
 	}
 
 	private void SetInputCallbacks() {
-		Unsubscribe = ActionEvent.Inventory.WhenPressed(ToggleInventory);
+		OnExit += ActionEvent.Inventory.WhenPressed(ToggleInventory);
 
-		Unsubscribe += ActionEvent.MenuExit.WhenPressed(() => {
-			if(StateMachineRef.CurrentState == MenuState.Game) { PauseRequested?.Invoke(); }
-			else if(StateMachineRef.CurrentState != MenuState.Game) { ResumeRequested?.Invoke(); }
+		OnExit += ActionEvent.MenuExit.WhenPressed(() => {
+			if(StateMachineRef.CurrentState == MenuState.Game) { PauseRequested?.Invoke(); } else if(StateMachineRef.CurrentState != MenuState.Game) { ResumeRequested?.Invoke(); }
 		});
 
-		Unsubscribe += ActionEvent.QuestLog.WhenPressed(ToggleQuestLog);
+		OnExit += ActionEvent.QuestLog.WhenPressed(ToggleQuestLog);
 	}
 
 	private void ToggleQuestLog() {
@@ -229,12 +241,10 @@ public sealed partial class HUD : Control {
 		if(StateMachineRef.CurrentState == MenuState.Chest) {
 			Log.Info("Closing Chest");
 			StateMachineRef.TransitionTo(MenuState.Game);
-		}
-		else if(StateMachineRef.CurrentState == MenuState.Inventory) {
+		} else if(StateMachineRef.CurrentState == MenuState.Inventory) {
 			Log.Info("Closing Inventory");
 			StateMachineRef.TransitionTo(MenuState.Game);
-		}
-		else {
+		} else {
 			Log.Info("Opening Inventory");
 			StateMachineRef.TransitionTo(MenuState.Inventory);
 		}
@@ -249,8 +259,7 @@ public sealed partial class HUD : Control {
 		if(StateMachineRef.CurrentState == MenuState.Chest) {
 			Log.Info("Closing Chest");
 			StateMachineRef.TransitionTo(MenuState.Game);
-		}
-		else {
+		} else {
 			Log.Info("Opening Chest");
 			StateMachineRef.TransitionTo(MenuState.Chest);
 		}

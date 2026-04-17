@@ -1,5 +1,6 @@
 namespace QuestSystem;
 
+using Root;
 using Services;
 
 public enum QuestStatus { Pending, Active, Completed }
@@ -28,6 +29,6 @@ public readonly record struct QuestProgress : ISaveData {
 
 public readonly record struct QuestProgressionData : ISaveData {
 	public int CurrentStage { get; init; }
-	public string[] QuestTitles { get; init; }
+	public QuestID[] QuestTitles { get; init; }
 	public QuestProgress[] QuestProgresses { get; init; }
 }

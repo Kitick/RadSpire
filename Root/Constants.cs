@@ -23,11 +23,15 @@ public static class Items {
 	public const string StrawberryRed = $"{Food}/StrawberryRed.tres";
 }
 
-public enum Group { Player, QuestLocation, MeldoranWarrior }
+public enum Group { Player, Enemy, QuestLocation }
+
+public enum EnemyType { None, MeldoranWarrior }
 
 public enum NPCID { None, Sera, Dag }
 
 public enum LocationID { None, OfficeBuilding, GasStation }
+
+public enum QuestID { ClearThePatrol, LeftForDead, AFairTrade, ArmYourself }
 
 public static class ItemID {
 	public static readonly StringName AppleRed = "AppleRed";
