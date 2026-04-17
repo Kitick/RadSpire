@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://bkwawkixe56or" path="res://Crafting/Interface/CraftingUI.cs" id="1_8hsgg"]
 
-[node name="Crafting" type="Control" unique_id=2111148912 node_paths=PackedStringArray("CraftableDropdown", "NonCraftableDropdown", "RequirementsList", "CraftButton", "QuantityDisplay", "PosButton", "NegButton")]
+[node name="Crafting" type="Control" unique_id=2111148912 node_paths=PackedStringArray("CraftableDropdown", "NonCraftableDropdown", "RequirementsList", "CraftButton", "QuantityDisplay", "PosButton", "NegButton", "MainBackground", "LightBackground", "TabBackground")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -17,6 +17,9 @@ CraftButton = NodePath("MainBackground/LightBackground/CraftButton")
 QuantityDisplay = NodePath("MainBackground/LightBackground/QuantityInput")
 PosButton = NodePath("MainBackground/LightBackground/PosButton")
 NegButton = NodePath("MainBackground/LightBackground/NegButton")
+MainBackground = NodePath("MainBackground")
+LightBackground = NodePath("MainBackground/LightBackground")
+TabBackground = NodePath("TabBackground")
 metadata/_edit_horizontal_guides_ = [0.0]
 
 [node name="MainBackground" type="ColorRect" parent="." unique_id=29192493]

@@ -14,13 +14,13 @@ public readonly struct CraftResult {
 	public ItemSlot[] Items { get; init; }
 	public RecipeItem[] Missing { get; init; }
 
-	public static CraftResult Ok(ItemSlot[] items) => new CraftResult {
+	public static CraftResult Ok(ItemSlot[] items) => new() {
 		Status = CraftStatus.Success,
 		Items = items,
 		Missing = [],
 	};
 
-	public static CraftResult Fail(CraftStatus status, RecipeItem[]? missing = null) => new CraftResult {
+	public static CraftResult Fail(CraftStatus status, RecipeItem[]? missing = null) => new() {
 		Status = status,
 		Items = [],
 		Missing = missing ?? [],

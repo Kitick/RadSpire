@@ -21,22 +21,21 @@ public static class CraftingSystem {
 
 		foreach(RecipeItem ingredient in recipe.Inputs) {
 			int available = CountAvailable(ingredient.ItemId, sources);
-			if(available < ingredient.Quantity) {
-				missingList.Add(ingredient);
-			}
+			if(available < ingredient.Quantity) { missingList.Add(ingredient); }
 		}
-		missing = missingList.ToArray();
+
+		missing = [.. missingList];
 		return missingList.Count == 0;
 	}
 
 	public static CraftResult Craft(CraftingRecipe recipe, params IEnumerable<Inventory> sources) {
-		var inventories = sources.ToArray();
-		if(!CanCraft(recipe, inventories, out var missing)) {
+		Inventory[] inventories = [.. sources];
+		if(!CanCraft(recipe, inventories, out RecipeItem[]? missing)) {
 			Log.Info($"Craft failed for '{recipe.RecipeName}': {missing.Length} ingredient(s) missing.");
 			return CraftResult.Fail(CraftStatus.MissingIngredients, missing);
 		}
 
-		var outputs = BuildOutputs(recipe);
+		ItemSlot[] outputs = BuildOutputs(recipe);
 		ConsumeIngredients(recipe, inventories);
 
 		Log.Info($"Crafted '{recipe.RecipeName}': {outputs.Length} output slot(s).");
@@ -86,6 +85,6 @@ public static class CraftingSystem {
 			outputs.Add(new ItemSlot(item, output.Quantity));
 		}
 
-		return outputs.ToArray();
+		return [.. outputs];
 	}
 }
