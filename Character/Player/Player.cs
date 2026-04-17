@@ -47,6 +47,7 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData> {
 	private Action? UnsubscribeInteract;
 	private Action? UnsubscribeInteract2;
 	private Action? UnsubscribePlace;
+	private Action? UnsubscribePlaceCancel;
 
 	public bool HoldingSword = false;
 
@@ -72,6 +73,7 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData> {
 		UnsubscribeInteract?.Invoke();
 		UnsubscribeInteract2?.Invoke();
 		UnsubscribePlace?.Invoke();
+		UnsubscribePlaceCancel?.Invoke();
 		ObjectPickupUI?.Dispose();
 		ObjectPickup = null;
 		ObjectPlacementUI = null;
@@ -161,6 +163,13 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData> {
 				return;
 			}
 			ObjectPlacementManager.PlaceRequested();
+		});
+		UnsubscribePlaceCancel = ActionEvent.PlaceCancel.WhenPressed(() => {
+			if(ObjectPlacementManager == null) {
+				Log.Error("PlaceCancel action pressed but ObjectPlacementManager is not initialized.");
+				return;
+			}
+			ObjectPlacementManager.PlaceCanceled();
 		});
 	}
 
