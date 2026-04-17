@@ -8,26 +8,25 @@ using Services;
 public sealed partial class QuestLocationTrigger : Area3D {
 	private static readonly LogService Log = new(nameof(QuestLocationTrigger), enabled: true);
 
-	[Export] public string LocationId { get; set; } = "";
+	[Export] public LocationID Location { get; set; } = LocationID.None;
 
-	public event Action<string>? PlayerReachedLocation;
+	public event Action<LocationID>? PlayerReachedLocation;
 
 	private bool Fired = false;
 
 	public override void _Ready() {
-		this.ValidateExports();
+		if(Location == LocationID.None) {
+			Log.Error($"{Name}: Location not assigned.");
+			return;
+		}
 		BodyEntered += HandleBodyEntered;
 	}
 
 	private void HandleBodyEntered(Node3D body) {
 		if(Fired) { return; }
-		if(!body.IsInGroup(Groups.Player)) { return; }
-		if(string.IsNullOrWhiteSpace(LocationId)) {
-			Log.Error("QuestLocationTrigger: LocationId is empty — trigger will not fire.");
-			return;
-		}
+		if(!body.IsInGroup(Group.Player.ToString())) { return; }
 		Fired = true;
-		Log.Info($"Player reached location '{LocationId}'");
-		PlayerReachedLocation?.Invoke(LocationId);
+		Log.Info($"Player reached location '{Location}'");
+		PlayerReachedLocation?.Invoke(Location);
 	}
 }

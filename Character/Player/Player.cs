@@ -32,15 +32,15 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData> {
 	[Export] private float CrouchMultiplier = 0.5f;
 
 	// Inventories
-	public readonly Inventory Inventory = new Inventory(3, 5);
-	public readonly Inventory Hotbar = new Inventory(1, 5);
-	public readonly InventoryManager InventoryManager = new InventoryManager();
+	public readonly Inventory Inventory = new(3, 5);
+	public readonly Inventory Hotbar = new(1, 5);
+	public readonly InventoryManager InventoryManager = new();
 
 	// Components
 	public readonly Movement Movement;
-	public readonly Item3DIconPickup PickupComponent = new Item3DIconPickup();
-	public readonly UseItem UseItemComponent = new UseItem();
-	public readonly EquipItem EquipItemComponent = new EquipItem();
+	public readonly Item3DIconPickup PickupComponent = new();
+	public readonly UseItem UseItemComponent = new();
+	public readonly EquipItem EquipItemComponent = new();
 	public ObjectPickup? ObjectPickup { get; private set; }
 	public ObjectPlacementManager? ObjectPlacementManager { get; private set; }
 	private ObjectPlacementUI? ObjectPlacementUI;
@@ -60,7 +60,7 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData> {
 	public override void _Ready() {
 		base._Ready();
 		PickupComponent.HandleInteractInput = false;
-		AddToGroup(Groups.Player);
+		AddToGroup(Group.Player.ToString());
 		AddChild(PickupComponent);
 		AddChild(InventoryManager);
 		AddChild(UseItemComponent);
@@ -106,11 +106,17 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData> {
 
 		if(StateMachine.CurrentState == State.Attacking) { return; }
 
-		if(!IsOnFloor()) { StateMachine.TransitionTo(State.Falling); }
-		else if(!keyInput.IsMoving) { StateMachine.TransitionTo(State.Idle); }
-		else if(keyInput.SprintHeld) { StateMachine.TransitionTo(State.Sprinting); }
-		else if(keyInput.CrouchHeld) { StateMachine.TransitionTo(State.Crouching); }
-		else { StateMachine.TransitionTo(State.Walking); }
+		if(!IsOnFloor()) {
+			StateMachine.TransitionTo(State.Falling);
+		} else if(!keyInput.IsMoving) {
+			StateMachine.TransitionTo(State.Idle);
+		} else if(keyInput.SprintHeld) {
+			StateMachine.TransitionTo(State.Sprinting);
+		} else if(keyInput.CrouchHeld) {
+			StateMachine.TransitionTo(State.Crouching);
+		} else {
+			StateMachine.TransitionTo(State.Walking);
+		}
 	}
 
 	public override void OnAttackFinished() {
@@ -181,7 +187,7 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData> {
 		ObjectPlacementManager.Initialize(worldObjectManager, InventoryManager, gameManager, playerHotbar, this);
 	}
 
-	public PlayerData Export() => new PlayerData {
+	public PlayerData Export() => new() {
 		Movement = Movement.Export(),
 		Health = Health.Export(),
 		Offense = Offense.Export(),

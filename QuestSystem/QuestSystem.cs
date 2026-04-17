@@ -3,19 +3,22 @@ namespace QuestSystem;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Godot;
 using InventorySystem;
+using Root;
 
 public static class QuestSystem {
-	public static bool CanStart(QuestDefinition def, QuestProgress progress, int currentStage) {
-		if(progress.Status != QuestStatus.NotStarted) { return false; }
-		if(def.IsMainQuest && def.StageRequirement != currentStage) { return false; }
+	public static bool CanMakePending(QuestDefinition def, bool alreadyRegistered, int currentStage) {
+		if(alreadyRegistered) { return false; }
+		if(def.StageRequirement != currentStage) { return false; }
 		return true;
 	}
 
-	public static QuestProgress ApplyKill(QuestDefinition def, QuestProgress progress, string enemyGroup) {
+	public static QuestProgress ApplyKill(QuestDefinition def, QuestProgress progress, Group enemyGroup) {
+		StringName groupId = enemyGroup.ToString();
 		return ApplyToObjectives(def, progress, (objectives, i) => {
 			if(def.Objectives[i] is not KillObjective kill) { return; }
-			if(!string.IsNullOrEmpty(kill.EnemyGroup) && kill.EnemyGroup != enemyGroup) { return; }
+			if(kill.EnemyGroup != null && kill.EnemyGroup != groupId) { return; }
 			int next = objectives[i].CurrentCount + 1;
 			objectives[i] = new QuestObjectiveProgress { CurrentCount = next, IsCompleted = next >= kill.RequiredCount };
 		});
@@ -29,19 +32,21 @@ public static class QuestSystem {
 		});
 	}
 
-	public static QuestProgress ApplyLocationReached(QuestDefinition def, QuestProgress progress, string locationId) {
+	public static QuestProgress ApplyLocationReached(QuestDefinition def, QuestProgress progress, LocationID location) {
+		StringName locationId = location.ToString();
 		return ApplyToObjectives(def, progress, (objectives, i) => {
-			if(def.Objectives[i] is not LocationObjective location) { return; }
-			if(location.LocationId != locationId) { return; }
-			objectives[i] = new QuestObjectiveProgress { CurrentCount = 1, IsCompleted = true }; // Binary objective — CurrentCount = 1 marks completion
+			if(def.Objectives[i] is not LocationObjective loc) { return; }
+			if(loc.LocationId != locationId) { return; }
+			objectives[i] = new QuestObjectiveProgress { CurrentCount = 1, IsCompleted = true };
 		});
 	}
 
-	public static QuestProgress ApplyTalk(QuestDefinition def, QuestProgress progress, string npcId) {
+	public static QuestProgress ApplyTalk(QuestDefinition def, QuestProgress progress, NPCID npc) {
+		StringName npcId = npc.ToString();
 		return ApplyToObjectives(def, progress, (objectives, i) => {
 			if(def.Objectives[i] is not TalkObjective talk) { return; }
 			if(talk.NpcId != npcId) { return; }
-			objectives[i] = new QuestObjectiveProgress { CurrentCount = 1, IsCompleted = true }; // Binary objective — CurrentCount = 1 marks completion
+			objectives[i] = new QuestObjectiveProgress { CurrentCount = 1, IsCompleted = true };
 		});
 	}
 
@@ -57,7 +62,7 @@ public static class QuestSystem {
 		int currentStage,
 		IEnumerable<(QuestDefinition Def, QuestProgress Progress)> quests) {
 		foreach((QuestDefinition? def, QuestProgress progress) in quests) {
-			if(!def.IsMainQuest) { continue; }
+			if(def.Type != QuestType.Main) { continue; }
 			if(def.StageRequirement != currentStage) { continue; }
 			if(progress.Status != QuestStatus.Completed) { return (false, currentStage); }
 		}

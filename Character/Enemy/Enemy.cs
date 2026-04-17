@@ -2,6 +2,7 @@ namespace Character;
 
 using Components;
 using Godot;
+using Root;
 using Services;
 
 public sealed partial class Enemy : CharacterBase, ISaveable<EnemyData> {
@@ -14,7 +15,7 @@ public sealed partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 	[Export] private int InitialDefensePhysical = 0;
 	[Export] private int InitialDefenseMagic = 0;
 
-	[Export] public string EnemyGroup { get; set; } = "";
+	[Export] public Group EnemyGroup { get; set; } = Group.MeldoranWarrior;
 
 	[Export] private float KnockbackForce = 15f;
 	[Export] private float KnockbackDecay = 12f;
@@ -51,7 +52,7 @@ public sealed partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 		EnemyMesh = GetNodeOrNull<MeshInstance3D>("MeshInstance3D");
 
 		if(EnemyMesh != null) {
-			var baseMat = EnemyMesh.GetActiveMaterial(0) as StandardMaterial3D;
+			StandardMaterial3D? baseMat = EnemyMesh.GetActiveMaterial(0) as StandardMaterial3D;
 			if(baseMat != null) {
 				FlashMaterial = baseMat.Duplicate() as StandardMaterial3D;
 				EnemyMesh.SetSurfaceOverrideMaterial(0, FlashMaterial);
@@ -127,14 +128,11 @@ public sealed partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 
 		if(!IsOnFloor()) {
 			StateMachine.TransitionTo(State.Falling);
-		}
-		else if(!AI.IsMoving) {
+		} else if(!AI.IsMoving) {
 			StateMachine.TransitionTo(State.Idle);
-		}
-		else if(AI.SprintHeld) {
+		} else if(AI.SprintHeld) {
 			StateMachine.TransitionTo(State.Sprinting);
-		}
-		else {
+		} else {
 			StateMachine.TransitionTo(State.Walking);
 		}
 	}
@@ -151,7 +149,7 @@ public sealed partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 		StateMachine.TransitionTo(State.Idle);
 	}
 
-	public EnemyData Export() => new EnemyData {
+	public EnemyData Export() => new() {
 		Health = Health.Export(),
 		Movement = Movement.Export(),
 		Offense = Offense.Export(),

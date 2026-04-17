@@ -46,7 +46,6 @@ public sealed partial class GameManager : Node {
 	private readonly StateMachine<MenuState> StateMachine = new(MenuState.Game);
 
 	private string? LoadFile;
-	private bool Won = false;
 
 	private const int SpawnHeight = 5;
 	private const int SpawnRadius = 10;
@@ -79,17 +78,6 @@ public sealed partial class GameManager : Node {
 	public override void _PhysicsProcess(double delta) {
 		if(!IsInstanceValid(LocalPlayer)) { return; }
 
-		if(!Won) {
-			int killed = 0;
-			foreach(Enemy enemy in SpawnedEnemies) {
-				if(enemy.Health.Current == 0) {
-					killed += 1;
-				}
-			}
-
-			if(killed == SpawnedEnemies.Count) { HUD?.Win(); }
-		}
-
 		float dt = (float) delta;
 
 		KeyInput.Update(CameraRig);
@@ -106,6 +94,7 @@ public sealed partial class GameManager : Node {
 	private void SpawnNPC() {
 		NPC npc = this.AddScene<NPC>(NPCScene);
 		npc.GlobalPosition = NPCSpawnMarker.GlobalPosition;
+		npc.Init(QuestManager);
 		npc.Talked += QuestManager.NotifyPlayerTalkedToNPC;
 	}
 
@@ -138,9 +127,10 @@ public sealed partial class GameManager : Node {
 		LocalPlayer!.UseItemComponent.UserHotbar = hotbar;
 		LocalPlayer.EquipItemComponent.Initalize(LocalPlayer, hotbar);
 
-		QuestManager.QuestStarted += id => HUD?.ShowQuestNotification($"Quest Started: {id}");
+		QuestManager.QuestActivated += id => HUD?.ShowQuestNotification($"Quest Started: {id}");
 		QuestManager.QuestCompleted += id => HUD?.ShowQuestNotification($"Quest Completed: {id}");
 		QuestManager.StageAdvanced += stage => HUD?.ShowQuestNotification($"Stage {stage} reached!");
+		QuestManager.GameWon += () => HUD?.Win();
 
 		AddChild(HUD);
 	}
@@ -185,7 +175,7 @@ public sealed partial class GameManager : Node {
 			return false;
 		}
 
-		GameState data = new GameState {
+		GameState data = new() {
 			Player = LocalPlayer.Export(),
 			CameraRig = CameraRig.Export(),
 			Item3DIconManager = Item3DIconManager!.Export(),
@@ -206,8 +196,7 @@ public sealed partial class GameManager : Node {
 
 		if(loadfile != null && !SaveService.Exists(loadfile)) {
 			Log.Error($"Cannot initialize game: save file '{loadfile}' does not exist");
-		}
-		else {
+		} else {
 			LoadFile = loadfile;
 		}
 	}
@@ -268,10 +257,14 @@ public sealed partial class GameManager : Node {
 			return;
 		}
 		foreach(Marker3D spawnPoint in EnemySpawnPoints) {
-			if(!IsInstanceValid(spawnPoint)) continue;
+			if(!IsInstanceValid(spawnPoint)) { continue; }
+
 			Enemy enemy = this.AddScene<Enemy>(EnemyScene);
 			enemy.GlobalPosition = spawnPoint.GlobalPosition;
-			if(LocalPlayer != null) enemy.SetTarget(LocalPlayer);
+			if(LocalPlayer != null) {
+				enemy.SetTarget(LocalPlayer);
+			}
+
 			SpawnedEnemies.Add(enemy);
 			Log.Info($"Enemy spawned at {spawnPoint.Name} ({spawnPoint.GlobalPosition})");
 		}
@@ -294,7 +287,9 @@ public sealed partial class GameManager : Node {
 
 	private void UpdateEnemyTargets(Node3D target) {
 		foreach(Enemy enemy in SpawnedEnemies) {
-			if(IsInstanceValid(enemy)) enemy.SetTarget(target);
+			if(IsInstanceValid(enemy)) {
+				enemy.SetTarget(target);
+			}
 		}
 	}
 
@@ -306,7 +301,7 @@ public sealed partial class GameManager : Node {
 	}
 
 	private void ConnectLocationTriggers() {
-		foreach(Node node in GetTree().GetNodesInGroup(Groups.QuestLocationTriggers)) {
+		foreach(Node node in GetTree().GetNodesInGroup(Group.QuestLocation.ToString())) {
 			if(node is QuestLocationTrigger trigger) {
 				trigger.PlayerReachedLocation += QuestManager.NotifyLocationReached;
 			}
@@ -315,7 +310,7 @@ public sealed partial class GameManager : Node {
 
 	private Vector3 RandomLocationNearPlayer() {
 		Vector3 center = IsInstanceValid(LocalPlayer) ? LocalPlayer!.GlobalPosition : PlayerSpawnMarker.GlobalPosition;
-		Vector3 randomPoint = new Vector3(
+		Vector3 randomPoint = new(
 			center.X + GD.RandRange(-SpawnRadius, SpawnRadius),
 			center.Y + SpawnHeight,
 			center.Z + GD.RandRange(-SpawnRadius, SpawnRadius)
@@ -324,17 +319,13 @@ public sealed partial class GameManager : Node {
 	}
 
 	private void SubscribeToPlayerItem3DIconEvents(Player player) {
-		if(Item3DIconManager == null) {
-			return;
-		}
+		if(Item3DIconManager == null) { return; }
 		player.InventoryManager.SpawnItem3DIconRequested += (item, position) => Item3DIconManager.RequestSpawnItem(item, position);
 		player.PickupComponent.DespawnItem3DIconRequested += Item3DIconManager.RequestDespawnItem;
 	}
 
 	private void UnsubscribeFromPlayerItem3DIconEvents(Player player) {
-		if(Item3DIconManager == null) {
-			return;
-		}
+		if(Item3DIconManager == null) { return; }
 		player.InventoryManager.SpawnItem3DIconRequested -= (item, position) => Item3DIconManager.RequestSpawnItem(item, position);
 		player.PickupComponent.DespawnItem3DIconRequested -= Item3DIconManager.RequestDespawnItem;
 	}

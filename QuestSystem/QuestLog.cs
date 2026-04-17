@@ -10,7 +10,7 @@ public sealed partial class QuestLog : Control {
 	[Export] private TextEdit DescriptionText = null!;
 	[Export] private Button ActiveButton = null!;
 	[Export] private Button CompletedButton = null!;
-	[Export] private Button FailedButton = null!;
+	[Export] private Button PendingButton = null!;
 
 	private QuestManager? QuestManagerRef;
 	private QuestStatus CurrentFilter = QuestStatus.Active;
@@ -18,7 +18,8 @@ public sealed partial class QuestLog : Control {
 
 	public void Init(QuestManager questManager) {
 		QuestManagerRef = questManager;
-		questManager.QuestStarted += _ => RefreshList();
+		questManager.QuestBecamePending += _ => RefreshList();
+		questManager.QuestActivated += _ => RefreshList();
 		questManager.QuestCompleted += _ => RefreshList();
 		questManager.ObjectiveUpdated += (_, _) => RefreshList();
 		RefreshList();
@@ -27,9 +28,9 @@ public sealed partial class QuestLog : Control {
 	public override void _Ready() {
 		this.ValidateExports();
 
+		PendingButton.Pressed += () => SetFilter(QuestStatus.Pending);
 		ActiveButton.Pressed += () => SetFilter(QuestStatus.Active);
 		CompletedButton.Pressed += () => SetFilter(QuestStatus.Completed);
-		FailedButton.Pressed += () => SetFilter(QuestStatus.Failed);
 		QuestList.ItemSelected += OnQuestSelected;
 	}
 
@@ -68,7 +69,7 @@ public sealed partial class QuestLog : Control {
 	}
 
 	private static string BuildDescription(QuestDefinition def, QuestProgress progress) {
-		StringBuilder sb = new StringBuilder();
+		StringBuilder sb = new();
 		sb.AppendLine(def.Title);
 		sb.AppendLine(def.Description);
 		sb.AppendLine();
