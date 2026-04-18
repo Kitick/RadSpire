@@ -53,6 +53,7 @@ public sealed partial class DatabaseManager : Node {
 		item.Name = itemDef.Name;
 		item.Description = itemDef.Description;
 		item.MaxStackSize = itemDef.MaxStackSize;
+		item.Can_Object_Stack = itemDef.Can_Object_Stack;
 		item.IsConsumable = itemDef.IsConsumable;
 		item.IsPlaceable = itemDef.IsPlaceable;
 		item.Pickupable = itemDef.Pickupable;

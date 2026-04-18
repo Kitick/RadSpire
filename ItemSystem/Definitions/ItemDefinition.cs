@@ -49,6 +49,8 @@ public partial class ItemDefinition : Resource {
 		}
 	} = 1;
 
+	[Export] public bool Can_Object_Stack { get; set; } = false;
+
 	public bool IsStackable => MaxStackSize > 1;
 
 	[Export] public bool IsConsumable { get; set; } = true;
