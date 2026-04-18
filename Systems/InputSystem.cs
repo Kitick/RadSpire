@@ -37,6 +37,9 @@ public sealed partial class InputSystem : Node {
 
 	private void CheckActionEvents(InputEvent input) {
 		foreach(ActionEvent action in ActionEvent.Actions()) {
+			if(!InputMap.HasAction(action.Name)) {
+				continue;
+			}
 			if(input.IsActionPressed(action.Name)) {
 				Log.Info($"Pressed {action.Name}");
 				OnActionPressed?.Invoke(action);

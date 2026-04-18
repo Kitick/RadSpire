@@ -274,7 +274,7 @@ public partial class WorldObjectManager : Node, ISaveable<WorldObjectManagerData
 	private Node ResolveSpawnParent(Object obj) {
 		if(string.IsNullOrWhiteSpace(obj.ParentAnchorId)) {
 			if(!MissingParentAnchorWarningLogged) {
-				Log.Warn("World object missing ParentAnchorId. Falling back to WorldObjectParentNode.");
+				Log.Info("World object missing ParentAnchorId. Falling back to WorldObjectParentNode.");
 				MissingParentAnchorWarningLogged = true;
 			}
 			return WorldObjectParentNode;

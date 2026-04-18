@@ -59,6 +59,8 @@ public sealed partial class Hotbar : Control, IInventoryUI {
 	public event Action<ItemSlot>? OnSlotSelected;
 	public event Action<ItemSlot>? OnSlotDeselected;
 
+	public Hotbar() { }
+
 	public Hotbar(Inventory inventory, Player player) {
 		Initialize(inventory, player);
 	}
