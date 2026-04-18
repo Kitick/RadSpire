@@ -13,6 +13,7 @@ Description = "A low brown coffee table."
 IsConsumable = false
 IsPlaceable = true
 Pickupable = true
+Can_Object_Stack = true
 IconTexture = ExtResource("2_2dk8l")
 ItemScene = ExtResource("3_bqn4n")
 metadata/_custom_type_script = "uid://bxmh4fd7kjvv1"

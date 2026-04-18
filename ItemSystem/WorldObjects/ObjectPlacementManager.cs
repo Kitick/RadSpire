@@ -24,6 +24,7 @@ public partial class ObjectPlacementManager : Node {
 	private float CurrentPlacingRotationOffsetY;
 	private float PlacementStartRotationOffsetY;
 	private float CurrentPlacingDistanceCompensation;
+	private string? CurrentSurfaceObjectId;
 	private readonly List<PlacementAreaShapeTemplate> CurrentPlacementAreaShapes = new();
 
 	public WorldObjectManager? WorldObjectManager { get; private set; }
@@ -71,6 +72,7 @@ public partial class ObjectPlacementManager : Node {
 			CurrentPlacingRotationOffsetY = 0.0f;
 			PlacementStartRotationOffsetY = 0.0f;
 			CurrentPlacingDistanceCompensation = 0.0f;
+			CurrentSurfaceObjectId = null;
 			CurrentPlacementAreaShapes.Clear();
 			EndPlacingObject?.Invoke();
 		});
@@ -327,7 +329,7 @@ public partial class ObjectPlacementManager : Node {
 		return true;
 	}
 
-	private static bool IsBlockingPlacementOverlap(Godot.Collections.Dictionary overlap) {
+	private bool IsBlockingPlacementOverlap(Godot.Collections.Dictionary overlap) {
 		if(!overlap.ContainsKey("collider")) {
 			return false;
 		}
@@ -340,8 +342,8 @@ public partial class ObjectPlacementManager : Node {
 		}
 		Node? current = colliderNode;
 		while(current != null) {
-			if(current is ObjectNode) {
-				return true;
+			if(current is ObjectNode objectNode) {
+				return objectNode.Data.Id != CurrentSurfaceObjectId;
 			}
 			current = current.GetParent();
 		}
@@ -392,7 +394,8 @@ public partial class ObjectPlacementManager : Node {
 		float originOffset = GetPlacementOriginOffset(forward, previewRotation);
 		Vector3 position = player.GlobalPosition + (forward * (placeDistance + originOffset + CurrentPlacingDistanceCompensation));
 		position.Y = player.GlobalPosition.Y;
-		Vector3 groundPosition = GetPositionOnGround(position, out success);
+		Vector3 groundPosition = GetPositionOnGround(position, out success, out string? surfaceObjectId);
+		CurrentSurfaceObjectId = surfaceObjectId;
 		if(success && IsPlacementObstructedByWall(player, groundPosition)) {
 			success = false;
 		}
@@ -482,9 +485,10 @@ public partial class ObjectPlacementManager : Node {
 		];
 	}
 
-	public Vector3 GetPositionOnGround(Vector3 position, out bool success) {
+	public Vector3 GetPositionOnGround(Vector3 position, out bool success, out string? surfaceObjectId) {
 		float height = position.Y;
 		success = false;
+		surfaceObjectId = null;
 		if(GameManager == null) {
 			return position;
 		}
@@ -507,6 +511,19 @@ public partial class ObjectPlacementManager : Node {
 			if(normal.Y < MinPlaceSurfaceNormalY) {
 				return position;
 			}
+
+			if(result.ContainsKey("collider")) {
+				Node? surfaceCollider = result["collider"].AsGodotObject() as Node;
+				ObjectNode? surfaceObjectNode = FindAncestorObjectNode(surfaceCollider);
+				if(surfaceObjectNode != null) {
+					ItemDefinition? surfaceDefinition = DatabaseManager.Instance.GetItemDefinitionById(surfaceObjectNode.Data.ItemId);
+					if(surfaceDefinition?.Can_Object_Stack != true) {
+						return position;
+					}
+					surfaceObjectId = surfaceObjectNode.Data.Id;
+				}
+			}
+
 			float heightDifference = Mathf.Abs(groundPosition.Y - height);
 			if(heightDifference <= PlaceHeightMaxDifference) {
 				success = true;
@@ -514,6 +531,17 @@ public partial class ObjectPlacementManager : Node {
 			}
 		}
 		return position;
+	}
+
+	private static ObjectNode? FindAncestorObjectNode(Node? node) {
+		Node? current = node;
+		while(current != null) {
+			if(current is ObjectNode objectNode) {
+				return objectNode;
+			}
+			current = current.GetParent();
+		}
+		return null;
 	}
 
 	public bool IsPlaceable(string? itemId) {
