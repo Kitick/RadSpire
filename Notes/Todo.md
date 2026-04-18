@@ -1,6 +1,7 @@
 [BUG] crafting the sword does not equip it right away
 [BUG] shield does nothing
 [BUG] cannot open a chest correctly, it just picks up
+[BUG] enemies are not persisted
 
 [IMP] Fix the item preview in the crafting UI to show item information
 [IMP] Combine crafting lists to one list.
