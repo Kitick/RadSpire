@@ -18,9 +18,11 @@ public partial class ObjectPlacementManager : Node {
 	private const float RayLength = 100.0f;
 	private const float MinPlaceSurfaceNormalY = 0.6f;
 	private const float PlacementLinecastHeight = 1.0f;
-	private const float PlacementRotationStepRadians = Mathf.Pi / 12.0f;
+	private const float PlacementFineRotationStepRadians = Mathf.Pi / 36.0f;
+	private const float PlacementSnapRotationStepRadians = Mathf.Pi / 4.0f;
 	private bool _isInitialized;
 	private float CurrentPlacingRotationOffsetY;
+	private float PlacementStartRotationOffsetY;
 	private float CurrentPlacingDistanceCompensation;
 	private readonly List<PlacementAreaShapeTemplate> CurrentPlacementAreaShapes = new();
 
@@ -67,11 +69,13 @@ public partial class ObjectPlacementManager : Node {
 	public void ConfigureStateMachine() {
 		PlaceStateMachine.OnEnter(PlaceState.Idle, () => {
 			CurrentPlacingRotationOffsetY = 0.0f;
+			PlacementStartRotationOffsetY = 0.0f;
 			CurrentPlacingDistanceCompensation = 0.0f;
 			CurrentPlacementAreaShapes.Clear();
 			EndPlacingObject?.Invoke();
 		});
 		PlaceStateMachine.OnSpecific(PlaceState.Idle, PlaceState.FindingPlacableLocation, () => {
+			PlacementStartRotationOffsetY = CurrentPlacingRotationOffsetY;
 			RefreshPlacementAreaShapeTemplates();
 			StartPlacingObject?.Invoke(CurrentPlacingItemId!);
 		});
@@ -124,15 +128,15 @@ public partial class ObjectPlacementManager : Node {
 			return;
 		}
 
-		float rotationDelta = 0.0f;
+		int wheelDirection = 0;
 		if(mouseButtonEvent.ButtonIndex == MouseButton.WheelUp) {
-			rotationDelta = -PlacementRotationStepRadians;
+			wheelDirection = -1;
 		}
 		else if(mouseButtonEvent.ButtonIndex == MouseButton.WheelDown) {
-			rotationDelta = PlacementRotationStepRadians;
+			wheelDirection = 1;
 		}
 
-		if(Mathf.IsZeroApprox(rotationDelta)) {
+		if(wheelDirection == 0) {
 			return;
 		}
 
@@ -146,13 +150,28 @@ public partial class ObjectPlacementManager : Node {
 		Vector3 oldRotation = GetAdjustedPlacementRotation(Player, CurrentPlacingPosition);
 		float oldOriginOffset = GetPlacementOriginOffset(playerForward, oldRotation);
 
-		CurrentPlacingRotationOffsetY = Mathf.Wrap(CurrentPlacingRotationOffsetY + rotationDelta, -Mathf.Pi, Mathf.Pi);
+		float oldRotationOffset = CurrentPlacingRotationOffsetY;
+		bool middleMouseHeld = Input.IsMouseButtonPressed(MouseButton.Middle);
+		if(middleMouseHeld) {
+			CurrentPlacingRotationOffsetY = oldRotationOffset + (wheelDirection * PlacementFineRotationStepRadians);
+		}
+		else {
+			CurrentPlacingRotationOffsetY = GetSnappedRotationOffset(oldRotationOffset, wheelDirection);
+		}
+		CurrentPlacingRotationOffsetY = Mathf.Wrap(CurrentPlacingRotationOffsetY, -Mathf.Pi, Mathf.Pi);
 
 		Vector3 newRotation = GetAdjustedPlacementRotation(Player, CurrentPlacingPosition);
 		float newOriginOffset = GetPlacementOriginOffset(playerForward, newRotation);
 
 		// Keep the preview anchored relative to player while rotating by counteracting origin shift.
 		CurrentPlacingDistanceCompensation += oldOriginOffset - newOriginOffset;
+	}
+
+	private float GetSnappedRotationOffset(float currentOffset, int wheelDirection) {
+		float relativeFromStart = (currentOffset - PlacementStartRotationOffsetY) / PlacementSnapRotationStepRadians;
+		int nearestStepIndex = Mathf.RoundToInt(relativeFromStart);
+		int targetStepIndex = nearestStepIndex + wheelDirection;
+		return PlacementStartRotationOffsetY + (targetStepIndex * PlacementSnapRotationStepRadians);
 	}
 
 	public override void _ExitTree() {
