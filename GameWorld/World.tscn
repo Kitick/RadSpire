@@ -6,7 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://dxvau62v0efr7" path="res://UI/HUD/HUD.tscn" id="3_twhtb"]
 [ext_resource type="PackedScene" uid="uid://depb51jl62dp6" path="res://Character/Enemy/Enemy.tscn" id="4_twhtb"]
 [ext_resource type="PackedScene" uid="uid://vp1fks511c7d" path="res://Character/NPC/NPC.tscn" id="8_tc1fg"]
-[ext_resource type="PackedScene" uid="uid://bk0njy674g21q" path="res://ItemSystem/WorldObjects/House/GameWorldManager.tscn" id="9_gwman"]
+[ext_resource type="PackedScene" uid="uid://bk0njy674g21q" path="res://GameWorld/GameWorldManager.tscn" id="9_gwman"]
 
 [node name="GameManager" type="Node" unique_id=564337281 node_paths=PackedStringArray("WorldContentRoot")]
 script = ExtResource("1_dhdln")
