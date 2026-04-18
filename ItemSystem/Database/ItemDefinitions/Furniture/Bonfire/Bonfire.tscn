@@ -5,13 +5,13 @@
 [ext_resource type="PackedScene" uid="uid://b7gv62rlbjt5l" path="res://ItemSystem/WorldObjects/SpawnPoint/WorldObjectSpawnPoint.tscn" id="3_5vv3f"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_n1odn"]
-size = Vector3(0.32592773, 0.055923462, 0.3076172)
+size = Vector3(0.32592773, 0.052864075, 0.3076172)
 
 [node name="Bonfire" type="Node3D" unique_id=656427922]
 script = ExtResource("1_n1odn")
 
 [node name="Bonfire" parent="." unique_id=2075722032 instance=ExtResource("1_ddsqa")]
-transform = Transform3D(6, 0, 0, 0, 6, 0, 0, 0, 6, 0, 0, 0)
+transform = Transform3D(6, 0, 0, 0, 6, 0, 0, 0, 6, 0, 0.13627154, 0)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Bonfire" unique_id=1893377970]
 
@@ -22,7 +22,7 @@ shape = SubResource("BoxShape3D_n1odn")
 [node name="Area3D" type="Area3D" parent="Bonfire" unique_id=667761995]
 
 [node name="CollisionShape3D2" type="CollisionShape3D" parent="Bonfire/Area3D" unique_id=1917944164]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0052490234, 0.0069351196, -0.00048828125)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0052490234, 0.008464813, -0.00048828125)
 shape = SubResource("BoxShape3D_n1odn")
 
 [node name="WorldObjectSpawnPoint" parent="." unique_id=2064846928 instance=ExtResource("3_5vv3f")]
