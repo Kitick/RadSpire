@@ -17,7 +17,9 @@ public partial class ObjectPlacementManager : Node {
 	private const float RayLength = 100.0f;
 	private const float MinPlaceSurfaceNormalY = 0.6f;
 	private const float PlacementLinecastHeight = 1.0f;
+	private const float PlacementRotationStepRadians = Mathf.Pi / 12.0f;
 	private bool _isInitialized;
+	private float CurrentPlacingRotationOffsetY;
 
 	public WorldObjectManager? WorldObjectManager { get; private set; }
 	public InventoryManager? InventoryManager { get; private set; }
@@ -58,6 +60,7 @@ public partial class ObjectPlacementManager : Node {
 
 	public void ConfigureStateMachine() {
 		PlaceStateMachine.OnEnter(PlaceState.Idle, () => {
+			CurrentPlacingRotationOffsetY = 0.0f;
 			EndPlacingObject?.Invoke();
 		});
 		PlaceStateMachine.OnSpecific(PlaceState.Idle, PlaceState.FindingPlacableLocation, () => {
@@ -81,7 +84,7 @@ public partial class ObjectPlacementManager : Node {
 				break;
 			case PlaceState.FindingPlacableLocation:
 				CurrentPlacingPosition = GetPositionInFrontOfPlayer(Player!, out bool success);
-				CurrentPlacingRotation = GetRotationFacingPlayer(Player!, CurrentPlacingPosition);
+				CurrentPlacingRotation = GetAdjustedPlacementRotation(Player!, CurrentPlacingPosition);
 				OnPlacingObject?.Invoke(CurrentPlacingPosition, CurrentPlacingRotation);
 				if(success) {
 					PlaceStateMachine.TransitionTo(PlaceState.Placable);
@@ -89,13 +92,28 @@ public partial class ObjectPlacementManager : Node {
 				break;
 			case PlaceState.Placable:
 				CurrentPlacingPosition = GetPositionInFrontOfPlayer(Player!, out bool stillValid);
-				CurrentPlacingRotation = GetRotationFacingPlayer(Player!, CurrentPlacingPosition);
+				CurrentPlacingRotation = GetAdjustedPlacementRotation(Player!, CurrentPlacingPosition);
 				if(!stillValid) {
 					PlaceStateMachine.TransitionTo(PlaceState.FindingPlacableLocation);
 					break;
 				}
 				OnPlacingObject?.Invoke(CurrentPlacingPosition, CurrentPlacingRotation);
 				break;
+		}
+	}
+
+	public override void _UnhandledInput(InputEvent @event) {
+		if(PlaceStateMachine.CurrentState != PlaceState.FindingPlacableLocation && PlaceStateMachine.CurrentState != PlaceState.Placable) {
+			return;
+		}
+		if(@event is not InputEventMouseButton mouseButtonEvent || !mouseButtonEvent.Pressed) {
+			return;
+		}
+		if(mouseButtonEvent.ButtonIndex == MouseButton.WheelUp) {
+			CurrentPlacingRotationOffsetY = Mathf.Wrap(CurrentPlacingRotationOffsetY - PlacementRotationStepRadians, -Mathf.Pi, Mathf.Pi);
+		}
+		else if(mouseButtonEvent.ButtonIndex == MouseButton.WheelDown) {
+			CurrentPlacingRotationOffsetY = Mathf.Wrap(CurrentPlacingRotationOffsetY + PlacementRotationStepRadians, -Mathf.Pi, Mathf.Pi);
 		}
 	}
 
@@ -264,6 +282,11 @@ public partial class ObjectPlacementManager : Node {
 		Vector3 directionToPlayer = (player.GlobalPosition - objectPosition).Normalized();
 		float angle = Mathf.Atan2(directionToPlayer.X, directionToPlayer.Z);
 		return new Vector3(0, angle, 0);
+	}
+
+	private Vector3 GetAdjustedPlacementRotation(Player player, Vector3 objectPosition) {
+		Vector3 baseRotation = GetRotationFacingPlayer(player, objectPosition);
+		return new Vector3(baseRotation.X, baseRotation.Y + CurrentPlacingRotationOffsetY, baseRotation.Z);
 	}
 
 	public Vector3 GetPositionOnGround(Vector3 position, out bool success) {
