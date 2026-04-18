@@ -14,6 +14,7 @@ Name = "Precious Chest"
 Description = "A precious chest with 4x8 storage capacity."
 IsConsumable = false
 IsPlaceable = true
+Pickupable = true
 IconTexture = ExtResource("3_nqami")
 ItemScene = ExtResource("4_os6ok")
 ComponentsResources = Array[ExtResource("1_aeb7m")]([ExtResource("2_jwt1l"), ExtResource("3_qw9g5")])

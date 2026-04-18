@@ -97,6 +97,7 @@ public readonly struct ActionEvent {
 	public static readonly ActionEvent Interact = new("Interact");
 	public static readonly ActionEvent Interact2 = new("Interact2");
 	public static readonly ActionEvent Place = new("Place");
+	public static readonly ActionEvent PlaceCancel = new("PlaceCancel");
 	public static readonly ActionEvent Consume = new("Consume");
 	public static readonly ActionEvent Inventory = new("Inventory");
 	public static readonly ActionEvent Attack = new("Attack");
@@ -140,6 +141,7 @@ public readonly struct ActionEvent {
 		yield return Interact;
 		yield return Interact2;
 		yield return Place;
+		yield return PlaceCancel;
 		yield return Consume;
 		yield return Inventory;
 		yield return Attack;

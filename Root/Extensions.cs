@@ -53,9 +53,22 @@ public static class MathExtensions {
 		space.IntersectRay(origin, origin + direction.Normalized() * distance);
 
 	public static float IntersectRay(this Node3D space, Vector3 origin, Vector3 target) {
+		return space.IntersectRay(origin, target, null);
+	}
+
+	public static float IntersectRay(this Node3D space, Vector3 origin, Vector3 target, IEnumerable<Rid>? exclusions) {
 		var spaceState = space.GetWorld3D().DirectSpaceState;
 		var query = PhysicsRayQueryParameters3D.Create(origin, target);
 		query.CollideWithAreas = false;
+		if(exclusions is not null) {
+			var exclude = new Godot.Collections.Array<Rid>();
+			foreach(Rid rid in exclusions) {
+				if(rid.IsValid) {
+					exclude.Add(rid);
+				}
+			}
+			query.Exclude = exclude;
+		}
 
 		var result = spaceState.IntersectRay(query);
 		if(result.Count == 0) { return (target - origin).Length(); }

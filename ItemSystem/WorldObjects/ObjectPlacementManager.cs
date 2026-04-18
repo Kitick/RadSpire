@@ -1,6 +1,7 @@
 namespace ItemSystem.WorldObjects;
 
 using System;
+using System.Collections.Generic;
 using Character;
 using GameWorld;
 using Godot;
@@ -17,7 +18,14 @@ public partial class ObjectPlacementManager : Node {
 	private const float RayLength = 100.0f;
 	private const float MinPlaceSurfaceNormalY = 0.6f;
 	private const float PlacementLinecastHeight = 1.0f;
+	private const float PlacementFineRotationStepRadians = Mathf.Pi / 36.0f;
+	private const float PlacementSnapRotationStepRadians = Mathf.Pi / 4.0f;
 	private bool _isInitialized;
+	private float CurrentPlacingRotationOffsetY;
+	private float PlacementStartRotationOffsetY;
+	private float CurrentPlacingDistanceCompensation;
+	private string? CurrentSurfaceObjectId;
+	private readonly List<PlacementAreaShapeTemplate> CurrentPlacementAreaShapes = new();
 
 	public WorldObjectManager? WorldObjectManager { get; private set; }
 	public InventoryManager? InventoryManager { get; private set; }
@@ -28,6 +36,7 @@ public partial class ObjectPlacementManager : Node {
 
 	private enum PlaceState { Idle, FindingPlacableLocation, Placable };
 	private StateMachine<PlaceState> PlaceStateMachine = new StateMachine<PlaceState>(PlaceState.Idle);
+	public bool IsPlacementActive => PlaceStateMachine.CurrentState == PlaceState.FindingPlacableLocation || PlaceStateMachine.CurrentState == PlaceState.Placable;
 	public string? CurrentPlacingItemId { get; private set; }
 	public Vector3 CurrentPlacingPosition { get; private set; }
 	public Vector3 CurrentPlacingRotation { get; private set; }
@@ -36,9 +45,16 @@ public partial class ObjectPlacementManager : Node {
 	public event Action<string>? StartPlacingObject;
 	public event Action? EndPlacingObject;
 
+	private readonly record struct PlacementAreaShapeTemplate(Shape3D Shape, Transform3D LocalTransform);
+
 	public void Initialize(WorldObjectManager worldObjectManager, InventoryManager inventoryManager, GameManager gameManager, Hotbar playerHotbar, Player player) {
 		if(_isInitialized) {
-			Log.Info("Initialize called more than once; ignoring duplicate initialization.");
+			WorldObjectManager = worldObjectManager;
+			InventoryManager = inventoryManager;
+			GameManager = gameManager;
+			PlayerHotbar = playerHotbar;
+			Player = player;
+			Log.Info("Initialize called more than once; refreshed placement dependencies.");
 			return;
 		}
 		WorldObjectManager = worldObjectManager;
@@ -53,9 +69,16 @@ public partial class ObjectPlacementManager : Node {
 
 	public void ConfigureStateMachine() {
 		PlaceStateMachine.OnEnter(PlaceState.Idle, () => {
+			CurrentPlacingRotationOffsetY = 0.0f;
+			PlacementStartRotationOffsetY = 0.0f;
+			CurrentPlacingDistanceCompensation = 0.0f;
+			CurrentSurfaceObjectId = null;
+			CurrentPlacementAreaShapes.Clear();
 			EndPlacingObject?.Invoke();
 		});
 		PlaceStateMachine.OnSpecific(PlaceState.Idle, PlaceState.FindingPlacableLocation, () => {
+			PlacementStartRotationOffsetY = CurrentPlacingRotationOffsetY;
+			RefreshPlacementAreaShapeTemplates();
 			StartPlacingObject?.Invoke(CurrentPlacingItemId!);
 		});
 		PlaceStateMachine.OnEnter(PlaceState.FindingPlacableLocation, () => {
@@ -75,16 +98,18 @@ public partial class ObjectPlacementManager : Node {
 			case PlaceState.Idle:
 				break;
 			case PlaceState.FindingPlacableLocation:
-				CurrentPlacingPosition = GetPositionInFrontOfPlayer(Player!, out bool success);
-				CurrentPlacingRotation = GetRotationFacingPlayer(Player!, CurrentPlacingPosition);
+				CurrentPlacingPosition = GetPositionInFrontOfPlayer(Player!, out bool surfaceValid);
+				CurrentPlacingRotation = GetAdjustedPlacementRotation(Player!, CurrentPlacingPosition);
+				bool success = surfaceValid && IsPlacementAreaClear(CurrentPlacingPosition, CurrentPlacingRotation);
 				OnPlacingObject?.Invoke(CurrentPlacingPosition, CurrentPlacingRotation);
 				if(success) {
 					PlaceStateMachine.TransitionTo(PlaceState.Placable);
 				}
 				break;
 			case PlaceState.Placable:
-				CurrentPlacingPosition = GetPositionInFrontOfPlayer(Player!, out bool stillValid);
-				CurrentPlacingRotation = GetRotationFacingPlayer(Player!, CurrentPlacingPosition);
+				CurrentPlacingPosition = GetPositionInFrontOfPlayer(Player!, out bool surfaceStillValid);
+				CurrentPlacingRotation = GetAdjustedPlacementRotation(Player!, CurrentPlacingPosition);
+				bool stillValid = surfaceStillValid && IsPlacementAreaClear(CurrentPlacingPosition, CurrentPlacingRotation);
 				if(!stillValid) {
 					PlaceStateMachine.TransitionTo(PlaceState.FindingPlacableLocation);
 					break;
@@ -92,6 +117,63 @@ public partial class ObjectPlacementManager : Node {
 				OnPlacingObject?.Invoke(CurrentPlacingPosition, CurrentPlacingRotation);
 				break;
 		}
+	}
+
+	public override void _UnhandledInput(InputEvent @event) {
+		if(PlaceStateMachine.CurrentState != PlaceState.FindingPlacableLocation && PlaceStateMachine.CurrentState != PlaceState.Placable) {
+			return;
+		}
+		if(!Initalized || Player == null || !GodotObject.IsInstanceValid(Player)) {
+			return;
+		}
+		if(@event is not InputEventMouseButton mouseButtonEvent || !mouseButtonEvent.Pressed) {
+			return;
+		}
+
+		int wheelDirection = 0;
+		if(mouseButtonEvent.ButtonIndex == MouseButton.WheelUp) {
+			wheelDirection = -1;
+		}
+		else if(mouseButtonEvent.ButtonIndex == MouseButton.WheelDown) {
+			wheelDirection = 1;
+		}
+
+		if(wheelDirection == 0) {
+			return;
+		}
+
+		Vector3 playerForward = Player.GlobalBasis.Z;
+		playerForward.Y = 0;
+		if(playerForward.LengthSquared() < 0.0001f) {
+			playerForward = Vector3.Forward;
+		}
+		playerForward = playerForward.Normalized();
+
+		Vector3 oldRotation = GetAdjustedPlacementRotation(Player, CurrentPlacingPosition);
+		float oldOriginOffset = GetPlacementOriginOffset(playerForward, oldRotation);
+
+		float oldRotationOffset = CurrentPlacingRotationOffsetY;
+		bool middleMouseHeld = Input.IsMouseButtonPressed(MouseButton.Middle);
+		if(middleMouseHeld) {
+			CurrentPlacingRotationOffsetY = oldRotationOffset + (wheelDirection * PlacementFineRotationStepRadians);
+		}
+		else {
+			CurrentPlacingRotationOffsetY = GetSnappedRotationOffset(oldRotationOffset, wheelDirection);
+		}
+		CurrentPlacingRotationOffsetY = Mathf.Wrap(CurrentPlacingRotationOffsetY, -Mathf.Pi, Mathf.Pi);
+
+		Vector3 newRotation = GetAdjustedPlacementRotation(Player, CurrentPlacingPosition);
+		float newOriginOffset = GetPlacementOriginOffset(playerForward, newRotation);
+
+		// Keep the preview anchored relative to player while rotating by counteracting origin shift.
+		CurrentPlacingDistanceCompensation += oldOriginOffset - newOriginOffset;
+	}
+
+	private float GetSnappedRotationOffset(float currentOffset, int wheelDirection) {
+		float relativeFromStart = (currentOffset - PlacementStartRotationOffsetY) / PlacementSnapRotationStepRadians;
+		int nearestStepIndex = Mathf.RoundToInt(relativeFromStart);
+		int targetStepIndex = nearestStepIndex + wheelDirection;
+		return PlacementStartRotationOffsetY + (targetStepIndex * PlacementSnapRotationStepRadians);
 	}
 
 	public override void _ExitTree() {
@@ -106,12 +188,11 @@ public partial class ObjectPlacementManager : Node {
 			return;
 		}
 		if(PlaceStateMachine.CurrentState == PlaceState.Idle) {
-			string? selectedItemSlot = PlayerHotbar!.GetSelectedItemSlot()?.Item?.Id;
-			if(!IsPlaceable(selectedItemSlot)) {
+			if(!TryGetSelectedPlaceableItemId(out string selectedItemId)) {
 				Log.Info("PlaceRequested called but no item is currently selected for placing.");
 				return;
 			}
-			CurrentPlacingItemId = selectedItemSlot;
+			CurrentPlacingItemId = selectedItemId;
 			PlaceStateMachine.TransitionTo(PlaceState.FindingPlacableLocation);
 		}
 		if(PlaceStateMachine.CurrentState == PlaceState.Placable) {
@@ -127,6 +208,12 @@ public partial class ObjectPlacementManager : Node {
 	}
 
 	public void OnHotbarSlotSelected(ItemSlot selectedSlot) {
+		if(selectedSlot.IsEmpty()) {
+			if(PlaceStateMachine.CurrentState == PlaceState.FindingPlacableLocation || PlaceStateMachine.CurrentState == PlaceState.Placable) {
+				PlaceStateMachine.TransitionTo(PlaceState.Idle);
+			}
+			return;
+		}
 		string? itemId = selectedSlot.Item?.Id;
 		if(!IsPlaceable(itemId)) {
 			if(PlaceStateMachine.CurrentState == PlaceState.FindingPlacableLocation || PlaceStateMachine.CurrentState == PlaceState.Placable) {
@@ -148,12 +235,119 @@ public partial class ObjectPlacementManager : Node {
 			Log.Error("PlaceObject failed: CurrentPlacingItemId is not placeable.");
 			return;
 		}
+		ItemSlot selectedSlot = PlayerHotbar!.GetSelectedItemSlot();
+		if(selectedSlot.IsEmpty() || selectedSlot.Item?.Id != currentItemId) {
+			Log.Info("PlaceObject canceled: selected hotbar slot no longer has the placing item.");
+			return;
+		}
 		bool created = WorldObjectManager!.CreateWorldObject(currentItemId, CurrentPlacingPosition, CurrentPlacingRotation);
 		if(!created) {
 			Log.Error($"PlaceObject failed to create world object for ItemId '{CurrentPlacingItemId}'.");
 			return;
 		}
 		InventoryManager!.ConsumeSelectedHotbar(PlayerHotbar!, 1);
+	}
+
+	private bool TryGetSelectedPlaceableItemId(out string itemId) {
+		itemId = string.Empty;
+		ItemSlot selectedSlot = PlayerHotbar!.GetSelectedItemSlot();
+		if(selectedSlot.IsEmpty()) {
+			return false;
+		}
+		string? selectedItemId = selectedSlot.Item?.Id;
+		if(!IsPlaceable(selectedItemId)) {
+			return false;
+		}
+		itemId = selectedItemId!;
+		return true;
+	}
+
+	private void RefreshPlacementAreaShapeTemplates() {
+		CurrentPlacementAreaShapes.Clear();
+		if(string.IsNullOrWhiteSpace(CurrentPlacingItemId)) {
+			return;
+		}
+		ItemDefinition? itemDef = DatabaseManager.Instance.GetItemDefinitionById(CurrentPlacingItemId);
+		if(itemDef?.ItemScene == null) {
+			return;
+		}
+		Node3D probe = itemDef.ItemScene.Instantiate<Node3D>();
+		CollectPlacementAreaShapes(probe, Transform3D.Identity, false);
+		probe.QueueFree();
+	}
+
+	private void CollectPlacementAreaShapes(Node node, Transform3D accumulatedTransform, bool insideArea) {
+		Transform3D nextTransform = accumulatedTransform;
+		if(node is Node3D node3D) {
+			nextTransform = accumulatedTransform * node3D.Transform;
+		}
+
+		bool currentInsideArea = insideArea || node is Area3D;
+		if(currentInsideArea && node is CollisionShape3D collisionShape && collisionShape.Shape != null) {
+			CurrentPlacementAreaShapes.Add(new PlacementAreaShapeTemplate(collisionShape.Shape, nextTransform));
+		}
+
+		foreach(Node child in node.GetChildren()) {
+			CollectPlacementAreaShapes(child, nextTransform, currentInsideArea);
+		}
+	}
+
+	private bool IsPlacementAreaClear(Vector3 position, Vector3 rotation) {
+		if(CurrentPlacementAreaShapes.Count == 0) {
+			return true;
+		}
+		if(GameManager == null) {
+			return true;
+		}
+		Viewport? viewport = GameManager.GetViewport();
+		if(viewport?.World3D == null) {
+			return true;
+		}
+
+		PhysicsDirectSpaceState3D spaceState = viewport.World3D.DirectSpaceState;
+		Transform3D objectTransform = new Transform3D(Basis.FromEuler(rotation), position);
+
+		foreach(PlacementAreaShapeTemplate shapeTemplate in CurrentPlacementAreaShapes) {
+			PhysicsShapeQueryParameters3D query = new PhysicsShapeQueryParameters3D();
+			query.Shape = shapeTemplate.Shape;
+			query.Transform = objectTransform * shapeTemplate.LocalTransform;
+			query.CollideWithAreas = true;
+			query.CollideWithBodies = true;
+
+			if(Player != null && GodotObject.IsInstanceValid(Player)) {
+				query.Exclude = new Godot.Collections.Array<Rid> { Player.GetRid() };
+			}
+
+			Godot.Collections.Array<Godot.Collections.Dictionary> overlaps = spaceState.IntersectShape(query, 8);
+			foreach(Godot.Collections.Dictionary overlap in overlaps) {
+				if(IsBlockingPlacementOverlap(overlap)) {
+					return false;
+				}
+			}
+		}
+
+		return true;
+	}
+
+	private bool IsBlockingPlacementOverlap(Godot.Collections.Dictionary overlap) {
+		if(!overlap.ContainsKey("collider")) {
+			return false;
+		}
+		Node? colliderNode = overlap["collider"].AsGodotObject() as Node;
+		if(colliderNode is StaticBody3D) {
+			return true;
+		}
+		if(colliderNode is not Area3D) {
+			return false;
+		}
+		Node? current = colliderNode;
+		while(current != null) {
+			if(current is ObjectNode objectNode) {
+				return objectNode.Data.Id != CurrentSurfaceObjectId;
+			}
+			current = current.GetParent();
+		}
+		return false;
 	}
 
 	public bool PlaceObjectInFrontOfPlayer(Player player, string itemId, float distance = DefaultPlaceDistance) {
@@ -196,9 +390,12 @@ public partial class ObjectPlacementManager : Node {
 			forward = Vector3.Forward;
 		}
 		forward = forward.Normalized();
-		Vector3 position = player.GlobalPosition + (forward * placeDistance);
+		Vector3 previewRotation = GetAdjustedPlacementRotation(player, player.GlobalPosition + (forward * placeDistance));
+		float originOffset = GetPlacementOriginOffset(forward, previewRotation);
+		Vector3 position = player.GlobalPosition + (forward * (placeDistance + originOffset + CurrentPlacingDistanceCompensation));
 		position.Y = player.GlobalPosition.Y;
-		Vector3 groundPosition = GetPositionOnGround(position, out success);
+		Vector3 groundPosition = GetPositionOnGround(position, out success, out string? surfaceObjectId);
+		CurrentSurfaceObjectId = surfaceObjectId;
 		if(success && IsPlacementObstructedByWall(player, groundPosition)) {
 			success = false;
 		}
@@ -237,9 +434,61 @@ public partial class ObjectPlacementManager : Node {
 		return new Vector3(0, angle, 0);
 	}
 
-	public Vector3 GetPositionOnGround(Vector3 position, out bool success) {
+	private Vector3 GetAdjustedPlacementRotation(Player player, Vector3 objectPosition) {
+		Vector3 baseRotation = GetRotationFacingPlayer(player, objectPosition);
+		return new Vector3(baseRotation.X, baseRotation.Y + CurrentPlacingRotationOffsetY, baseRotation.Z);
+	}
+
+	private float GetPlacementOriginOffset(Vector3 forward, Vector3 rotation) {
+		if(CurrentPlacementAreaShapes.Count == 0) {
+			return 0.0f;
+		}
+
+		Basis placementBasis = Basis.FromEuler(rotation);
+		float minimumProjection = 0.0f;
+		bool hasProjection = false;
+
+		foreach(PlacementAreaShapeTemplate shapeTemplate in CurrentPlacementAreaShapes) {
+			ArrayMesh debugMesh = shapeTemplate.Shape.GetDebugMesh();
+			Aabb localBounds = debugMesh.GetAabb();
+			Vector3[] corners = GetAabbCorners(localBounds);
+
+			foreach(Vector3 corner in corners) {
+				Vector3 transformedCorner = placementBasis * (shapeTemplate.LocalTransform * corner);
+				float projection = transformedCorner.Dot(forward);
+				if(!hasProjection || projection < minimumProjection) {
+					minimumProjection = projection;
+					hasProjection = true;
+				}
+			}
+		}
+
+		if(!hasProjection) {
+			return 0.0f;
+		}
+
+		return -minimumProjection;
+	}
+
+	private static Vector3[] GetAabbCorners(Aabb aabb) {
+		Vector3 min = aabb.Position;
+		Vector3 max = aabb.Position + aabb.Size;
+		return [
+			new Vector3(min.X, min.Y, min.Z),
+			new Vector3(max.X, min.Y, min.Z),
+			new Vector3(min.X, max.Y, min.Z),
+			new Vector3(max.X, max.Y, min.Z),
+			new Vector3(min.X, min.Y, max.Z),
+			new Vector3(max.X, min.Y, max.Z),
+			new Vector3(min.X, max.Y, max.Z),
+			new Vector3(max.X, max.Y, max.Z),
+		];
+	}
+
+	public Vector3 GetPositionOnGround(Vector3 position, out bool success, out string? surfaceObjectId) {
 		float height = position.Y;
 		success = false;
+		surfaceObjectId = null;
 		if(GameManager == null) {
 			return position;
 		}
@@ -262,6 +511,19 @@ public partial class ObjectPlacementManager : Node {
 			if(normal.Y < MinPlaceSurfaceNormalY) {
 				return position;
 			}
+
+			if(result.ContainsKey("collider")) {
+				Node? surfaceCollider = result["collider"].AsGodotObject() as Node;
+				ObjectNode? surfaceObjectNode = FindAncestorObjectNode(surfaceCollider);
+				if(surfaceObjectNode != null) {
+					ItemDefinition? surfaceDefinition = DatabaseManager.Instance.GetItemDefinitionById(surfaceObjectNode.Data.ItemId);
+					if(surfaceDefinition?.Can_Object_Stack != true) {
+						return position;
+					}
+					surfaceObjectId = surfaceObjectNode.Data.Id;
+				}
+			}
+
 			float heightDifference = Mathf.Abs(groundPosition.Y - height);
 			if(heightDifference <= PlaceHeightMaxDifference) {
 				success = true;
@@ -269,6 +531,17 @@ public partial class ObjectPlacementManager : Node {
 			}
 		}
 		return position;
+	}
+
+	private static ObjectNode? FindAncestorObjectNode(Node? node) {
+		Node? current = node;
+		while(current != null) {
+			if(current is ObjectNode objectNode) {
+				return objectNode;
+			}
+			current = current.GetParent();
+		}
+		return null;
 	}
 
 	public bool IsPlaceable(string? itemId) {

@@ -7,8 +7,11 @@ public static class DisplaySettings {
 	private static WorldEnvironment? WorldEnv;
 
 	public static void SetWorldEnvironment(WorldEnvironment? env) {
+		if(env != null && !GodotObject.IsInstanceValid(env)) {
+			env = null;
+		}
 		WorldEnv = env;
-		if(WorldEnv is not null) {
+		if(WorldEnv is not null && GodotObject.IsInstanceValid(WorldEnv) && WorldEnv.Environment != null) {
 			WorldEnv.Environment.AdjustmentEnabled = true;
 			Brightness.Apply();
 		}

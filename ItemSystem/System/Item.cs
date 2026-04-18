@@ -54,10 +54,13 @@ public partial class Item : ISaveable<ItemData> {
 		}
 	} = 1;
 
+	[Export] public bool Can_Object_Stack { get; set; } = false;
+
 	public bool IsStackable => MaxStackSize > 1;
 
 	[Export] public bool IsConsumable { get; set; } = false;
 	[Export] public bool IsPlaceable { get; set; } = false;
+	[Export] public bool Pickupable { get; set; } = false;
 
 	[Export] public Texture2D IconTexture { get; set; } = null!;
 	public ComponentDictionary<IItemComponent> ComponentDictionary { get; } = new();
@@ -86,8 +89,10 @@ public partial class Item : ISaveable<ItemData> {
 		Name = other.Name;
 		Description = other.Description;
 		MaxStackSize = other.MaxStackSize;
+		Can_Object_Stack = other.Can_Object_Stack;
 		IsConsumable = other.IsConsumable;
 		IsPlaceable = other.IsPlaceable;
+		Pickupable = other.Pickupable;
 		IconTexture = other.IconTexture;
 		CopyComponentsFrom(other);
 	}
@@ -114,8 +119,10 @@ public partial class Item : ISaveable<ItemData> {
 		Name = item.Name;
 		Description = item.Description;
 		MaxStackSize = item.MaxStackSize;
+		Can_Object_Stack = item.Can_Object_Stack;
 		IsConsumable = item.IsConsumable;
 		IsPlaceable = item.IsPlaceable;
+		Pickupable = item.Pickupable;
 		IconTexture = item.IconTexture;
 		CopyComponentsFrom(item);
 		if(data.DurabilityData != null) {

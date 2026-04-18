@@ -1,0 +1,67 @@
+[gd_scene format=3 uid="uid://dagcff6s8q7t2"]
+
+[ext_resource type="PackedScene" uid="uid://cam02wkgiun0" path="res://ItemSystem/Database/ItemDefinitions/Furniture/Door/Return_Door/Return_Door.tscn" id="1_yg02e"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_cqnqw"]
+size = Vector2(1, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_yg02e"]
+size = Vector3(8.3897705, 1, 9.698975)
+
+[sub_resource type="BoxMesh" id="BoxMesh_k4p5u"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_v4m6b"]
+size = Vector3(1.3720703, 5.5058594, 8.0095215)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_0143i"]
+size = Vector3(1.3720703, 5.5058594, 6.469116)
+
+[node name="TestRoom" type="Node3D" unique_id=999601292]
+
+[node name="StaticBody3D" type="StaticBody3D" parent="." unique_id=1469127040]
+
+[node name="Floor" type="MeshInstance3D" parent="StaticBody3D" unique_id=3323067]
+transform = Transform3D(6, 0, 0, 0, 1, 0, 0, 0, 8, 0, 0, 0)
+mesh = SubResource("PlaneMesh_cqnqw")
+
+[node name="Floor collidor" type="CollisionShape3D" parent="StaticBody3D" unique_id=1324128989]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+shape = SubResource("BoxShape3D_yg02e")
+
+[node name="Wall1" type="MeshInstance3D" parent="StaticBody3D" unique_id=1327125804]
+transform = Transform3D(0.25, 0, 0, 0, 5, 0, 0, 0, 8, -3.0979843, 2.488712, 0)
+mesh = SubResource("BoxMesh_k4p5u")
+
+[node name="Wall1 collidor" type="CollisionShape3D" parent="StaticBody3D" unique_id=692636613]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.6645508, 2.2529297, 0.005004883)
+shape = SubResource("BoxShape3D_v4m6b")
+
+[node name="Wall2" type="MeshInstance3D" parent="StaticBody3D" unique_id=373922552]
+transform = Transform3D(-0.24999937, 0, -0.01787305, 0, 5, 0, 0.00055853283, 0, -7.99998, 3.123876, 2.488712, 0.0056377687)
+mesh = SubResource("BoxMesh_k4p5u")
+
+[node name="Wall1 collidor2" type="CollisionShape3D" parent="StaticBody3D" unique_id=2013723733]
+transform = Transform3D(-0.9999975, 0, -0.0022341313, 0, 1, 0, 0.0022341313, 0, -0.9999975, 3.6904302, 2.2529297, -0.0006328856)
+shape = SubResource("BoxShape3D_v4m6b")
+
+[node name="Wall3" type="MeshInstance3D" parent="StaticBody3D" unique_id=211167484]
+transform = Transform3D(-0.0011392077, 0, -6.4905925, 0, 5, 0, 0.25009054, 0, -0.029565826, 0, 2.489, -4.117)
+mesh = SubResource("BoxMesh_k4p5u")
+
+[node name="Wall1 collidor3" type="CollisionShape3D" parent="StaticBody3D" unique_id=1397801668]
+transform = Transform3D(-0.0045551825, 0, -0.9999897, 0, 1, 0, 0.9999897, 0, -0.0045551825, 0.013832986, 2.2529297, -4.6805487)
+shape = SubResource("BoxShape3D_0143i")
+
+[node name="Wall4" type="MeshInstance3D" parent="StaticBody3D" unique_id=1678801104]
+transform = Transform3D(0.0006328816, 0, 6.490639, 0, 4.9999995, 0, -0.2500923, 0, 0.016425163, 0.013262503, 2.489, 4.072776)
+mesh = SubResource("BoxMesh_k4p5u")
+
+[node name="Wall1 collidor4" type="CollisionShape3D" parent="StaticBody3D" unique_id=287904195]
+transform = Transform3D(0.0025306323, 0, 0.9999969, 0, 1, 0, -0.9999969, 0, 0.0025306323, 0.0005704835, 2.2529297, 4.636351)
+shape = SubResource("BoxShape3D_0143i")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1834725726]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 10.094604, 0)
+
+[node name="ReturnDoor" parent="." unique_id=539945399 instance=ExtResource("1_yg02e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.13474317, 0.046704292, -3.9369411)
