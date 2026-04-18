@@ -1,6 +1,7 @@
 namespace Camera;
 
 using System;
+using Character;
 using Godot;
 using Services;
 using Settings;
@@ -24,8 +25,8 @@ public sealed partial class CameraRig {
 			+ ActionEvent.CameraPan.WhenReleased(() => HandlePan(false))
 			+ ActionEvent.CameraRotate.WhenPressed(() => HandleRotate(true))
 			+ ActionEvent.CameraRotate.WhenReleased(() => HandleRotate(false))
-			+ ActionEvent.ZoomIn.WhenPressed(() => Pose.Distance -= ZoomSpeed)
-			+ ActionEvent.ZoomOut.WhenPressed(() => Pose.Distance += ZoomSpeed)
+			+ ActionEvent.ZoomIn.WhenPressed(() => TryZoom(-ZoomSpeed))
+			+ ActionEvent.ZoomOut.WhenPressed(() => TryZoom(ZoomSpeed))
 			+ ActionEvent.CameraReset.WhenPressed(Reset)
 			+ (() => InputSystem.Instance.OnMouseMoved -= HandleMouseMotion);
 
@@ -75,5 +76,12 @@ public sealed partial class CameraRig {
 
 		if(Mathf.Abs(x) > 0.1f) { Pose.Heading -= x * JoystickRotateSensitivity * dt; }
 		if(Mathf.Abs(y) > 0.1f) { Pose.Pitch += y * JoystickRotateSensitivity * dt; }
+	}
+
+	private void TryZoom(float distanceDelta) {
+		if(Target is Player player && player.ObjectPlacementManager?.IsPlacementActive == true) {
+			return;
+		}
+		Pose.Distance += distanceDelta;
 	}
 }

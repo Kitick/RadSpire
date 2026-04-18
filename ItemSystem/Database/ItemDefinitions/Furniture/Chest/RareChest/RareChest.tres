@@ -14,6 +14,7 @@ Name = "Rare Chest"
 Description = "A rare stone chest with 4x8 storage capacity."
 IsConsumable = false
 IsPlaceable = true
+Pickupable = true
 IconTexture = ExtResource("3_0pfoe")
 ItemScene = ExtResource("4_jvw3p")
 ComponentsResources = Array[ExtResource("1_ehckv")]([ExtResource("2_qlkpw"), ExtResource("3_nx2w0")])

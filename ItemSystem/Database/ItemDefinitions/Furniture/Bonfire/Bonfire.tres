@@ -12,6 +12,7 @@ Name = "Bonfire"
 Description = "A cozy little bonfire."
 IsConsumable = false
 IsPlaceable = true
+Pickupable = true
 IconTexture = ExtResource("2_6kh03")
 ItemScene = ExtResource("3_6kh03")
 metadata/_custom_type_script = "uid://bxmh4fd7kjvv1"

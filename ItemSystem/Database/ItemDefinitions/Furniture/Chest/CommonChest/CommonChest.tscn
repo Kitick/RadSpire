@@ -1,23 +1,32 @@
 [gd_scene format=3 uid="uid://bs8mou6sasa7y"]
 
-[ext_resource type="PackedScene" uid="uid://dna00eg1jcs3j" path="res://ItemSystem/Database/ItemDefinitions/Furniture/Chest/OldChest/OldChest.tscn" id="1_kfvhx"]
+[ext_resource type="PackedScene" uid="uid://dna00eg1jcs3j" path="res://ItemSystem/Database/ItemDefinitions/Furniture/Chest/Models/OldChest/OldChest.tscn" id="1_kfvhx"]
 [ext_resource type="Script" uid="uid://klsonhpw4auo" path="res://ItemSystem/WorldObjects/ObjectNode.cs" id="2_imyk2"]
-[ext_resource type="PackedScene" uid="uid://b7gv62rlbjt5l" path="res://ItemSystem/WorldObjects/WorldObjectSpawnPoint.tscn" id="2_l1cxs"]
+[ext_resource type="PackedScene" uid="uid://b7gv62rlbjt5l" path="res://ItemSystem/WorldObjects/SpawnPoint/WorldObjectSpawnPoint.tscn" id="2_l1cxs"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_imyk2"]
-size = Vector3(3.3065796, 2.0772705, 2.136917)
+size = Vector3(3.4656487, 2.1101227, 2.2138948)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_rwmnw"]
+size = Vector3(3.9214325, 2.1987915, 2.3702278)
 
 [node name="ChestCommon" type="Node3D" unique_id=1184848489]
 script = ExtResource("2_imyk2")
 
 [node name="Old Chest" parent="." unique_id=745494050 instance=ExtResource("1_kfvhx")]
-transform = Transform3D(0.25, 0, 0, 0, 0.25, 0, 0, 0, 0.25, 0, 0.24991632, -0.042515993)
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0.50474167, -0.042515993)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Old Chest" unique_id=1564425385]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Old Chest/StaticBody3D" unique_id=1134080846]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.019378662, 0.057556152, 0.16260529)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.005487442, 0.07990265, 0.19970083)
 shape = SubResource("BoxShape3D_imyk2")
+
+[node name="Area3D" type="Area3D" parent="Old Chest" unique_id=582445104]
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="Old Chest/Area3D" unique_id=1534943736]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0073165894, 0.11831665, 0.20515251)
+shape = SubResource("BoxShape3D_rwmnw")
 
 [node name="WorldObjectSpawnPoint" parent="." unique_id=2064846928 instance=ExtResource("2_l1cxs")]
 ItemId = "ChestCommon"

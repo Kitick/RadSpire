@@ -53,8 +53,10 @@ public sealed partial class DatabaseManager : Node {
 		item.Name = itemDef.Name;
 		item.Description = itemDef.Description;
 		item.MaxStackSize = itemDef.MaxStackSize;
+		item.Can_Object_Stack = itemDef.Can_Object_Stack;
 		item.IsConsumable = itemDef.IsConsumable;
 		item.IsPlaceable = itemDef.IsPlaceable;
+		item.Pickupable = itemDef.Pickupable;
 		item.IconTexture = itemDef.IconTexture;
 
 		BuildComponents(item, itemDef);
@@ -99,6 +101,10 @@ public sealed partial class DatabaseManager : Node {
 				else if(comp is ChestRarityDefinition chestRarityDef) {
 					ChestRarityComponent rarityComp = new ChestRarityComponent(chestRarityDef.RarityLevel, obj);
 					obj.ComponentDictionary.Add(rarityComp);
+				}
+				else if(comp is DoorDefinition doorDef) {
+					DoorComponent doorComp = new DoorComponent(doorDef.BaseScene, doorDef.SpawnPositionMarker, obj);
+					obj.ComponentDictionary.Add(doorComp);
 				}
 			}
 		}

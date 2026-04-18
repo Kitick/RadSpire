@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="DoorDefinition" format=3 uid="uid://bhogeyhkf1mo4"]
+
+[ext_resource type="Script" uid="uid://xfkn1s54secg" path="res://ItemSystem/Definitions/DoorDefinition.cs" id="1_1r4cg"]
+[ext_resource type="PackedScene" uid="uid://dpm2alxlwbkpr" path="res://GameWorld/WorldScene.tscn" id="1_oegaw"]
+
+[resource]
+script = ExtResource("1_1r4cg")
+BaseScene = ExtResource("1_oegaw")
+metadata/_custom_type_script = "uid://xfkn1s54secg"
