@@ -30,6 +30,7 @@ public partial class ObjectPlacementManager : Node {
 
 	private enum PlaceState { Idle, FindingPlacableLocation, Placable };
 	private StateMachine<PlaceState> PlaceStateMachine = new StateMachine<PlaceState>(PlaceState.Idle);
+	public bool IsPlacementActive => PlaceStateMachine.CurrentState == PlaceState.FindingPlacableLocation || PlaceStateMachine.CurrentState == PlaceState.Placable;
 	public string? CurrentPlacingItemId { get; private set; }
 	public Vector3 CurrentPlacingPosition { get; private set; }
 	public Vector3 CurrentPlacingRotation { get; private set; }
