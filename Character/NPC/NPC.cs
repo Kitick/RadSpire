@@ -117,8 +117,6 @@ public sealed partial class NPC : CharacterBody3D, ISaveable<NPCData> {
 
 	public NPCData Export() => new NPCData {
 		Id = Id,
-		NPCName = NPCName,
-		Dialogue = Dialogue,
 		GlobalPosition = GlobalPosition,
 		GlobalRotation = GlobalRotation,
 	};
@@ -127,8 +125,6 @@ public sealed partial class NPC : CharacterBody3D, ISaveable<NPCData> {
 		if(!string.IsNullOrEmpty(data.Id)) {
 			Id = data.Id;
 		}
-		NPCName = data.NPCName;
-		Dialogue = data.Dialogue;
 		GlobalPosition = data.GlobalPosition;
 		GlobalRotation = data.GlobalRotation;
 	}
@@ -136,8 +132,6 @@ public sealed partial class NPC : CharacterBody3D, ISaveable<NPCData> {
 
 public readonly record struct NPCData : ISaveData {
 	public string Id { get; init; }
-	public string NPCName { get; init; }
-	public string Dialogue { get; init; }
 	public Vector3 GlobalPosition { get; init; }
 	public Vector3 GlobalRotation { get; init; }
 }

@@ -484,7 +484,7 @@ public sealed partial class GameManager : Node {
 	}
 
 	private Vector3 RandomLocationNearPlayer() {
-		Vector3 center = IsInstanceValid(LocalPlayer) ? LocalPlayer!.GlobalPosition : PlayerSpawnMarker?.GlobalPosition ?? Vector3.Zero;
+		Vector3 center = IsInstanceValid(LocalPlayer) ? LocalPlayer.GlobalPosition : PlayerSpawnMarker?.GlobalPosition ?? Vector3.Zero;
 		Vector3 randomPoint = new(
 			center.X + GD.RandRange(-SpawnRadius, SpawnRadius),
 			center.Y + SpawnHeight,
