@@ -111,12 +111,11 @@ public partial class ObjectPlacementManager : Node {
 			return;
 		}
 		if(PlaceStateMachine.CurrentState == PlaceState.Idle) {
-			string? selectedItemSlot = PlayerHotbar!.GetSelectedItemSlot()?.Item?.Id;
-			if(!IsPlaceable(selectedItemSlot)) {
+			if(!TryGetSelectedPlaceableItemId(out string selectedItemId)) {
 				Log.Info("PlaceRequested called but no item is currently selected for placing.");
 				return;
 			}
-			CurrentPlacingItemId = selectedItemSlot;
+			CurrentPlacingItemId = selectedItemId;
 			PlaceStateMachine.TransitionTo(PlaceState.FindingPlacableLocation);
 		}
 		if(PlaceStateMachine.CurrentState == PlaceState.Placable) {
@@ -132,6 +131,12 @@ public partial class ObjectPlacementManager : Node {
 	}
 
 	public void OnHotbarSlotSelected(ItemSlot selectedSlot) {
+		if(selectedSlot.IsEmpty()) {
+			if(PlaceStateMachine.CurrentState == PlaceState.FindingPlacableLocation || PlaceStateMachine.CurrentState == PlaceState.Placable) {
+				PlaceStateMachine.TransitionTo(PlaceState.Idle);
+			}
+			return;
+		}
 		string? itemId = selectedSlot.Item?.Id;
 		if(!IsPlaceable(itemId)) {
 			if(PlaceStateMachine.CurrentState == PlaceState.FindingPlacableLocation || PlaceStateMachine.CurrentState == PlaceState.Placable) {
@@ -153,12 +158,31 @@ public partial class ObjectPlacementManager : Node {
 			Log.Error("PlaceObject failed: CurrentPlacingItemId is not placeable.");
 			return;
 		}
+		ItemSlot selectedSlot = PlayerHotbar!.GetSelectedItemSlot();
+		if(selectedSlot.IsEmpty() || selectedSlot.Item?.Id != currentItemId) {
+			Log.Info("PlaceObject canceled: selected hotbar slot no longer has the placing item.");
+			return;
+		}
 		bool created = WorldObjectManager!.CreateWorldObject(currentItemId, CurrentPlacingPosition, CurrentPlacingRotation);
 		if(!created) {
 			Log.Error($"PlaceObject failed to create world object for ItemId '{CurrentPlacingItemId}'.");
 			return;
 		}
 		InventoryManager!.ConsumeSelectedHotbar(PlayerHotbar!, 1);
+	}
+
+	private bool TryGetSelectedPlaceableItemId(out string itemId) {
+		itemId = string.Empty;
+		ItemSlot selectedSlot = PlayerHotbar!.GetSelectedItemSlot();
+		if(selectedSlot.IsEmpty()) {
+			return false;
+		}
+		string? selectedItemId = selectedSlot.Item?.Id;
+		if(!IsPlaceable(selectedItemId)) {
+			return false;
+		}
+		itemId = selectedItemId!;
+		return true;
 	}
 
 	public bool PlaceObjectInFrontOfPlayer(Player player, string itemId, float distance = DefaultPlaceDistance) {
