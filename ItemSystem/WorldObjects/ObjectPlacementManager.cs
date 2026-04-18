@@ -21,6 +21,7 @@ public partial class ObjectPlacementManager : Node {
 	private const float PlacementRotationStepRadians = Mathf.Pi / 12.0f;
 	private bool _isInitialized;
 	private float CurrentPlacingRotationOffsetY;
+	private float CurrentPlacingDistanceCompensation;
 	private readonly List<PlacementAreaShapeTemplate> CurrentPlacementAreaShapes = new();
 
 	public WorldObjectManager? WorldObjectManager { get; private set; }
@@ -66,6 +67,7 @@ public partial class ObjectPlacementManager : Node {
 	public void ConfigureStateMachine() {
 		PlaceStateMachine.OnEnter(PlaceState.Idle, () => {
 			CurrentPlacingRotationOffsetY = 0.0f;
+			CurrentPlacingDistanceCompensation = 0.0f;
 			CurrentPlacementAreaShapes.Clear();
 			EndPlacingObject?.Invoke();
 		});
@@ -115,15 +117,42 @@ public partial class ObjectPlacementManager : Node {
 		if(PlaceStateMachine.CurrentState != PlaceState.FindingPlacableLocation && PlaceStateMachine.CurrentState != PlaceState.Placable) {
 			return;
 		}
+		if(!Initalized || Player == null || !GodotObject.IsInstanceValid(Player)) {
+			return;
+		}
 		if(@event is not InputEventMouseButton mouseButtonEvent || !mouseButtonEvent.Pressed) {
 			return;
 		}
+
+		float rotationDelta = 0.0f;
 		if(mouseButtonEvent.ButtonIndex == MouseButton.WheelUp) {
-			CurrentPlacingRotationOffsetY = Mathf.Wrap(CurrentPlacingRotationOffsetY - PlacementRotationStepRadians, -Mathf.Pi, Mathf.Pi);
+			rotationDelta = -PlacementRotationStepRadians;
 		}
 		else if(mouseButtonEvent.ButtonIndex == MouseButton.WheelDown) {
-			CurrentPlacingRotationOffsetY = Mathf.Wrap(CurrentPlacingRotationOffsetY + PlacementRotationStepRadians, -Mathf.Pi, Mathf.Pi);
+			rotationDelta = PlacementRotationStepRadians;
 		}
+
+		if(Mathf.IsZeroApprox(rotationDelta)) {
+			return;
+		}
+
+		Vector3 playerForward = Player.GlobalBasis.Z;
+		playerForward.Y = 0;
+		if(playerForward.LengthSquared() < 0.0001f) {
+			playerForward = Vector3.Forward;
+		}
+		playerForward = playerForward.Normalized();
+
+		Vector3 oldRotation = GetAdjustedPlacementRotation(Player, CurrentPlacingPosition);
+		float oldOriginOffset = GetPlacementOriginOffset(playerForward, oldRotation);
+
+		CurrentPlacingRotationOffsetY = Mathf.Wrap(CurrentPlacingRotationOffsetY + rotationDelta, -Mathf.Pi, Mathf.Pi);
+
+		Vector3 newRotation = GetAdjustedPlacementRotation(Player, CurrentPlacingPosition);
+		float newOriginOffset = GetPlacementOriginOffset(playerForward, newRotation);
+
+		// Keep the preview anchored relative to player while rotating by counteracting origin shift.
+		CurrentPlacingDistanceCompensation += oldOriginOffset - newOriginOffset;
 	}
 
 	public override void _ExitTree() {
@@ -340,7 +369,9 @@ public partial class ObjectPlacementManager : Node {
 			forward = Vector3.Forward;
 		}
 		forward = forward.Normalized();
-		Vector3 position = player.GlobalPosition + (forward * placeDistance);
+		Vector3 previewRotation = GetAdjustedPlacementRotation(player, player.GlobalPosition + (forward * placeDistance));
+		float originOffset = GetPlacementOriginOffset(forward, previewRotation);
+		Vector3 position = player.GlobalPosition + (forward * (placeDistance + originOffset + CurrentPlacingDistanceCompensation));
 		position.Y = player.GlobalPosition.Y;
 		Vector3 groundPosition = GetPositionOnGround(position, out success);
 		if(success && IsPlacementObstructedByWall(player, groundPosition)) {
@@ -384,6 +415,52 @@ public partial class ObjectPlacementManager : Node {
 	private Vector3 GetAdjustedPlacementRotation(Player player, Vector3 objectPosition) {
 		Vector3 baseRotation = GetRotationFacingPlayer(player, objectPosition);
 		return new Vector3(baseRotation.X, baseRotation.Y + CurrentPlacingRotationOffsetY, baseRotation.Z);
+	}
+
+	private float GetPlacementOriginOffset(Vector3 forward, Vector3 rotation) {
+		if(CurrentPlacementAreaShapes.Count == 0) {
+			return 0.0f;
+		}
+
+		Basis placementBasis = Basis.FromEuler(rotation);
+		float minimumProjection = 0.0f;
+		bool hasProjection = false;
+
+		foreach(PlacementAreaShapeTemplate shapeTemplate in CurrentPlacementAreaShapes) {
+			ArrayMesh debugMesh = shapeTemplate.Shape.GetDebugMesh();
+			Aabb localBounds = debugMesh.GetAabb();
+			Vector3[] corners = GetAabbCorners(localBounds);
+
+			foreach(Vector3 corner in corners) {
+				Vector3 transformedCorner = placementBasis * (shapeTemplate.LocalTransform * corner);
+				float projection = transformedCorner.Dot(forward);
+				if(!hasProjection || projection < minimumProjection) {
+					minimumProjection = projection;
+					hasProjection = true;
+				}
+			}
+		}
+
+		if(!hasProjection) {
+			return 0.0f;
+		}
+
+		return -minimumProjection;
+	}
+
+	private static Vector3[] GetAabbCorners(Aabb aabb) {
+		Vector3 min = aabb.Position;
+		Vector3 max = aabb.Position + aabb.Size;
+		return [
+			new Vector3(min.X, min.Y, min.Z),
+			new Vector3(max.X, min.Y, min.Z),
+			new Vector3(min.X, max.Y, min.Z),
+			new Vector3(max.X, max.Y, min.Z),
+			new Vector3(min.X, min.Y, max.Z),
+			new Vector3(max.X, min.Y, max.Z),
+			new Vector3(min.X, max.Y, max.Z),
+			new Vector3(max.X, max.Y, max.Z),
+		];
 	}
 
 	public Vector3 GetPositionOnGround(Vector3 position, out bool success) {
