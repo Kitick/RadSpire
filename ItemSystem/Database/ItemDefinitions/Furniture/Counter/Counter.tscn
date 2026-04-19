@@ -1,0 +1,43 @@
+[gd_scene format=3 uid="uid://2uup2xis6srx"]
+
+[ext_resource type="Script" uid="uid://klsonhpw4auo" path="res://ItemSystem/WorldObjects/ObjectNode.cs" id="1_ivj6s"]
+[ext_resource type="PackedScene" uid="uid://b7gv62rlbjt5l" path="res://ItemSystem/WorldObjects/SpawnPoint/WorldObjectSpawnPoint.tscn" id="2_b5xsc"]
+[ext_resource type="ArrayMesh" uid="uid://7ow0x4r7d4sh" path="res://ItemSystem/WorldObjects/House/Scenes/3d_objects - free/bar.obj" id="2_g37kk"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_sweag"]
+size = Vector3(0.98166275, 1.2820129, 2.4603043)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_sriur"]
+size = Vector3(4.549059, 1.2820129, 1.0085392)
+
+[node name="Counter" type="Node3D" unique_id=1369960815]
+script = ExtResource("1_ivj6s")
+
+[node name="Bar" type="MeshInstance3D" parent="." unique_id=1447197918]
+transform = Transform3D(-1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, 0, 0)
+mesh = ExtResource("2_g37kk")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Bar" unique_id=1148529751]
+transform = Transform3D(-0.6666667, 0, 0, 0, 0.6666667, 0, 0, 0, 0.6666667, -0.81787, -0.0032447975, -1.4090832)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Bar/StaticBody3D" unique_id=747552689]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.358572, 0.660202, 1.4582558)
+shape = SubResource("BoxShape3D_sweag")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="Bar/StaticBody3D" unique_id=1840134549]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.3939028, 0.660202, 2.1605673)
+shape = SubResource("BoxShape3D_sriur")
+
+[node name="Area3D" type="Area3D" parent="Bar" unique_id=2103521859]
+transform = Transform3D(-0.6666667, 0, 0, 0, 0.6666667, 0, 0, 0, 0.6666667, -0.81787, -0.0032447975, -1.4090832)
+
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="Bar/Area3D" unique_id=795134417]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.36258698, 0.660202, 1.4297638)
+shape = SubResource("BoxShape3D_sweag")
+
+[node name="CollisionShape3D4" type="CollisionShape3D" parent="Bar/Area3D" unique_id=1765574283]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.4084358, 0.660202, 2.1725273)
+shape = SubResource("BoxShape3D_sriur")
+
+[node name="WorldObjectSpawnPoint" parent="." unique_id=2064846928 instance=ExtResource("2_b5xsc")]
+ItemId = "Counter"

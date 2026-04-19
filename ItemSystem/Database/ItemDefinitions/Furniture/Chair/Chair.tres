@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://bqqvwjiennvli"]
+
+[ext_resource type="Script" uid="uid://cnm5iegiuj4xu" path="res://ItemSystem/Definitions/ItemComponentDefinition.cs" id="1_k7tfq"]
+[ext_resource type="PackedScene" uid="uid://debtac7kclhdw" path="res://ItemSystem/Database/ItemDefinitions/Furniture/Chair/Chair.tscn" id="2_aamut"]
+[ext_resource type="Texture2D" uid="uid://dyt87cy8q5ml7" path="res://ItemSystem/Database/ItemDefinitions/Furniture/Chair/Chair.png" id="2_r0vrv"]
+[ext_resource type="Script" uid="uid://bxmh4fd7kjvv1" path="res://ItemSystem/Definitions/ItemDefinition.cs" id="2_wdnxj"]
+
+[resource]
+script = ExtResource("2_wdnxj")
+Id = "Chair"
+Name = "Wooden Chair"
+IconTexture = ExtResource("2_r0vrv")
+ItemScene = ExtResource("2_aamut")
+metadata/_custom_type_script = "uid://bxmh4fd7kjvv1"

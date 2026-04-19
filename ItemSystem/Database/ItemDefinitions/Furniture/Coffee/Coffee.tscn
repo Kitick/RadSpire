@@ -1,0 +1,33 @@
+[gd_scene format=3 uid="uid://ifoc2alxhj6s"]
+
+[ext_resource type="Script" uid="uid://klsonhpw4auo" path="res://ItemSystem/WorldObjects/ObjectNode.cs" id="1_w5j7x"]
+[ext_resource type="ArrayMesh" uid="uid://d27vdeocwhssi" path="res://ItemSystem/WorldObjects/House/Scenes/3d_objects - free/cup_of_coffee.obj" id="2_20dra"]
+[ext_resource type="PackedScene" uid="uid://b7gv62rlbjt5l" path="res://ItemSystem/WorldObjects/SpawnPoint/WorldObjectSpawnPoint.tscn" id="2_o6ol7"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_20dra"]
+height = 0.21289063
+radius = 0.14794922
+
+[node name="Coffee" type="Node3D" unique_id=1369960815]
+script = ExtResource("1_w5j7x")
+
+[node name="CupOfCoffee" type="MeshInstance3D" parent="." unique_id=633988575]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0)
+mesh = ExtResource("2_20dra")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="CupOfCoffee" unique_id=1148529751]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CupOfCoffee/StaticBody3D" unique_id=747552689]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.13574219, 0)
+shape = SubResource("CylinderShape3D_20dra")
+
+[node name="Area3D" type="Area3D" parent="CupOfCoffee" unique_id=2103521859]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="CupOfCoffee/Area3D" unique_id=114856247]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.13574219, 0)
+shape = SubResource("CylinderShape3D_20dra")
+
+[node name="WorldObjectSpawnPoint" parent="." unique_id=2064846928 instance=ExtResource("2_o6ol7")]
+ItemId = "Coffee"

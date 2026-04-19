@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://dc7pu5tgpmfxj"]
+
+[ext_resource type="Script" uid="uid://cnm5iegiuj4xu" path="res://ItemSystem/Definitions/ItemComponentDefinition.cs" id="1_ef43s"]
+[ext_resource type="PackedScene" uid="uid://cohrfd2mpaokj" path="res://ItemSystem/Database/ItemDefinitions/Furniture/AppleCider/AppleCider.tscn" id="2_nuixb"]
+[ext_resource type="Texture2D" uid="uid://41ol58jg5h72" path="res://ItemSystem/Database/ItemDefinitions/Furniture/AppleCider/AppleCider.png" id="2_ohdb2"]
+[ext_resource type="Script" uid="uid://bxmh4fd7kjvv1" path="res://ItemSystem/Definitions/ItemDefinition.cs" id="2_qal5a"]
+
+[resource]
+script = ExtResource("2_qal5a")
+Id = "AppleCider"
+Name = "Apple Cider"
+Description = "A cup of apple cider"
+IsPlaceable = true
+Pickupable = true
+IconTexture = ExtResource("2_ohdb2")
+ItemScene = ExtResource("2_nuixb")
+metadata/_custom_type_script = "uid://bxmh4fd7kjvv1"

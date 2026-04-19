@@ -1,0 +1,40 @@
+[gd_scene format=3 uid="uid://dp0kuaxtq43bd"]
+
+[ext_resource type="Script" uid="uid://klsonhpw4auo" path="res://ItemSystem/WorldObjects/ObjectNode.cs" id="1_lafn2"]
+[ext_resource type="PackedScene" uid="uid://b7gv62rlbjt5l" path="res://ItemSystem/WorldObjects/SpawnPoint/WorldObjectSpawnPoint.tscn" id="2_acpmv"]
+[ext_resource type="ArrayMesh" uid="uid://dk4mifq2c6juj" path="res://ItemSystem/WorldObjects/House/Scenes/3d_objects - free/galery.obj" id="2_ktil0"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_m8ypt"]
+size = Vector3(5.75589, 0.25769043, 1.185669)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_njgv2"]
+size = Vector3(0.13025665, 1.7141094, 0.14657593)
+
+[node name="Overhang" type="Node3D" unique_id=1369960815]
+script = ExtResource("1_lafn2")
+
+[node name="Galery" type="MeshInstance3D" parent="." unique_id=1741007060]
+mesh = ExtResource("2_ktil0")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Galery" unique_id=1148529751]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Galery/StaticBody3D" unique_id=747552689]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.18159485, 3.1135528, -0.1708374)
+shape = SubResource("BoxShape3D_m8ypt")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="Galery/StaticBody3D" unique_id=1054724708]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.6312218, 2.3853433, 0.3487091)
+shape = SubResource("BoxShape3D_njgv2")
+
+[node name="Area3D" type="Area3D" parent="Galery" unique_id=2103521859]
+
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="Galery/Area3D" unique_id=200729526]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.18159485, 3.1135528, -0.1708374)
+shape = SubResource("BoxShape3D_m8ypt")
+
+[node name="CollisionShape3D4" type="CollisionShape3D" parent="Galery/Area3D" unique_id=1635944416]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.6312218, 2.3853433, 0.3487091)
+shape = SubResource("BoxShape3D_njgv2")
+
+[node name="WorldObjectSpawnPoint" parent="." unique_id=2064846928 instance=ExtResource("2_acpmv")]
+ItemId = "Overhang"

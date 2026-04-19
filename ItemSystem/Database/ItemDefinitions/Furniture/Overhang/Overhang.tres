@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://bmdisicdhxxd0"]
+
+[ext_resource type="Script" uid="uid://cnm5iegiuj4xu" path="res://ItemSystem/Definitions/ItemComponentDefinition.cs" id="1_vwt5i"]
+[ext_resource type="Texture2D" uid="uid://bkaxj64dbkuyo" path="res://ItemSystem/Database/ItemDefinitions/Furniture/Overhang/Overhang.png" id="2_ce8li"]
+[ext_resource type="Script" uid="uid://bxmh4fd7kjvv1" path="res://ItemSystem/Definitions/ItemDefinition.cs" id="2_ige1w"]
+[ext_resource type="PackedScene" uid="uid://dp0kuaxtq43bd" path="res://ItemSystem/Database/ItemDefinitions/Furniture/Overhang/Overhang.tscn" id="3_buifl"]
+
+[resource]
+script = ExtResource("2_ige1w")
+Id = "Overhang"
+Name = "Wooden Overhang"
+Description = "A nice wooden overhang"
+IsConsumable = false
+IsPlaceable = true
+Pickupable = true
+Can_Object_Stack = true
+IconTexture = ExtResource("2_ce8li")
+ItemScene = ExtResource("3_buifl")
+metadata/_custom_type_script = "uid://bxmh4fd7kjvv1"

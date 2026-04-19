@@ -1,0 +1,31 @@
+[gd_scene format=3 uid="uid://cvu13u444u4i8"]
+
+[ext_resource type="Script" uid="uid://klsonhpw4auo" path="res://ItemSystem/WorldObjects/ObjectNode.cs" id="1_fw8de"]
+[ext_resource type="PackedScene" uid="uid://bhurijevech0d" path="res://ItemSystem/Database/ItemDefinitions/Furniture/MedievalVillagePack/Props/Crate.fbx" id="2_pwyja"]
+[ext_resource type="PackedScene" uid="uid://b7gv62rlbjt5l" path="res://ItemSystem/WorldObjects/SpawnPoint/WorldObjectSpawnPoint.tscn" id="3_ri1kc"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_sfhyf"]
+size = Vector3(0.7069092, 0.75878906, 0.7529907)
+
+[node name="Crate" type="Node3D" unique_id=1369960815]
+script = ExtResource("1_fw8de")
+
+[node name="Crate" parent="." unique_id=298085591 instance=ExtResource("2_pwyja")]
+transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Crate" unique_id=1148529751]
+transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Crate/StaticBody3D" unique_id=747552689]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.008239746, 0.40283203, 0.0035095215)
+shape = SubResource("BoxShape3D_sfhyf")
+
+[node name="Area3D" type="Area3D" parent="Crate" unique_id=2103521859]
+transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0, 0)
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="Crate/Area3D" unique_id=488990534]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.008239746, 0.40283203, 0.0035095215)
+shape = SubResource("BoxShape3D_sfhyf")
+
+[node name="WorldObjectSpawnPoint" parent="." unique_id=2064846928 instance=ExtResource("3_ri1kc")]
+ItemId = "CrateBig"
