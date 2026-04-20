@@ -7,6 +7,14 @@ using CharState = CharacterBase.State;
 
 public sealed partial class Animator : AnimationPlayer {
 	private static readonly LogService Log = new(nameof(Animator), enabled: true);
+	private const string StepSoundPath = "res://Assets/Audio/step.wav";
+	private const string AttackSwingSoundPath = "res://Assets/Audio/ESM_FG2_FX_combat_one_shot_slash_animee_sword_hit_2.wav";
+
+	private AudioStreamPlayer3D? StepPlayer;
+	private AudioStreamPlayer3D? ActionPlayer;
+	private AudioStream? StepSound;
+	private AudioStream? AttackSwingSound;
+	private double LastFootstepTime;
 
 	[ExportCategory("References")]
 	[Export] private CharacterBase Character = null!;
@@ -24,8 +32,13 @@ public sealed partial class Animator : AnimationPlayer {
 
 	[ExportCategory("Animation Settings")]
 	[Export] private float SprintSpeed = 1.0f;
+	[Export] private bool EnableHardcodedSfx = true;
+	[Export] private float WalkStepIntervalSeconds = 0.40f;
+	[Export] private float SprintStepIntervalSeconds = 0.24f;
 
 	public enum AnimState { Idle, Walking, Sprinting, Crouching, Jumping, Falling, Landing, Attacking, Dying }
+
+	private bool IsPlayerAnimator => Character is Player;
 
 	private AnimState PlayingAnimation {
 		get;
@@ -47,9 +60,64 @@ public sealed partial class Animator : AnimationPlayer {
 
 	public override void _Ready() {
 		this.ValidateExports();
+		SetupSfx();
 		Character.OnStateChanged += OnMovement;
 		SetupAnimations();
 		SyncAnimation(Character.CurrentState);
+	}
+
+	public override void _Process(double delta) {
+		if(!EnableHardcodedSfx || !IsPlayerAnimator) {
+			return;
+		}
+
+		double now = Time.GetTicksMsec() / 1000.0;
+		float interval = Character.CurrentState == CharState.Sprinting
+			? SprintStepIntervalSeconds
+			: WalkStepIntervalSeconds;
+
+		if((Character.CurrentState == CharState.Walking || Character.CurrentState == CharState.Sprinting) &&
+			now - LastFootstepTime >= interval) {
+			PlayFootstep();
+		}
+	}
+
+	private void SetupSfx() {
+		if(!EnableHardcodedSfx || !IsPlayerAnimator) {
+			return;
+		}
+
+		StepSound = GD.Load<AudioStream>(StepSoundPath);
+		AttackSwingSound = GD.Load<AudioStream>(AttackSwingSoundPath);
+
+		if(StepSound == null) {
+			Log.Warn($"Step sound not found at {StepSoundPath}");
+		}
+
+		if(AttackSwingSound == null) {
+			Log.Warn($"Attack swing sound not found at {AttackSwingSoundPath}");
+		}
+
+		StepPlayer = new AudioStreamPlayer3D {
+			Name = "PlayerStepSfx",
+			Bus = "SFX",
+			VolumeDb = -5.0f,
+			MaxDistance = 20.0f,
+			UnitSize = 1.0f,
+			Stream = StepSound,
+		};
+
+		ActionPlayer = new AudioStreamPlayer3D {
+			Name = "PlayerActionSfx",
+			Bus = "SFX",
+			VolumeDb = -4.0f,
+			MaxDistance = 24.0f,
+			UnitSize = 1.0f,
+			Stream = AttackSwingSound,
+		};
+
+		AddChild(StepPlayer);
+		AddChild(ActionPlayer);
 	}
 
 	private void SetupAnimations() {
@@ -69,6 +137,30 @@ public sealed partial class Animator : AnimationPlayer {
 	public void OnAnimationFinished(StringName name) {
 		if(name == JUMPING || name == LANDING) { SyncAnimation(Character.CurrentState); }
 		else if(name == ATTACK) { Character.OnAttackFinished(); }
+	}
+
+	public void AnimEventFootstep() => PlayFootstep();
+
+	public void AnimEventAttackSwing() {
+		if(!EnableHardcodedSfx || !IsPlayerAnimator || ActionPlayer == null || AttackSwingSound == null) {
+			return;
+		}
+
+		ActionPlayer.Stream = AttackSwingSound;
+		ActionPlayer.PitchScale = (float) GD.RandRange(0.97, 1.05);
+		ActionPlayer.Play();
+	}
+
+	public void AnimEventLand() {
+		if(!EnableHardcodedSfx || !IsPlayerAnimator || StepPlayer == null || StepSound == null) {
+			return;
+		}
+
+		StepPlayer.Stream = StepSound;
+		StepPlayer.PitchScale = 0.82f;
+		StepPlayer.VolumeDb = -1.5f;
+		StepPlayer.Play();
+		LastFootstepTime = Time.GetTicksMsec() / 1000.0;
 	}
 
 	public void SyncAnimation(CharState state) {
@@ -92,8 +184,26 @@ public sealed partial class Animator : AnimationPlayer {
 		bool jumped = from != CharState.Falling && to == CharState.Falling;
 		bool landed = from == CharState.Falling && to != CharState.Falling;
 
-		if(jumped) { PlayingAnimation = AnimState.Jumping; }
-		else if(landed) { PlayingAnimation = AnimState.Landing; }
+		if(jumped) {
+			PlayFootstep(0.90f, -3.0f);
+			PlayingAnimation = AnimState.Jumping;
+		}
+		else if(landed) {
+			AnimEventLand();
+			PlayingAnimation = AnimState.Landing;
+		}
 		else { SyncAnimation(to); }
+	}
+
+	private void PlayFootstep(float pitch = 1.0f, float volumeDb = -5.0f) {
+		if(!EnableHardcodedSfx || !IsPlayerAnimator || StepPlayer == null || StepSound == null) {
+			return;
+		}
+
+		StepPlayer.Stream = StepSound;
+		StepPlayer.PitchScale = pitch + (float) GD.RandRange(-0.03, 0.03);
+		StepPlayer.VolumeDb = volumeDb;
+		StepPlayer.Play();
+		LastFootstepTime = Time.GetTicksMsec() / 1000.0;
 	}
 }
