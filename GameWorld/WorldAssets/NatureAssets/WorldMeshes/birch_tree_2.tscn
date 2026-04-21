@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://cg1gl8j6xjwim"]
+
+[ext_resource type="PackedScene" uid="uid://d4cv5r47i6k54" path="res://GameWorld/WorldAssets/NatureAssets/WorldMeshes/Birch_Tree_2.fbx" id="1_21n3n"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_sxvff"]
+height = 2.0784588
+radius = 0.5522461
+
+[node name="Birch_Tree_2" unique_id=402148634 instance=ExtResource("1_21n3n")]
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Birch_Tree_2" parent_id_path=PackedInt32Array(758887053) index="0" unique_id=902787747]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0489707, 4.112199, -0.17046046)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Birch_Tree_2/StaticBody3D" index="0" unique_id=817587863]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3.3723593, 0)
+shape = SubResource("CylinderShape3D_sxvff")

@@ -1,0 +1,23 @@
+[gd_scene format=3 uid="uid://cbyv5ix5i7q0q"]
+
+[ext_resource type="PackedScene" uid="uid://n5ceu3mdjdxl" path="res://GameWorld/WorldAssets/OfficeAssets/Bunker2.fbx" id="1_n4ddb"]
+[ext_resource type="Texture2D" uid="uid://bnmaqyw2ocrl6" path="res://Assets/Textures/Terrain/Normals/Bunker2_1024p_Texture3.png" id="2_x0bxe"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_k73ll"]
+albedo_texture = ExtResource("2_x0bxe")
+metallic = 0.4
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_whfh3"]
+size = Vector3(12.067726, 8.172769, 4.178713)
+
+[node name="Bunker2" unique_id=690382644 instance=ExtResource("1_n4ddb")]
+
+[node name="Bunker2" parent="." index="0" unique_id=1049967215]
+surface_material_override/0 = SubResource("StandardMaterial3D_k73ll")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Bunker2" index="0" unique_id=1335725896]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.17006159, -0.26835632, 1.892637)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Bunker2/StaticBody3D" index="0" unique_id=517654884]
+transform = Transform3D(1, -6.2341625e-19, -2.543743e-12, 9.588413e-19, 0.99998313, 4.5332627e-12, 1.2703788e-21, -4.5332627e-12, 0.99998313, 0.2532463, 0.36666116, 9.536743e-07)
+shape = SubResource("BoxShape3D_whfh3")

@@ -1,0 +1,20 @@
+[gd_scene format=3 uid="uid://bx2hwr0o3suev"]
+
+[ext_resource type="PackedScene" uid="uid://dlktp4b54hq7l" path="res://GameWorld/WorldAssets/OfficeAssets/Bunker1.fbx" id="1_8l2ks"]
+[ext_resource type="Texture2D" uid="uid://bj4rntw13eyff" path="res://Assets/Textures/Terrain/Bunker1_1024p_Texture3.png" id="2_32moo"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6w7pi"]
+albedo_texture = ExtResource("2_32moo")
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_gexlv"]
+points = PackedVector3Array(0.6743314, 2.5076323, 1.7781862, -0.64129806, 2.2480426, -1.6454607e-05, -2.0244436, 2.0283046, 1.9868305, 1.1128747, 2.2458286, 3.2329566, 2.0234096, 2.0283046, 1.9868305, 1.3340046, 2.2480426, -1.6454607e-05, -2.1278853, 1.2838526, -0.019597953, -1.7965003, 1.9236937, -1.6454607e-05, -2.767118, 1.4238868, -1.6454607e-05, -3.4032533, 0.341249, -1.6454607e-05, -2.2499094, -0.46851563, 2.321404, -2.0244436, -2.5203252, 3.1813018, 0.8824537, 1.9430661, 3.4294467, 0.94996953, 2.157269, 3.371715, 2.0234096, -2.5203252, 3.1813018, 1.27578, 2.157269, 3.094198, 2.7010458, 0.30139732, 0.06514267, 2.0234096, 2.0072718, 1.8642772, 1.7960856, 1.9236937, -1.6454607e-05, -1.7965003, -1.92421, -1.6454607e-05, -2.7014604, -1.6363921, -1.6454607e-05, -3.5822632, -0.95061064, -1.6454607e-05, 1.8456385, 1.022049, -1.6454607e-05, 1.7960856, -1.92421, -1.6454607e-05, -2.0244436, -2.5640512, 3.0651634, -1.5512135, -2.8236408, 3.0725908, -0.6747463, -3.10371, 3.1813018, 2.0234096, -2.5640512, 3.0651634, 2.7456434, -0.32017875, 0.06514267, -0.64129806, -2.002253, 0.000658771, -0.6747463, -3.1468825, 3.0651634, 0.6408832, -2.002253, 0.000658771)
+
+[node name="Bunker1" unique_id=692933183 instance=ExtResource("1_8l2ks")]
+
+[node name="Bunker1" parent="." index="0" unique_id=450883754]
+surface_material_override/0 = SubResource("StandardMaterial3D_6w7pi")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Bunker1" index="0" unique_id=260027922]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Bunker1/StaticBody3D" index="0" unique_id=687236731]
+shape = SubResource("ConvexPolygonShape3D_gexlv")

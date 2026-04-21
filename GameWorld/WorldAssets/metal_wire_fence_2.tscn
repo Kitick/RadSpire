@@ -1,0 +1,5 @@
+[gd_scene format=3 uid="uid://ce0ey8ibwhupq"]
+
+[ext_resource type="PackedScene" uid="uid://b3o4elfuekx7v" path="res://GameWorld/WorldAssets/gltf/metal_wire_fence.glb" id="1_vegt1"]
+
+[node name="metal_wire_fence2" unique_id=134911809 instance=ExtResource("1_vegt1")]

@@ -1,0 +1,5 @@
+[gd_scene format=3 uid="uid://dcdg476tv8esc"]
+
+[ext_resource type="PackedScene" uid="uid://cqj33aagtw7ai" path="res://GameWorld/WorldAssets/gltf/pickup_1.glb" id="1_gphfa"]
+
+[node name="pickup_1" unique_id=811345522 instance=ExtResource("1_gphfa")]

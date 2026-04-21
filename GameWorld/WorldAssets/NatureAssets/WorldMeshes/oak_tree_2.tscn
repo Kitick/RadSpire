@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://3b7cpj830my5"]
+
+[ext_resource type="PackedScene" uid="uid://bo8eqqmrfyaqr" path="res://GameWorld/WorldAssets/NatureAssets/WorldMeshes/Oak_Tree_2.fbx" id="1_tfr4h"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_1xmrc"]
+
+[node name="Oak_Tree_2" unique_id=1417846036 instance=ExtResource("1_tfr4h")]
+
+[node name="CollisionShape3D" parent="Oak_Tree_2/StaticBody3D" parent_id_path=PackedInt32Array(1071480586) index="0" unique_id=449394193]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6380955, 0)
+shape = SubResource("CylinderShape3D_1xmrc")
