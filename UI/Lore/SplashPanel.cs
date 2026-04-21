@@ -10,20 +10,17 @@ public partial class SplashPanel : Control
     [Export] public float MaxDelayBetweenLabelsSeconds = 20.0f;
     [Export] public float FadeDurationSeconds = 0.7f;
 
-    public override async void _Ready()
-    {
+    public override async void _Ready() {
         ColorRect labelContainer = GetNodeOrNull<ColorRect>("ColorRect");
 
-        if (labelContainer == null)
-        {
+        if (labelContainer == null) {
             GD.PushError("SplashPanel: 'ColorRect' node was not found.");
             return;
         }
 
         List<Label> labels = new();
 
-        foreach (Node child in labelContainer.GetChildren())
-        {
+        foreach (Node child in labelContainer.GetChildren()) {
             if (child is Label label)
             {
                 labels.Add(label);
@@ -33,37 +30,30 @@ public partial class SplashPanel : Control
             }
         }
 
-        if (labels.Count == 0)
-        {
+        if (labels.Count == 0) {
             GD.PushWarning("SplashPanel: No Label children were found under 'ColorRect'.");
             return;
         }
 
-        if (InitialDelaySeconds > 0f)
-        {
+        if (InitialDelaySeconds > 0f) {
             await ToSignal(GetTree().CreateTimer(InitialDelaySeconds), SceneTreeTimer.SignalName.Timeout);
         }
 
-        for (int i = 0; i < labels.Count; i++)
-        {
+        for (int i = 0; i < labels.Count; i++) {
             ShowLabelWithReveal(labels[i]);
 
-            if (i < labels.Count - 1)
-            {
+            if (i < labels.Count - 1) {
                 float waitSeconds = GetDelayForLabel(labels[i]);
 
-                if (waitSeconds > 0f)
-                {
+                if (waitSeconds > 0f){
                     await ToSignal(GetTree().CreateTimer(waitSeconds), SceneTreeTimer.SignalName.Timeout);
                 }
             }
         }
     }
 
-    private float GetDelayForLabel(Label label)
-    {
-        if (!UseDynamicDelayByTextLength || ReadingCharactersPerSecond <= 0f)
-        {
+    private float GetDelayForLabel(Label label) {
+        if (!UseDynamicDelayByTextLength || ReadingCharactersPerSecond <= 0f){
             return DelayBetweenLabelsSeconds;
         }
 
@@ -73,8 +63,7 @@ public partial class SplashPanel : Control
         return Mathf.Clamp(targetDelaySeconds, DelayBetweenLabelsSeconds, MaxDelayBetweenLabelsSeconds);
     }
 
-    private void ShowLabelWithReveal(Label label)
-    {
+    private void ShowLabelWithReveal(Label label) {
         label.Visible = true;
 
         Tween tween = CreateTween();

@@ -9,12 +9,22 @@
 [ext_resource type="PackedScene" uid="uid://crye0f0yw8xrb" path="res://UI/PauseMenu/PauseMenu.tscn" id="5_jmlhc"]
 [ext_resource type="Script" uid="uid://bovlwauji4mth" path="res://Inventory/Interface/InventoryUI.cs" id="5_q8dl0"]
 [ext_resource type="PackedScene" uid="uid://bffohbw4kmhwa" path="res://Inventory/Interface/Inventory.tscn" id="6_785o0"]
-[ext_resource type="PackedScene" uid="uid://bjql4hi1q0ouh" path="res://UI/QuestLog/QuestLog.tscn" id="8_6ymr8"]
+[ext_resource type="PackedScene" uid="uid://bjql4hi1q0ouh" path="res://QuestSystem/QuestLog.tscn" id="8_6ymr8"]
 [ext_resource type="PackedScene" uid="uid://2mdnsh082j66" path="res://UI/RespawnMenu/RespawnMenu.tscn" id="8_10ibt"]
 [ext_resource type="PackedScene" uid="uid://n150xowq1ipg" path="res://Inventory/InventoryItem/InventoryItemInformationUITemplate.tscn" id="9_2y2n3"]
 [ext_resource type="PackedScene" uid="uid://bmo8vs5v4lyqv" path="res://Crafting/Interface/CraftingUI.tscn" id="9_y8qxg"]
 [ext_resource type="Script" uid="uid://cl6aplc7wunof" path="res://Inventory/InventoryItem/InventoryItemInformationUI.cs" id="10_y8qxg"]
 [ext_resource type="PackedScene" uid="uid://bfiyahye18w1t" path="res://UI/HUD/WinMenu.tscn" id="15_cgpfr"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_cgpfr"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dwvm7"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_w7vs1"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_mojvy"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_4c1es"]
 
 [node name="HUD" type="Control" unique_id=935922708 node_paths=PackedStringArray("PauseButton", "PauseMenu", "Inventory", "CraftingUI", "InventoryItemInformationUI", "Chest", "QuestLog", "Hotbar", "RespawnMenu", "HealthBar", "WinMenu")]
 layout_mode = 3
@@ -48,6 +58,11 @@ offset_right = 24.5
 offset_bottom = 75.0
 grow_horizontal = 2
 theme_override_icons/icon = ExtResource("2_785o0")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_cgpfr")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_dwvm7")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_w7vs1")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_mojvy")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_4c1es")
 expand_icon = true
 
 [node name="PauseMenu" parent="." unique_id=144172425 instance=ExtResource("5_jmlhc")]
