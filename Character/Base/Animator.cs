@@ -77,14 +77,18 @@ public sealed partial class Animator : AnimationPlayer {
 	}
 
 	private void SetupSfx() {
-		if(!IsPlayerAnimator) { return; }
+		if(Character is not Player player) { return; }
 
 		Audio = new PlayerAudio {
 			WalkStepIntervalSeconds = WalkStepIntervalSeconds,
 			SprintStepIntervalSeconds = SprintStepIntervalSeconds,
 		};
 		AddChild(Audio);
-		Audio.Setup();
+		CallDeferred(nameof(SetupPlayerAudioDeferred), player);
+	}
+
+	private void SetupPlayerAudioDeferred(Player player) {
+		Audio?.Setup(player);
 	}
 
 	private void SetupAnimations() {
