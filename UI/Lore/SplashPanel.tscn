@@ -1,0 +1,154 @@
+[gd_scene format=3 uid="uid://pkgl5obnc7eh"]
+
+[ext_resource type="Script" uid="uid://j3rjkhhu02uq" path="res://UI/Lore/SplashPanel.cs" id="1"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gxyg8"]
+
+[node name="SplashPanel" type="Control" unique_id=865181656]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=2099039547]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.011702106, 0.011702109, 0.011702107, 1)
+
+[node name="Thirty" type="Label" parent="ColorRect" unique_id=1776285162]
+layout_mode = 0
+offset_left = 64.0
+offset_top = 64.0
+offset_right = 616.0
+offset_bottom = 115.0
+theme_override_font_sizes/font_size = 40
+theme_override_styles/normal = SubResource("StyleBoxEmpty_gxyg8")
+text = "Thirty years ago, the sky burned."
+
+[node name="A" type="Label" parent="ColorRect" unique_id=1425784564]
+layout_mode = 0
+offset_left = 64.0
+offset_top = 136.0
+offset_right = 1162.0
+offset_bottom = 187.0
+theme_override_font_sizes/font_size = 40
+theme_override_styles/normal = SubResource("StyleBoxEmpty_gxyg8")
+text = "A solar flare silenced the world’s machines and tore the earth apart."
+
+[node name="Radiation" type="Label" parent="ColorRect" unique_id=451833078]
+layout_mode = 0
+offset_left = 64.0
+offset_top = 208.0
+offset_right = 1205.0
+offset_bottom = 259.0
+theme_override_font_sizes/font_size = 40
+theme_override_styles/normal = SubResource("StyleBoxEmpty_gxyg8")
+text = "Radiation spires rose from the fractures, and civilization fell into ruin."
+
+[node name="Now" type="Label" parent="ColorRect" unique_id=1140803372]
+layout_mode = 0
+offset_left = 64.0
+offset_top = 280.0
+offset_right = 1264.0
+offset_bottom = 331.0
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 40
+theme_override_styles/normal = SubResource("StyleBoxEmpty_gxyg8")
+text = "Now, scattered kingdoms cling to survival in the shadow of the wasteland."
+
+[node name="You" type="Label" parent="ColorRect" unique_id=410294897]
+layout_mode = 0
+offset_left = 64.0
+offset_top = 352.0
+offset_right = 820.0
+offset_bottom = 403.0
+theme_override_font_sizes/font_size = 40
+theme_override_styles/normal = SubResource("StyleBoxEmpty_gxyg8")
+text = "You are Roland, knight of the Order of Astra."
+
+[node name="On" type="Label" parent="ColorRect" unique_id=138435002]
+layout_mode = 0
+offset_left = 64.0
+offset_top = 432.0
+offset_right = 1223.0
+offset_bottom = 483.0
+theme_override_font_sizes/font_size = 40
+theme_override_styles/normal = SubResource("StyleBoxEmpty_gxyg8")
+text = "On a mission from Lindel to find a lost device that can cleanse the land."
+
+[node name="You2" type="Label" parent="ColorRect" unique_id=1413987459]
+layout_mode = 0
+offset_left = 64.0
+offset_top = 504.0
+offset_right = 645.0
+offset_bottom = 555.0
+theme_override_font_sizes/font_size = 40
+theme_override_styles/normal = SubResource("StyleBoxEmpty_gxyg8")
+text = "You never reached your destination."
+
+[node name="Ambushed" type="Label" parent="ColorRect" unique_id=1953598837]
+layout_mode = 0
+offset_left = 64.0
+offset_top = 584.0
+offset_right = 1598.0
+offset_bottom = 635.0
+theme_override_font_sizes/font_size = 40
+theme_override_styles/normal = SubResource("StyleBoxEmpty_gxyg8")
+text = "Ambushed by Meldoran warriors, you were stripped of your gear and left for dead on the road."
+
+[node name="Injured" type="Label" parent="ColorRect" unique_id=1668855138]
+layout_mode = 0
+offset_left = 64.0
+offset_top = 664.0
+offset_right = 506.0
+offset_bottom = 715.0
+theme_override_font_sizes/font_size = 40
+theme_override_styles/normal = SubResource("StyleBoxEmpty_gxyg8")
+text = "Injured. Unarmed. Alone."
+
+[node name="Your" type="Label" parent="ColorRect" unique_id=1882404760]
+layout_mode = 0
+offset_left = 64.0
+offset_top = 744.0
+offset_right = 488.0
+offset_bottom = 795.0
+theme_override_font_sizes/font_size = 40
+theme_override_styles/normal = SubResource("StyleBoxEmpty_gxyg8")
+text = "Your journey begins here."
+
+[node name="Find" type="Label" parent="ColorRect" unique_id=977864161]
+layout_mode = 0
+offset_left = 64.0
+offset_top = 816.0
+offset_right = 251.0
+offset_bottom = 867.0
+theme_override_font_sizes/font_size = 40
+theme_override_styles/normal = SubResource("StyleBoxEmpty_gxyg8")
+text = "Find Help."
+
+[node name="Find2" type="Label" parent="ColorRect" unique_id=1006094723]
+layout_mode = 0
+offset_left = 64.0
+offset_top = 896.0
+offset_right = 283.0
+offset_bottom = 947.0
+theme_override_font_sizes/font_size = 40
+theme_override_styles/normal = SubResource("StyleBoxEmpty_gxyg8")
+text = "Find Shelter."
+
+[node name="Take" type="Label" parent="ColorRect" unique_id=1908135480]
+layout_mode = 0
+offset_left = 64.0
+offset_top = 968.0
+offset_right = 520.0
+offset_bottom = 1019.0
+theme_override_font_sizes/font_size = 40
+theme_override_styles/normal = SubResource("StyleBoxEmpty_gxyg8")
+text = "Take back what was stolen."
