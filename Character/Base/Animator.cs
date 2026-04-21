@@ -132,7 +132,7 @@ public sealed partial class Animator : AnimationPlayer {
 		bool landed = from == CharState.Falling && to != CharState.Falling;
 
 		if(jumped) {
-			Audio?.PlayFootstep(0.90f, -3.0f);
+			Audio?.PlayFootstep(0.90f, -10.0f);
 			PlayingAnimation = AnimState.Jumping;
 		}
 		else if(landed) {

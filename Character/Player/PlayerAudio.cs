@@ -6,7 +6,7 @@ using CharState = CharacterBase.State;
 
 public sealed partial class PlayerAudio : Node {
 	private static readonly LogService Log = new(nameof(PlayerAudio), enabled: true);
-	private const string StepSoundPath = "res://Assets/Audio/step.wav";
+	private const string StepSoundPath = "res://Assets/Audio/newstep.wav";
 
 	private AudioStreamPlayer? StepPlayer;
 	private AudioStream? StepSound;
@@ -26,7 +26,7 @@ public sealed partial class PlayerAudio : Node {
 		StepPlayer = new AudioStreamPlayer {
 			Name = "StepSfx",
 			Bus = "SFX",
-			VolumeDb = -5.0f,
+			VolumeDb = -12.0f,
 			Stream = StepSound,
 		};
 
@@ -42,7 +42,7 @@ public sealed partial class PlayerAudio : Node {
 		}
 	}
 
-	public void PlayFootstep(float pitch = 1.0f, float volumeDb = -5.0f) {
+	public void PlayFootstep(float pitch = 1.0f, float volumeDb = -12.0f) {
 		if(StepPlayer == null || StepSound == null) { return; }
 
 		StepPlayer.PitchScale = pitch + (float) GD.RandRange(-0.03, 0.03);
@@ -55,7 +55,7 @@ public sealed partial class PlayerAudio : Node {
 		if(StepPlayer == null || StepSound == null) { return; }
 
 		StepPlayer.PitchScale = 0.82f;
-		StepPlayer.VolumeDb = -1.5f;
+		StepPlayer.VolumeDb = -8.5f;
 		StepPlayer.Play();
 		LastFootstepTime = Time.GetTicksMsec() / 1000.0;
 	}
