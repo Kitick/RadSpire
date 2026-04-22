@@ -8,6 +8,8 @@ using CharState = CharacterBase.State;
 public sealed partial class Animator : AnimationPlayer {
 	private static readonly LogService Log = new(nameof(Animator), enabled: true);
 
+	private PlayerAudio? Audio;
+
 	[ExportCategory("References")]
 	[Export] private CharacterBase Character = null!;
 
@@ -24,8 +26,12 @@ public sealed partial class Animator : AnimationPlayer {
 
 	[ExportCategory("Animation Settings")]
 	[Export] private float SprintSpeed = 1.0f;
+	[Export] private float WalkStepIntervalSeconds = 0.40f;
+	[Export] private float SprintStepIntervalSeconds = 0.24f;
 
 	public enum AnimState { Idle, Walking, Sprinting, Crouching, Jumping, Falling, Landing, Attacking, Dying }
+
+	private bool IsPlayerAnimator => Character is Player;
 
 	private AnimState PlayingAnimation {
 		get;
@@ -47,9 +53,42 @@ public sealed partial class Animator : AnimationPlayer {
 
 	public override void _Ready() {
 		this.ValidateExports();
+		
+		// Manually resolve Character if not already assigned
+		if(Character == null) {
+			CharacterBase? resolved = GetParent()?.GetParent() as CharacterBase;
+			if(resolved == null) {
+				Log.Error("Failed to resolve Character reference for Animator!");
+				return;
+			}
+			Character = resolved;
+		}
+		
+		SetupSfx();
 		Character.OnStateChanged += OnMovement;
 		SetupAnimations();
 		SyncAnimation(Character.CurrentState);
+	}
+
+	public override void _Process(double delta) {
+		if(Audio == null) { return; }
+
+		Audio.ProcessFootsteps(Character.CurrentState, Time.GetTicksMsec() / 1000.0);
+	}
+
+	private void SetupSfx() {
+		if(Character is not Player player) { return; }
+
+		Audio = new PlayerAudio {
+			WalkStepIntervalSeconds = WalkStepIntervalSeconds,
+			SprintStepIntervalSeconds = SprintStepIntervalSeconds,
+		};
+		AddChild(Audio);
+		CallDeferred(nameof(SetupPlayerAudioDeferred), player);
+	}
+
+	private void SetupPlayerAudioDeferred(Player player) {
+		Audio?.Setup(player);
 	}
 
 	private void SetupAnimations() {
@@ -70,6 +109,10 @@ public sealed partial class Animator : AnimationPlayer {
 		if(name == JUMPING || name == LANDING) { SyncAnimation(Character.CurrentState); }
 		else if(name == ATTACK) { Character.OnAttackFinished(); }
 	}
+
+	public void AnimEventFootstep() => Audio?.PlayFootstep();
+
+	public void AnimEventLand() => Audio?.PlayLand();
 
 	public void SyncAnimation(CharState state) {
 		Log.Info($"Syncing animation to: {state}");
@@ -92,8 +135,14 @@ public sealed partial class Animator : AnimationPlayer {
 		bool jumped = from != CharState.Falling && to == CharState.Falling;
 		bool landed = from == CharState.Falling && to != CharState.Falling;
 
-		if(jumped) { PlayingAnimation = AnimState.Jumping; }
-		else if(landed) { PlayingAnimation = AnimState.Landing; }
+		if(jumped) {
+			Audio?.PlayFootstep(0.90f, -10.0f);
+			PlayingAnimation = AnimState.Jumping;
+		}
+		else if(landed) {
+			Audio?.PlayLand();
+			PlayingAnimation = AnimState.Landing;
+		}
 		else { SyncAnimation(to); }
 	}
 }

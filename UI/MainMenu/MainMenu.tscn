@@ -7,7 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://howutpu3c584" path="res://UI/MainMenu/Title.png" id="3_ectev"]
 [ext_resource type="PackedScene" uid="uid://bnjymb23oq215" path="res://Network/Panels/HostPanel.tscn" id="4_jhcbk"]
 [ext_resource type="PackedScene" uid="uid://bg5jxcp2jtwjp" path="res://Network/Panels/JoinPanel.tscn" id="5_32jca"]
-[ext_resource type="AudioStream" uid="uid://c085xb2ydxxcg" path="res://UI/MainMenu/Bpm100_G_Escape_Brass.wav" id="8_1dhmk"]
+[ext_resource type="AudioStream" uid="uid://sqjqwdegx8bb" path="res://Assets/Audio/Radspire_Main_Theme.wav" id="6_1dhmk"]
 
 [node name="MainMenu" type="Control" unique_id=2104341140 node_paths=PackedStringArray("ButtonPanel", "SingleplayerButton", "MultiplayerButton", "SettingsButton", "ExtrasButton", "QuitButton", "SingleplayerPanel", "ContinueButton", "LoadSavedButton", "StartNewButton", "MultiplayerPanel", "HostNewButton", "HostSavedButton", "JoinGameButton")]
 layout_mode = 3
@@ -37,7 +37,7 @@ HostPanelScene = ExtResource("4_jhcbk")
 JoinPanelScene = ExtResource("5_32jca")
 
 [node name="Music" type="AudioStreamPlayer" parent="." unique_id=2128160467]
-stream = ExtResource("8_1dhmk")
+stream = ExtResource("6_1dhmk")
 autoplay = true
 bus = &"Music"
 
@@ -113,6 +113,7 @@ disabled = true
 text = "Multiplayer"
 
 [node name="Multiplayer_Popup" type="VBoxContainer" parent="ButtonPanel/Multiplayer_Button" unique_id=1142054968]
+visible = false
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 1.0
