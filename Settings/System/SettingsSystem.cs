@@ -12,8 +12,6 @@ public static class SettingSystem {
 		new SettingsData {
 			Display = DisplaySettings.Export(),
 			Audio = AudioSettings.Export(),
-			General = GeneralSettings.Export(),
-			Accessibility = AccessibilitySettings.Export(),
 			Controller = ControllerSettings.Export(),
 			MouseKeyboard = MouseKeyboardSettings.Export(),
 		}.Save(SaveFile);
@@ -26,14 +24,20 @@ public static class SettingSystem {
 			return false;
 		}
 
-		var data = SaveService.Load<SettingsData>(SaveFile);
-		DisplaySettings.Import(data.Display);
-		AudioSettings.Import(data.Audio);
-		GeneralSettings.Import(data.General);
-		AccessibilitySettings.Import(data.Accessibility);
-		ControllerSettings.Import(data.Controller);
-		MouseKeyboardSettings.Import(data.MouseKeyboard);
+		try {
+			SettingsData data = SaveService.Load<SettingsData>(SaveFile);
+			DisplaySettings.Import(data.Display);
+			AudioSettings.Import(data.Audio);
+			ControllerSettings.Import(data.Controller);
+			MouseKeyboardSettings.Import(data.MouseKeyboard);
+		}
+		catch(Exception e) {
+			Log.Info($"Settings file invalid, resetting to defaults: {e.Message}");
+			Save();
+			return false;
+		}
 
+		Save();
 		Log.Info("Settings loaded");
 		return true;
 	}
@@ -41,8 +45,6 @@ public static class SettingSystem {
 	public static void Apply() {
 		DisplaySettings.Apply();
 		AudioSettings.Apply();
-		GeneralSettings.Apply();
-		AccessibilitySettings.Apply();
 		ControllerSettings.Apply();
 		MouseKeyboardSettings.Apply();
 	}
@@ -50,8 +52,6 @@ public static class SettingSystem {
 	public static void Reset() {
 		DisplaySettings.Reset();
 		AudioSettings.Reset();
-		GeneralSettings.Reset();
-		AccessibilitySettings.Reset();
 		ControllerSettings.Reset();
 		MouseKeyboardSettings.Reset();
 	}
@@ -105,8 +105,6 @@ public static class SettingExtensions {
 public readonly record struct SettingsData : ISaveData {
 	public DisplayData Display { get; init; }
 	public AudioData Audio { get; init; }
-	public GeneralData General { get; init; }
-	public AccessibilityData Accessibility { get; init; }
 	public ControllerData Controller { get; init; }
 	public MouseKeyboardData MouseKeyboard { get; init; }
 }
