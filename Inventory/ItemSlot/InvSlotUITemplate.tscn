@@ -13,6 +13,8 @@ corner_radius_top_right = 4
 corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_q5s1d"]
+
 [node name="InvSlotUI" type="Panel" unique_id=932717418]
 z_index = 5
 custom_minimum_size = Vector2(57, 62)
@@ -39,4 +41,5 @@ offset_left = 0.9375
 offset_top = 39.8475
 offset_right = 55.9375
 offset_bottom = 62.8475
+theme_override_styles/normal = SubResource("StyleBoxEmpty_q5s1d")
 horizontal_alignment = 2

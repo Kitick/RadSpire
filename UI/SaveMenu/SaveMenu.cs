@@ -15,7 +15,7 @@ public sealed partial class SaveMenu : Control {
 
 	[ExportCategory("Slot Style")]
 	[Export] private Texture2D? SlotIcon;
-	[Export] private int SlotFontSize = 128;
+	[Export] private int SlotFontSize = 48;
 
 	private const int SlotCount = 5;
 
