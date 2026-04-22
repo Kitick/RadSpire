@@ -76,12 +76,12 @@ public class Setting<T> : ISetting {
 		set { Log.Info($"Set {value}"); SetActual(value); }
 	}
 
-	public Setting(string name, Func<T> getActual, Action<T> setActual, T defaultValue) {
+	public Setting(string name, Func<T> getActual, Action<T> setActual, T defaultValue, bool skipTargetInit = false) {
 		Log = new LogService(name, enabled: true);
 		GetActual = getActual;
 		SetActual = setActual;
-		Target = defaultValue;
 		Default = defaultValue;
+		if(!skipTargetInit) Target = defaultValue;
 	}
 
 	protected virtual T ProcessTarget(T value) => value;
@@ -101,13 +101,17 @@ public sealed class SliderSetting<T> : Setting<T>, ISliderSetting where T : stru
 	double ISliderSetting.Step => double.CreateTruncating(Step);
 
 	public SliderSetting(string name, Func<T> getActual, Action<T> setActual, T defaultValue, T min, T max, T step)
-		: base(name, getActual, setActual, defaultValue) {
+		: base(name, getActual, setActual, defaultValue, skipTargetInit: true) {
 		Min = min;
 		Max = max;
 		Step = step;
+		Target = defaultValue;
 	}
 
-	protected override T ProcessTarget(T value) => T.Clamp(value, Min, Max).Round(Step);
+	protected override T ProcessTarget(T value) {
+		if(Step == default) return value;
+		return T.Clamp(value, Min, Max).Round(Step);
+	}
 }
 
 public sealed class OptionSetting<T> : Setting<T>, IOptionSetting where T : notnull {
@@ -116,11 +120,13 @@ public sealed class OptionSetting<T> : Setting<T>, IOptionSetting where T : notn
 	object[] IOptionSetting.Options => Array.ConvertAll(Options, o => (object) o);
 
 	public OptionSetting(string name, Func<T> getActual, Action<T> setActual, T[] options, T? defaultValue = default)
-		: base(name, getActual, setActual, defaultValue ?? options[0]) {
+		: base(name, getActual, setActual, defaultValue ?? options[0], skipTargetInit: true) {
 		Options = options;
+		Target = Default;
 	}
 
 	protected override T ProcessTarget(T value) {
+		if(Options is null) return value;
 		foreach(T option in Options) {
 			if(option.Equals(value)) return value;
 		}
