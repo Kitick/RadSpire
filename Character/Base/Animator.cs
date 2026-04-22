@@ -34,8 +34,6 @@ public sealed partial class Animator : AnimationPlayer {
 	[Export] private float WalkStepIntervalSeconds = 0.40f;
 	[Export] private float SprintStepIntervalSeconds = 0.24f;
 
-	public enum AnimState { Idle, Walking, Sprinting, Crouching, Jumping, Falling, Landing, Attacking, Dying }
-
 	private bool IsPlayerAnimator => Character is Player;
 	[Export] private float AttackSpeed = 1.0f;
 	[Export] private float AttackBlend = 0.02f;
