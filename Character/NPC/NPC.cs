@@ -12,6 +12,8 @@ public sealed partial class NPC : CharacterBody3D, ISaveable<NPCData> {
 	public string Id { get; set; } = Guid.NewGuid().ToString();
 
 	[Export] private NPCID Identity = NPCID.None;
+	[Export] private string NPCName = string.Empty;
+	[Export(PropertyHint.MultilineText)] private string Dialogue = string.Empty;
 
 	public event Action<NPCID>? Talked;
 	public event Action<string?>? InteractionPromptChanged;

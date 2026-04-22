@@ -14,8 +14,7 @@ public sealed partial class SaveMenu : Control {
 	[Export] private Container SlotContainer = null!;
 
 	[ExportCategory("Slot Style")]
-	[Export] private Texture2D? SlotIcon;
-	[Export] private int SlotFontSize = 128;
+	[Export] private int SlotFontSize = 48;
 
 	private const int SlotCount = 5;
 
@@ -56,7 +55,6 @@ public sealed partial class SaveMenu : Control {
 			var button = new Button {
 				Name = $"Slot{slot}",
 				Text = $"Slot {slot}",
-				Icon = SlotIcon,
 			};
 
 			button.AddThemeFontSizeOverride("font_size", SlotFontSize);
@@ -98,8 +96,7 @@ public sealed partial class SaveMenu : Control {
 		if(Mode == SaveMode.Save) {
 			Log.Info($"Save requested: {fileName}");
 			OnSave?.Invoke(fileName);
-		}
-		else if(Mode == SaveMode.Load) {
+		} else if(Mode == SaveMode.Load) {
 			Log.Info($"Load requested: {fileName}");
 			OnLoad?.Invoke(fileName);
 		}
