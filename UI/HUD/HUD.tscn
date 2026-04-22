@@ -14,6 +14,7 @@
 [ext_resource type="PackedScene" uid="uid://n150xowq1ipg" path="res://Inventory/InventoryItem/InventoryItemInformationUITemplate.tscn" id="9_2y2n3"]
 [ext_resource type="PackedScene" uid="uid://bmo8vs5v4lyqv" path="res://Crafting/Interface/CraftingUI.tscn" id="9_y8qxg"]
 [ext_resource type="Script" uid="uid://cl6aplc7wunof" path="res://Inventory/InventoryItem/InventoryItemInformationUI.cs" id="10_y8qxg"]
+[ext_resource type="Script" uid="uid://b065qjlwc3v4i" path="res://QuestSystem/QuestLog.cs" id="13_dwvm7"]
 [ext_resource type="PackedScene" uid="uid://bfiyahye18w1t" path="res://UI/HUD/WinMenu.tscn" id="15_cgpfr"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_cgpfr"]
@@ -128,19 +129,19 @@ offset_bottom = 458.0
 script = ExtResource("10_y8qxg")
 
 [node name="QuestLog" parent="." unique_id=1556372553 instance=ExtResource("8_6ymr8")]
-visible = false
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = 176.0
-offset_top = -99.0
-offset_right = 651.0
-offset_bottom = 251.0
+offset_left = 640.0
+offset_top = -476.0
+offset_right = 896.0
+offset_bottom = -126.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("13_dwvm7")
 
 [node name="Hotbar" parent="." unique_id=546357907 instance=ExtResource("5_c358i")]
 layout_mode = 1

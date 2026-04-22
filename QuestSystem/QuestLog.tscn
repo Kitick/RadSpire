@@ -8,11 +8,9 @@ offset_bottom = 350.0
 
 [node name="QuestPanel" type="ColorRect" parent="." unique_id=1277967201]
 layout_mode = 1
-anchors_preset = -1
-anchor_right = 0.87500006
-anchor_bottom = 0.869
-offset_right = -1.5258789e-05
-offset_bottom = -0.1499939
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.4509804, 0.2627451, 0.1882353, 0.6392157)
@@ -27,7 +25,7 @@ anchor_bottom = 0.116000004
 offset_right = -1.5258789e-05
 offset_bottom = -0.12000275
 grow_horizontal = 2
-text = "Quest Name"
+text = "Left for Dead"
 horizontal_alignment = 1
 
 [node name="QuestList" type="ItemList" parent="QuestPanel" unique_id=923011852]
@@ -46,10 +44,11 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_constants/h_separation = 8
 theme_override_constants/v_separation = 12
 theme_override_constants/line_separation = 2
-theme_override_font_sizes/font_size = 13
+theme_override_font_sizes/font_size = 16
 allow_search = false
 max_text_lines = 6
-item_count = 2
+item_count = 3
 same_column_width = true
-item_0/text = "> Find Pablo"
-item_1/text = "> Gather materials"
+item_0/text = "Find Help"
+item_1/text = "Find Shelter"
+item_2/text = "Find Stolen Items"
