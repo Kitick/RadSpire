@@ -2,7 +2,7 @@ namespace Settings;
 
 using System;
 using System.Numerics;
-using Godot;
+using Root;
 using Services;
 
 public static class SettingSystem {
@@ -107,7 +107,25 @@ public sealed class SliderSetting<T> : Setting<T>, ISliderSetting where T : stru
 		Step = step;
 	}
 
-	protected override T ProcessTarget(T value) => T.Clamp(value, Min, Max);
+	protected override T ProcessTarget(T value) => T.Clamp(value, Min, Max).Round(Step);
+}
+
+public sealed class OptionSetting<T> : Setting<T>, IOptionSetting where T : notnull {
+	public T[] Options { get; }
+
+	object[] IOptionSetting.Options => Array.ConvertAll(Options, o => (object) o);
+
+	public OptionSetting(string name, Func<T> getActual, Action<T> setActual, T[] options, T? defaultValue = default)
+		: base(name, getActual, setActual, defaultValue ?? options[0]) {
+		Options = options;
+	}
+
+	protected override T ProcessTarget(T value) {
+		foreach(T option in Options) {
+			if(option.Equals(value)) return value;
+		}
+		return Default;
+	}
 }
 
 public interface ISetting {
@@ -121,6 +139,10 @@ public interface ISliderSetting {
 	double Step { get; }
 }
 
+public interface IOptionSetting {
+	object[] Options { get; }
+}
+
 public static class SliderExtensions {
 	public static void ApplyBounds(this Godot.HSlider slider, ISliderSetting setting) {
 		slider.MinValue = setting.Min;
@@ -128,6 +150,7 @@ public static class SliderExtensions {
 		slider.Step = setting.Step;
 	}
 }
+
 
 public static class SettingExtensions {
 	public static void Apply(this ISetting[] settings) {

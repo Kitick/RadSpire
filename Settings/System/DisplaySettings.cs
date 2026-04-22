@@ -17,11 +17,17 @@ public static class DisplaySettings {
 		}
 	}
 
-	public static readonly Setting<Resolution> Resolution = new(
+	public static readonly OptionSetting<Resolution> Resolution = new(
 		name: nameof(Resolution),
-		getActual: () => { var s = DisplayServer.WindowGetSize(); return new Resolution { Width = s.X, Height = s.Y }; },
+		getActual: () => { Vector2I s = DisplayServer.WindowGetSize(); return new Resolution { Width = s.X, Height = s.Y }; },
 		setActual: v => DisplayServer.WindowSetSize(v.ToVector2I()),
-		defaultValue: new Resolution { Width = 1280, Height = 720 }
+		options: [
+			new Resolution { Width = 1280, Height = 720 },
+			new Resolution { Width = 1600, Height = 900 },
+			new Resolution { Width = 1920, Height = 1080 },
+			new Resolution { Width = 2560, Height = 1440 },
+			new Resolution { Width = 3840, Height = 2160 },
+		]
 	);
 
 	public static readonly Setting<bool> IsFullscreen = new(
@@ -54,11 +60,18 @@ public static class DisplaySettings {
 		step: 0.1f
 	);
 
-	public static readonly Setting<int> MaxFps = new(
+	public static readonly OptionSetting<Framerate> MaxFps = new(
 		name: nameof(MaxFps),
-		getActual: () => Engine.MaxFps,
-		setActual: v => Engine.MaxFps = v,
-		defaultValue: 0
+		getActual: () => new Framerate { Value = Engine.MaxFps },
+		setActual: v => Engine.MaxFps = v.Value,
+		options: [
+			new Framerate { Value = 0 },
+			new Framerate { Value = 30 },
+			new Framerate { Value = 60 },
+			new Framerate { Value = 120 },
+			new Framerate { Value = 144 },
+			new Framerate { Value = 165 },
+		]
 	);
 
 	private static readonly ISetting[] All = [Resolution, IsFullscreen, IsVSync, Brightness, MaxFps];
@@ -81,6 +94,7 @@ public static class DisplaySettings {
 		Brightness.Target = data.Brightness ?? Brightness.Default;
 		MaxFps.Target = data.FPSCap ?? MaxFps.Default;
 	}
+
 }
 
 public readonly record struct Resolution {
@@ -104,5 +118,5 @@ public readonly record struct DisplayData : ISaveData {
 	public bool? IsFullscreen { get; init; }
 	public bool? IsVSyncEnabled { get; init; }
 	public float? Brightness { get; init; }
-	public int? FPSCap { get; init; }
+	public Framerate? FPSCap { get; init; }
 }
