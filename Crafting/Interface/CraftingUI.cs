@@ -12,7 +12,6 @@ public sealed partial class CraftingUI : Control {
 	private static readonly LogService Log = new(nameof(CraftingUI), enabled: true);
 
 	[Export] private OptionButton CraftableDropdown = null!;
-	[Export] private OptionButton NonCraftableDropdown = null!;
 	[Export] private ItemList RequirementsList = null!;
 	[Export] private Button CraftButton = null!;
 	[Export] private LineEdit QuantityDisplay = null!;
@@ -20,7 +19,6 @@ public sealed partial class CraftingUI : Control {
 	[Export] private Button NegButton = null!;
 	[Export] private Control MainBackground = null!;
 	[Export] private Control LightBackground = null!;
-	[Export] private Control TabBackground = null!;
 
 	private readonly List<CraftingRecipe> CraftableRecipes = [];
 	private readonly List<CraftingRecipe> NonCraftableRecipes = [];
@@ -47,7 +45,6 @@ public sealed partial class CraftingUI : Control {
 		MouseFilter = MouseFilterEnum.Ignore;
 		MainBackground.MouseFilter = MouseFilterEnum.Ignore;
 		LightBackground.MouseFilter = MouseFilterEnum.Ignore;
-		TabBackground.MouseFilter = MouseFilterEnum.Ignore;
 	}
 
 	private void SetCallbacks() {
@@ -56,16 +53,10 @@ public sealed partial class CraftingUI : Control {
 		NegButton.Pressed += () => Quantity--;
 
 		CraftableDropdown.ItemSelected += (_) => OnCraftableSelected();
-		NonCraftableDropdown.ItemSelected += (_) => OnNonCraftableSelected();
 	}
 
 	private void OnCraftableSelected() {
 		SelectedRecipe = CraftableDropdown.GetSelectedItem(CraftableRecipes);
-		UpdateSelectedRequirements();
-	}
-
-	private void OnNonCraftableSelected() {
-		SelectedRecipe = NonCraftableDropdown.GetSelectedItem(NonCraftableRecipes);
 		UpdateSelectedRequirements();
 	}
 
@@ -82,7 +73,6 @@ public sealed partial class CraftingUI : Control {
 		}
 
 		CraftableDropdown.Populate(CraftableRecipes);
-		NonCraftableDropdown.Populate(NonCraftableRecipes);
 
 		if(CraftableRecipes.Count > 0) {
 			SelectedRecipe = CraftableRecipes[0];
