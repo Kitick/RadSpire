@@ -3,8 +3,19 @@ namespace Root;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Reflection;
 using Godot;
+using Quaternion = Godot.Quaternion;
+using Vector3 = Godot.Vector3;
+
+public static class NumericExtensions {
+	public static T Round<T>(this T value, T? step = default) where T : INumber<T> {
+		double d = double.CreateTruncating(value);
+		double s = step is T t ? double.CreateTruncating(t) : 1.0;
+		return T.CreateTruncating(Math.Round(d / s) * s);
+	}
+}
 
 public static class MathExtensions {
 	// Vector Components
