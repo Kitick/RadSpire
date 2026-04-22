@@ -4,11 +4,14 @@ using Godot;
 using Services;
 
 public static class MouseKeyboardSettings {
-	public static readonly Setting<float> MouseSensitivity = new(
+	public static readonly SliderSetting<float> MouseSensitivity = new(
 		name: nameof(MouseSensitivity),
 		getActual: () => MouseSensitivity!.Target,
 		setActual: v => { },
-		defaultValue: 0.5f
+		defaultValue: 0.5f,
+		min: 0.1f,
+		max: 2f,
+		step: 0.1f
 	);
 
 	public static readonly Setting<bool> InvertedYAxis = new(
@@ -37,14 +40,14 @@ public static class MouseKeyboardSettings {
 	};
 
 	public static void Import(MouseKeyboardData data) {
-		MouseSensitivity.Target = data.MouseSensitivity;
-		InvertedYAxis.Target = data.InvertedYAxis;
-		RawInput.Target = data.RawInput;
+		MouseSensitivity.Target = data.MouseSensitivity ?? MouseSensitivity.Default;
+		InvertedYAxis.Target = data.InvertedYAxis ?? InvertedYAxis.Default;
+		RawInput.Target = data.RawInput ?? RawInput.Default;
 	}
 }
 
 public readonly record struct MouseKeyboardData : ISaveData {
-	public float MouseSensitivity { get; init; }
-	public bool InvertedYAxis { get; init; }
-	public bool RawInput { get; init; }
+	public float? MouseSensitivity { get; init; }
+	public bool? InvertedYAxis { get; init; }
+	public bool? RawInput { get; init; }
 }

@@ -38,7 +38,7 @@ public static class DisplaySettings {
 		defaultValue: false
 	);
 
-	public static readonly Setting<float> Brightness = new(
+	public static readonly SliderSetting<float> Brightness = new(
 		name: nameof(Brightness),
 		getActual: () => WorldEnv?.Environment.AdjustmentBrightness ?? 1f,
 		setActual: v => {
@@ -48,7 +48,10 @@ public static class DisplaySettings {
 			}
 			WorldEnv.Environment.AdjustmentBrightness = v;
 		},
-		defaultValue: 1f
+		defaultValue: 1f,
+		min: 0.2f,
+		max: 2f,
+		step: 0.1f
 	);
 
 	public static readonly Setting<int> MaxFps = new(
@@ -72,11 +75,11 @@ public static class DisplaySettings {
 	};
 
 	public static void Import(DisplayData data) {
-		Resolution.Target = data.Resolution;
-		IsFullscreen.Target = data.IsFullscreen;
-		IsVSync.Target = data.IsVSyncEnabled;
-		Brightness.Target = data.Brightness;
-		MaxFps.Target = data.FPSCap;
+		Resolution.Target = data.Resolution ?? Resolution.Default;
+		IsFullscreen.Target = data.IsFullscreen ?? IsFullscreen.Default;
+		IsVSync.Target = data.IsVSyncEnabled ?? IsVSync.Default;
+		Brightness.Target = data.Brightness ?? Brightness.Default;
+		MaxFps.Target = data.FPSCap ?? MaxFps.Default;
 	}
 }
 
@@ -97,9 +100,9 @@ public readonly record struct Framerate {
 }
 
 public readonly record struct DisplayData : ISaveData {
-	public Resolution Resolution { get; init; }
-	public bool IsFullscreen { get; init; }
-	public bool IsVSyncEnabled { get; init; }
-	public float Brightness { get; init; }
-	public int FPSCap { get; init; }
+	public Resolution? Resolution { get; init; }
+	public bool? IsFullscreen { get; init; }
+	public bool? IsVSyncEnabled { get; init; }
+	public float? Brightness { get; init; }
+	public int? FPSCap { get; init; }
 }

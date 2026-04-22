@@ -12,6 +12,7 @@ public sealed partial class MkPanel : VBoxContainer {
 
 	public override void _Ready() {
 		this.ValidateExports();
+		MouseSenseSlider.ApplyBounds(MouseKeyboardSettings.MouseSensitivity);
 		SetCallbacks();
 	}
 

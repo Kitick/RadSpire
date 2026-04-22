@@ -5,25 +5,34 @@ using Godot;
 using Services;
 
 public static class AudioSettings {
-	public static readonly Setting<int> MasterVolume = new(
+	public static readonly SliderSetting<int> MasterVolume = new(
 		name: nameof(MasterVolume),
 		getActual: () => AudioBus.Master.GetVolume(),
 		setActual: v => AudioBus.Master.SetVolume(v),
-		defaultValue: 100
+		defaultValue: 100,
+		min: 0,
+		max: 100,
+		step: 1
 	);
 
-	public static readonly Setting<int> MusicVolume = new(
+	public static readonly SliderSetting<int> MusicVolume = new(
 		name: nameof(MusicVolume),
 		getActual: () => AudioBus.Music.GetVolume(),
 		setActual: v => AudioBus.Music.SetVolume(v),
-		defaultValue: 100
+		defaultValue: 100,
+		min: 0,
+		max: 100,
+		step: 1
 	);
 
-	public static readonly Setting<int> SFXVolume = new(
+	public static readonly SliderSetting<int> SFXVolume = new(
 		name: nameof(SFXVolume),
 		getActual: () => AudioBus.SFX.GetVolume(),
 		setActual: v => AudioBus.SFX.SetVolume(v),
-		defaultValue: 100
+		defaultValue: 100,
+		min: 0,
+		max: 100,
+		step: 1
 	);
 
 	public static readonly Setting<bool> IsMuted = new(
@@ -54,10 +63,10 @@ public static class AudioSettings {
 	};
 
 	public static void Import(AudioData data) {
-		MasterVolume.Target = data.MasterVolume;
-		MusicVolume.Target = data.MusicVolume;
-		SFXVolume.Target = data.SFXVolume;
-		IsMuted.Target = data.IsMuted;
+		MasterVolume.Target = data.MasterVolume ?? MasterVolume.Default;
+		MusicVolume.Target = data.MusicVolume ?? MusicVolume.Default;
+		SFXVolume.Target = data.SFXVolume ?? SFXVolume.Default;
+		IsMuted.Target = data.IsMuted ?? IsMuted.Default;
 		OutputDevice.Target = data.OutputDevice ?? OutputDevice.Default;
 	}
 }
@@ -90,9 +99,9 @@ public static class AudioBusExtensions {
 }
 
 public readonly record struct AudioData : ISaveData {
-	public int MasterVolume { get; init; }
-	public int MusicVolume { get; init; }
-	public int SFXVolume { get; init; }
-	public bool IsMuted { get; init; }
-	public string OutputDevice { get; init; }
+	public int? MasterVolume { get; init; }
+	public int? MusicVolume { get; init; }
+	public int? SFXVolume { get; init; }
+	public bool? IsMuted { get; init; }
+	public string? OutputDevice { get; init; }
 }
