@@ -1,43 +1,45 @@
 [gd_scene format=3 uid="uid://bjql4hi1q0ouh"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1p556"]
-bg_color = Color(0.7294118, 0.54509807, 0.54509807, 0.7882353)
-border_width_left = 5
-border_width_top = 5
-border_color = Color(0.103743516, 0.103743546, 0.10374344, 1)
-border_blend = true
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-corner_detail = 9
-shadow_color = Color(0, 0, 0, 0.9607843)
-
 [node name="QuestLog" type="Control" unique_id=1742840925]
 layout_mode = 3
 anchors_preset = 0
-offset_right = 475.0
+offset_right = 256.0
 offset_bottom = 350.0
 
 [node name="QuestPanel" type="ColorRect" parent="." unique_id=1277967201]
 layout_mode = 1
 anchors_preset = -1
-anchor_top = 0.2
-anchor_right = 1.0
-anchor_bottom = 1.0
+anchor_right = 0.87500006
+anchor_bottom = 0.869
+offset_right = -1.5258789e-05
+offset_bottom = -0.1499939
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.4509804, 0.2627451, 0.1882353, 0.6392157)
 
+[node name="Quest Name" type="Label" parent="QuestPanel" unique_id=126940546]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.25
+anchor_top = 0.05
+anchor_right = 0.75000006
+anchor_bottom = 0.116000004
+offset_right = -1.5258789e-05
+offset_bottom = -0.12000275
+grow_horizontal = 2
+text = "Quest Name"
+horizontal_alignment = 1
+
 [node name="QuestList" type="ItemList" parent="QuestPanel" unique_id=923011852]
 layout_mode = 1
 anchors_preset = -1
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = 10.0
-offset_top = 10.0
-offset_right = -5.0
-offset_bottom = -10.0
+anchor_left = 0.071
+anchor_top = 0.15
+anchor_right = 0.929
+anchor_bottom = 0.947
+offset_left = 0.09599972
+offset_right = -0.0960083
+offset_bottom = 0.11199951
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
@@ -51,84 +53,3 @@ item_count = 2
 same_column_width = true
 item_0/text = "> Find Pablo"
 item_1/text = "> Gather materials"
-
-[node name="Panel" type="Panel" parent="QuestPanel" unique_id=1451112938]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.5
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 5.0
-offset_top = 10.0
-offset_right = -10.0
-offset_bottom = -10.0
-
-[node name="RichTextLabel" type="RichTextLabel" parent="QuestPanel/Panel" unique_id=1560431323]
-layout_mode = 1
-anchors_preset = -1
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 5.0
-offset_top = 5.0
-offset_right = -5.0
-offset_bottom = -5.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_1p556")
-
-[node name="TextEdit" type="TextEdit" parent="QuestPanel/Panel/RichTextLabel" unique_id=472697605]
-layout_mode = 1
-anchors_preset = -1
-anchor_right = 1.0
-anchor_bottom = 0.3
-offset_left = 5.0
-offset_top = 5.0
-offset_right = -5.0
-theme_override_colors/font_readonly_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 13
-text = "Locate Pablo and receive the special herb"
-editable = false
-wrap_mode = 1
-
-[node name="QuestButtons" type="ColorRect" parent="." unique_id=2068265424]
-layout_mode = 1
-anchors_preset = -1
-anchor_right = 1.0
-anchor_bottom = 0.2
-offset_bottom = -10.0
-color = Color(0.4509804, 0.2627451, 0.1882353, 0.63529414)
-
-[node name="Button" type="Button" parent="QuestButtons" unique_id=1274234647]
-layout_mode = 1
-anchors_preset = -1
-anchor_top = 0.1
-anchor_right = 0.3
-anchor_bottom = 0.9
-offset_left = 15.0
-offset_right = -15.0
-theme_override_colors/font_color = Color(0.80784315, 1, 1, 0.9843137)
-text = "ACTIVE"
-
-[node name="Button2" type="Button" parent="QuestButtons" unique_id=2097078052]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.35
-anchor_top = 0.1
-anchor_right = 0.65
-anchor_bottom = 0.9
-offset_left = 15.0
-offset_right = -15.0
-theme_override_colors/font_color = Color(0.80784315, 1, 1, 0.9843137)
-text = "COMPLETED"
-
-[node name="Button3" type="Button" parent="QuestButtons" unique_id=830879134]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.7
-anchor_top = 0.1
-anchor_right = 1.0
-anchor_bottom = 0.9
-offset_left = 15.0
-offset_right = -15.0
-theme_override_colors/font_color = Color(0.80784315, 1, 1, 0.9843137)
-text = "FAILED"

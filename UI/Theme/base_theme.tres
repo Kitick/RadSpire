@@ -9,6 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://d1u6kko2ducxi" path="res://UI/Theme/Button_Sprites/wood_disabled.png" id="5_m2oi8"]
 [ext_resource type="Texture2D" uid="uid://dsfy28aegjmpo" path="res://UI/Theme/Button_Sprites/SwordSprite.png" id="5_rtuaj"]
 [ext_resource type="Texture2D" uid="uid://cxu7frnbrneml" path="res://UI/Theme/Button_Sprites/wood_pressed.png" id="6_m2oi8"]
+[ext_resource type="Texture2D" uid="uid://bolakmuvkpc73" path="res://UI/Theme/Button_Sprites/steelpanel.png" id="9_3nmei"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_m2oi8"]
 texture = ExtResource("1_c0f2r")
@@ -89,13 +90,9 @@ expand_margin_right = 25.0
 expand_margin_bottom = 25.0
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_c0f2r"]
-texture = ExtResource("3_iku0p")
-texture_margin_left = 20.0
-texture_margin_right = 20.0
-expand_margin_left = 5.0
-expand_margin_top = 20.0
-expand_margin_right = 5.0
-expand_margin_bottom = 20.0
+texture = ExtResource("9_3nmei")
+expand_margin_top = 2.0
+expand_margin_bottom = 2.0
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_3a7ju"]
 
@@ -117,6 +114,15 @@ CheckBox/styles/normal = SubResource("StyleBoxTexture_6f4ek")
 CheckBox/styles/pressed = SubResource("StyleBoxTexture_nbw33")
 HBoxContainer/constants/separation = 20
 HSlider/styles/slider = SubResource("StyleBoxTexture_iku0p")
+Label/colors/font_color = Color(1, 1, 1, 1)
+Label/colors/font_outline_color = Color(0, 0, 0, 1)
+Label/colors/font_shadow_color = Color(0, 0, 0, 0)
+Label/constants/line_spacing = 3
+Label/constants/outline_size = 0
+Label/constants/shadow_offset_x = 1
+Label/constants/shadow_offset_y = 1
+Label/constants/shadow_outline_size = 1
+Label/font_sizes/font_size = 16
 Label/styles/normal = SubResource("StyleBoxTexture_c0f2r")
 OptionButton/styles/hover = SubResource("StyleBoxTexture_3a7ju")
 OptionButton/styles/normal = SubResource("StyleBoxTexture_2m8xr")
