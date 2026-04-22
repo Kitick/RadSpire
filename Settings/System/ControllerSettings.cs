@@ -10,18 +10,24 @@ public static class ControllerSettings {
 		defaultValue: true
 	);
 
-	public static readonly Setting<float> Deadzone = new(
+	public static readonly SliderSetting<float> Deadzone = new(
 		name: nameof(Deadzone),
 		getActual: () => default,
 		setActual: v => { },
-		defaultValue: 0.2f
+		defaultValue: 0.2f,
+		min: 0f,
+		max: 1f,
+		step: 0.1f
 	);
 
-	public static readonly Setting<float> ControllerSensitivity = new(
+	public static readonly SliderSetting<float> ControllerSensitivity = new(
 		name: nameof(ControllerSensitivity),
 		getActual: () => ControllerSensitivity!.Target,
 		setActual: v => { },
-		defaultValue: 150f
+		defaultValue: 150f,
+		min: 1f,
+		max: 500f,
+		step: 1f
 	);
 
 	private static readonly ISetting[] All = [Vibration, Deadzone, ControllerSensitivity];
@@ -36,14 +42,14 @@ public static class ControllerSettings {
 	};
 
 	public static void Import(ControllerData data) {
-		Vibration.Target = data.Vibration;
-		Deadzone.Target = data.Deadzone;
-		ControllerSensitivity.Target = data.ControllerSensitivity;
+		Vibration.Target = data.Vibration ?? Vibration.Default;
+		Deadzone.Target = data.Deadzone ?? Deadzone.Default;
+		ControllerSensitivity.Target = data.ControllerSensitivity ?? ControllerSensitivity.Default;
 	}
 }
 
 public readonly record struct ControllerData : ISaveData {
-	public bool Vibration { get; init; }
-	public float Deadzone { get; init; }
-	public float ControllerSensitivity { get; init; }
+	public bool? Vibration { get; init; }
+	public float? Deadzone { get; init; }
+	public float? ControllerSensitivity { get; init; }
 }

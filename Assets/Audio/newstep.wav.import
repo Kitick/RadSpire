@@ -3,12 +3,12 @@
 importer="wav"
 type="AudioStreamWAV"
 uid="uid://djybe1bl8ujf6"
-path="res://.godot/imported/NewStep.wav-3974624824d51b1952d33d8dcc4ea1d4.sample"
+path="res://.godot/imported/newstep.wav-c515ca693e2df30c1e009bd83306a27c.sample"
 
 [deps]
 
-source_file="res://Assets/Audio/NewStep.wav"
-dest_files=["res://.godot/imported/NewStep.wav-3974624824d51b1952d33d8dcc4ea1d4.sample"]
+source_file="res://Assets/Audio/newstep.wav"
+dest_files=["res://.godot/imported/newstep.wav-c515ca693e2df30c1e009bd83306a27c.sample"]
 
 [params]
 

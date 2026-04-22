@@ -40,6 +40,7 @@ public sealed partial class DisplayPanel : VBoxContainer {
 
 		ResolutionOption.Populate(Resolutions);
 		FramerateOption.Populate(Framerates);
+		BrightnessSlider.ApplyBounds(DisplaySettings.Brightness);
 
 		SetCallbacks();
 	}

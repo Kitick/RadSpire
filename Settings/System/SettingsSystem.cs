@@ -1,6 +1,8 @@
 namespace Settings;
 
 using System;
+using System.Numerics;
+using Godot;
 using Services;
 
 public static class SettingSystem {
@@ -57,7 +59,7 @@ public static class SettingSystem {
 	}
 }
 
-public sealed class Setting<T> : ISetting {
+public class Setting<T> : ISetting {
 	private readonly LogService Log;
 	private readonly Func<T> GetActual;
 	private readonly Action<T> SetActual;
@@ -66,7 +68,7 @@ public sealed class Setting<T> : ISetting {
 
 	public T Target {
 		get;
-		set { Log.Info($"Set {value}"); field = value; }
+		set { Log.Info($"Set {value}"); field = ProcessTarget(value); }
 	}
 
 	public T Actual {
@@ -82,14 +84,49 @@ public sealed class Setting<T> : ISetting {
 		Default = defaultValue;
 	}
 
+	protected virtual T ProcessTarget(T value) => value;
+
 	public void Apply() => Actual = Target;
 	public void Apply(T value) { Target = value; Apply(); }
 	public void Reset() => Target = Default;
 }
 
+public sealed class SliderSetting<T> : Setting<T>, ISliderSetting where T : struct, INumber<T> {
+	public T Min { get; }
+	public T Max { get; }
+	public T Step { get; }
+
+	double ISliderSetting.Min => double.CreateTruncating(Min);
+	double ISliderSetting.Max => double.CreateTruncating(Max);
+	double ISliderSetting.Step => double.CreateTruncating(Step);
+
+	public SliderSetting(string name, Func<T> getActual, Action<T> setActual, T defaultValue, T min, T max, T step)
+		: base(name, getActual, setActual, defaultValue) {
+		Min = min;
+		Max = max;
+		Step = step;
+	}
+
+	protected override T ProcessTarget(T value) => T.Clamp(value, Min, Max);
+}
+
 public interface ISetting {
 	void Apply();
 	void Reset();
+}
+
+public interface ISliderSetting {
+	double Min { get; }
+	double Max { get; }
+	double Step { get; }
+}
+
+public static class SliderExtensions {
+	public static void ApplyBounds(this Godot.HSlider slider, ISliderSetting setting) {
+		slider.MinValue = setting.Min;
+		slider.MaxValue = setting.Max;
+		slider.Step = setting.Step;
+	}
 }
 
 public static class SettingExtensions {

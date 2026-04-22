@@ -15,6 +15,10 @@ public sealed partial class SoundPanel : VBoxContainer {
 	public override void _Ready() {
 		this.ValidateExports();
 
+		MasterSlider.ApplyBounds(AudioSettings.MasterVolume);
+		MusicSlider.ApplyBounds(AudioSettings.MusicVolume);
+		SFXSlider.ApplyBounds(AudioSettings.SFXVolume);
+
 		SetCallbacks();
 		OutputDeviceOption.Populate(AudioServer.GetOutputDeviceList());
 	}

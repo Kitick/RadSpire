@@ -13,6 +13,8 @@ public sealed partial class ControllerPanel : VBoxContainer {
 
 	public override void _Ready() {
 		this.ValidateExports();
+		DeadzoneSlider.ApplyBounds(ControllerSettings.Deadzone);
+		ControllerSensitivitySlider.ApplyBounds(ControllerSettings.ControllerSensitivity);
 		SetCallbacks();
 	}
 
