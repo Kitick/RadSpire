@@ -61,6 +61,7 @@ public partial class Item : ISaveable<ItemData> {
 	[Export] public bool IsConsumable { get; set; } = false;
 	[Export] public bool IsPlaceable { get; set; } = false;
 	[Export] public bool Pickupable { get; set; } = false;
+	[Export] public bool IsWallObject { get; set; } = false;
 
 	[Export] public Texture2D IconTexture { get; set; } = null!;
 	public ComponentDictionary<IItemComponent> ComponentDictionary { get; } = new();
@@ -93,6 +94,7 @@ public partial class Item : ISaveable<ItemData> {
 		IsConsumable = other.IsConsumable;
 		IsPlaceable = other.IsPlaceable;
 		Pickupable = other.Pickupable;
+		IsWallObject = other.IsWallObject;
 		IconTexture = other.IconTexture;
 		CopyComponentsFrom(other);
 	}
@@ -123,6 +125,7 @@ public partial class Item : ISaveable<ItemData> {
 		IsConsumable = item.IsConsumable;
 		IsPlaceable = item.IsPlaceable;
 		Pickupable = item.Pickupable;
+		IsWallObject = item.IsWallObject;
 		IconTexture = item.IconTexture;
 		CopyComponentsFrom(item);
 		if(data.DurabilityData != null) {
