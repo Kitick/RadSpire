@@ -7,6 +7,9 @@
 [sub_resource type="BoxShape3D" id="BoxShape3D_sfhyf"]
 size = Vector3(0.7069092, 0.75878906, 0.7529907)
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_q2ppd"]
+size = Vector3(0.7069092, 0.6748047, 0.7529907)
+
 [node name="Crate" type="Node3D" unique_id=1369960815]
 script = ExtResource("1_q2ppd")
 
@@ -24,8 +27,8 @@ shape = SubResource("BoxShape3D_sfhyf")
 transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0, 0)
 
 [node name="CollisionShape3D2" type="CollisionShape3D" parent="Crate/Area3D" unique_id=488990534]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.008239746, 0.40283203, 0.0035095215)
-shape = SubResource("BoxShape3D_sfhyf")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.008239746, 0.44482422, 0.0035095215)
+shape = SubResource("BoxShape3D_q2ppd")
 
 [node name="WorldObjectSpawnPoint" parent="." unique_id=2064846928 instance=ExtResource("3_kipea")]
 ItemId = "Crate"

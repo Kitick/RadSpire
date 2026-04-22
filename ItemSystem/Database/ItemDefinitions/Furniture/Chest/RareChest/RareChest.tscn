@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://b7gv62rlbjt5l" path="res://ItemSystem/WorldObjects/SpawnPoint/WorldObjectSpawnPoint.tscn" id="2_m8fq7"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_t8t2y"]
-size = Vector3(1.7324829, 1.2686462, 1.2779808)
+size = Vector3(1.7324829, 1.2109833, 1.2779808)
 
 [node name="ChestRare" type="Node3D" unique_id=773986980]
 script = ExtResource("1_m8fq7")
@@ -22,7 +22,7 @@ shape = SubResource("BoxShape3D_t8t2y")
 [node name="Area3D" type="Area3D" parent="Gold chest" unique_id=1589593886]
 
 [node name="CollisionShape3D2" type="CollisionShape3D" parent="Gold chest/Area3D" unique_id=254355377]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0052794814, 0.64222723, -0.007162094)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0052794814, 0.6710587, -0.007162094)
 shape = SubResource("BoxShape3D_t8t2y")
 
 [node name="WorldObjectSpawnPoint" parent="." unique_id=2064846928 instance=ExtResource("2_m8fq7")]

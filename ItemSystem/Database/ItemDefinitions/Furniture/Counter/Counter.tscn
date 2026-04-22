@@ -10,6 +10,12 @@ size = Vector3(0.98166275, 1.2820129, 2.4603043)
 [sub_resource type="BoxShape3D" id="BoxShape3D_sriur"]
 size = Vector3(4.549059, 1.2820129, 1.0085392)
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_wfwd0"]
+size = Vector3(0.98166275, 1.2030182, 2.4603043)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_4gype"]
+size = Vector3(4.549059, 1.164444, 1.0085392)
+
 [node name="Counter" type="Node3D" unique_id=1369960815]
 script = ExtResource("1_ivj6s")
 
@@ -32,12 +38,12 @@ shape = SubResource("BoxShape3D_sriur")
 transform = Transform3D(-0.6666667, 0, 0, 0, 0.6666667, 0, 0, 0, 0.6666667, -0.81787, -0.0032447975, -1.4090832)
 
 [node name="CollisionShape3D3" type="CollisionShape3D" parent="Bar/Area3D" unique_id=795134417]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.36258698, 0.660202, 1.4297638)
-shape = SubResource("BoxShape3D_sweag")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.36258698, 0.6996994, 1.4297638)
+shape = SubResource("BoxShape3D_wfwd0")
 
 [node name="CollisionShape3D4" type="CollisionShape3D" parent="Bar/Area3D" unique_id=1765574283]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.4084358, 0.660202, 2.1725273)
-shape = SubResource("BoxShape3D_sriur")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.4084358, 0.7189865, 2.1725273)
+shape = SubResource("BoxShape3D_4gype")
 
 [node name="WorldObjectSpawnPoint" parent="." unique_id=2064846928 instance=ExtResource("2_b5xsc")]
 ItemId = "Counter"

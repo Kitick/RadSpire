@@ -8,6 +8,10 @@
 height = 0.91845703
 radius = 0.3725586
 
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_udiem"]
+height = 0.90405273
+radius = 0.3725586
+
 [node name="BarrelDrink" type="Node3D" unique_id=1369960815]
 script = ExtResource("1_7q1ad")
 
@@ -26,8 +30,8 @@ shape = SubResource("CylinderShape3D_xnblp")
 transform = Transform3D(0.6666667, 0, 0, 0, 0.6666667, 0, 0, 0, 0.6666667, 0, 0, 0)
 
 [node name="CollisionShape3D2" type="CollisionShape3D" parent="VerticalBarrel/Area3D" unique_id=1505169962]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.09694278, 0.45922852, 0)
-shape = SubResource("CylinderShape3D_xnblp")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.09694278, 0.46643066, 0)
+shape = SubResource("CylinderShape3D_udiem")
 
 [node name="WorldObjectSpawnPoint" parent="." unique_id=2064846928 instance=ExtResource("2_y4m7w")]
 ItemId = "BarrelDrink"

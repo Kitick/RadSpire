@@ -12,6 +12,10 @@ albedo_texture = ExtResource("3_ny6nl")
 height = 0.30407715
 radius = 0.14990234
 
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_d73ys"]
+height = 0.30145264
+radius = 0.14990234
+
 [node name="AppleCider" type="Node3D" unique_id=1369960815]
 script = ExtResource("1_gmn6y")
 
@@ -31,8 +35,8 @@ shape = SubResource("CylinderShape3D_ny6nl")
 transform = Transform3D(0.6666667, 0, 0, 0, 0.6666667, 0, 0, 0, 0.6666667, 0, 0, 0)
 
 [node name="CollisionShape3D2" type="CollisionShape3D" parent="CupOfBeer/Area3D" unique_id=1753389329]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.17266846, 0.011673689)
-shape = SubResource("CylinderShape3D_ny6nl")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.17398071, 0.011673689)
+shape = SubResource("CylinderShape3D_d73ys")
 
 [node name="WorldObjectSpawnPoint" parent="." unique_id=2064846928 instance=ExtResource("2_eg3qo")]
 ItemId = "AppleCider"

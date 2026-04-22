@@ -11,6 +11,9 @@ albedo_texture = ExtResource("3_wuf6f")
 [sub_resource type="BoxShape3D" id="BoxShape3D_xta1f"]
 size = Vector3(0.87835693, 0.503479, 1.241333)
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_immb6"]
+size = Vector3(0.87835693, 0.4753723, 1.241333)
+
 [node name="Node3D" type="Node3D" unique_id=1369960815]
 script = ExtResource("1_immb6")
 
@@ -28,8 +31,8 @@ shape = SubResource("BoxShape3D_xta1f")
 [node name="Area3D" type="Area3D" parent="Table" unique_id=1344103874]
 
 [node name="CollisionShape3D2" type="CollisionShape3D" parent="Table/Area3D" unique_id=1661570097]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0037536633, 0.25424194, -0.026306162)
-shape = SubResource("BoxShape3D_xta1f")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0037536633, 0.2682953, -0.026306162)
+shape = SubResource("BoxShape3D_immb6")
 
 [node name="WorldObjectSpawnPoint" parent="." unique_id=2064846928 instance=ExtResource("4_l2x2p")]
 ItemId = "TableCoffeeGray"

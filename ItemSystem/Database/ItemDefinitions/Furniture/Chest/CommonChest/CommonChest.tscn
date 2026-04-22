@@ -8,7 +8,7 @@
 size = Vector3(3.4656487, 2.1101227, 2.2138948)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_rwmnw"]
-size = Vector3(3.9214325, 2.1987915, 2.3702278)
+size = Vector3(3.9214325, 2.1325989, 2.3702278)
 
 [node name="ChestCommon" type="Node3D" unique_id=1184848489]
 script = ExtResource("2_imyk2")
@@ -25,7 +25,7 @@ shape = SubResource("BoxShape3D_imyk2")
 [node name="Area3D" type="Area3D" parent="Old Chest" unique_id=582445104]
 
 [node name="CollisionShape3D2" type="CollisionShape3D" parent="Old Chest/Area3D" unique_id=1534943736]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0073165894, 0.11831665, 0.20515251)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0073165894, 0.15141296, 0.20515251)
 shape = SubResource("BoxShape3D_rwmnw")
 
 [node name="WorldObjectSpawnPoint" parent="." unique_id=2064846928 instance=ExtResource("2_l1cxs")]

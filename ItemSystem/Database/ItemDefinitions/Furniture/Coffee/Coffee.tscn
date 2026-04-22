@@ -8,6 +8,10 @@
 height = 0.21289063
 radius = 0.14794922
 
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_4smde"]
+height = 0.15576172
+radius = 0.14794922
+
 [node name="Coffee" type="Node3D" unique_id=1369960815]
 script = ExtResource("1_w5j7x")
 
@@ -26,8 +30,8 @@ shape = SubResource("CylinderShape3D_20dra")
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
 
 [node name="CollisionShape3D2" type="CollisionShape3D" parent="CupOfCoffee/Area3D" unique_id=114856247]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.13574219, 0)
-shape = SubResource("CylinderShape3D_20dra")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.16430664, 0)
+shape = SubResource("CylinderShape3D_4smde")
 
 [node name="WorldObjectSpawnPoint" parent="." unique_id=2064846928 instance=ExtResource("2_o6ol7")]
 ItemId = "Coffee"
