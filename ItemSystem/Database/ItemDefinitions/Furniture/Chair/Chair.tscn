@@ -1,0 +1,58 @@
+[gd_scene format=3 uid="uid://debtac7kclhdw"]
+
+[ext_resource type="Script" uid="uid://klsonhpw4auo" path="res://ItemSystem/WorldObjects/ObjectNode.cs" id="1_uvonj"]
+[ext_resource type="ArrayMesh" uid="uid://dteqkwfoe1cn8" path="res://ItemSystem/WorldObjects/House/Scenes/3d_objects - free/chair.obj" id="2_fgy5d"]
+[ext_resource type="PackedScene" uid="uid://b7gv62rlbjt5l" path="res://ItemSystem/WorldObjects/SpawnPoint/WorldObjectSpawnPoint.tscn" id="2_k30ts"]
+[ext_resource type="Texture2D" uid="uid://dleale4rqqpeh" path="res://Assets/Textures/Nature/Bark_NormalTree.png" id="3_tfeu1"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cwwdo"]
+albedo_texture = ExtResource("3_tfeu1")
+
+[sub_resource type="BoxMesh" id="BoxMesh_wijwe"]
+material = SubResource("StandardMaterial3D_cwwdo")
+size = Vector3(0.6, 0.15, 0.55)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_kgfew"]
+size = Vector3(0.8057251, 0.8405762, 0.91693115)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_tr32d"]
+size = Vector3(0.8057251, 0.8594971, 0.110687256)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_fgy5d"]
+size = Vector3(0.8057251, 0.80114746, 0.91693115)
+
+[node name="Chair" type="Node3D" unique_id=1369960815]
+script = ExtResource("1_uvonj")
+
+[node name="Chair" type="MeshInstance3D" parent="." unique_id=1018721940]
+transform = Transform3D(0.038058627, 0, 1.5995473, 0, 1.6, 0, -1.5995473, 0, 0.038058627, -0.28319296, 0.4145919, -0.27276677)
+mesh = ExtResource("2_fgy5d")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Chair" unique_id=488874216]
+transform = Transform3D(1, 0, -3.7252903e-09, 0, 1.0000011, 0, 3.7252903e-09, 0, 1, -0.106666185, 0.25250953, 0.1829316)
+mesh = SubResource("BoxMesh_wijwe")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Chair" unique_id=1148529751]
+transform = Transform3D(0.015857762, 0, -0.66647816, 0, 0.6666667, 0, 0.66647816, 0, 0.015857762, -0.1648687, -0.24850166, 0.18262553)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Chair/StaticBody3D" unique_id=747552689]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.005279541, 0.43640137, -0.020111084)
+shape = SubResource("BoxShape3D_kgfew")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="Chair/StaticBody3D" unique_id=1529387879]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.005279541, 1.213562, 0.38301086)
+shape = SubResource("BoxShape3D_tr32d")
+
+[node name="Area3D" type="Area3D" parent="Chair" unique_id=2103521859]
+transform = Transform3D(0.015857762, 0, -0.66647816, 0, 0.6666667, 0, 0.66647816, 0, 0.015857762, -0.1648687, -0.24850166, 0.18262553)
+
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="Chair/Area3D" unique_id=1838334648]
+transform = Transform3D(1, 0, 4.440892e-16, 0, 1, 0, -4.440892e-16, 0, 1, -0.005279542, 0.45611575, -0.020111088)
+shape = SubResource("BoxShape3D_fgy5d")
+
+[node name="CollisionShape3D4" type="CollisionShape3D" parent="Chair/Area3D" unique_id=836876267]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.005279541, 1.213562, 0.38301086)
+shape = SubResource("BoxShape3D_tr32d")
+
+[node name="WorldObjectSpawnPoint" parent="." unique_id=2064846928 instance=ExtResource("2_k30ts")]
+ItemId = "Chair"

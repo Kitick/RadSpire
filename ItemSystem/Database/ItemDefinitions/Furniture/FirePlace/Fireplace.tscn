@@ -1,0 +1,74 @@
+[gd_scene format=3 uid="uid://dpnrof8tn33ch"]
+
+[ext_resource type="Script" uid="uid://klsonhpw4auo" path="res://ItemSystem/WorldObjects/ObjectNode.cs" id="1_am6h7"]
+[ext_resource type="PackedScene" uid="uid://b7gv62rlbjt5l" path="res://ItemSystem/WorldObjects/SpawnPoint/WorldObjectSpawnPoint.tscn" id="2_40as5"]
+[ext_resource type="ArrayMesh" uid="uid://b50pqtifq82ti" path="res://ItemSystem/WorldObjects/House/Scenes/3d_objects - free/fire_place.obj" id="2_kbymk"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_kbymk"]
+size = Vector3(1.7957611, 1.364624, 0.6398926)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_epkfq"]
+size = Vector3(1.1396313, 4.836212, 1.1304321)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wk40l"]
+size = Vector3(0.68291473, 1.364624, 1.7739258)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_v2duv"]
+size = Vector3(1.7957611, 1.3004761, 0.6398926)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_n8gbc"]
+size = Vector3(1.1396313, 4, 1.1304321)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_01mgc"]
+size = Vector3(1.7957611, 1.2892456, 0.6398926)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_pfvlt"]
+size = Vector3(0.68291473, 1.2453003, 1.7739258)
+
+[node name="FirePlace" type="Node3D" unique_id=1369960815]
+script = ExtResource("1_am6h7")
+
+[node name="FirePlace" type="MeshInstance3D" parent="." unique_id=1436099784]
+transform = Transform3D(-5.3327895e-08, 0, -1.22, 0, 1.22, 0, 1.22, 0, -5.3327895e-08, 0, 0, 0)
+mesh = ExtResource("2_kbymk")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="FirePlace" unique_id=1148529751]
+transform = Transform3D(-3.5829007e-08, 0, 0.81967217, 0, 0.81967217, 0, -0.81967217, 0, -3.5829007e-08, 0, 0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="FirePlace/StaticBody3D" unique_id=747552689]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.013099658, 0.73126227, -0.6439209)
+shape = SubResource("BoxShape3D_kbymk")
+
+[node name="CollisionShape3D4" type="CollisionShape3D" parent="FirePlace/StaticBody3D" unique_id=1782134578]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.30839065, 2.4670563, -0.3668518)
+shape = SubResource("BoxShape3D_epkfq")
+
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="FirePlace/StaticBody3D" unique_id=855973939]
+transform = Transform3D(0.7149854, 0, -0.6991394, 0, 1, 0, 0.6991394, 0, 0.7149854, -0.106058456, 0.73126227, 0.02456152)
+shape = SubResource("BoxShape3D_kbymk")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="FirePlace/StaticBody3D" unique_id=940622754]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5433235, 0.73126227, -0.076904304)
+shape = SubResource("BoxShape3D_wk40l")
+
+[node name="Area3D" type="Area3D" parent="FirePlace" unique_id=2103521859]
+transform = Transform3D(-3.5829007e-08, 0, 0.81967217, 0, 0.81967217, 0, -0.81967217, 0, -3.5829007e-08, 0, 0, 0)
+
+[node name="CollisionShape3D5" type="CollisionShape3D" parent="FirePlace/Area3D" unique_id=1681975579]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.013099658, 0.7633362, -0.6439209)
+shape = SubResource("BoxShape3D_v2duv")
+
+[node name="CollisionShape3D6" type="CollisionShape3D" parent="FirePlace/Area3D" unique_id=287794788]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.30839065, 2.8851624, -0.3668518)
+shape = SubResource("BoxShape3D_n8gbc")
+
+[node name="CollisionShape3D7" type="CollisionShape3D" parent="FirePlace/Area3D" unique_id=1424168175]
+transform = Transform3D(0.7149854, 0, -0.6991394, 0, 1, 0, 0.6991394, 0, 0.7149854, -0.106058456, 0.7689514, 0.02456152)
+shape = SubResource("BoxShape3D_01mgc")
+
+[node name="CollisionShape3D8" type="CollisionShape3D" parent="FirePlace/Area3D" unique_id=1410539795]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5433235, 0.7909241, -0.076904304)
+shape = SubResource("BoxShape3D_pfvlt")
+
+[node name="WorldObjectSpawnPoint" parent="." unique_id=2064846928 instance=ExtResource("2_40as5")]
+ItemId = "FirePlace"

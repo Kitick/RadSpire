@@ -8,7 +8,7 @@
 size = Vector3(3.0863647, 4.151001, 3.0703125)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_jfwof"]
-size = Vector3(3.8564377, 4.151001, 3.6914063)
+size = Vector3(3.8564377, 3.9622192, 3.6914063)
 
 [node name="ChestPrecious" type="Node3D" unique_id=159631961]
 script = ExtResource("1_7ptf5")
@@ -25,7 +25,7 @@ shape = SubResource("BoxShape3D_h4n8c")
 [node name="Area3D" type="Area3D" parent="Stone Chest" unique_id=1335716370]
 
 [node name="CollisionShape3D2" type="CollisionShape3D" parent="Stone Chest/Area3D" unique_id=1110753561]
-transform = Transform3D(0.99999976, 0, 0, 0, 0.99999976, 0, 0, 0, 0.99999976, -0.0049553304, 1.8352656, 0.037109353)
+transform = Transform3D(0.99999976, 0, 0, 0, 0.99999976, 0, 0, 0, 0.99999976, -0.0049553304, 1.9296565, 0.037109353)
 shape = SubResource("BoxShape3D_jfwof")
 
 [node name="WorldObjectSpawnPoint" parent="." unique_id=2064846928 instance=ExtResource("2_7ptf5")]

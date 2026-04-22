@@ -11,6 +11,8 @@ obj/
 !addons/*/bin/
 !addons/*/bin/**
 
+addons/terrain_3d/bin/~libterrain.windows.debug.x86_64.dll
+
 # JetBrains IDE
 .idea/
 addons/terrain_3d/bin/~libterrain.windows.debug.x86_64.dll

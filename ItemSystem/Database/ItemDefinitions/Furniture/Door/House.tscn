@@ -10,6 +10,9 @@
 [sub_resource type="BoxShape3D" id="BoxShape3D_xscly"]
 size = Vector3(5.982025, 5.4608765, 4.9189453)
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_ts0mo"]
+size = Vector3(5.982025, 5.2533875, 4.9189453)
+
 [sub_resource type="Resource" id="Resource_dpnfh"]
 script = ExtResource("5_pt0sl")
 SpawnPositionMarker = Vector3(2.6152735, 1.8797724, 6.2099457)
@@ -30,8 +33,8 @@ shape = SubResource("BoxShape3D_xscly")
 [node name="Area3D" type="Area3D" parent="House_01_full" unique_id=1589183624]
 
 [node name="CollisionShape3D2" type="CollisionShape3D" parent="House_01_full/Area3D" unique_id=1391249269]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.038345337, 2.7919006, 0.03173828)
-shape = SubResource("BoxShape3D_xscly")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.038345337, 2.8956451, 0.03173828)
+shape = SubResource("BoxShape3D_ts0mo")
 
 [node name="WorldObjectSpawnPoint" parent="." unique_id=2064846928 instance=ExtResource("2_lukph")]
 ItemId = "House1"

@@ -12,10 +12,6 @@ public sealed partial class SettingsMenu : BaseUIControl {
 	[Export] private Button BackButton = null!;
 	[Export] private Button ResetButton = null!;
 
-	[ExportCategory("General")]
-	[Export] private GeneralPanel GeneralPanel = null!;
-	[Export] private Button GeneralButton = null!;
-
 	[ExportCategory("Display")]
 	[Export] private DisplayPanel DisplayPanel = null!;
 	[Export] private Button DisplayButton = null!;
@@ -32,24 +28,18 @@ public sealed partial class SettingsMenu : BaseUIControl {
 	[Export] private MkPanel MKPanel = null!;
 	[Export] private Button MKButton = null!;
 
-	[ExportCategory("Accessibility")]
-	[Export] private AccessibilityPanel AccessibilityPanel = null!;
-	[Export] private Button AccessibilityButton = null!;
-
 	public Control[] Order => [
-		GeneralPanel, DisplayPanel, SoundPanel, ControllerPanel, MKPanel, AccessibilityPanel, ResetButton, BackButton
+		DisplayPanel, SoundPanel, ControllerPanel, MKPanel, ResetButton, BackButton
 	];
 
 	private (Control panel, Button button)[] Panels => [
-		(GeneralPanel, GeneralButton),
-			(DisplayPanel, DisplayButton),
-			(SoundPanel, SoundButton),
-			(ControllerPanel, ControllerButton),
-			(MKPanel, MKButton),
-			(AccessibilityPanel, AccessibilityButton),
-		];
+		(DisplayPanel, DisplayButton),
+		(SoundPanel, SoundButton),
+		(ControllerPanel, ControllerButton),
+		(MKPanel, MKButton),
+	];
 
-	private Control InitialPanel => GeneralPanel;
+	private Control InitialPanel => DisplayPanel;
 
 	private Control ActivePanel = null!;
 
@@ -98,16 +88,6 @@ public sealed partial class SettingsMenu : BaseUIControl {
 			AudioSettings.Apply();
 			SoundPanel.Refresh();
 		}
-		else if(ActivePanel == GeneralPanel) {
-			GeneralSettings.Reset();
-			GeneralSettings.Apply();
-			GeneralPanel.Refresh();
-		}
-		else if(ActivePanel == AccessibilityPanel) {
-			AccessibilitySettings.Reset();
-			AccessibilitySettings.Apply();
-			AccessibilityPanel.Refresh();
-		}
 		else if(ActivePanel == ControllerPanel) {
 			ControllerSettings.Reset();
 			ControllerSettings.Apply();
@@ -133,7 +113,7 @@ public sealed partial class SettingsMenu : BaseUIControl {
 		LoadData();
 
 		if(ActivePanel == null) {
-			GeneralButton.GrabFocus();
+			DisplayButton.GrabFocus();
 		}
 		else {
 			foreach(var (panel, button) in Panels) {
@@ -157,8 +137,6 @@ public sealed partial class SettingsMenu : BaseUIControl {
 	private void LoadData() {
 		DisplayPanel.Refresh();
 		SoundPanel.Refresh();
-		GeneralPanel.Refresh();
-		AccessibilityPanel.Refresh();
 		ControllerPanel.Refresh();
 		MKPanel.Refresh();
 	}
