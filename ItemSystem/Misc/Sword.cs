@@ -11,21 +11,17 @@ public partial class Sword : Area3D {
 
 	public int Damage = 10;
 
-	private AudioStreamPlayer? impactSound;
-
 	public override void _Ready() {
 		WeaponOwner = GetOwner<Node3D>();
 		Monitoring = false;
 		BodyEntered += OnBodyEntered;
-
-		impactSound = GetNode<AudioStreamPlayer>("ImpactSound");
 	}
 
 	private void OnBodyEntered(Node3D body) {
-		if(body == WeaponOwner) return;
-
-		if(impactSound is { Playing: false }) impactSound.Play();
-
+		if(body == WeaponOwner) {
+			return;
+		}
+		
 		if(body is IHealth health) {
 			health.Hurt(Damage);
 		}

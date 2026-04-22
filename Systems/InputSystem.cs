@@ -25,23 +25,23 @@ public sealed partial class InputSystem : Node {
 		if(input is InputEventMouseMotion mouse) {
 			Log.Info($"Mouse moved {mouse.Relative}");
 			OnMouseMoved?.Invoke(mouse);
-		}
-		else if(input is InputEventJoypadMotion joypad) {
+		} else if(input is InputEventJoypadMotion joypad) {
 			Log.Info($"Joypad moved {joypad.Axis} : {joypad.AxisValue}");
 			OnJoypadMoved?.Invoke(joypad);
-		}
-		else {
+		} else {
 			CheckActionEvents(input);
 		}
 	}
 
 	private void CheckActionEvents(InputEvent input) {
-		foreach(var action in ActionEvent.Actions()) {
+		foreach(ActionEvent action in ActionEvent.Actions()) {
+			if(!InputMap.HasAction(action.Name)) {
+				continue;
+			}
 			if(input.IsActionPressed(action.Name)) {
 				Log.Info($"Pressed {action.Name}");
 				OnActionPressed?.Invoke(action);
-			}
-			else if(input.IsActionReleased(action.Name)) {
+			} else if(input.IsActionReleased(action.Name)) {
 				Log.Info($"Released {action.Name}");
 				OnActionReleased?.Invoke(action);
 			}
@@ -97,10 +97,12 @@ public readonly struct ActionEvent {
 	public static readonly ActionEvent Interact = new("Interact");
 	public static readonly ActionEvent Interact2 = new("Interact2");
 	public static readonly ActionEvent Place = new("Place");
+	public static readonly ActionEvent PlaceCancel = new("PlaceCancel");
 	public static readonly ActionEvent Consume = new("Consume");
 	public static readonly ActionEvent Inventory = new("Inventory");
 	public static readonly ActionEvent Attack = new("Attack");
 	public static readonly ActionEvent Dodge = new("Dodge");
+	public static readonly ActionEvent QuestLog = new("QuestLog");
 
 	public static readonly ActionEvent MenuSelect = new("ui_accept");
 	public static readonly ActionEvent MenuExit = new("ui_cancel");
@@ -140,10 +142,12 @@ public readonly struct ActionEvent {
 		yield return Interact;
 		yield return Interact2;
 		yield return Place;
+		yield return PlaceCancel;
 		yield return Consume;
 		yield return Inventory;
 		yield return Attack;
 		yield return Dodge;
+		yield return QuestLog;
 
 		yield return MenuSelect;
 		yield return MenuExit;

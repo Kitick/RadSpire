@@ -3,9 +3,12 @@ namespace ItemSystem.WorldObjects;
 using System;
 using System.Collections.Generic;
 using Components;
+using GameWorld;
 using Godot;
 using InventorySystem;
 using ItemSystem;
+using ItemSystem.WorldObjects.Hierarchy;
+using ItemSystem.WorldObjects.House;
 using Services;
 
 public partial class WorldObjectManager : Node, ISaveable<WorldObjectManagerData> {
@@ -16,9 +19,14 @@ public partial class WorldObjectManager : Node, ISaveable<WorldObjectManagerData
 	private ObjectNodeFactory ObjectNodeFactory = null!;
 	private Node GameWorldNode = null!;
 	private Node WorldObjectParentNode = null!;
+	private readonly Dictionary<string, Node> AnchorRegistry = new();
+	private readonly HashSet<string> MissingAnchorWarnings = new();
+	private bool MissingParentAnchorWarningLogged;
+	private GameWorldManager? GameWorldManager;
+	private GameManager? GameManager;
 	private bool SetUpComplete = false;
 
-	public void SetUpWorldObjectManager(Node parentNode, Node gameWorldNode) {
+	public void SetUpWorldObjectManager(Node parentNode, Node gameWorldNode, ItemSystem.WorldObjects.House.GameWorldManager gameWorldManager, GameManager? gameManager) {
 		if(SetUpComplete) {
 			Log.Warn("SetUpWorldObjectManager called more than once. Ignoring duplicate call.");
 			return;
@@ -33,6 +41,9 @@ public partial class WorldObjectManager : Node, ISaveable<WorldObjectManagerData
 		}
 		GameWorldNode = gameWorldNode;
 		WorldObjectParentNode = parentNode;
+		BuildAnchorRegistry(GameWorldNode);
+		GameWorldManager = gameWorldManager;
+		GameManager = gameManager;
 		List<WorldObjectSpawnPoint> spawnPoints = GetSpawnPointsRecursive(GameWorldNode);
 		Dictionary<string, (string SpawnPointName, Godot.Collections.Array<WorldObjectSpawnComponentDefinition> ComponentDefinitions)> pendingSpawnComponents = new();
 		foreach(WorldObjectSpawnPoint objNode in spawnPoints) {
@@ -51,14 +62,17 @@ public partial class WorldObjectManager : Node, ISaveable<WorldObjectManagerData
 				continue;
 			}
 			Object obj = new Object(itemId, objNode.GlobalPosition, objNode.GlobalRotation);
+			if(TryGetAnchorIdFromNodeChain(objNode, out string anchorId)) {
+				obj.ParentAnchorId = anchorId;
+			}
 			pendingSpawnComponents[obj.Id] = (objNode.Name, objNode.ComponentDefinitions);
 			if(!WorldObjects.RegisterWorldObject(obj)) {
 				Log.Warn($"Skipping spawn point '{objNode.Name}' because world object registration failed.");
 			}
 		}
 		foreach(WorldObjectSpawnPoint spawnPoint in spawnPoints) {
-			ObjectNode? node = spawnPoint.GetParent<ObjectNode>();
-			if(node != null) {
+			Node? spawnPointParent = spawnPoint.GetParent();
+			if(spawnPointParent is ObjectNode node) {
 				node.QueueFree();
 			}
 			else {
@@ -68,11 +82,12 @@ public partial class WorldObjectManager : Node, ISaveable<WorldObjectManagerData
 		}
 		ObjectNodeFactory = new ObjectNodeFactory(WorldObjectParentNode);
 		foreach(Object obj in WorldObjects.Objects.Values) {
-			ObjectNode? node = ObjectNodeFactory.Spawn(obj);
+			ObjectNode? node = ObjectNodeFactory.Spawn(obj, ResolveSpawnParent(obj));
 			if(node == null) {
 				Log.Error($"Failed to spawn world object with ID {obj.Id} and ItemId {obj.ItemId}");
 				continue;
 			}
+			InitializeObjectComponents(obj);
 			bool hasInventorySpawnDefinition = false;
 			string spawnPointName = "UnknownSpawnPoint";
 			if(pendingSpawnComponents.TryGetValue(obj.Id, out var pendingData)) {
@@ -122,6 +137,9 @@ public partial class WorldObjectManager : Node, ISaveable<WorldObjectManagerData
 				hasInventorySpawnDefinition = true;
 				ApplyInventorySpawnDefinition(obj, pendingData.SpawnPointName, inventorySpawnDefinition);
 			}
+			if(definition is WorldObjectDoorSpawnDefinition doorSpawnDefinition) {
+				ApplyDoorSpawnDefinition(obj, pendingData.SpawnPointName, doorSpawnDefinition);
+			}
 		}
 		return hasInventorySpawnDefinition;
 	}
@@ -154,6 +172,17 @@ public partial class WorldObjectManager : Node, ISaveable<WorldObjectManagerData
 				quantity -= added;
 			}
 		}
+	}
+
+	private void ApplyDoorSpawnDefinition(Object obj, string spawnPointName, WorldObjectDoorSpawnDefinition doorSpawnDefinition) {
+		if(!obj.ComponentDictionary.Has<DoorComponent>()) {
+			Log.Warn($"Spawn point '{spawnPointName}' has door spawn data but object ItemId '{obj.ItemId}' has no DoorComponent.");
+			return;
+		}
+		DoorComponent doorComponent = obj.ComponentDictionary.Get<DoorComponent>();
+		doorComponent.SpawnPosition = doorSpawnDefinition.SpawnPositionMarker;
+		doorComponent.DefaultScene = doorSpawnDefinition.BaseScene;
+		doorComponent.ReturnToMainWorld = doorSpawnDefinition.ReturnToMainWorld;
 	}
 
 	public bool CreateWorldObject(string itemId, Vector3 position, Vector3 rotation) {
@@ -197,12 +226,79 @@ public partial class WorldObjectManager : Node, ISaveable<WorldObjectManagerData
 	}
 
 	private void HandleOnWorldObjectAdded(Object obj) {
-		ObjectNode? node = ObjectNodeFactory.Spawn(obj);
+		ObjectNode? node = ObjectNodeFactory.Spawn(obj, ResolveSpawnParent(obj));
 		if(node == null) {
 			Log.Error($"Failed to spawn world object with ID {obj.Id} and ItemId {obj.ItemId}");
 			return;
 		}
+		InitializeObjectComponents(obj);
 		WorldObjectNodes.AddObjectNode(node);
+	}
+
+	private void BuildAnchorRegistry(Node root) {
+		AnchorRegistry.Clear();
+		CollectAnchors(root);
+	}
+
+	private void CollectAnchors(Node node) {
+		if(node is WorldObjectHierarchyAnchor anchor) {
+			if(string.IsNullOrWhiteSpace(anchor.AnchorId)) {
+				Log.Warn($"WorldObjectHierarchyAnchor '{anchor.GetPath()}' has an empty AnchorId and will be ignored.");
+			}
+			else if(AnchorRegistry.ContainsKey(anchor.AnchorId)) {
+				Log.Warn($"Duplicate WorldObjectHierarchyAnchor id '{anchor.AnchorId}' found at '{anchor.GetPath()}'. Keeping first definition.");
+			}
+			else {
+				AnchorRegistry.Add(anchor.AnchorId, anchor);
+			}
+		}
+
+		foreach(Node child in node.GetChildren()) {
+			CollectAnchors(child);
+		}
+	}
+
+	private bool TryGetAnchorIdFromNodeChain(Node startNode, out string anchorId) {
+		anchorId = string.Empty;
+		Node? current = startNode;
+		while(current != null) {
+			if(current is WorldObjectHierarchyAnchor anchor && !string.IsNullOrWhiteSpace(anchor.AnchorId)) {
+				anchorId = anchor.AnchorId;
+				return true;
+			}
+			current = current.GetParent();
+		}
+		return false;
+	}
+
+	private Node ResolveSpawnParent(Object obj) {
+		if(string.IsNullOrWhiteSpace(obj.ParentAnchorId)) {
+			if(!MissingParentAnchorWarningLogged) {
+				Log.Info("World object missing ParentAnchorId. Falling back to WorldObjectParentNode.");
+				MissingParentAnchorWarningLogged = true;
+			}
+			return WorldObjectParentNode;
+		}
+
+		if(AnchorRegistry.TryGetValue(obj.ParentAnchorId, out Node? anchorNode) && GodotObject.IsInstanceValid(anchorNode)) {
+			return anchorNode;
+		}
+
+		if(MissingAnchorWarnings.Add(obj.ParentAnchorId)) {
+			Log.Warn($"World object anchor '{obj.ParentAnchorId}' was not found. Falling back to WorldObjectParentNode.");
+		}
+		return WorldObjectParentNode;
+	}
+
+	private void InitializeObjectComponents(Object obj) {
+		if(GameWorldManager == null || GameManager == null) {
+			return;
+		}
+
+		if(obj.ComponentDictionary.Has<DoorComponent>()) {
+			DoorComponent doorComponent = obj.ComponentDictionary.Get<DoorComponent>();
+			doorComponent.Initialize(GameWorldManager, GameManager);
+		}
 	}
 
 	private void HandleOnWorldObjectRemoved(string objectId) {

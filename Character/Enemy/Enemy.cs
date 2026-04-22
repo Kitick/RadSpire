@@ -2,13 +2,17 @@ using System;
 
 namespace Character;
 
+using System;
 using Components;
 using Godot;
+using Root;
 using Services;
 
 public sealed partial class Enemy : CharacterBase, ISaveable<EnemyData> {
-
 	private static readonly LogService Log = new(nameof(Enemy), enabled: true);
+	public string Id { get; set; } = Guid.NewGuid().ToString();
+
+	[Export] public EnemyType EnemyType { get; set; } = EnemyType.None;
 
 	[Export] private int InitialHealthValue = 50;
 	[Export] private int InitialDamagePhysical = 5;
@@ -63,6 +67,7 @@ public sealed partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 
 	public override void _Ready() {
 		base._Ready();
+		AddToGroup(Group.Enemy.ToString());
 
 		EnemyMesh = GetNodeOrNull<MeshInstance3D>("MeshInstance3D");
 		var animator = GetNodeOrNull<Animator>("Model/AnimationPlayer");
@@ -72,7 +77,7 @@ public sealed partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 		SetupHealthUI();
 
 		if(EnemyMesh != null) {
-			var baseMat = EnemyMesh.GetActiveMaterial(0) as StandardMaterial3D;
+			StandardMaterial3D? baseMat = EnemyMesh.GetActiveMaterial(0) as StandardMaterial3D;
 			if(baseMat != null) {
 				FlashMaterial = baseMat.Duplicate() as StandardMaterial3D;
 				EnemyMesh.SetSurfaceOverrideMaterial(0, FlashMaterial);
@@ -94,7 +99,7 @@ public sealed partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 			StunTimer = Math.Max(StunTimer, StunDuration);
 			SetDamageFlash(true);
 
-			if(AttackTarget == null || !GodotObject.IsInstanceValid(AttackTarget)) {
+			if(AttackTarget == null || !IsInstanceValid(AttackTarget)) {
 				return;
 			}
 
@@ -264,21 +269,18 @@ public sealed partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 
 		if(!IsOnFloor()) {
 			StateMachine.TransitionTo(State.Falling);
-		}
-		else if(!AI.IsMoving) {
+		} else if(!AI.IsMoving) {
 			StateMachine.TransitionTo(State.Idle);
-		}
-		else if(AI.SprintHeld) {
+		} else if(AI.SprintHeld) {
 			StateMachine.TransitionTo(State.Sprinting);
-		}
-		else {
+		} else {
 			StateMachine.TransitionTo(State.Walking);
 		}
 	}
 
 	public override void OnAttackFinished() {
 		if(AttackTarget != null &&
-			GodotObject.IsInstanceValid(AttackTarget) &&
+			IsInstanceValid(AttackTarget) &&
 			AttackTarget is IHealth healthTarget) {
 
 			Log.Info($"Enemy attacking {AttackTarget.Name}");
@@ -288,7 +290,7 @@ public sealed partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 		StateMachine.TransitionTo(State.Idle);
 	}
 
-	public EnemyData Export() => new EnemyData {
+	public EnemyData Export() => new() {
 		Health = Health.Export(),
 		Movement = Movement.Export(),
 		Offense = Offense.Export(),
@@ -296,6 +298,9 @@ public sealed partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 	};
 
 	public void Import(EnemyData data) {
+		if(!string.IsNullOrEmpty(data.Id)) {
+			Id = data.Id;
+		}
 		Health.Import(data.Health);
 		Movement.Import(data.Movement);
 		Offense.Import(data.Offense);
@@ -304,6 +309,7 @@ public sealed partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 }
 
 public readonly record struct EnemyData : ISaveData {
+	public string Id { get; init; }
 	public HealthData Health { get; init; }
 	public MovementData Movement { get; init; }
 	public OffenseData Offense { get; init; }

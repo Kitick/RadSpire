@@ -7,8 +7,8 @@ using Godot;
 
 public sealed class Vector3Converter : JsonConverter<Vector3> {
 	public override Vector3 Read(ref Utf8JsonReader reader, Type type, JsonSerializerOptions options) {
-		var doc = JsonDocument.ParseValue(ref reader);
-		var root = doc.RootElement;
+		JsonDocument doc = JsonDocument.ParseValue(ref reader);
+		JsonElement root = doc.RootElement;
 
 		float x = root.GetProperty("X").GetSingle();
 		float y = root.GetProperty("Y").GetSingle();

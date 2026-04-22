@@ -1,0 +1,36 @@
+[gd_scene format=3 uid="uid://cam02wkgiun0"]
+
+[ext_resource type="Script" uid="uid://klsonhpw4auo" path="res://ItemSystem/WorldObjects/ObjectNode.cs" id="1_e30fb"]
+[ext_resource type="PackedScene" uid="uid://cb1iqv2kjmxuh" path="res://ItemSystem/Database/ItemDefinitions/Furniture/Door/DOOR_01_1.fbx" id="2_2inxj"]
+[ext_resource type="PackedScene" uid="uid://b7gv62rlbjt5l" path="res://ItemSystem/WorldObjects/SpawnPoint/WorldObjectSpawnPoint.tscn" id="3_f54bx"]
+[ext_resource type="Script" uid="uid://cvyjpeuc2pm1x" path="res://ItemSystem/WorldObjects/SpawnPoint/Components/WorldObjectSpawnComponentDefinition.cs" id="4_5s4xj"]
+[ext_resource type="Script" uid="uid://c2531e5uu51o6" path="res://ItemSystem/WorldObjects/SpawnPoint/Components/Door/WorldObjectDoorSpawnDefinition.cs" id="6_7l51r"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_5s4xj"]
+size = Vector3(0.97961426, 2.9926758, 0.09350586)
+
+[sub_resource type="Resource" id="Resource_p16fc"]
+script = ExtResource("6_7l51r")
+ReturnToMainWorld = true
+metadata/_custom_type_script = "uid://c2531e5uu51o6"
+
+[node name="ReturnDoor" type="Node3D" unique_id=539945399]
+script = ExtResource("1_e30fb")
+
+[node name="DOOR_01_1" parent="." unique_id=127045470 instance=ExtResource("2_2inxj")]
+
+[node name="StaticBody3D" type="StaticBody3D" parent="DOOR_01_1" unique_id=1346900833]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DOOR_01_1/StaticBody3D" unique_id=936736640]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.49505615, 1.501709, -0.003540039)
+shape = SubResource("BoxShape3D_5s4xj")
+
+[node name="Area3D" type="Area3D" parent="DOOR_01_1" unique_id=1722273361]
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="DOOR_01_1/Area3D" unique_id=1853738947]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.49505615, 1.501709, -0.003540039)
+shape = SubResource("BoxShape3D_5s4xj")
+
+[node name="WorldObjectSpawnPoint" parent="." unique_id=2064846928 instance=ExtResource("3_f54bx")]
+ItemId = "ReturnDoor"
+ComponentDefinitions = Array[ExtResource("4_5s4xj")]([SubResource("Resource_p16fc")])

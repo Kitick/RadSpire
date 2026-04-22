@@ -1,6 +1,8 @@
 namespace ItemSystem.Icons;
 
 using System.Collections.Generic;
+using System.ComponentModel;
+using GameWorld;
 using Godot;
 using ItemSystem;
 using Services;
@@ -50,9 +52,42 @@ public partial class Item3DIconManager : Node, ISaveable<Item3DIconManagerData> 
 		AddItem3DIcon(item3DIcon);
 	}
 
+	public void SetUpItem3DIconManager(Node gameWorldNode) {
+		if(gameWorldNode == null) {
+			Log.Error("SetUpItem3DIconManager called with null game world node.");
+			return;
+		}
+
+		List<ItemSpawnEntry> spawnEntries = GetItemSpawnEntriesRecursive(gameWorldNode);
+		foreach(ItemSpawnEntry entry in spawnEntries) {
+			if(!IsInstanceValid(entry) || string.IsNullOrWhiteSpace(entry.ItemId)) {
+				continue;
+			}
+
+			SpawnItem(entry.ItemId, entry.GlobalPosition);
+			entry.QueueFree();
+		}
+	}
+
 	public void DespawnItem(Item3DIcon icon) {
 		RemoveItem3DIcon(icon);
 		icon.QueueFree();
+	}
+
+	private static List<ItemSpawnEntry> GetItemSpawnEntriesRecursive(Node root) {
+		List<ItemSpawnEntry> results = new();
+		CollectItemSpawnEntries(root, results);
+		return results;
+	}
+
+	private static void CollectItemSpawnEntries(Node node, List<ItemSpawnEntry> results) {
+		foreach(Node child in node.GetChildren()) {
+			if(child is ItemSpawnEntry itemSpawnEntry) {
+				results.Add(itemSpawnEntry);
+			}
+
+			CollectItemSpawnEntries(child, results);
+		}
 	}
 
 	private void ClearActiveIcons() {

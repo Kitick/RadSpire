@@ -5,12 +5,13 @@ using System.Text.Json.Serialization;
 
 public static class JsonService {
 	private static readonly JsonConverter[] Converters = [
-		new Vector3Converter()
+		new Vector3Converter(),
+		new JsonStringEnumConverter(),
 	];
 
 	private static JsonSerializerOptions InjectConverters(this JsonSerializerOptions options) {
-		var newOptions = new JsonSerializerOptions(options);
-		foreach(var converter in Converters) {
+		JsonSerializerOptions newOptions = new(options);
+		foreach(JsonConverter converter in Converters) {
 			newOptions.Converters.Add(converter);
 		}
 		return newOptions;

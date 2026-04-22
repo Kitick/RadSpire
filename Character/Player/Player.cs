@@ -11,6 +11,7 @@ using InventorySystem.Interface;
 using ItemSystem;
 using ItemSystem.Icons;
 using ItemSystem.WorldObjects;
+using Root;
 using Services;
 
 public sealed partial class Player : CharacterBase, ISaveable<PlayerData> {
@@ -34,15 +35,15 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData> {
 	[Export] private float DodgeSpeedMultiplier = 3.0f;
 
 	// Inventories
-	public readonly Inventory Inventory = new Inventory(3, 5);
-	public readonly Inventory Hotbar = new Inventory(1, 5);
-	public readonly InventoryManager InventoryManager = new InventoryManager();
+	public readonly Inventory Inventory = new(3, 5);
+	public readonly Inventory Hotbar = new(1, 5);
+	public readonly InventoryManager InventoryManager = new();
 
 	// Components
 	public readonly Movement Movement;
-	public readonly Item3DIconPickup PickupComponent = new Item3DIconPickup();
-	public readonly UseItem UseItemComponent = new UseItem();
-	public readonly EquipItem EquipItemComponent = new EquipItem();
+	public readonly Item3DIconPickup PickupComponent = new();
+	public readonly UseItem UseItemComponent = new();
+	public readonly EquipItem EquipItemComponent = new();
 	public ObjectPickup? ObjectPickup { get; private set; }
 	public ObjectPlacementManager? ObjectPlacementManager { get; private set; }
 	private ObjectPlacementUI? ObjectPlacementUI;
@@ -50,6 +51,7 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData> {
 	private Action? UnsubscribeInteract;
 	private Action? UnsubscribeInteract2;
 	private Action? UnsubscribePlace;
+	private Action? UnsubscribePlaceCancel;
 
 	public bool HoldingSword = false;
 	private Vector3 DodgeDirection = Vector3.Zero;
@@ -64,11 +66,12 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData> {
 	public override void _Ready() {
 		base._Ready();
 		PickupComponent.HandleInteractInput = false;
+		AddToGroup(Group.Player.ToString());
 		Animator = GetNodeOrNull<Animator>("Model/AnimationPlayer");
 		if(Animator != null) {
 			Animator.SetAttackSpeed(3.0f);
 		}
-		AddToGroup("player");
+		AddToGroup(Group.Player.ToString());
 		AddChild(PickupComponent);
 		AddChild(InventoryManager);
 		AddChild(UseItemComponent);
@@ -81,6 +84,7 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData> {
 		UnsubscribeInteract?.Invoke();
 		UnsubscribeInteract2?.Invoke();
 		UnsubscribePlace?.Invoke();
+		UnsubscribePlaceCancel?.Invoke();
 		ObjectPickupUI?.Dispose();
 		ObjectPickup = null;
 		ObjectPlacementUI = null;
@@ -125,11 +129,17 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData> {
 
 		if(StateMachine.CurrentState == State.Attacking) { return; }
 
-		if(!IsOnFloor()) { StateMachine.TransitionTo(State.Falling); }
-		else if(!keyInput.IsMoving) { StateMachine.TransitionTo(State.Idle); }
-		else if(keyInput.SprintHeld) { StateMachine.TransitionTo(State.Sprinting); }
-		else if(keyInput.CrouchHeld) { StateMachine.TransitionTo(State.Crouching); }
-		else { StateMachine.TransitionTo(State.Walking); }
+		if(!IsOnFloor()) {
+			StateMachine.TransitionTo(State.Falling);
+		} else if(!keyInput.IsMoving) {
+			StateMachine.TransitionTo(State.Idle);
+		} else if(keyInput.SprintHeld) {
+			StateMachine.TransitionTo(State.Sprinting);
+		} else if(keyInput.CrouchHeld) {
+			StateMachine.TransitionTo(State.Crouching);
+		} else {
+			StateMachine.TransitionTo(State.Walking);
+		}
 	}
 
 	public override void OnAttackFinished() {
@@ -177,10 +187,8 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData> {
 		float az = Mathf.Abs(input.Y);
 
 		if(ax > az) {
-			if(input.X < 0f) { Animator.SetDodgeAnimation(new StringName("Dodge_Left")); }
-			else { Animator.SetDodgeAnimation(new StringName("Dodge_Right")); }
-		}
-		else {
+			if(input.X < 0f) { Animator.SetDodgeAnimation(new StringName("Dodge_Left")); } else { Animator.SetDodgeAnimation(new StringName("Dodge_Right")); }
+		} else {
 			Animator.SetDodgeAnimation(new StringName("Dodge_Forward"));
 		}
 	}
@@ -222,6 +230,13 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData> {
 			}
 			ObjectPlacementManager.PlaceRequested();
 		});
+		UnsubscribePlaceCancel = ActionEvent.PlaceCancel.WhenPressed(() => {
+			if(ObjectPlacementManager == null) {
+				Log.Error("PlaceCancel action pressed but ObjectPlacementManager is not initialized.");
+				return;
+			}
+			ObjectPlacementManager.PlaceCanceled();
+		});
 	}
 
 	public void ConfigureObjectPickup(WorldObjectManager worldObjectManager) {
@@ -240,7 +255,7 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData> {
 		ObjectPlacementManager.Initialize(worldObjectManager, InventoryManager, gameManager, playerHotbar, this);
 	}
 
-	public PlayerData Export() => new PlayerData {
+	public PlayerData Export() => new() {
 		Movement = Movement.Export(),
 		Health = Health.Export(),
 		Offense = Offense.Export(),

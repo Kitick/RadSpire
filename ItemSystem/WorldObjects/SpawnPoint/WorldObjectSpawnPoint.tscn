@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://b7gv62rlbjt5l"]
+
+[ext_resource type="Script" uid="uid://b1gnf81s2sthm" path="res://ItemSystem/WorldObjects/SpawnPoint/WorldObjectSpawnPoint.cs" id="1_n0ed3"]
+
+[node name="WorldObjectSpawnPoint" type="Node3D" unique_id=2064846928]
+script = ExtResource("1_n0ed3")

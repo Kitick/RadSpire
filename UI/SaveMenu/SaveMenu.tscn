@@ -2,7 +2,6 @@
 
 [ext_resource type="Script" uid="uid://cnc1drhp35q8y" path="res://UI/SaveMenu/SaveMenu.cs" id="1_ck8wv"]
 [ext_resource type="Texture2D" uid="uid://ey80t6hrma51" path="res://UI/SaveMenu/KneelingBackground.png" id="2_fc0yl"]
-[ext_resource type="Texture2D" uid="uid://8ykhw0g480u8" path="res://Assets/Images/sword.png" id="3_cru22"]
 
 [node name="LoadMenu" type="Control" unique_id=728771275 node_paths=PackedStringArray("BackButton", "TitleLabel", "SlotContainer")]
 layout_mode = 3
@@ -15,7 +14,6 @@ script = ExtResource("1_ck8wv")
 BackButton = NodePath("BackButton")
 TitleLabel = NodePath("Panel/Header")
 SlotContainer = NodePath("Panel/SaveSlots")
-SlotIcon = ExtResource("3_cru22")
 
 [node name="LoadMenuBackground" type="TextureRect" parent="." unique_id=389917991]
 layout_mode = 1
@@ -40,22 +38,28 @@ grow_vertical = 2
 [node name="Header" type="Label" parent="Panel" unique_id=224217511]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.1
 anchor_right = 1.0
-anchor_bottom = 0.2
+anchor_bottom = 0.085
+grow_horizontal = 2
 theme_override_font_sizes/font_size = 40
-text = "Select Saved Game"
+text = "Load Game"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="SaveSlots" type="VBoxContainer" parent="Panel" unique_id=1349601993]
 layout_mode = 1
 anchors_preset = -1
-anchor_top = 0.2
-anchor_right = 4.0
-anchor_bottom = 4.0
-scale = Vector2(0.25, 0.25)
-theme_override_constants/separation = 5
+anchor_left = 0.17
+anchor_top = 0.087000005
+anchor_right = 0.83000004
+anchor_bottom = 1.113
+offset_top = -0.20000458
+offset_right = -3.0517578e-05
+offset_bottom = 0.19995117
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 42
+alignment = 1
 
 [node name="BackButton" type="Button" parent="." unique_id=1195950355]
 layout_mode = 1

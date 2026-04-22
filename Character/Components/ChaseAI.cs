@@ -39,13 +39,13 @@ public sealed class ChaseAI {
 	private float WanderDuration = 2.0f; // how long to do each action
 	private Vector3 CurrentWanderDir = Vector3.Zero;
 
-	private readonly Vector3[] WanderDirections = new[]{
-			new Vector3(1, 0, 0),   // right
-			new Vector3(-1, 0, 0),  // left
-			new Vector3(0, 0, 1),   // forward
-			new Vector3(0, 0, -1),  // backward
-			Vector3.Zero            // stand still
-		};
+	private readonly Vector3[] WanderDirections = [
+		new Vector3(1, 0, 0),   // right
+		new Vector3(-1, 0, 0),  // left
+		new Vector3(0, 0, 1),   // forward
+		new Vector3(0, 0, -1),  // backward
+		Vector3.Zero            // stand still
+	];
 
 	public void Update() {
 		HorizontalInput = Vector3.Zero;

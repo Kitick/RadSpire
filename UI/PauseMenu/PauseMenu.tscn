@@ -1,12 +1,13 @@
 [gd_scene format=3 uid="uid://crye0f0yw8xrb"]
 
 [ext_resource type="Script" uid="uid://d1semxqghe872" path="res://UI/PauseMenu/PauseMenu.cs" id="1_1f24j"]
+[ext_resource type="Texture2D" uid="uid://n3pg68s8kwf3" path="res://UI/Theme/Button_Sprites/wood_back_panel.png" id="2_s70p5"]
 
 [node name="PauseMenu" type="Control" unique_id=1762630433 node_paths=PackedStringArray("ResumeButton", "SaveButton", "HostButton", "SettingsButton", "MainMenuButton")]
 layout_mode = 3
 anchors_preset = 0
-offset_right = 300.0
-offset_bottom = 450.0
+offset_right = 340.0
+offset_bottom = 576.0
 script = ExtResource("1_1f24j")
 ResumeButton = NodePath("PanelArea/Buttons/Resume")
 SaveButton = NodePath("PanelArea/Buttons/Save")
@@ -14,12 +15,12 @@ HostButton = NodePath("PanelArea/Buttons/Host")
 SettingsButton = NodePath("PanelArea/Buttons/Settings")
 MainMenuButton = NodePath("PanelArea/Buttons/MainMenu")
 
-[node name="PanelArea" type="ColorRect" parent="." unique_id=1350342570]
+[node name="PanelArea" type="TextureRect" parent="." unique_id=1946970470]
 layout_mode = 1
 anchors_preset = -1
-anchor_right = 1.0
-anchor_bottom = 1.0
-color = Color(0.41960785, 0.2784314, 0.23921569, 0.45882353)
+offset_right = 340.0
+offset_bottom = 576.0
+texture = ExtResource("2_s70p5")
 
 [node name="Label" type="RichTextLabel" parent="PanelArea" unique_id=1056583576]
 layout_mode = 1
@@ -38,13 +39,12 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -99.5
-offset_top = -120.0
-offset_right = 99.5
-offset_bottom = 152.5
+offset_left = -145.5
+offset_top = -125.0
+offset_right = 145.5
+offset_bottom = 192.5
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 10
 alignment = 1
 
 [node name="Resume" type="Button" parent="PanelArea/Buttons" unique_id=1338784497]

@@ -1,0 +1,25 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://dc8u2thyxev1i"
+path="res://.godot/imported/fridge.obj-de850cbc191cb23325819b10d3fa3af2.mesh"
+
+[deps]
+
+files=["res://.godot/imported/fridge.obj-de850cbc191cb23325819b10d3fa3af2.mesh"]
+
+source_file="res://ItemSystem/WorldObjects/House/Scenes/kitchen_game_assets_free/3d_objects_free/fridge.obj"
+dest_files=["res://.godot/imported/fridge.obj-de850cbc191cb23325819b10d3fa3af2.mesh", "res://.godot/imported/fridge.obj-de850cbc191cb23325819b10d3fa3af2.mesh"]
+
+[params]
+
+generate_tangents=true
+generate_lods=true
+generate_shadow_mesh=true
+generate_lightmap_uv2=false
+generate_lightmap_uv2_texel_size=0.2
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+force_disable_mesh_compression=false

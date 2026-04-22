@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://cn7ikdu83lu7u"]
+
+[ext_resource type="Script" uid="uid://cnm5iegiuj4xu" path="res://ItemSystem/Definitions/ItemComponentDefinition.cs" id="1_pc84q"]
+[ext_resource type="Texture2D" uid="uid://dah6hy0non7gu" path="res://ItemSystem/WorldObjects/House/Scenes/living_room_game_assets_free/2d_textures_free/table.png" id="2_2dk8l"]
+[ext_resource type="PackedScene" uid="uid://bprc5h5exoxa4" path="res://ItemSystem/Database/ItemDefinitions/Furniture/CoffeeTable/TableCoffeeBrown/TableCoffeeBrown.tscn" id="3_bqn4n"]
+[ext_resource type="Script" uid="uid://bxmh4fd7kjvv1" path="res://ItemSystem/Definitions/ItemDefinition.cs" id="4_dn36n"]
+
+[resource]
+script = ExtResource("4_dn36n")
+Id = "TableCoffeeBrown"
+Name = "Brown Coffee Table"
+Description = "A low brown coffee table."
+IsConsumable = false
+IsPlaceable = true
+Pickupable = true
+Can_Object_Stack = true
+IconTexture = ExtResource("2_2dk8l")
+ItemScene = ExtResource("3_bqn4n")
+metadata/_custom_type_script = "uid://bxmh4fd7kjvv1"

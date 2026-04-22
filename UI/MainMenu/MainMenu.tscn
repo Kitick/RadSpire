@@ -7,7 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://howutpu3c584" path="res://UI/MainMenu/Title.png" id="3_ectev"]
 [ext_resource type="PackedScene" uid="uid://bnjymb23oq215" path="res://Network/Panels/HostPanel.tscn" id="4_jhcbk"]
 [ext_resource type="PackedScene" uid="uid://bg5jxcp2jtwjp" path="res://Network/Panels/JoinPanel.tscn" id="5_32jca"]
-[ext_resource type="AudioStream" uid="uid://c085xb2ydxxcg" path="res://UI/MainMenu/Bpm100_G_Escape_Brass.wav" id="8_1dhmk"]
+[ext_resource type="AudioStream" uid="uid://sqjqwdegx8bb" path="res://Assets/Audio/Radspire_Main_Theme.wav" id="6_1dhmk"]
 
 [node name="MainMenu" type="Control" unique_id=2104341140 node_paths=PackedStringArray("ButtonPanel", "SingleplayerButton", "MultiplayerButton", "SettingsButton", "ExtrasButton", "QuitButton", "SingleplayerPanel", "ContinueButton", "LoadSavedButton", "StartNewButton", "MultiplayerPanel", "HostNewButton", "HostSavedButton", "JoinGameButton")]
 layout_mode = 3
@@ -37,7 +37,7 @@ HostPanelScene = ExtResource("4_jhcbk")
 JoinPanelScene = ExtResource("5_32jca")
 
 [node name="Music" type="AudioStreamPlayer" parent="." unique_id=2128160467]
-stream = ExtResource("8_1dhmk")
+stream = ExtResource("6_1dhmk")
 autoplay = true
 bus = &"Music"
 
@@ -66,9 +66,9 @@ anchors_preset = -1
 anchor_top = 0.5
 anchor_bottom = 0.5
 offset_left = 207.0
-offset_top = -174.0
+offset_top = -156.0
 offset_right = 539.0
-offset_bottom = 132.00006
+offset_bottom = 279.0
 
 [node name="Singleplayer_Button" type="Button" parent="ButtonPanel" unique_id=1691967867]
 layout_mode = 2
@@ -83,8 +83,8 @@ anchor_left = 1.0
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
-offset_left = 5.0
-offset_top = -25.0
+offset_left = 15.0
+offset_top = -20.0
 offset_right = 202.0
 offset_bottom = 105.0
 
@@ -120,8 +120,8 @@ anchor_left = 1.0
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
-offset_left = 5.0
-offset_top = -25.0
+offset_left = 15.0
+offset_top = -20.0
 offset_right = 140.0
 
 [node name="Host_New_Button" type="Button" parent="ButtonPanel/Multiplayer_Button/Multiplayer_Popup" unique_id=337774414]

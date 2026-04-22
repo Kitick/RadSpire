@@ -6,7 +6,7 @@
 oversampling_override = 1.0
 title = "Bake Terrain3D Mesh"
 position = Vector2i(0, 36)
-size = Vector2i(400, 155)
+size = Vector2i(400, 162)
 visible = true
 script = ExtResource("1_sf76d")
 
@@ -14,7 +14,7 @@ script = ExtResource("1_sf76d")
 offset_left = 8.0
 offset_top = 8.0
 offset_right = 392.0
-offset_bottom = 106.0
+offset_bottom = 123.0
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10

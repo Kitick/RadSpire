@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://bk0njy674g21q"]
+
+[ext_resource type="Script" uid="uid://rexyxuucibag" path="res://GameWorld/GameWorldManager.cs" id="1_gameworldmanager"]
+[ext_resource type="PackedScene" uid="uid://dpm2alxlwbkpr" path="res://GameWorld/WorldScene.tscn" id="2_26jcl"]
+
+[node name="GameWorldManager" type="Node" unique_id=124839608]
+script = ExtResource("1_gameworldmanager")
+MainWorldScene = ExtResource("2_26jcl")

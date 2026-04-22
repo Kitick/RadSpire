@@ -3,22 +3,37 @@ namespace Character;
 using System;
 using Components;
 using Godot;
+using QuestSystem;
+using Root;
 using Services;
-using UI.HUD;
 
-public sealed partial class NPC : CharacterBody3D {
+public sealed partial class NPC : CharacterBody3D, ISaveable<NPCData> {
 	private static readonly LogService Log = new(nameof(NPC), enabled: true);
+	public string Id { get; set; } = Guid.NewGuid().ToString();
 
-	[Export] private string NPCName = "Villager";
-	[Export(PropertyHint.MultilineText)] private string Dialogue = "Craft a sword and defeat the guys at the gas station";
+	[Export] private NPCID Identity = NPCID.None;
+	[Export] private string NPCName = string.Empty;
+	[Export(PropertyHint.MultilineText)] private string Dialogue = string.Empty;
+
+	public event Action<NPCID>? Talked;
+	public event Action<string?>? InteractionPromptChanged;
 
 	private bool PlayerInRange;
-	private Action? UnsubscribeInteract;
+	private event Action? OnExit;
 	private Node3D? Player;
-	private HUD? Hud;
+	private QuestManager? QuestManager;
+
+	private string[] CurrentLines = [];
+	private int CurrentLineIndex = 0;
+	private bool InDialogue = false;
+
+	public void Init(QuestManager questManager) => QuestManager = questManager;
 
 	public override void _Ready() {
-		Hud = GetTree().Root.GetNodeOrNull<HUD>("SceneDirector/GameManager/HUD");
+		if(Identity == NPCID.None) {
+			Log.Error($"{Name}: Identity not assigned.");
+			return;
+		}
 		SetupInteraction();
 	}
 
@@ -27,8 +42,7 @@ public sealed partial class NPC : CharacterBody3D {
 			Vector3 direction = Player.GlobalPosition - GlobalPosition;
 			direction.Y = 0;
 
-			if(direction.LengthSquared() < 0.0001f)
-				return;
+			if(direction.LengthSquared() < 0.0001f) { return; }
 
 			float targetRotation = Mathf.Atan2(direction.X, direction.Z);
 			Rotation = new Vector3(
@@ -40,11 +54,17 @@ public sealed partial class NPC : CharacterBody3D {
 	}
 
 	public override void _ExitTree() {
-		UnsubscribeInteract?.Invoke();
+		OnExit?.Invoke();
+		ClearEvents();
+	}
+
+	private void ClearEvents() {
+		Talked = null;
+		InteractionPromptChanged = null;
 	}
 
 	private void SetupInteraction() {
-		var interactionArea = GetNodeOrNull<InteractionArea>("InteractionArea");
+		InteractionArea interactionArea = GetNodeOrNull<InteractionArea>("InteractionArea");
 
 		if(interactionArea == null) {
 			Log.Error("NPC InteractionArea not found.");
@@ -54,38 +74,66 @@ public sealed partial class NPC : CharacterBody3D {
 		interactionArea.OnBodyEnteredArea += HandleBodyEntered;
 		interactionArea.OnBodyExitedArea += HandleBodyExited;
 
-		UnsubscribeInteract = ActionEvent.Interact.WhenPressed(() => {
-			if(!PlayerInRange) {
-				return;
-			}
-
+		OnExit += ActionEvent.Interact.WhenPressed(() => {
+			if(!PlayerInRange) { return; }
 			Interact();
 		});
 	}
 
 	private void HandleBodyEntered(Node3D body) {
-		if(body.IsInGroup("player")) {
-			PlayerInRange = true;
-			Player = body;
-
-			Hud?.ShowInteractionPrompt("Press F to talk");
-
-			Log.Info("Player entered NPC interaction range");
-		}
+		if(!body.IsInGroup(Group.Player.ToString())) { return; }
+		PlayerInRange = true;
+		Player = body;
+		InteractionPromptChanged?.Invoke("Press F to talk");
+		Log.Info("Player entered NPC interaction range");
 	}
 
 	private void HandleBodyExited(Node3D body) {
-		if(body.IsInGroup("player")) {
-			PlayerInRange = false;
-			Player = null;
-
-			Hud?.HideInteractionPrompt();
-
-			Log.Info("Player left NPC interaction range");
-		}
+		if(!body.IsInGroup(Group.Player.ToString())) { return; }
+		PlayerInRange = false;
+		Player = null;
+		InDialogue = false;
+		InteractionPromptChanged?.Invoke(null);
+		Log.Info("Player left NPC interaction range");
 	}
 
 	private void Interact() {
-		Hud?.ShowInteractionPrompt($"{NPCName}: {Dialogue}");
+		if(!InDialogue) {
+			CurrentLines = QuestManager?.GetDialogueFor(Identity) ?? [];
+			CurrentLineIndex = 0;
+			InDialogue = CurrentLines.Length > 0;
+			Talked?.Invoke(Identity);
+			return;
+		}
+
+		if(CurrentLineIndex < CurrentLines.Length) {
+			InteractionPromptChanged?.Invoke($"{Identity}: {CurrentLines[CurrentLineIndex]}");
+			CurrentLineIndex++;
+			return;
+		}
+
+		InteractionPromptChanged?.Invoke(null);
+		InDialogue = false;
+		QuestManager?.NotifyDialogueFinished(Identity);
 	}
+
+	public NPCData Export() => new NPCData {
+		Id = Id,
+		GlobalPosition = GlobalPosition,
+		GlobalRotation = GlobalRotation,
+	};
+
+	public void Import(NPCData data) {
+		if(!string.IsNullOrEmpty(data.Id)) {
+			Id = data.Id;
+		}
+		GlobalPosition = data.GlobalPosition;
+		GlobalRotation = data.GlobalRotation;
+	}
+}
+
+public readonly record struct NPCData : ISaveData {
+	public string Id { get; init; }
+	public Vector3 GlobalPosition { get; init; }
+	public Vector3 GlobalRotation { get; init; }
 }

@@ -14,7 +14,7 @@ public sealed class ObjectNodeFactory {
 		ParentNode = parent;
 	}
 
-	public ObjectNode? Spawn(Object obj) {
+	public ObjectNode? Spawn(Object obj, Node? parentNode = null) {
 		ItemDefinition? ItemDefinition = DatabaseManager.Instance.GetItemDefinitionById(obj.ItemId);
 		if(ItemDefinition == null) {
 			Log.Error($"Failed to spawn object. ItemDefinition with ID {obj.ItemId} not found.");
@@ -29,7 +29,8 @@ public sealed class ObjectNodeFactory {
 		}
 		ObjectNode ChildNode = Scene.Instantiate<ObjectNode>();
 
-		ParentNode.AddChild(ChildNode);
+		Node targetParent = parentNode ?? ParentNode;
+		targetParent.AddChild(ChildNode);
 		ChildNode.Bind(obj);
 
 		return ChildNode;
@@ -39,9 +40,11 @@ public sealed class ObjectNodeFactory {
 public partial class Object : IWorldLocation, ISaveable<ObjectData> {
 	public string Id { get; private set; } = Guid.NewGuid().ToString();
 	public string ItemId { get; private set; } = null!;
+	public string ParentAnchorId { get; set; } = string.Empty;
 	public WorldLocation WorldLocation { get; private set; } = null!;
 	public ComponentDictionary<IObjectComponent> ComponentDictionary { get; } = new();
 	private InventoryComponentData? InventoryComponentData;
+	private DoorComponentData? SavedDoorComponentData;
 
 	public Object(string itemId, Vector3 pos, Vector3 rot) {
 		ItemId = itemId;
@@ -53,8 +56,10 @@ public partial class Object : IWorldLocation, ISaveable<ObjectData> {
 	public ObjectData Export() => new ObjectData {
 		Id = Id,
 		ItemId = ItemId,
+		ParentAnchorId = ParentAnchorId,
 		WorldLocation = WorldLocation.Export(),
 		InventoryComponentData = ExportInventoryComponent(),
+		DoorComponentData = ExportDoorComponent(),
 	};
 
 	public InventoryComponentData? ExportInventoryComponent() {
@@ -64,9 +69,17 @@ public partial class Object : IWorldLocation, ISaveable<ObjectData> {
 		return null;
 	}
 
+	public DoorComponentData? ExportDoorComponent() {
+		if(ComponentDictionary.Has<DoorComponent>()) {
+			return ComponentDictionary.Get<DoorComponent>().Export();
+		}
+		return null;
+	}
+
 	public void Import(ObjectData data) {
 		Id = data.Id;
 		ItemId = data.ItemId;
+		ParentAnchorId = data.ParentAnchorId ?? string.Empty;
 
 		if(WorldLocation == null) {
 			WorldLocation = new WorldLocation(data.WorldLocation.Position, data.WorldLocation.Rotation);
@@ -76,17 +89,18 @@ public partial class Object : IWorldLocation, ISaveable<ObjectData> {
 		}
 
 		InventoryComponentData = data.InventoryComponentData;
+		SavedDoorComponentData = data.DoorComponentData;
 		ApplyComponentData();
 	}
 
 	public void ApplyComponentData() {
-		if(InventoryComponentData == null) {
-			return;
-		}
-
-		if(ComponentDictionary.Has<InventoryComponent>()) {
+		if(InventoryComponentData.HasValue && ComponentDictionary.Has<InventoryComponent>()) {
 			ComponentDictionary.Get<InventoryComponent>().Import(InventoryComponentData.Value);
 			InventoryComponentData = null;
+		}
+		if(SavedDoorComponentData.HasValue && ComponentDictionary.Has<DoorComponent>()) {
+			ComponentDictionary.Get<DoorComponent>().Import(SavedDoorComponentData.Value);
+			SavedDoorComponentData = null;
 		}
 	}
 }
@@ -94,8 +108,10 @@ public partial class Object : IWorldLocation, ISaveable<ObjectData> {
 public readonly record struct ObjectData : ISaveData {
 	public string Id { get; init; }
 	public string ItemId { get; init; }
+	public string ParentAnchorId { get; init; }
 	public WorldLocationData WorldLocation { get; init; }
 	public InventoryComponentData? InventoryComponentData { get; init; }
+	public DoorComponentData? DoorComponentData { get; init; }
 
 }
 

@@ -1,0 +1,25 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://nr3e3svr5b3p"
+path="res://.godot/imported/picture_frames.obj-6f824f1e01429604aac081a8471ad6aa.mesh"
+
+[deps]
+
+files=["res://.godot/imported/picture_frames.obj-6f824f1e01429604aac081a8471ad6aa.mesh"]
+
+source_file="res://ItemSystem/WorldObjects/House/Scenes/living_room_game_assets_free/3d_objects_free/picture_frames.obj"
+dest_files=["res://.godot/imported/picture_frames.obj-6f824f1e01429604aac081a8471ad6aa.mesh", "res://.godot/imported/picture_frames.obj-6f824f1e01429604aac081a8471ad6aa.mesh"]
+
+[params]
+
+generate_tangents=true
+generate_lods=true
+generate_shadow_mesh=true
+generate_lightmap_uv2=false
+generate_lightmap_uv2_texel_size=0.2
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+force_disable_mesh_compression=false
