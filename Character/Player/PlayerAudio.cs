@@ -35,7 +35,7 @@ public sealed partial class PlayerAudio : Node {
 			StepPlayer = new AudioStreamPlayer {
 				Name = "StepSfx",
 				Bus = "SFX",
-				VolumeDb = -12.0f,
+				VolumeDb = -30.0f,
 				Stream = StepSound,
 			};
 			AddChild(StepPlayer);
@@ -90,7 +90,7 @@ public sealed partial class PlayerAudio : Node {
 		}
 	}
 
-	public void PlayFootstep(float pitch = 1.0f, float volumeDb = -12.0f) {
+	public void PlayFootstep(float pitch = 1.0f, float volumeDb = -30.0f) {
 		if(StepPlayer == null || StepSound == null) { return; }
 
 		double now = Time.GetTicksMsec() / 1000.0;
