@@ -13,6 +13,7 @@ public sealed partial class QuestLog : Control {
 		questManager.QuestActivated += _ => Refresh();
 		questManager.QuestCompleted += _ => Refresh();
 		questManager.ObjectiveUpdated += (_, _) => Refresh();
+		questManager.StageAdvanced += _ => Refresh();
 		Refresh();
 	}
 

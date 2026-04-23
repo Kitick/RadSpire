@@ -30,7 +30,7 @@ public sealed record QuestDefinition(
 );
 
 public static class Quests {
-	// Stage 0 — auto-activates on spawn, completes on talking to Sera
+	// Stage 0 — auto-activates on spawn, completes when player talks to Sera
 	public static readonly QuestDefinition LeftForDead = new(
 		Title: "Left for Dead",
 		Description: "Ambushed and stripped of your weapons, you need to find help.",
@@ -56,7 +56,7 @@ public static class Quests {
 			"I know this land better than anyone within ten miles. I know where to find what you'll need.",
 			"I'll help you get back on your feet — materials, tools, everything I know. But I need something from you first.",
 			"My friend Dag was taken by the same men who did this to you. Help me get him back, and I'll get you armed.",
-			"First things first — get yourself a sword. Iron ore from the craters, process to chunks, smelt to bars, then forge. Two iron bars, two sticks, a stone.",
+			"First things first. get yourself a sword. Iron ore from the craters, process to chunks, smelt to bars, then forge. Two iron bars, two sticks, a stone.",
 		],
 		ActiveDialogue: [
 			"Sword needs two iron bars, two sticks, and a stone. Iron ore comes from the craters.",

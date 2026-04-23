@@ -102,22 +102,30 @@ public sealed partial class NPC : CharacterBody3D, ISaveable<NPCData> {
 			CurrentLines = QuestManager?.GetDialogueFor(Identity) ?? [];
 			CurrentLineIndex = 0;
 			InDialogue = CurrentLines.Length > 0;
-			Talked?.Invoke(Identity);
-			return;
 		}
 
-		if(CurrentLineIndex < CurrentLines.Length) {
+		if(InDialogue && CurrentLineIndex < CurrentLines.Length) {
 			InteractionPromptChanged?.Invoke($"{Identity}: {CurrentLines[CurrentLineIndex]}");
 			CurrentLineIndex++;
 			return;
 		}
 
-		InteractionPromptChanged?.Invoke(null);
-		InDialogue = false;
-		QuestManager?.NotifyDialogueFinished(Identity);
+		Talked?.Invoke(Identity);
+		string[] notifications = QuestManager?.NotifyDialogueFinished(Identity) ?? [];
+
+		if(notifications.Length > 0) {
+			CurrentLines = notifications;
+			CurrentLineIndex = 0;
+			InDialogue = true;
+			InteractionPromptChanged?.Invoke(CurrentLines[CurrentLineIndex]);
+			CurrentLineIndex++;
+		} else {
+			InteractionPromptChanged?.Invoke(null);
+			InDialogue = false;
+		}
 	}
 
-	public NPCData Export() => new NPCData {
+	public NPCData Export() => new() {
 		Id = Id,
 		GlobalPosition = GlobalPosition,
 		GlobalRotation = GlobalRotation,

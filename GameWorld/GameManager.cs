@@ -139,9 +139,9 @@ public sealed partial class GameManager : Node {
 		QuestManager.GameWon += OnGameWon;
 	}
 
-	private void OnQuestActivated(QuestID id) => HUD?.ShowQuestNotification($"Quest Started: {id}");
+	private void OnQuestActivated(QuestID id) => Log.Info($"Quest activated: {id}");
 	private void OnQuestCompleted(QuestID id) => HUD?.ShowQuestNotification($"Quest Completed: {id}");
-	private void OnStageAdvanced(int stage) => HUD?.ShowQuestNotification($"Stage {stage} reached!");
+	private void OnStageAdvanced(int stage) => Log.Info($"Stage advanced to {stage}");
 	private void OnGameWon() => HUD?.Win();
 
 	private void SubscribeToEvents(NPC npc) {

@@ -7,9 +7,7 @@ using InventorySystem;
 using Root;
 
 public static class QuestSystem {
-	public static bool CanMakePending(QuestDefinition def, bool alreadyRegistered, int currentStage) {
-		return !alreadyRegistered && def.StageRequirement == currentStage;
-	}
+	public static bool CanMakePending(QuestDefinition def, bool alreadyRegistered, int currentStage) => !alreadyRegistered && def.StageRequirement == currentStage;
 
 	public static QuestProgress ApplyKill(QuestDefinition def, QuestProgress progress, EnemyType enemyType) {
 		return ApplyToObjectives(def, progress, (objectives, i) => {

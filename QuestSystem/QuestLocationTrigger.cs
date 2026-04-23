@@ -36,7 +36,5 @@ public sealed partial class QuestLocationTrigger : Area3D {
 		ClearEvents();
 	}
 
-	private void ClearEvents() {
-		PlayerReachedLocation = null;
-	}
+	private void ClearEvents() => PlayerReachedLocation = null;
 }
