@@ -27,7 +27,7 @@ public sealed partial class HUD : Control {
 	[Export] public InventoryItemInformationUI InventoryItemInformationUI = null!;
 	[Export] private InventoryUI Chest = null!;
 	[Export] private Control QuestLog = null!;
-	[Export] private Hotbar Hotbar = null!;
+	[Export] public Hotbar Hotbar = null!;
 	[Export] private RespawnMenu RespawnMenu = null!;
 	[Export] private ProgressBar HealthBar = null!;
 	[Export] private Control WinMenu = null!;
@@ -55,6 +55,7 @@ public sealed partial class HUD : Control {
 
 	public void Init(Player player, StateMachine<MenuState> stateMachine, QuestManager questManager) {
 		Player = player;
+		Player.Health.OnChanged += (_, _) => UpdateHealthBar();
 		CraftingUI.Inventories.Add(player.Inventory);
 		CraftingUI.Inventories.Add(player.Hotbar);
 		StateMachineRef = stateMachine;
@@ -74,7 +75,6 @@ public sealed partial class HUD : Control {
 
 		SetCallbacks();
 		SetInputCallbacks();
-		UpdateHealthBar();
 	}
 
 	public override void _ExitTree() {
@@ -184,8 +184,6 @@ public sealed partial class HUD : Control {
 		RespawnMenu.RespawnButton.Pressed += () => RespawnRequested?.Invoke();
 		RespawnMenu.MainMenuButton.Pressed += () => MainMenuRequested?.Invoke();
 
-		// Health bar updates
-		Player.Health.OnChanged += (_, _) => UpdateHealthBar();
 	}
 
 	private void UpdateHealthBar() {

@@ -69,7 +69,7 @@ public class Setting<T> : ISetting {
 	public T Target {
 		get;
 		set { Log.Info($"Set {value}"); field = ProcessTarget(value); }
-	}
+	} = default!;
 
 	public T Actual {
 		get => GetActual();
@@ -81,7 +81,7 @@ public class Setting<T> : ISetting {
 		GetActual = getActual;
 		SetActual = setActual;
 		Default = defaultValue;
-		if(!skipTargetInit) Target = defaultValue;
+		if(!skipTargetInit) { Target = defaultValue; }
 	}
 
 	protected virtual T ProcessTarget(T value) => value;
@@ -109,7 +109,7 @@ public sealed class SliderSetting<T> : Setting<T>, ISliderSetting where T : stru
 	}
 
 	protected override T ProcessTarget(T value) {
-		if(Step == default) return value;
+		if(Step == default) { return value; }
 		return T.Clamp(value, Min, Max).Round(Step);
 	}
 }
@@ -126,9 +126,9 @@ public sealed class OptionSetting<T> : Setting<T>, IOptionSetting where T : notn
 	}
 
 	protected override T ProcessTarget(T value) {
-		if(Options is null) return value;
+		if(Options is null) { return value; }
 		foreach(T option in Options) {
-			if(option.Equals(value)) return value;
+			if(option.Equals(value)) { return value; }
 		}
 		return Default;
 	}
@@ -156,7 +156,6 @@ public static class SliderExtensions {
 		slider.Step = setting.Step;
 	}
 }
-
 
 public static class SettingExtensions {
 	public static void Apply(this ISetting[] settings) {

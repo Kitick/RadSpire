@@ -1,10 +1,14 @@
 [gd_scene format=3 uid="uid://bjql4hi1q0ouh"]
 
-[node name="QuestLog" type="Control" unique_id=1742840925]
+[ext_resource type="Script" uid="uid://b065qjlwc3v4i" path="res://QuestSystem/QuestLog.cs" id="1_vyokp"]
+
+[node name="QuestLog" type="Control" unique_id=1742840925 node_paths=PackedStringArray("QuestList")]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 256.0
 offset_bottom = 350.0
+script = ExtResource("1_vyokp")
+QuestList = NodePath("QuestPanel/QuestList")
 
 [node name="QuestPanel" type="ColorRect" parent="." unique_id=1277967201]
 layout_mode = 1
