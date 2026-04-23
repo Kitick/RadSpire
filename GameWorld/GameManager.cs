@@ -51,6 +51,7 @@ public sealed partial class GameManager : Node {
 		CameraRig = this.AddScene<CameraRig>(CameraScene);
 		DisplaySettings.SetWorldEnvironment(OutsideWorld.WorldEnvironment);
 		OutsideWorld.WorldObjectManager?.SetUpWorldObjectManager(OutsideWorld, OutsideWorld, this);
+		OutsideWorld.Item3DIconManager?.SetUpItem3DIconManager(OutsideWorld);
 		AddChild(QuestManager);
 		ConfigureStateMachine();
 		StartGame();

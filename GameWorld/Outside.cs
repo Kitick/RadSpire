@@ -1,7 +1,7 @@
 namespace GameWorld;
 
 using Godot;
-
+using ItemSystem.Icons;
 using ItemSystem.WorldObjects;
 
 public sealed partial class Outside : Node {
@@ -10,4 +10,5 @@ public sealed partial class Outside : Node {
 	[Export] public Marker3D NPCSpawnMarker = null!;
 	[Export] public Godot.Collections.Array<Marker3D> EnemySpawnPoints = [];
 	[Export] public WorldObjectManager WorldObjectManager = null!;
+	[Export] public Item3DIconManager Item3DIconManager = null!;
 }

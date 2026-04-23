@@ -32,7 +32,7 @@ public partial class ObjectPickup : Node3D {
 
 	public void HandleBodyEntered(Node objectNode) {
 		ObjectNode? objNode = FindAncestorObjectNode(objectNode);
-		if(objNode == null) {
+		if(objNode == null || objNode.Data == null) {
 			return;
 		}
 		if(ObjectNodesInRange.ContainsKey(objNode.Data.Id)) {
@@ -47,7 +47,7 @@ public partial class ObjectPickup : Node3D {
 
 	public void HandleBodyExited(Node objectNode) {
 		ObjectNode? objNode = FindAncestorObjectNode(objectNode);
-		if(objNode == null) {
+		if(objNode == null || objNode.Data == null) {
 			return;
 		}
 		ObjectNodesInRange.Remove(objNode.Data.Id);
