@@ -185,12 +185,13 @@ public partial class WorldObjectManager : Node, ISaveable<WorldObjectManagerData
 		doorComponent.ReturnToMainWorld = doorSpawnDefinition.ReturnToMainWorld;
 	}
 
-	public bool CreateWorldObject(string itemId, Vector3 position, Vector3 rotation) {
+	public bool CreateWorldObject(string itemId, Vector3 position, Vector3 rotation, string parentAnchorId = "") {
 		if(!SetUpComplete) {
 			Log.Error("Attempted to create world object before WorldObjectManager was set up.");
 			return false;
 		}
 		Object obj = new Object(itemId, position, rotation);
+		obj.ParentAnchorId = parentAnchorId ?? string.Empty;
 		return WorldObjects.RegisterWorldObject(obj);
 	}
 

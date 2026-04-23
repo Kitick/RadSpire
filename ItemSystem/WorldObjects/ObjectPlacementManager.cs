@@ -8,6 +8,8 @@ using Godot;
 using InventorySystem;
 using InventorySystem.Interface;
 using ItemSystem;
+using ItemSystem.WorldObjects.Hierarchy;
+using ItemSystem.WorldObjects.House;
 using Root;
 using Services;
 
@@ -20,11 +22,15 @@ public partial class ObjectPlacementManager : Node {
 	private const float PlacementLinecastHeight = 1.0f;
 	private const float PlacementFineRotationStepRadians = Mathf.Pi / 36.0f;
 	private const float PlacementSnapRotationStepRadians = Mathf.Pi / 4.0f;
+	private const float WallPlacementBaseHeight = PlacementLinecastHeight;
+	private const float WallHeightRaiseCap = 4.0f;
 	private bool _isInitialized;
 	private float CurrentPlacingRotationOffsetY;
 	private float PlacementStartRotationOffsetY;
 	private float CurrentPlacingDistanceCompensation;
 	private string? CurrentSurfaceObjectId;
+	private string? CurrentWallAnchorId;
+	private Vector3 CurrentWallNormal = Vector3.Forward;
 	private readonly List<PlacementAreaShapeTemplate> CurrentPlacementAreaShapes = new();
 
 	public WorldObjectManager? WorldObjectManager { get; private set; }
@@ -73,6 +79,8 @@ public partial class ObjectPlacementManager : Node {
 			PlacementStartRotationOffsetY = 0.0f;
 			CurrentPlacingDistanceCompensation = 0.0f;
 			CurrentSurfaceObjectId = null;
+			CurrentWallAnchorId = null;
+			CurrentWallNormal = Vector3.Forward;
 			CurrentPlacementAreaShapes.Clear();
 			EndPlacingObject?.Invoke();
 		});
@@ -139,6 +147,9 @@ public partial class ObjectPlacementManager : Node {
 		}
 
 		if(wheelDirection == 0) {
+			return;
+		}
+		if(IsCurrentPlacingItemWallObject()) {
 			return;
 		}
 
@@ -240,7 +251,7 @@ public partial class ObjectPlacementManager : Node {
 			Log.Info("PlaceObject canceled: selected hotbar slot no longer has the placing item.");
 			return;
 		}
-		bool created = WorldObjectManager!.CreateWorldObject(currentItemId, CurrentPlacingPosition, CurrentPlacingRotation);
+		bool created = WorldObjectManager!.CreateWorldObject(currentItemId, CurrentPlacingPosition, CurrentPlacingRotation, CurrentWallAnchorId ?? string.Empty);
 		if(!created) {
 			Log.Error($"PlaceObject failed to create world object for ItemId '{CurrentPlacingItemId}'.");
 			return;
@@ -365,12 +376,12 @@ public partial class ObjectPlacementManager : Node {
 		}
 		bool success = false;
 		Vector3 position = GetPositionInFrontOfPlayer(player, out success, distance);
-		Vector3 rotation = GetRotationFacingPlayer(player, position);
+		Vector3 rotation = IsWallObject(itemId) ? GetWallPlacementRotation() : GetRotationFacingPlayer(player, position);
 		if(!success) {
 			return success;
 		}
 
-		bool created = WorldObjectManager!.CreateWorldObject(itemId, position, rotation);
+		bool created = WorldObjectManager!.CreateWorldObject(itemId, position, rotation, CurrentWallAnchorId ?? string.Empty);
 		if(!created) {
 			Log.Error($"PlaceObjectInFrontOfPlayer failed to create world object for ItemId '{itemId}'.");
 		}
@@ -379,6 +390,8 @@ public partial class ObjectPlacementManager : Node {
 
 	public Vector3 GetPositionInFrontOfPlayer(Player player, out bool success, float distance = DefaultPlaceDistance) {
 		success = false;
+		CurrentSurfaceObjectId = null;
+		CurrentWallAnchorId = null;
 		if(player == null || !GodotObject.IsInstanceValid(player)) {
 			Log.Error("Player is invalid.");
 			return Vector3.Zero;
@@ -392,14 +405,69 @@ public partial class ObjectPlacementManager : Node {
 		forward = forward.Normalized();
 		Vector3 previewRotation = GetAdjustedPlacementRotation(player, player.GlobalPosition + (forward * placeDistance));
 		float originOffset = GetPlacementOriginOffset(forward, previewRotation);
-		Vector3 position = player.GlobalPosition + (forward * (placeDistance + originOffset + CurrentPlacingDistanceCompensation));
-		position.Y = player.GlobalPosition.Y;
-		Vector3 groundPosition = GetPositionOnGround(position, out success, out string? surfaceObjectId);
+		float targetDistance = placeDistance + originOffset + CurrentPlacingDistanceCompensation;
+		Vector3 targetPosition = player.GlobalPosition + (forward * targetDistance);
+		targetPosition.Y = player.GlobalPosition.Y;
+
+		if(IsCurrentPlacingItemWallObject()) {
+			return GetPositionOnWall(player, targetPosition, targetDistance, out success);
+		}
+
+		Vector3 groundPosition = GetPositionOnGround(targetPosition, out success, out string? surfaceObjectId);
 		CurrentSurfaceObjectId = surfaceObjectId;
 		if(success && IsPlacementObstructedByWall(player, groundPosition)) {
 			success = false;
 		}
 		return groundPosition;
+	}
+
+	private Vector3 GetPositionOnWall(Player player, Vector3 targetPosition, float targetDistance, out bool success) {
+		success = false;
+		if(GameManager == null) {
+			return targetPosition;
+		}
+		Viewport? viewport = GameManager.GetViewport();
+		if(viewport?.World3D == null) {
+			return targetPosition;
+		}
+
+		Vector3 playerOrigin = player.GlobalPosition + (Vector3.Up * PlacementLinecastHeight);
+		Vector3 castDirection = targetPosition - player.GlobalPosition;
+		castDirection.Y = 0.0f;
+		if(castDirection.LengthSquared() < 0.0001f) {
+			return targetPosition;
+		}
+		castDirection = castDirection.Normalized();
+		Vector3 castEnd = playerOrigin + (castDirection * targetDistance);
+
+		PhysicsDirectSpaceState3D spaceState = viewport.World3D.DirectSpaceState;
+		PhysicsRayQueryParameters3D query = PhysicsRayQueryParameters3D.Create(playerOrigin, castEnd);
+		query.CollideWithAreas = false;
+		query.Exclude = new Godot.Collections.Array<Rid> { player.GetRid() };
+		Godot.Collections.Dictionary result = spaceState.IntersectRay(query);
+		if(result.Count == 0 || !result.ContainsKey("position") || !result.ContainsKey("normal") || !result.ContainsKey("collider")) {
+			return targetPosition;
+		}
+
+		Node? colliderNode = result["collider"].AsGodotObject() as Node;
+		if(!TryGetWallAnchorIdFromCollider(colliderNode, out string wallAnchorId)) {
+			return targetPosition;
+		}
+
+		Vector3 hitPosition = (Vector3) result["position"];
+		Vector3 wallNormal = ((Vector3) result["normal"]).Normalized();
+		float hitDistance = playerOrigin.DistanceTo(hitPosition);
+		float closenessRatio = targetDistance <= Numbers.EPSILON
+			? 0.0f
+			: Mathf.Clamp((targetDistance - hitDistance) / targetDistance, 0.0f, 1.0f);
+		float wallHeightOffset = closenessRatio * WallHeightRaiseCap;
+
+		Vector3 wallPosition = hitPosition;
+		wallPosition.Y = player.GlobalPosition.Y + WallPlacementBaseHeight + wallHeightOffset;
+		CurrentWallNormal = wallNormal;
+		CurrentWallAnchorId = wallAnchorId;
+		success = true;
+		return wallPosition;
 	}
 
 	private bool IsPlacementObstructedByWall(Player player, Vector3 targetPosition) {
@@ -435,8 +503,22 @@ public partial class ObjectPlacementManager : Node {
 	}
 
 	private Vector3 GetAdjustedPlacementRotation(Player player, Vector3 objectPosition) {
+		if(IsCurrentPlacingItemWallObject()) {
+			return GetWallPlacementRotation();
+		}
 		Vector3 baseRotation = GetRotationFacingPlayer(player, objectPosition);
 		return new Vector3(baseRotation.X, baseRotation.Y + CurrentPlacingRotationOffsetY, baseRotation.Z);
+	}
+
+	private Vector3 GetWallPlacementRotation() {
+		Vector3 normal = CurrentWallNormal;
+		normal.Y = 0.0f;
+		if(normal.LengthSquared() < 0.0001f) {
+			normal = Vector3.Forward;
+		}
+		normal = normal.Normalized();
+		float angle = Mathf.Atan2(normal.X, normal.Z);
+		return new Vector3(0, angle, 0);
 	}
 
 	private float GetPlacementOriginOffset(Vector3 forward, Vector3 rotation) {
@@ -550,6 +632,55 @@ public partial class ObjectPlacementManager : Node {
 		}
 		ItemDefinition? itemDef = DatabaseManager.Instance.GetItemDefinitionById(itemId);
 		return itemDef != null && itemDef.IsPlaceable;
+	}
+
+	private bool IsCurrentPlacingItemWallObject() {
+		if(string.IsNullOrWhiteSpace(CurrentPlacingItemId)) {
+			return false;
+		}
+		return IsWallObject(CurrentPlacingItemId);
+	}
+
+	private static bool IsWallObject(string? itemId) {
+		if(string.IsNullOrWhiteSpace(itemId)) {
+			return false;
+		}
+		ItemDefinition? itemDef = DatabaseManager.Instance.GetItemDefinitionById(itemId);
+		return itemDef?.IsWallObject == true;
+	}
+
+	private static Walls? FindWallFromNode(Node? node) {
+		Node? current = node;
+		while(current != null) {
+			if(current is Walls wallNode) {
+				return wallNode;
+			}
+			current = current.GetParent();
+		}
+		return null;
+	}
+
+	private static bool TryFindAnchorInWallBranch(Node node, out string anchorId) {
+		anchorId = string.Empty;
+		if(node is WorldObjectHierarchyAnchor anchor && !string.IsNullOrWhiteSpace(anchor.AnchorId)) {
+			anchorId = anchor.AnchorId;
+			return true;
+		}
+		foreach(Node child in node.GetChildren()) {
+			if(TryFindAnchorInWallBranch(child, out anchorId)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private static bool TryGetWallAnchorIdFromCollider(Node? colliderNode, out string anchorId) {
+		anchorId = string.Empty;
+		Walls? wallNode = FindWallFromNode(colliderNode);
+		if(wallNode == null || !GodotObject.IsInstanceValid(wallNode)) {
+			return false;
+		}
+		return TryFindAnchorInWallBranch(wallNode, out anchorId);
 	}
 }
 
