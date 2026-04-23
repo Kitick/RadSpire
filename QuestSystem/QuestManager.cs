@@ -116,9 +116,16 @@ public sealed partial class QuestManager : Node, ISaveable<QuestProgressionData>
 	private void TryMakePending(QuestID id, QuestDefinition def) {
 		bool alreadyRegistered = Progresses.ContainsKey(id);
 		if(!QuestSystem.CanMakePending(def, alreadyRegistered, CurrentStage)) { return; }
-		Progresses[id] = QuestProgress.Pending(def);
-		Log.Info($"Quest pending: '{id}'");
-		QuestBecamePending?.Invoke(id);
+
+		if(def.NpcId == NPCID.None) {
+			Progresses[id] = QuestProgress.Active(def);
+			Log.Info($"Quest auto-activated (no NPC): '{id}'");
+			QuestActivated?.Invoke(id);
+		} else {
+			Progresses[id] = QuestProgress.Pending(def);
+			Log.Info($"Quest pending: '{id}'");
+			QuestBecamePending?.Invoke(id);
+		}
 	}
 
 	private void TryMakeQuestsPending() {

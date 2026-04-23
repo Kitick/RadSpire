@@ -26,7 +26,7 @@ public sealed partial class HUD : Control {
 	[Export] private CraftingUI CraftingUI = null!;
 	[Export] public InventoryItemInformationUI InventoryItemInformationUI = null!;
 	[Export] private InventoryUI Chest = null!;
-	[Export] private Control QuestLog = null!;
+	[Export] private QuestLog QuestLog = null!;
 	[Export] public Hotbar Hotbar = null!;
 	[Export] private RespawnMenu RespawnMenu = null!;
 	[Export] private ProgressBar HealthBar = null!;
@@ -63,7 +63,8 @@ public sealed partial class HUD : Control {
 		Hotbar.Initialize(player.Hotbar, player);
 		InventoryItemInformationUI.SetUpInventoryItemInformationUI();
 		ConfigureStateMachine(stateMachine);
-		GetNodeOrNull<QuestLog>("QuestLog")?.Init(questManager);
+		QuestLog?.Init(questManager);
+		UpdateHealthBar();
 	}
 
 	public override void _Ready() {

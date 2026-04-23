@@ -14,7 +14,6 @@
 [ext_resource type="PackedScene" uid="uid://n150xowq1ipg" path="res://Inventory/InventoryItem/InventoryItemInformationUITemplate.tscn" id="9_2y2n3"]
 [ext_resource type="PackedScene" uid="uid://bmo8vs5v4lyqv" path="res://Crafting/Interface/CraftingUI.tscn" id="9_y8qxg"]
 [ext_resource type="Script" uid="uid://cl6aplc7wunof" path="res://Inventory/InventoryItem/InventoryItemInformationUI.cs" id="10_y8qxg"]
-[ext_resource type="Script" uid="uid://b065qjlwc3v4i" path="res://QuestSystem/QuestLog.cs" id="13_dwvm7"]
 [ext_resource type="PackedScene" uid="uid://bfiyahye18w1t" path="res://UI/HUD/WinMenu.tscn" id="15_cgpfr"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_cgpfr"]
@@ -33,6 +32,9 @@ anchors_preset = 0
 offset_right = 1920.0
 offset_bottom = 1080.0
 script = ExtResource("1_10ibt")
+SettingsScene = ExtResource("2_o30d6")
+SaveMenuScene = ExtResource("3_o30d6")
+HostPanelScene = ExtResource("2_3o8sq")
 PauseButton = NodePath("PauseButton")
 PauseMenu = NodePath("PauseMenu")
 Inventory = NodePath("Inventory")
@@ -44,9 +46,6 @@ Hotbar = NodePath("Hotbar")
 RespawnMenu = NodePath("RespawnMenu")
 HealthBar = NodePath("HealthBar")
 WinMenu = NodePath("WinMenu")
-SettingsScene = ExtResource("2_o30d6")
-SaveMenuScene = ExtResource("3_o30d6")
-HostPanelScene = ExtResource("2_3o8sq")
 
 [node name="PauseButton" type="Button" parent="." unique_id=948900833]
 layout_mode = 1
@@ -141,7 +140,6 @@ offset_right = 896.0
 offset_bottom = -126.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("13_dwvm7")
 
 [node name="Hotbar" parent="." unique_id=546357907 instance=ExtResource("5_c358i")]
 layout_mode = 1

@@ -31,7 +31,7 @@ public enum NPCID { None, Sera, Dag }
 
 public enum LocationID { None, OfficeBuilding, GasStation }
 
-public enum QuestID { ClearThePatrol, LeftForDead, AFairTrade, ArmYourself }
+public enum QuestID { LeftForDead, ArmYourself, ArmYourselfSide, ADealIsADeal }
 
 public static class ItemID {
 	public static readonly StringName AppleRed = "AppleRed";
