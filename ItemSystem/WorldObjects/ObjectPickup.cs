@@ -28,7 +28,12 @@ public partial class ObjectPickup : Node3D {
 		InventoryManager = inventoryManager;
 		InteractionArea.BodyEntered += HandleBodyEntered;
 		InteractionArea.BodyExited += HandleBodyExited;
+		InteractionArea.OnAreaEnteredArea += HandleAreaEntered;
+		InteractionArea.OnAreaExitedArea += HandleAreaExited;
 	}
+
+	private void HandleAreaEntered(Area3D area) => HandleBodyEntered(area);
+	private void HandleAreaExited(Area3D area) => HandleBodyExited(area);
 
 	public void HandleBodyEntered(Node objectNode) {
 		ObjectNode? objNode = FindAncestorObjectNode(objectNode);
@@ -145,6 +150,8 @@ public partial class ObjectPickup : Node3D {
 		base._ExitTree();
 		InteractionArea.BodyEntered -= HandleBodyEntered;
 		InteractionArea.BodyExited -= HandleBodyExited;
+		InteractionArea.OnAreaEnteredArea -= HandleAreaEntered;
+		InteractionArea.OnAreaExitedArea -= HandleAreaExited;
 	}
 }
 
