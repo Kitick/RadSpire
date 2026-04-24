@@ -1,6 +1,7 @@
 [gd_scene format=4 uid="uid://c3squ8yof2me2"]
 
 [ext_resource type="Texture2D" uid="uid://pvyapirwd8ro" path="res://ItemSystem/WorldObjects/House/Scenes/50 Free Stylized Wall Textures/17-32/Asset 11.png" id="1_43332"]
+[ext_resource type="Script" uid="uid://dqcw5jbku4alt" path="res://ItemSystem/WorldObjects/House/Scenes/Room.cs" id="1_rxxdl"]
 [ext_resource type="PackedScene" uid="uid://c82hwrne65tg5" path="res://ItemSystem/Database/ItemDefinitions/Furniture/Door/Return_Door2/Return_Door2.tscn" id="2_4v2ty"]
 [ext_resource type="ArrayMesh" uid="uid://pfh2wtjt2tlj" path="res://ItemSystem/WorldObjects/House/Scenes/christmas_assets_[free]/3d_objects-free/window.obj" id="2_8fwau"]
 [ext_resource type="Texture2D" uid="uid://d3dp7wgmf2e7d" path="res://ItemSystem/WorldObjects/House/Scenes/50 Free Stylized Wall Textures/1-16/Asset 14.png" id="2_wqm31"]
@@ -17,6 +18,12 @@
 [ext_resource type="PackedScene" uid="uid://dpnrof8tn33ch" path="res://ItemSystem/Database/ItemDefinitions/Furniture/FirePlace/Fireplace.tscn" id="16_g24kw"]
 [ext_resource type="PackedScene" uid="uid://mbqixjb2j1y5" path="res://ItemSystem/Database/ItemDefinitions/Furniture/Crate/CrateRegular/Crate.tscn" id="17_rxxdl"]
 [ext_resource type="PackedScene" uid="uid://cvu13u444u4i8" path="res://ItemSystem/Database/ItemDefinitions/Furniture/Crate/CrateBig/CrateBig.tscn" id="18_cx761"]
+
+[sub_resource type="Environment" id="Environment_wqm31"]
+background_mode = 1
+ambient_light_source = 2
+ambient_light_color = Color(1, 0.9607843, 0.9019608, 1)
+ambient_light_energy = 0.01
 
 [sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_4v2ty"]
 data = PackedVector3Array(-0.151, -4.0817, 2.5036, -0.151, -4.0817, -2.5036, -0.151, 4.0817, -2.5036, 0.151, -4.0817, -2.5036, -0.151, -4.0817, -2.5036, -0.151, -4.0817, 2.5036, -0.151, 4.0817, -2.5036, -0.151, -4.0817, -2.5036, 0.151, -4.0817, -2.5036, -0.151, 4.0817, -2.5036, -0.151, 4.0817, 2.5036, -0.151, -4.0817, 2.5036, -0.151, -4.0817, 2.5036, -0.151, 4.0817, 2.5036, 0.151, 4.0817, 2.5036, 0.151, 4.0817, 2.5036, -0.151, 4.0817, 2.5036, -0.151, 4.0817, -2.5036, -0.151, -4.0817, 2.5036, 0.151, -4.0817, 2.5036, 0.151, -4.0817, -2.5036, 0.151, 4.0817, 2.5036, 0.151, -4.0817, 2.5036, -0.151, -4.0817, 2.5036, 0.151, -4.0817, -2.5036, 0.151, -4.0817, 2.5036, 0.151, 4.0817, 2.5036, 0.151, -4.0817, -2.5036, 0.151, 4.0817, -2.5036, -0.151, 4.0817, -2.5036, -0.151, 4.0817, -2.5036, 0.151, 4.0817, -2.5036, 0.151, 4.0817, 2.5036, 0.151, 4.0817, 2.5036, 0.151, 4.0817, -2.5036, 0.151, -4.0817, -2.5036)
@@ -136,13 +143,15 @@ uv1_scale = Vector3(2, 2, 2)
 [sub_resource type="BoxShape3D" id="BoxShape3D_1vvam"]
 size = Vector3(60.33275, 0.4741211, 57.350433)
 
-[sub_resource type="Environment" id="Environment_wqm31"]
-background_mode = 1
-ambient_light_source = 2
-ambient_light_color = Color(1, 0.9607843, 0.9019608, 1)
-ambient_light_energy = 0.01
+[node name="Room" type="Node3D" unique_id=382221319 node_paths=PackedStringArray("PlayerSpawnMarker")]
+script = ExtResource("1_rxxdl")
+PlayerSpawnMarker = NodePath("PlayerSpawn")
 
-[node name="Room" type="Node3D" unique_id=382221319]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1970066663]
+environment = SubResource("Environment_wqm31")
+
+[node name="PlayerSpawn" type="Marker3D" parent="." unique_id=1333388993]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.542616, 1.7070408, 6.286453)
 
 [node name="Wall2" type="Node3D" parent="." unique_id=686578471]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.251806, 0, 0)
@@ -300,9 +309,6 @@ surface_material_override/0 = SubResource("StandardMaterial3D_xvaq5")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Floor/StaticBody3D" unique_id=777170962]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.9298582, -0.23254442, -1.522582)
 shape = SubResource("BoxShape3D_1vvam")
-
-[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1970066663]
-environment = SubResource("Environment_wqm31")
 
 [node name="Lights" type="Node3D" parent="." unique_id=1502089135]
 

@@ -26,9 +26,13 @@ public sealed partial class GameManager : Node {
 
 	[ExportCategory("Worlds")]
 	[Export] private Outside OutsideWorld = null!;
+	[Export] private PackedScene RoomScene = null!;
 
 	private readonly List<Enemy> SpawnedEnemies = [];
 	private readonly List<NPC> SpawnedNPCs = [];
+
+	private Room? ActiveRoom;
+	private Vector3 OutsideReturnPosition;
 
 	private readonly KeyInput KeyInput = new();
 	private readonly QuestManager QuestManager = new();
@@ -230,9 +234,32 @@ public sealed partial class GameManager : Node {
 		}
 	}
 
-	public void SwitchToOutside(Vector3? spawnPosition = null) => Log.Info("TODO: SwitchToOutside — world switching not yet implemented in new architecture.");
+	public void SwitchToBuilding(Vector3? spawnPosition = null) {
+		if(ActiveRoom != null) {
+			Log.Warn("SwitchToBuilding called but a room is already loaded.");
+			return;
+		}
 
-	public void SwitchToBuilding(Vector3? spawnPosition = null) => Log.Info("TODO: SwitchToBuilding — world switching not yet implemented in new architecture.");
+		OutsideReturnPosition = LocalPlayer!.GlobalPosition;
+		ActiveRoom = this.AddScene<Room>(RoomScene);
+
+		Vector3 targetPosition = spawnPosition ?? ActiveRoom.PlayerSpawnMarker.GlobalPosition;
+		LocalPlayer.GlobalPosition = targetPosition;
+		Log.Info($"Entered room. Player moved to {targetPosition}");
+	}
+
+	public void SwitchToOutside(Vector3? spawnPosition = null) {
+		if(ActiveRoom == null) {
+			Log.Warn("SwitchToOutside called but no room is loaded.");
+			return;
+		}
+
+		ActiveRoom.QueueFree();
+		ActiveRoom = null;
+
+		LocalPlayer!.GlobalPosition = spawnPosition ?? OutsideReturnPosition;
+		Log.Info($"Returned to outside. Player moved to {LocalPlayer.GlobalPosition}");
+	}
 
 	public void ReturnToMainMenu() {
 		QuickSave();
