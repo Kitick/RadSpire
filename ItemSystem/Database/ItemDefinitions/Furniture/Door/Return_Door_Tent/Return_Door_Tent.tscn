@@ -1,0 +1,50 @@
+[gd_scene format=4 uid="uid://c14ieoynwd5yy"]
+
+[ext_resource type="Script" uid="uid://klsonhpw4auo" path="res://ItemSystem/WorldObjects/ObjectNode.cs" id="1_kmnr1"]
+[ext_resource type="PackedScene" uid="uid://b7gv62rlbjt5l" path="res://ItemSystem/WorldObjects/SpawnPoint/WorldObjectSpawnPoint.tscn" id="3_vhvy4"]
+[ext_resource type="Script" uid="uid://cvyjpeuc2pm1x" path="res://ItemSystem/WorldObjects/SpawnPoint/Components/WorldObjectSpawnComponentDefinition.cs" id="4_ald7j"]
+[ext_resource type="Script" uid="uid://c2531e5uu51o6" path="res://ItemSystem/WorldObjects/SpawnPoint/Components/Door/WorldObjectDoorSpawnDefinition.cs" id="5_vfdl1"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ynklk"]
+albedo_color = Color(0, 0, 0, 1)
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_w2m57"]
+_surfaces = [{
+"aabb": AABB(-0.013702393, -2.4006958, -0.06713867, 0.027404785, 4.8013916, 0.13427734),
+"attribute_data": PackedByteArray("AACAPwAAgD8AAIA/AAAAAAAAAAAAAAAAAACAPwAAgD8AAIA/AAAAAAAAAAAAAAAAAACAPwAAgD8AAIA/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAPwAAgD8AAIA/AACAPwAAgD8AAIA/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAPwAAgD8AAIA/AAAAAAAAAAAAAAAAAACAPwAAgD8AAIA/AAAAAAAAAAAAAAAAAACAPwAAgD8AAIA/AACAPwAAgD8AAIA/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAPwAAgD8AAIA/AACAPwAAgD8AAIA/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAPwAAgD8AAIA/"),
+"format": 34359738391,
+"material": SubResource("StandardMaterial3D_ynklk"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 36,
+"vertex_data": PackedByteArray("AIBgvAClGcAAgIk9AIBgvAClGcAAgIm9AIBgvAClGUAAgIm9AIBgPAClGcAAgIm9AIBgvAClGcAAgIm9AIBgvAClGcAAgIk9AIBgvAClGUAAgIm9AIBgvAClGcAAgIm9AIBgPAClGcAAgIm9AIBgvAClGUAAgIm9AIBgvAClGUAAgIk9AIBgvAClGcAAgIk9AIBgvAClGcAAgIk9AIBgvAClGUAAgIk9AIBgPAClGUAAgIk9AIBgPAClGUAAgIk9AIBgvAClGUAAgIk9AIBgvAClGUAAgIm9AIBgvAClGcAAgIk9AIBgPAClGcAAgIk9AIBgPAClGcAAgIm9AIBgPAClGUAAgIk9AIBgPAClGcAAgIk9AIBgvAClGcAAgIk9AIBgPAClGcAAgIm9AIBgPAClGcAAgIk9AIBgPAClGUAAgIk9AIBgPAClGcAAgIm9AIBgPAClGUAAgIm9AIBgvAClGUAAgIm9AIBgvAClGUAAgIm9AIBgPAClGUAAgIm9AIBgPAClGUAAgIk9AIBgPAClGUAAgIk9AIBgPAClGUAAgIm9AIBgPAClGcAAgIm9AAD/f/9//n8AAP9//3/+fwAA/3//f/5//38AAP//AAD/fwAA//8AAP9/AAD//wAA/////wAA/z//////AAD/P/////8AAP8/AAD/f/9//n8AAP9//3/+fwAA/3//f/5//3//fwAA/z//f/9/AAD/P/9//38AAP8//3//////AAD/f/////8AAP9//////wAA/38AAP//AAD/fwAA//8AAP9/AAD//wAA/3//fwAA/z//f/9/AAD/P/9//38AAP8/////f/9//n////9//3/+f////3//f/5//////wAA/z//////AAD/P/////8AAP8//3//////AAD/f/////8AAP9//////wAA////f/9//n////9//3/+f////3//f/5/")
+}]
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_vjydm"]
+data = PackedVector3Array(-0.013702393, -2.4006958, 0.06713867, -0.013702393, -2.4006958, -0.06713867, -0.013702393, 2.4006958, -0.06713867, 0.013702393, -2.4006958, -0.06713867, -0.013702393, -2.4006958, -0.06713867, -0.013702393, -2.4006958, 0.06713867, -0.013702393, 2.4006958, -0.06713867, -0.013702393, -2.4006958, -0.06713867, 0.013702393, -2.4006958, -0.06713867, -0.013702393, 2.4006958, -0.06713867, -0.013702393, 2.4006958, 0.06713867, -0.013702393, -2.4006958, 0.06713867, -0.013702393, -2.4006958, 0.06713867, -0.013702393, 2.4006958, 0.06713867, 0.013702393, 2.4006958, 0.06713867, 0.013702393, 2.4006958, 0.06713867, -0.013702393, 2.4006958, 0.06713867, -0.013702393, 2.4006958, -0.06713867, -0.013702393, -2.4006958, 0.06713867, 0.013702393, -2.4006958, 0.06713867, 0.013702393, -2.4006958, -0.06713867, 0.013702393, 2.4006958, 0.06713867, 0.013702393, -2.4006958, 0.06713867, -0.013702393, -2.4006958, 0.06713867, 0.013702393, -2.4006958, -0.06713867, 0.013702393, -2.4006958, 0.06713867, 0.013702393, 2.4006958, 0.06713867, 0.013702393, -2.4006958, -0.06713867, 0.013702393, 2.4006958, -0.06713867, -0.013702393, 2.4006958, -0.06713867, -0.013702393, 2.4006958, -0.06713867, 0.013702393, 2.4006958, -0.06713867, 0.013702393, 2.4006958, 0.06713867, 0.013702393, 2.4006958, 0.06713867, 0.013702393, 2.4006958, -0.06713867, 0.013702393, -2.4006958, -0.06713867)
+
+[sub_resource type="Resource" id="Resource_upbfb"]
+script = ExtResource("5_vfdl1")
+ReturnToMainWorld = true
+metadata/_custom_type_script = "uid://c2531e5uu51o6"
+
+[node name="Return_Door_Tent" type="Node3D" unique_id=1517200146]
+script = ExtResource("1_kmnr1")
+
+[node name="CSGBakedMeshInstance3D2" type="MeshInstance3D" parent="." unique_id=940406494]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.383583, 0)
+mesh = SubResource("ArrayMesh_w2m57")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="CSGBakedMeshInstance3D2" unique_id=2030703068]
+
+[node name="CSGBakedCollisionShape3D" type="CollisionShape3D" parent="CSGBakedMeshInstance3D2/StaticBody3D" unique_id=997401967]
+shape = SubResource("ConcavePolygonShape3D_vjydm")
+
+[node name="Area3D" type="Area3D" parent="CSGBakedMeshInstance3D2" unique_id=2115363506]
+
+[node name="CSGBakedCollisionShape3D2" type="CollisionShape3D" parent="CSGBakedMeshInstance3D2/Area3D" unique_id=61254476]
+shape = SubResource("ConcavePolygonShape3D_vjydm")
+
+[node name="WorldObjectSpawnPoint" parent="." unique_id=2064846928 instance=ExtResource("3_vhvy4")]
+ItemId = "ReturnDoorTent"
+ComponentDefinitions = Array[ExtResource("4_ald7j")]([SubResource("Resource_upbfb")])

@@ -1,0 +1,35 @@
+[gd_scene format=3 uid="uid://1kxo55hyjeex"]
+
+[ext_resource type="Script" uid="uid://klsonhpw4auo" path="res://ItemSystem/WorldObjects/ObjectNode.cs" id="1_ck2tp"]
+[ext_resource type="PackedScene" uid="uid://b46fg21dhobc7" path="res://ItemSystem/Database/ItemDefinitions/Furniture/Door/Tent/viking_tent.glb" id="2_q5w3j"]
+[ext_resource type="PackedScene" uid="uid://b7gv62rlbjt5l" path="res://ItemSystem/WorldObjects/SpawnPoint/WorldObjectSpawnPoint.tscn" id="2_wl2e8"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_q5w3j"]
+size = Vector3(3.4597015, 2.6444397, 5.1781616)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_1tt5n"]
+size = Vector3(3.4597015, 2.6010284, 5.1781616)
+
+[node name="Tent" type="Node3D" unique_id=1369960815]
+script = ExtResource("1_ck2tp")
+
+[node name="Sketchfab_Scene" parent="." unique_id=811290678 instance=ExtResource("2_q5w3j")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.023314953)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Sketchfab_Scene" unique_id=1148529751]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.023314953)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Sketchfab_Scene/StaticBody3D" unique_id=747552689]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.06174469, 1.3457794, -2.4256897)
+shape = SubResource("BoxShape3D_q5w3j")
+
+[node name="Area3D" type="Area3D" parent="Sketchfab_Scene" unique_id=2103521859]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.023314953)
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="Sketchfab_Scene/Area3D" unique_id=916550914]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.06174469, 1.367485, -2.4256897)
+shape = SubResource("BoxShape3D_1tt5n")
+
+[node name="WorldObjectSpawnPoint" parent="." unique_id=2064846928 instance=ExtResource("2_wl2e8")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0042819977, 0)
+ItemId = "Tent"

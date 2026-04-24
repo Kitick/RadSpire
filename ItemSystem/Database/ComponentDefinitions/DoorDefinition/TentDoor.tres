@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="DoorDefinition" format=3 uid="uid://c0adip18hlkyd"]
+
+[ext_resource type="PackedScene" uid="uid://bpkfxvwadrle7" path="res://ItemSystem/WorldObjects/House/Scenes/TentInterior.tscn" id="1_nhpqr"]
+[ext_resource type="Script" uid="uid://xfkn1s54secg" path="res://ItemSystem/Definitions/DoorDefinition.cs" id="1_pj05j"]
+
+[resource]
+script = ExtResource("1_pj05j")
+SpawnPositionMarker = Vector3(2.6152735, 1.8797724, 6.2099457)
+BaseScene = ExtResource("1_nhpqr")
+metadata/_custom_type_script = "uid://xfkn1s54secg"
