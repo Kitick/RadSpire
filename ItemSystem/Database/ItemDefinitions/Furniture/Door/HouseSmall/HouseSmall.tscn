@@ -1,0 +1,76 @@
+[gd_scene format=3 uid="uid://b3wsubrjtmqi"]
+
+[ext_resource type="Script" uid="uid://klsonhpw4auo" path="res://ItemSystem/WorldObjects/ObjectNode.cs" id="1_bda5x"]
+[ext_resource type="PackedScene" uid="uid://b7gv62rlbjt5l" path="res://ItemSystem/WorldObjects/SpawnPoint/WorldObjectSpawnPoint.tscn" id="2_4xvn3"]
+[ext_resource type="PackedScene" uid="uid://bwk283lpsit5m" path="res://ItemSystem/Database/ItemDefinitions/Furniture/Door/HouseSmall/source/CozyFantasyHome.glb" id="2_dii2w"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_3c2nx"]
+size = Vector3(4.1297607, 5.7507324, 5.480835)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_vkwuy"]
+size = Vector3(1.5715942, 5.7507324, 2.573822)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_vuyxa"]
+size = Vector3(1.821991, 0.23913574, 2.1132507)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_lxh2b"]
+size = Vector3(1.821991, 0.5018921, 1.5737152)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_pg05e"]
+size = Vector3(4.1297607, 5.6375732, 5.480835)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ok0l2"]
+size = Vector3(1.5715942, 5.472046, 2.573822)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_xreq0"]
+size = Vector3(1.821991, 0.18841553, 2.1132507)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_kdxkn"]
+size = Vector3(1.821991, 0.30368042, 1.5737152)
+
+[node name="HouseSmall" type="Node3D" unique_id=1369960815]
+script = ExtResource("1_bda5x")
+
+[node name="CozyFantasyHome" parent="." unique_id=1647640489 instance=ExtResource("2_dii2w")]
+transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 4.17474, 0)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="CozyFantasyHome" unique_id=1148529751]
+transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, -0.85553247, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CozyFantasyHome/StaticBody3D" unique_id=747552689]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07525635, 2.9714003, -0.53741455)
+shape = SubResource("BoxShape3D_3c2nx")
+
+[node name="CollisionShape3D4" type="CollisionShape3D" parent="CozyFantasyHome/StaticBody3D" unique_id=1518858126]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.2769651, 2.9714003, -0.15284729)
+shape = SubResource("BoxShape3D_vkwuy")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="CozyFantasyHome/StaticBody3D" unique_id=110404857]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.121017456, 0.21560192, 2.4157257)
+shape = SubResource("BoxShape3D_vuyxa")
+
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="CozyFantasyHome/StaticBody3D" unique_id=252486279]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.121017456, 0.3469801, 2.145958)
+shape = SubResource("BoxShape3D_lxh2b")
+
+[node name="Area3D" type="Area3D" parent="CozyFantasyHome" unique_id=2103521859]
+transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, -0.85553247, 0)
+
+[node name="CollisionShape3D5" type="CollisionShape3D" parent="CozyFantasyHome/Area3D" unique_id=1662901200]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07525635, 3.0279799, -0.53741455)
+shape = SubResource("BoxShape3D_pg05e")
+
+[node name="CollisionShape3D6" type="CollisionShape3D" parent="CozyFantasyHome/Area3D" unique_id=544986898]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.2769651, 3.1107435, -0.15284729)
+shape = SubResource("BoxShape3D_ok0l2")
+
+[node name="CollisionShape3D7" type="CollisionShape3D" parent="CozyFantasyHome/Area3D" unique_id=1530654584]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.121017456, 0.24096203, 2.4157257)
+shape = SubResource("BoxShape3D_xreq0")
+
+[node name="CollisionShape3D8" type="CollisionShape3D" parent="CozyFantasyHome/Area3D" unique_id=336030620]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.121017456, 0.44608593, 2.145958)
+shape = SubResource("BoxShape3D_kdxkn")
+
+[node name="WorldObjectSpawnPoint" parent="." unique_id=2064846928 instance=ExtResource("2_4xvn3")]
+ItemId = "HouseSmall"
