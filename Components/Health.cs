@@ -32,9 +32,7 @@ public static class HealthExtensions {
 	public static bool IsHurt(this IHealth entity) => !IsHealed(entity);
 	public static bool IsAlive(this IHealth entity) => !IsDead(entity);
 
-	public static float Percent(this IHealth entity) {
-		return (float) entity.Health.Current / entity.Health.Max;
-	}
+	public static float Percent(this IHealth entity) => (float) entity.Health.Current / entity.Health.Max;
 
 	public static Action WhenRestored(this IHealth entity, Action callback) {
 		return entity.Health.When((from, to) => {

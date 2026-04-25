@@ -11,17 +11,17 @@ public sealed class WeaponBase : Component<WeaponBaseData>, IItemComponent, IIte
 	public float AttackSpeed { get; set; } = 1f;
 
 	public string[] getComponentDescription() {
-		string[] componentDescriptions = new string[] {
-					$"+{BaseAttack} Attack",
-					$"{AttackSpeed}x Attack Speed"
-				};
+		string[] componentDescriptions = [
+			$"+{BaseAttack} Attack",
+			$"{AttackSpeed}x Attack Speed"
+		];
 		return componentDescriptions;
 	}
 
 	public bool Equip<TEntity>(TEntity user) {
 		if(user is Player player) {
 			player.HoldingSword = true;
-			player.Offense.PhysicalDamage += BaseAttack;
+			player.Offense.Damage += BaseAttack;
 			player.SwordMesh.Visible = true;
 		}
 		return true;
@@ -30,17 +30,13 @@ public sealed class WeaponBase : Component<WeaponBaseData>, IItemComponent, IIte
 	public bool Unequip<TEntity>(TEntity user) {
 		if(user is Player player) {
 			player.HoldingSword = false;
-			player.Offense.PhysicalDamage -= BaseAttack;
+			player.Offense.Damage -= BaseAttack;
 			player.SwordMesh.Visible = false;
 		}
 		return true;
 	}
 
 	public WeaponBase(int baseAttack, float attackSpeed) : base(new WeaponBaseData { BaseAttack = baseAttack, AttackSpeed = attackSpeed }) { }
-}
-
-public static class WeaponExtensions {
-
 }
 
 public readonly record struct WeaponBaseData : Services.ISaveData {

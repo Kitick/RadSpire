@@ -36,9 +36,7 @@ public sealed class ComponentDictionary<TComp> where TComp : class {
 		return true;
 	}
 
-	public bool Has<T>() where T : class, TComp {
-		return Components.ContainsKey(typeof(T));
-	}
+	public bool Has<T>() where T : class, TComp => Components.ContainsKey(typeof(T));
 
 	public T Get<T>() where T : class, TComp {
 		if(Has<T>()) {
@@ -50,15 +48,9 @@ public sealed class ComponentDictionary<TComp> where TComp : class {
 		}
 	}
 
-	public bool Remove<T>() where T : class, TComp {
-		return Components.Remove(typeof(T));
-	}
+	public bool Remove<T>() where T : class, TComp => Components.Remove(typeof(T));
 
-	public bool Remove(Type type) {
-		return Components.Remove(type);
-	}
+	public bool Remove(Type type) => Components.Remove(type);
 
-	public void Clear() {
-		Components.Clear();
-	}
+	public void Clear() => Components.Clear();
 }

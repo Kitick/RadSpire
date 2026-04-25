@@ -4,7 +4,9 @@ using System;
 using ItemSystem;
 using Services;
 
-public abstract class Component<TData> : ISaveable<TData> where TData : struct, ISaveData {
+public interface IComponent { }
+
+public abstract class Component<TData> : IComponent, ISaveable<TData> where TData : struct, ISaveData {
 	protected TData Data;
 
 	public event Action<TData, TData>? OnChanged;
@@ -33,21 +35,13 @@ public static class Interactions {
 	public static void Attack<TAttacker, TDefender>(this TAttacker attacker, TDefender defender)
 	where TAttacker : IOffense
 	where TDefender : IHealth {
-		int physicalDamage = attacker.Offense.PhysicalDamage;
-		int magicDamage = attacker.Offense.MagicDamage;
-
-		int physicalDefense = 0;
-		int magicDefense = 0;
+		int damage = attacker.Offense.Damage;
 
 		if(defender is IDefense defendable) {
-			physicalDefense = defendable.Defense.PhysicalDefense;
-			magicDefense = defendable.Defense.MagicDefense;
+			damage = Math.Max(0, damage - defendable.Defense.Armor);
 		}
 
-		physicalDamage = Math.Max(0, physicalDamage - physicalDefense);
-		magicDamage = Math.Max(0, magicDamage - magicDefense);
-
-		defender.Hurt(physicalDamage + magicDamage);
+		defender.Hurt(damage);
 
 		if(attacker is IDurable weapon) {
 			weapon.Damage(1);
@@ -56,7 +50,5 @@ public static class Interactions {
 
 	public static void HealWith<TEntity, TItem>(this TEntity target, TItem item)
 	where TEntity : IHealth
-	where TItem : IHealItem {
-		target.Heal(item.Heal.HealAmount);
-	}
+	where TItem : IHealItem => target.Heal(item.Heal.HealAmount);
 }

@@ -19,14 +19,12 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData> {
 	[Export] public MeshInstance3D ShieldMesh = null!;
 
 	[Export] private int InitialHealthValue = 100;
-	[Export] public int InitialDamagePhysical = 10;
-	[Export] private int InitialDamageMagic = 0;
-	[Export] private int InitialDefensePhysical = 5;
-	[Export] private int InitialDefenseMagic = 2;
+	[Export] public int InitialDamageValue = 10;
+	[Export] private int InitialDefenseValue = 5;
 
 	protected override int InitialHealth => InitialHealthValue;
-	protected override (int phys, int mag) InitialDamage => (InitialDamagePhysical, InitialDamageMagic);
-	protected override (int phys, int mag) InitialDefense => (InitialDefensePhysical, InitialDefenseMagic);
+	protected override int InitialDamage => InitialDamageValue;
+	protected override int InitialDefense => InitialDefenseValue;
 
 	[Export] private float SprintMultiplier = 3.25f;
 	[Export] private float CrouchMultiplier = 0.5f;

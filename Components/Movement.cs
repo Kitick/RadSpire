@@ -20,8 +20,8 @@ public sealed class Movement : ISaveable<MovementData> {
 	public Movement(CharacterBody3D body) => Body = body;
 
 	public void Update(float dt) {
-		if(Body.IsOnFloor()) { ApplyFriction(dt); }
-		else { Fall(dt); }
+		if(Body.IsOnFloor()) ApplyFriction(dt);
+		else Fall(dt);
 
 		UpdateRotation(dt);
 		Body.MoveAndSlide();
@@ -34,9 +34,7 @@ public sealed class Movement : ISaveable<MovementData> {
 		Body.Velocity = new Vector3(move.X, Body.Velocity.Y, move.Z);
 	}
 
-	public void Jump() {
-		Body.Velocity += JumpSpeed * Vector3.Up;
-	}
+	public void Jump() => Body.Velocity += JumpSpeed * Vector3.Up;
 
 	private void Fall(float dt) {
 		Body.Velocity += Numbers.GRAVITY * Vector3.Down * dt;
@@ -58,7 +56,7 @@ public sealed class Movement : ISaveable<MovementData> {
 		Body.Velocity = horizontal + Body.Velocity.Vertical();
 	}
 
-	public MovementData Export() => new MovementData {
+	public MovementData Export() => new() {
 		Position = Body.GlobalPosition,
 		Velocity = Body.Velocity,
 		Rotation = Body.RotationDegrees,

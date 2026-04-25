@@ -8,14 +8,12 @@ public sealed partial class Boss : CharacterBase, ISaveable<BossData> {
 	private static readonly LogService Log = new(nameof(Boss), enabled: true);
 
 	[Export] private int InitialHealthValue = 150;
-	[Export] private int InitialDamagePhysical = 15;
-	[Export] private int InitialDamageMagic = 0;
-	[Export] private int InitialDefensePhysical = 0;
-	[Export] private int InitialDefenseMagic = 0;
+	[Export] private int InitialDamageValue = 15;
+	[Export] private int InitialDefenseValue = 0;
 
 	protected override int InitialHealth => InitialHealthValue;
-	protected override (int phys, int mag) InitialDamage => (InitialDamagePhysical, InitialDamageMagic);
-	protected override (int phys, int mag) InitialDefense => (InitialDefensePhysical, InitialDefenseMagic);
+	protected override int InitialDamage => InitialDamageValue;
+	protected override int InitialDefense => InitialDefenseValue;
 
 	// Components
 	private readonly Movement Movement;
