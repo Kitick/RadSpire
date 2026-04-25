@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://bnt6fjb1gybbn"]
+
+[ext_resource type="Script" uid="uid://cnm5iegiuj4xu" path="res://ItemSystem/Definitions/ItemComponentDefinition.cs" id="1_jpj6d"]
+[ext_resource type="Resource" uid="uid://bhogeyhkf1mo4" path="res://ItemSystem/Database/ComponentDefinitions/DoorDefinition/Door2.tres" id="2_tgqdd"]
+[ext_resource type="Texture2D" uid="uid://dwjywjp7blkhm" path="res://ItemSystem/Database/ItemDefinitions/Furniture/Door/Return_Door_Tent/Return_Door_Tent.png" id="3_7dcrp"]
+[ext_resource type="PackedScene" uid="uid://c14ieoynwd5yy" path="res://ItemSystem/Database/ItemDefinitions/Furniture/Door/Return_Door_Tent/Return_Door_Tent.tscn" id="4_sw4mk"]
+[ext_resource type="Script" uid="uid://bxmh4fd7kjvv1" path="res://ItemSystem/Definitions/ItemDefinition.cs" id="5_h3f8a"]
+
+[resource]
+script = ExtResource("5_h3f8a")
+Id = "ReturnDoorTent"
+Name = "Return to Outside"
+Description = "Return to outside world."
+IsConsumable = false
+IsPlaceable = true
+IconTexture = ExtResource("3_7dcrp")
+ItemScene = ExtResource("4_sw4mk")
+ComponentsResources = Array[ExtResource("1_jpj6d")]([ExtResource("2_tgqdd")])
+metadata/_custom_type_script = "uid://bxmh4fd7kjvv1"

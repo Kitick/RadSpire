@@ -1,0 +1,42 @@
+[gd_scene format=3 uid="uid://ilixngpwi0gm"]
+
+[ext_resource type="Script" uid="uid://klsonhpw4auo" path="res://ItemSystem/WorldObjects/ObjectNode.cs" id="1_60d51"]
+[ext_resource type="PackedScene" uid="uid://cddo2i4kxbx0w" path="res://ItemSystem/WorldObjects/House/Scenes/Assets/gltf/shelf_A_small.gltf" id="2_wmq32"]
+[ext_resource type="PackedScene" uid="uid://b7gv62rlbjt5l" path="res://ItemSystem/WorldObjects/SpawnPoint/WorldObjectSpawnPoint.tscn" id="3_m4syo"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_w4ly7"]
+size = Vector3(1, 0.20397949, 0.49389648)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_h6765"]
+size = Vector3(0.20019531, 0.39801025, 0.19421387)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ps6t5"]
+size = Vector3(0.98706055, 0.18695068, 0.47302246)
+
+[node name="Node3D" type="Node3D" unique_id=1369960815]
+script = ExtResource("1_60d51")
+
+[node name="shelf_A_small2" parent="." unique_id=1425109799 instance=ExtResource("2_wmq32")]
+
+[node name="StaticBody3D" type="StaticBody3D" parent="shelf_A_small2" unique_id=1148529751]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="shelf_A_small2/StaticBody3D" unique_id=747552689]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0014038086, 0.25305176)
+shape = SubResource("BoxShape3D_w4ly7")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="shelf_A_small2/StaticBody3D" unique_id=414783867]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.39990234, -0.1109246, 0.10321045)
+shape = SubResource("BoxShape3D_h6765")
+
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="shelf_A_small2/StaticBody3D" unique_id=972159300]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3985405, -0.10541558, 0.10321045)
+shape = SubResource("BoxShape3D_h6765")
+
+[node name="Area3D" type="Area3D" parent="shelf_A_small2" unique_id=2103521859]
+
+[node name="CollisionShape3D4" type="CollisionShape3D" parent="shelf_A_small2/Area3D" unique_id=778760184]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00012207031, -0.0071105957, 0.26348877)
+shape = SubResource("BoxShape3D_ps6t5")
+
+[node name="WorldObjectSpawnPoint" parent="." unique_id=2064846928 instance=ExtResource("3_m4syo")]
+ItemId = "ShelfSmallUp"

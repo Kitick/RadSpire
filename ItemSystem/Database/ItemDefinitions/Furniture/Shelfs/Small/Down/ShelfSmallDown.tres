@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://deu2lgj7b6cu7"]
+
+[ext_resource type="Script" uid="uid://cnm5iegiuj4xu" path="res://ItemSystem/Definitions/ItemComponentDefinition.cs" id="1_lbmm2"]
+[ext_resource type="Texture2D" uid="uid://bpwnylmr8ysh8" path="res://ItemSystem/Database/ItemDefinitions/Furniture/Shelfs/ShelfDown.png" id="2_3yx3o"]
+[ext_resource type="PackedScene" uid="uid://bsqapilqwe57m" path="res://ItemSystem/Database/ItemDefinitions/Furniture/Shelfs/Small/Down/ShelfSmallDown.tscn" id="3_0fxv6"]
+[ext_resource type="Script" uid="uid://bxmh4fd7kjvv1" path="res://ItemSystem/Definitions/ItemDefinition.cs" id="4_tcbda"]
+
+[resource]
+script = ExtResource("4_tcbda")
+Id = "ShelfSmallDown"
+Name = "Small Shelf (Down)"
+Description = "A small wall shelf."
+IsConsumable = false
+IsPlaceable = true
+Pickupable = true
+IsWallObject = true
+Can_Object_Stack = true
+IconTexture = ExtResource("2_3yx3o")
+ItemScene = ExtResource("3_0fxv6")
+metadata/_custom_type_script = "uid://bxmh4fd7kjvv1"

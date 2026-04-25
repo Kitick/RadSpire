@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://df4l52fxrnv6p"]
+
+[ext_resource type="Script" uid="uid://cnm5iegiuj4xu" path="res://ItemSystem/Definitions/ItemComponentDefinition.cs" id="1_d0u4h"]
+[ext_resource type="PackedScene" uid="uid://bn0700sd8dhde" path="res://ItemSystem/Database/ItemDefinitions/Furniture/Shelfs/Big/Down/ShelfBigDown.tscn" id="2_63tyo"]
+[ext_resource type="Texture2D" uid="uid://bpwnylmr8ysh8" path="res://ItemSystem/Database/ItemDefinitions/Furniture/Shelfs/ShelfDown.png" id="2_wpgg5"]
+[ext_resource type="Script" uid="uid://bxmh4fd7kjvv1" path="res://ItemSystem/Definitions/ItemDefinition.cs" id="3_wpgg5"]
+
+[resource]
+script = ExtResource("3_wpgg5")
+Id = "ShelfBigDown"
+Name = "Big Shelf (Down)"
+Description = "A big wall shelf."
+IsConsumable = false
+IsPlaceable = true
+Pickupable = true
+IsWallObject = true
+Can_Object_Stack = true
+IconTexture = ExtResource("2_wpgg5")
+ItemScene = ExtResource("2_63tyo")
+metadata/_custom_type_script = "uid://bxmh4fd7kjvv1"
