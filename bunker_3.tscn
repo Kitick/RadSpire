@@ -13,7 +13,7 @@ data = PackedVector3Array(4.4178, -0.92399997, 4.6277, 4.7005, -0.9802, 4.6277, 
 
 [node name="Bunker3" unique_id=1135045361 instance=ExtResource("1_s7noy")]
 
-[node name="Bunker3" parent="." index="0" unique_id=1828809470]
+[node name="Bunker3" parent="." index="0" unique_id=397180532]
 surface_material_override/0 = SubResource("StandardMaterial3D_tfqu1")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Bunker3" index="0" unique_id=968080711]

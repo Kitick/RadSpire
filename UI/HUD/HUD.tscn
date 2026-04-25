@@ -32,9 +32,6 @@ anchors_preset = 0
 offset_right = 1920.0
 offset_bottom = 1080.0
 script = ExtResource("1_10ibt")
-SettingsScene = ExtResource("2_o30d6")
-SaveMenuScene = ExtResource("3_o30d6")
-HostPanelScene = ExtResource("2_3o8sq")
 PauseButton = NodePath("PauseButton")
 PauseMenu = NodePath("PauseMenu")
 Inventory = NodePath("Inventory")
@@ -46,6 +43,9 @@ Hotbar = NodePath("Hotbar")
 RespawnMenu = NodePath("RespawnMenu")
 HealthBar = NodePath("HealthBar")
 WinMenu = NodePath("WinMenu")
+SettingsScene = ExtResource("2_o30d6")
+SaveMenuScene = ExtResource("3_o30d6")
+HostPanelScene = ExtResource("2_3o8sq")
 
 [node name="PauseButton" type="Button" parent="." unique_id=948900833]
 layout_mode = 1

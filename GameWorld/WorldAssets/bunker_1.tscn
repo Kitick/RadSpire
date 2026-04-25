@@ -11,7 +11,7 @@ points = PackedVector3Array(0.6743314, 2.5076323, 1.7781862, -0.64129806, 2.2480
 
 [node name="Bunker1" unique_id=692933183 instance=ExtResource("1_8l2ks")]
 
-[node name="Bunker1" parent="." index="0" unique_id=450883754]
+[node name="Bunker1" parent="." index="0" unique_id=2070484176]
 surface_material_override/0 = SubResource("StandardMaterial3D_6w7pi")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Bunker1" index="0" unique_id=260027922]
