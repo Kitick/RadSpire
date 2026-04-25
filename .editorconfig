@@ -56,6 +56,7 @@ csharp_style_expression_bodied_local_functions = when_on_single_line
 # Modifier preferences
 
 # Code-block preferences
+csharp_prefer_braces = when_multiline
 csharp_style_namespace_declarations = file_scoped
 csharp_style_prefer_primary_constructors = false
 csharp_style_prefer_top_level_statements = false
@@ -65,7 +66,7 @@ csharp_style_unused_value_expression_statement_preference = discard_variable : n
 csharp_style_unused_value_assignment_preference = discard_variable : none
 
 # New line preferences
-csharp_new_line_before_else = false
+csharp_new_line_before_else = true
 csharp_new_line_before_open_brace = none
 
 # Indentation preferences
