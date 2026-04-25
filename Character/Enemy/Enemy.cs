@@ -15,10 +15,8 @@ public sealed partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 	[Export] public EnemyType EnemyType { get; set; } = EnemyType.None;
 
 	[Export] private int InitialHealthValue = 50;
-	[Export] private int InitialDamagePhysical = 5;
-	[Export] private int InitialDamageMagic = 0;
-	[Export] private int InitialDefensePhysical = 0;
-	[Export] private int InitialDefenseMagic = 0;
+	[Export] private int InitialDamageValue = 5;
+	[Export] private int InitialDefenseValue = 0;
 
 	[Export] private float KnockbackForce = 15f;
 	[Export] private float KnockbackDecay = 12f;
@@ -36,8 +34,8 @@ public sealed partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 	[Export] private int DamageNumberFontSize = 55;
 
 	protected override int InitialHealth => InitialHealthValue;
-	protected override (int phys, int mag) InitialDamage => (InitialDamagePhysical, InitialDamageMagic);
-	protected override (int phys, int mag) InitialDefense => (InitialDefensePhysical, InitialDefenseMagic);
+	protected override int InitialDamage => InitialDamageValue;
+	protected override int InitialDefense => InitialDefenseValue;
 
 	// Components
 	private readonly Movement Movement;

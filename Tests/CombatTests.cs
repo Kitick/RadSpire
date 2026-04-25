@@ -7,11 +7,7 @@ public sealed class CombatTests {
 	[SetUp]
 	public void SetUp() { }
 	private sealed class Attacker : IOffense {
-		public Offense Offense { get; } = new Offense(default);
-
-		public Attacker() {
-			Offense.PhysicalDamage = 10;
-		}
+		public Offense Offense { get; } = new Offense(10);
 	}
 
 	private sealed class Defender : IHealth {
@@ -20,8 +16,8 @@ public sealed class CombatTests {
 
 	[Test]
 	public void Attack_ReducesHealth() {
-		var attacker = new Attacker();
-		var defender = new Defender();
+		Attacker attacker = new();
+		Defender defender = new();
 
 		attacker.Attack(defender);
 

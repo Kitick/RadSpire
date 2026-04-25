@@ -15,6 +15,7 @@ public readonly record struct QuestObjectiveProgress : ISaveData {
 public readonly record struct QuestProgress : ISaveData {
 	public QuestStatus Status { get; init; }
 	public QuestObjectiveProgress[] Objectives { get; init; }
+	public bool InitialDialogueDelivered { get; init; }
 
 	public static QuestProgress Pending(QuestDefinition def) => new() {
 		Status = QuestStatus.Pending,

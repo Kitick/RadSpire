@@ -7,12 +7,12 @@ using Root;
 
 public abstract partial class CharacterBase : CharacterBody3D, IHealth, IOffense, IDefense {
 	protected abstract int InitialHealth { get; }
-	protected abstract (int phys, int mag) InitialDamage { get; }
-	protected abstract (int phys, int mag) InitialDefense { get; }
+	protected abstract int InitialDamage { get; }
+	protected abstract int InitialDefense { get; }
 
-	public Health Health { get; protected set; } = null!;
-	public Offense Offense { get; protected set; } = null!;
-	public Defense Defense { get; protected set; } = null!;
+	public Health Health { get; private set; } = null!;
+	public Offense Offense { get; private set; } = null!;
+	public Defense Defense { get; private set; } = null!;
 
 	public enum State { Idle, Walking, Sprinting, Crouching, Falling, Attacking, Dodging, Dead }
 
@@ -26,8 +26,8 @@ public abstract partial class CharacterBase : CharacterBody3D, IHealth, IOffense
 
 	public override void _Ready() {
 		Health = new Health(InitialHealth);
-		Offense = new Offense(InitialDamage.phys, InitialDamage.mag);
-		Defense = new Defense(InitialDefense.phys, InitialDefense.mag);
+		Offense = new Offense(InitialDamage);
+		Defense = new Defense(InitialDefense);
 
 		StateMachine.OnChange((from, to) => OnStateChanged?.Invoke(from, to));
 	}

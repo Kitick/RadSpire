@@ -30,72 +30,37 @@ public sealed record QuestDefinition(
 );
 
 public static class Quests {
-	public static readonly QuestDefinition KillPatrol = new(
-		Title: "Clear the Patrol",
-		Description: "Defeat the enemies guarding the area.",
-		Type: QuestType.Main,
-		StageRequirement: 0,
-		Objectives: [new KillObjective("Kill 3 enemies", RequiredCount: 3, EnemyType: EnemyType.MeldoranWarrior)]
-	);
-
+	// Stage 0 — auto-activates on spawn, completes when player talks to Sera
 	public static readonly QuestDefinition LeftForDead = new(
 		Title: "Left for Dead",
-		Description: "Ambushed and stripped of your weapons, you need to find shelter and help.",
+		Description: "Ambushed and stripped of your weapons, you need to find help.",
 		Type: QuestType.Main,
 		StageRequirement: 0,
-		Objectives: [new LocationObjective("Find shelter", LocationID.OfficeBuilding)]
+		Objectives: [new TalkObjective("Find help", NPCID.Sera)]
 	);
 
-	public static readonly QuestDefinition AFairTrade = new(
-		Title: "A Fair Trade",
-		Description: "Rescue Sera's friend Dag from the Warriors of Meldoran at the ruined gas station.",
+	// Stage 1 — NPC-gated on Sera, main quest is crafting the sword
+	public static readonly QuestDefinition ArmYourself = new(
+		Title: "Arm Yourself",
+		Description: "Craft a sword with Sera's guidance.",
 		Type: QuestType.Main,
 		StageRequirement: 1,
 		Objectives: [
-			new KillObjective("Defeat the Warriors of Meldoran at the gas station", RequiredCount: 5, EnemyType: EnemyType.MeldoranWarrior),
+			new CollectObjective("Craft a sword", RequiredCount: 1, ItemId: ItemID.SwordIron),
 		],
 		NpcId: NPCID.Sera,
 		InitialDialogue: [
 			"Hey. Hey, over here. You look like you're about to fall over.",
 			"Get inside. Those were Meldoran men that did this to you, weren't they? I can tell by the way they left you. They don't finish what they start.",
 			"I'm not going to hurt you. My name is Sera. I'm a Wanderer with the League of Krones, posted out here for weeks mapping the area. Sit down before you fall down.",
-			"I know this land better than anyone within ten miles. I know where to find what you'll need. But first — an Astra knight, out here alone? You're not on patrol. What are you looking for?",
-			"The neutralizer. I've heard the rumor. The League has heard it too — something pre-flare, something that could pull the radiation back. Nobody knows if it's real or where it is, but people are moving because of it. The Meldoran included, which means you don't have much time to waste out here bleeding.",
-			"But I have to ask something of you first, and I need you to hear me out.",
-			"They took my friend. Dag. Same men who did this to you. They've had him for days now and I can't go there myself. I'm not built for it.",
-			"But you are. Or you were, before they stripped you. Help me get him back, and I'll get you back on your feet. Materials, tools, everything I know. We can talk terms once you've stopped bleeding.",
+			"I know this land better than anyone within ten miles. I know where to find what you'll need.",
+			"I'll help you get back on your feet — materials, tools, everything I know. But I need something from you first.",
+			"My friend Dag was taken by the same men who did this to you. Help me get him back, and I'll get you armed.",
+			"First things first. get yourself a sword. Iron ore from the craters, process to chunks, smelt to bars, then forge. Two iron bars, two sticks, a stone.",
 		],
 		ActiveDialogue: [
-			"The gas station down the road. Four or five of them, maybe more. Get yourself armed first.",
-			"Head into the woods for wood, pick up stones along the road, and check the craters for iron.",
-			"Dag is stubborn. He would have done something stupid trying to get himself out by now. I just hope he's still in one piece.",
-			"They're thugs, not soldiers — but they'll kill you just the same if you let them. Keep your guard up.",
-		],
-		CompletionDialogue: [
-			"You actually did it. Both of you. I didn't let myself think too hard about what I'd do if you didn't come back.",
-			"Dag — are you alright? Don't answer that, just sit down.",
-			"You did well, Roland. Better than I had any right to hope when I found you bleeding in the road.",
-			"Your order sent you out here looking for something. I hope you find it. You're not going to find it standing here.",
-			"Go. And if our paths cross again, the debt goes the other way.",
-		]
-	);
-
-	public static readonly QuestDefinition ArmYourself = new(
-		Title: "Arm Yourself",
-		Description: "Craft equipment with Sera's guidance before heading to the gas station.",
-		Type: QuestType.Side,
-		StageRequirement: 1,
-		Objectives: [
-			new CollectObjective("Craft a sword", RequiredCount: 1, ItemId: ItemID.SwordIron),
-			new CollectObjective("Craft a helmet", RequiredCount: 1, ItemId: ItemID.HeadpieceIron),
-			new CollectObjective("Craft a shield", RequiredCount: 1, ItemId: ItemID.ShieldIron),
-		],
-		NpcId: NPCID.Sera,
-		InitialDialogue: [],
-		ActiveDialogue: [
-			"Sword needs two iron bars, two sticks, and a stone. Iron ore comes from the craters — process it into chunks, smelt the chunks into bars, then you can work with it.",
-			"Helmet is three iron bars. Same chain — ore from the craters, process to chunks, smelt to bars.",
-			"Shield is easier: two wood and one iron bar. Get the wood from the tree line, you only need one bar for that.",
+			"Sword needs two iron bars, two sticks, and a stone. Iron ore comes from the craters.",
+			"Process ore into chunks, smelt the chunks into bars, then you can work with it.",
 		],
 		CompletionDialogue: [
 			"That's better. You look less like a corpse now.",
@@ -103,10 +68,51 @@ public static class Quests {
 		]
 	);
 
+	// Stage 1 — side quest, same NPC gate as ArmYourself
+	public static readonly QuestDefinition ArmYourselfSide = new(
+		Title: "Better Protected",
+		Description: "Craft a shield and helmet while you have the materials.",
+		Type: QuestType.Side,
+		StageRequirement: 1,
+		Objectives: [
+			new CollectObjective("Craft a shield", RequiredCount: 1, ItemId: ItemID.ShieldIron),
+			new CollectObjective("Craft a helmet", RequiredCount: 1, ItemId: ItemID.HeadpieceIron),
+		],
+		NpcId: NPCID.Sera
+	);
+
+	// Stage 2 — activates when player talks to Sera again after ArmYourself completes
+	public static readonly QuestDefinition ADealIsADeal = new(
+		Title: "A Deal is a Deal",
+		Description: "Rescue Dag from the Warriors of Meldoran at the ruined gas station.",
+		Type: QuestType.Main,
+		StageRequirement: 2,
+		Objectives: [
+			new KillObjective("Defeat the Warriors of Meldoran at the gas station", RequiredCount: 5, EnemyType: EnemyType.MeldoranWarrior),
+			new TalkObjective("Talk to Dag", NPCID.Dag),
+		],
+		NpcId: NPCID.Sera,
+		InitialDialogue: [
+			"You actually did it. You got yourself armed.",
+			"The gas station down the road — four or five of them, maybe more. Dag is still there.",
+			"Get him out. That's the deal.",
+		],
+		ActiveDialogue: [
+			"The gas station down the road. Four or five of them, maybe more. Get yourself armed first.",
+			"Dag is stubborn — he would have done something stupid trying to get himself out by now. I just hope he's still in one piece.",
+		],
+		CompletionDialogue: [
+			"You actually did it. Both of you.",
+			"Dag — are you alright? Don't answer that, just sit down.",
+			"You did well. Better than I had any right to hope.",
+			"Go. And if our paths cross again, the debt goes the other way.",
+		]
+	);
+
 	public static readonly Dictionary<QuestID, QuestDefinition> All = new() {
-		[QuestID.ClearThePatrol] = KillPatrol,
 		[QuestID.LeftForDead] = LeftForDead,
-		[QuestID.AFairTrade] = AFairTrade,
 		[QuestID.ArmYourself] = ArmYourself,
+		[QuestID.ArmYourselfSide] = ArmYourselfSide,
+		[QuestID.ADealIsADeal] = ADealIsADeal,
 	};
 }

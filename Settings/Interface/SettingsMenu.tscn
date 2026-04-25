@@ -6,7 +6,7 @@
 [ext_resource type="Script" uid="uid://c44ijxtmj7xb" path="res://Settings/Interface/Panels/ControllerPanel.cs" id="5_jh1wv"]
 [ext_resource type="Script" uid="uid://8tuxmuyevsjl" path="res://Settings/Interface/Panels/MkPanel.cs" id="6_uv3og"]
 
-[node name="SettingsMenu" type="Control" unique_id=440443673 node_paths=PackedStringArray("BackButton", "ResetButton", "GeneralPanel", "GeneralButton", "DisplayPanel", "DisplayButton", "SoundPanel", "SoundButton", "ControllerPanel", "ControllerButton", "MKPanel", "MKButton", "AccessibilityPanel", "AccessibilityButton")]
+[node name="SettingsMenu" type="Control" unique_id=440443673 node_paths=PackedStringArray("BackButton", "ResetButton", "DisplayPanel", "DisplayButton", "SoundPanel", "SoundButton", "ControllerPanel", "ControllerButton", "MKPanel", "MKButton")]
 process_mode = 3
 layout_mode = 3
 anchors_preset = 15
@@ -17,8 +17,6 @@ grow_vertical = 2
 script = ExtResource("1_dv3nc")
 BackButton = NodePath("BackButton")
 ResetButton = NodePath("ResetSettingsButton")
-GeneralPanel = NodePath("")
-GeneralButton = NodePath("")
 DisplayPanel = NodePath("Display")
 DisplayButton = NodePath("NavBar/Display_Button")
 SoundPanel = NodePath("Sound")
@@ -27,8 +25,6 @@ ControllerPanel = NodePath("Controller")
 ControllerButton = NodePath("NavBar/Controller_Button")
 MKPanel = NodePath("MK")
 MKButton = NodePath("NavBar/MK_Button")
-AccessibilityPanel = NodePath("")
-AccessibilityButton = NodePath("")
 
 [node name="PanelArea" type="ColorRect" parent="." unique_id=1866459416]
 layout_mode = 1
@@ -81,7 +77,6 @@ theme_override_font_sizes/font_size = 35
 text = "Keyboard"
 
 [node name="Display" type="VBoxContainer" parent="." unique_id=730687821 node_paths=PackedStringArray("ResolutionOption", "FullscreenCheck", "VSyncCheck", "BrightnessSlider", "FramerateOption")]
-visible = false
 layout_mode = 1
 anchors_preset = -1
 offset_left = 69.0

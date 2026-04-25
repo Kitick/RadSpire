@@ -1,0 +1,76 @@
+namespace Components;
+
+using System;
+using Godot;
+using Network;
+using Root;
+using Services;
+
+public sealed class Movement : ISaveable<MovementData> {
+	public event Action? OnChanged;
+
+	public float BaseSpeed = 3.0f;
+	public float RotationSpeed = 15.0f;
+	public float JumpSpeed = 4.5f;
+	public float TerminalSpeed = 50.0f;
+	public float Friction = 10.0f;
+
+	private readonly CharacterBody3D Body;
+
+	public Movement(CharacterBody3D body) => Body = body;
+
+	public void Update(float dt) {
+		if(Body.IsOnFloor()) ApplyFriction(dt);
+		else Fall(dt);
+
+		UpdateRotation(dt);
+		Body.MoveAndSlide();
+
+		OnChanged?.Invoke();
+	}
+
+	public void Move(Vector3 direction, float multiplier) {
+		Vector3 move = direction.Normalized() * BaseSpeed * multiplier;
+		Body.Velocity = new Vector3(move.X, Body.Velocity.Y, move.Z);
+	}
+
+	public void Jump() => Body.Velocity += JumpSpeed * Vector3.Up;
+
+	private void Fall(float dt) {
+		Body.Velocity += Numbers.GRAVITY * Vector3.Down * dt;
+		Body.Velocity = Body.Velocity.LimitLength(TerminalSpeed);
+	}
+
+	private void UpdateRotation(float dt) {
+		Vector3 velocity = Body.Velocity.Horizontal();
+
+		if(velocity.Length() < Numbers.EPSILON) { return; }
+
+		float angle = Mathf.Atan2(velocity.X, velocity.Z);
+
+		Body.ApplyRotation(Vector3.Up, angle, RotationSpeed, dt);
+	}
+
+	private void ApplyFriction(float dt) {
+		Vector3 horizontal = Body.Velocity.Horizontal().SmoothLerp(Vector3.Zero, Friction, dt);
+		Body.Velocity = horizontal + Body.Velocity.Vertical();
+	}
+
+	public MovementData Export() => new() {
+		Position = Body.GlobalPosition,
+		Velocity = Body.Velocity,
+		Rotation = Body.RotationDegrees,
+	};
+
+	public void Import(MovementData data) {
+		Body.GlobalPosition = data.Position;
+		Body.RotationDegrees = data.Rotation;
+		Body.Velocity = data.Velocity;
+	}
+}
+
+public readonly struct MovementData : ISaveData, INetworkData {
+	public Vector3 Position { get; init; }
+	public Vector3 Velocity { get; init; }
+	public Vector3 Rotation { get; init; }
+}

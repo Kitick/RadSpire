@@ -32,6 +32,9 @@ anchors_preset = 0
 offset_right = 1920.0
 offset_bottom = 1080.0
 script = ExtResource("1_10ibt")
+SettingsScene = ExtResource("2_o30d6")
+SaveMenuScene = ExtResource("3_o30d6")
+HostPanelScene = ExtResource("2_3o8sq")
 PauseButton = NodePath("PauseButton")
 PauseMenu = NodePath("PauseMenu")
 Inventory = NodePath("Inventory")
@@ -43,9 +46,6 @@ Hotbar = NodePath("Hotbar")
 RespawnMenu = NodePath("RespawnMenu")
 HealthBar = NodePath("HealthBar")
 WinMenu = NodePath("WinMenu")
-SettingsScene = ExtResource("2_o30d6")
-SaveMenuScene = ExtResource("3_o30d6")
-HostPanelScene = ExtResource("2_3o8sq")
 
 [node name="PauseButton" type="Button" parent="." unique_id=948900833]
 layout_mode = 1
@@ -128,17 +128,16 @@ offset_bottom = 458.0
 script = ExtResource("10_y8qxg")
 
 [node name="QuestLog" parent="." unique_id=1556372553 instance=ExtResource("8_6ymr8")]
-visible = false
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = 176.0
-offset_top = -99.0
-offset_right = 651.0
-offset_bottom = 251.0
+offset_left = 640.0
+offset_top = -476.0
+offset_right = 896.0
+offset_bottom = -126.0
 grow_horizontal = 2
 grow_vertical = 2
 

@@ -57,6 +57,7 @@ public sealed partial class DatabaseManager : Node {
 		item.IsConsumable = itemDef.IsConsumable;
 		item.IsPlaceable = itemDef.IsPlaceable;
 		item.Pickupable = itemDef.Pickupable;
+		item.IsWallObject = itemDef.IsWallObject;
 		item.IconTexture = itemDef.IconTexture;
 
 		BuildComponents(item, itemDef);

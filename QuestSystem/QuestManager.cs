@@ -33,36 +33,44 @@ public sealed partial class QuestManager : Node, ISaveable<QuestProgressionData>
 	public string[] GetDialogueFor(NPCID npc) {
 		foreach((QuestID id, QuestDefinition def) in Quests.All) {
 			if(def.NpcId != npc) { continue; }
-			if(!Progresses.TryGetValue(id, out QuestProgress progress)) { continue; }
 
-			if(progress.Status == QuestStatus.Pending) {
-				return def.InitialDialogue ?? [];
+			if(!Progresses.TryGetValue(id, out QuestProgress progress)) {
+				string[] intro = def.InitialDialogue ?? [];
+				if(intro.Length > 0) { return intro; }
+				continue;
 			}
 
-			if(progress.Status == QuestStatus.Active) {
-				string[] hints = def.ActiveDialogue;
-				return hints == null || hints.Length == 0 ? [] : [hints[Rng.Next(hints.Length)]];
-			}
+			string[] lines = progress.Status switch {
+				QuestStatus.Pending => def.InitialDialogue ?? [],
+				QuestStatus.Active when !progress.InitialDialogueDelivered => def.InitialDialogue ?? [],
+				QuestStatus.Active => def.ActiveDialogue ?? [],
+				QuestStatus.Completed => def.CompletionDialogue ?? [],
+				_ => [],
+			};
 
-			if(progress.Status == QuestStatus.Completed) {
-				return def.CompletionDialogue ?? [];
-			}
+			if(lines.Length > 0) { return lines; }
 		}
 		return [];
 	}
 
-	public void NotifyDialogueFinished(NPCID npc) {
+	public string[] NotifyDialogueFinished(NPCID npc) {
+		List<string> notifications = [];
 		foreach((QuestID id, QuestDefinition def) in Quests.All) {
 			if(def.NpcId != npc) { continue; }
 			if(!Progresses.TryGetValue(id, out QuestProgress progress)) { continue; }
-			if(progress.Status != QuestStatus.Pending) { continue; }
 
-			Progresses[id] = QuestProgress.Active(def);
-			Log.Info($"Quest activated after dialogue: '{id}'");
-			QuestActivated?.Invoke(id);
-			CheckCollectsForAllInventories();
-			return;
+			if(progress.Status == QuestStatus.Pending) {
+				Progresses[id] = QuestProgress.Active(def);
+				Log.Info($"Quest activated after dialogue: '{id}'");
+				QuestActivated?.Invoke(id);
+				CheckCollectsForAllInventories();
+				notifications.Add($"Quest Started: {def.Title}");
+			} else if(progress.Status == QuestStatus.Active && !progress.InitialDialogueDelivered) {
+				Progresses[id] = progress with { InitialDialogueDelivered = true };
+				Log.Info($"Initial dialogue delivered for '{id}'");
+			}
 		}
+		return [.. notifications];
 	}
 
 	public void NotifyEnemyKilled(EnemyType enemyType) {
@@ -116,9 +124,16 @@ public sealed partial class QuestManager : Node, ISaveable<QuestProgressionData>
 	private void TryMakePending(QuestID id, QuestDefinition def) {
 		bool alreadyRegistered = Progresses.ContainsKey(id);
 		if(!QuestSystem.CanMakePending(def, alreadyRegistered, CurrentStage)) { return; }
-		Progresses[id] = QuestProgress.Pending(def);
-		Log.Info($"Quest pending: '{id}'");
-		QuestBecamePending?.Invoke(id);
+
+		if(def.StageRequirement == 0) {
+			Progresses[id] = QuestProgress.Active(def);
+			Log.Info($"Quest auto-activated (stage 0): '{id}'");
+			QuestActivated?.Invoke(id);
+		} else {
+			Progresses[id] = QuestProgress.Pending(def);
+			Log.Info($"Quest pending: '{id}'");
+			QuestBecamePending?.Invoke(id);
+		}
 	}
 
 	private void TryMakeQuestsPending() {
