@@ -1,5 +1,3 @@
-using System;
-
 namespace Character;
 
 using System;
@@ -68,15 +66,12 @@ public sealed partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 		AddToGroup(Group.Enemy.ToString());
 
 		EnemyMesh = GetNodeOrNull<MeshInstance3D>("MeshInstance3D");
-		var animator = GetNodeOrNull<Animator>("Model/AnimationPlayer");
-		if(animator != null) {
-			animator.SetAttackSpeed(1.5f);
-		}
+		Animator animator = GetNodeOrNull<Animator>("Model/AnimationPlayer");
+		animator?.SetAttackSpeed(1.5f);
 		SetupHealthUI();
 
 		if(EnemyMesh != null) {
-			StandardMaterial3D? baseMat = EnemyMesh.GetActiveMaterial(0) as StandardMaterial3D;
-			if(baseMat != null) {
+			if(EnemyMesh.GetActiveMaterial(0) is StandardMaterial3D baseMat) {
 				FlashMaterial = baseMat.Duplicate() as StandardMaterial3D;
 				EnemyMesh.SetSurfaceOverrideMaterial(0, FlashMaterial);
 			}
@@ -212,7 +207,7 @@ public sealed partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 
 		float pct = Mathf.Clamp(this.Percent(), 0f, 1f);
 
-		var scale = HealthBarFill.Scale;
+		Vector3 scale = HealthBarFill.Scale;
 		scale.X = HealthBarWidth * pct;
 		scale.Y = HealthBarHeight;
 		scale.Z = 1f;
@@ -242,7 +237,7 @@ public sealed partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 		label.Position = new Vector3(jitter, HealthBarYOffset + 0.25f, 0f);
 		HealthUIRoot.AddChild(label);
 
-		var tween = GetTree().CreateTween();
+		Tween tween = GetTree().CreateTween();
 		tween.TweenProperty(label, "position",
 			label.Position + new Vector3(0f, DamageNumberRise, 0f),
 			DamageNumberLifetime).SetTrans(Tween.TransitionType.Cubic).SetEase(Tween.EaseType.Out);
@@ -267,11 +262,14 @@ public sealed partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 
 		if(!IsOnFloor()) {
 			StateMachine.TransitionTo(State.Falling);
-		} else if(!AI.IsMoving) {
+		}
+		else if(!AI.IsMoving) {
 			StateMachine.TransitionTo(State.Idle);
-		} else if(AI.SprintHeld) {
+		}
+		else if(AI.SprintHeld) {
 			StateMachine.TransitionTo(State.Sprinting);
-		} else {
+		}
+		else {
 			StateMachine.TransitionTo(State.Walking);
 		}
 	}

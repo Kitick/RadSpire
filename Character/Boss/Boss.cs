@@ -30,9 +30,7 @@ public sealed partial class Boss : CharacterBase, ISaveable<BossData> {
 		AI = new ChaseAI(this);
 	}
 
-	public override void _Ready() {
-		base._Ready();
-	}
+	public override void _Ready() => base._Ready();
 
 	public override void _PhysicsProcess(double delta) {
 		float dt = (float) delta;
@@ -61,14 +59,14 @@ public sealed partial class Boss : CharacterBase, ISaveable<BossData> {
 	}
 
 	public override void OnAttackFinished() {
-		if(AttackTarget != null && GodotObject.IsInstanceValid(AttackTarget) && AttackTarget is IHealth healthTarget) {
+		if(AttackTarget != null && IsInstanceValid(AttackTarget) && AttackTarget is IHealth healthTarget) {
 			Log.Info($"Boss attacking {AttackTarget.Name}");
 			this.Attack(healthTarget);
 		}
 		StateMachine.TransitionTo(State.Idle);
 	}
 
-	public BossData Export() => new BossData {
+	public BossData Export() => new() {
 		Health = Health.Export(),
 		Movement = Movement.Export(),
 		Offense = Offense.Export(),

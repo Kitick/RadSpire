@@ -119,7 +119,8 @@ public sealed partial class NPC : CharacterBody3D, ISaveable<NPCData> {
 			InDialogue = true;
 			InteractionPromptChanged?.Invoke(CurrentLines[CurrentLineIndex]);
 			CurrentLineIndex++;
-		} else {
+		}
+		else {
 			InteractionPromptChanged?.Invoke(null);
 			InDialogue = false;
 		}

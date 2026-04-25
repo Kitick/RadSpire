@@ -42,7 +42,7 @@ public sealed class KeyInput {
 	private static Vector3 GetHorizontalMovement(CameraRig camera) {
 		Vector2 inputVector = Input.GetVector(ActionEvent.MoveLeft.Name, ActionEvent.MoveRight.Name, ActionEvent.MoveForward.Name, ActionEvent.MoveBack.Name);
 
-		Vector3 direction = new Vector3(inputVector.X, 0, inputVector.Y);
+		Vector3 direction = new(inputVector.X, 0, inputVector.Y);
 
 		Vector3 rotated = camera.Pose.AlignVector(direction);
 

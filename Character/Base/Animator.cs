@@ -1,6 +1,6 @@
-using System;
-
 namespace Character;
+
+using System;
 
 using Godot;
 using Root;
@@ -26,7 +26,7 @@ public sealed partial class Animator : AnimationPlayer {
 	[Export] private StringName ATTACK = null!;
 	[Export] private StringName DEATH = null!;
 	[Export] private StringName DODGE = null!;
-	[Export] private StringName[] AttackVariations = Array.Empty<StringName>();
+	[Export] private StringName[] AttackVariations = [];
 	[Export] private bool CycleAttackVariations = false;
 
 	[ExportCategory("Animation Settings")]
@@ -43,13 +43,9 @@ public sealed partial class Animator : AnimationPlayer {
 	[Export] private float DodgeIdleRecoveryTime = 0.15f;
 	private bool UseDodgeIdleRecovery = true;
 
-	public void SetAttackSpeed(float speed) {
-		AttackSpeed = Math.Max(0.1f, speed);
-	}
+	public void SetAttackSpeed(float speed) => AttackSpeed = Math.Max(0.1f, speed);
 
-	public void SetDodgeIdleRecovery(bool enabled) {
-		UseDodgeIdleRecovery = enabled;
-	}
+	public void SetDodgeIdleRecovery(bool enabled) => UseDodgeIdleRecovery = enabled;
 
 	public enum AnimState { Idle, Walking, Sprinting, Crouching, Jumping, Falling, Landing, Attacking, Dying, Dodging }
 
@@ -84,8 +80,7 @@ public sealed partial class Animator : AnimationPlayer {
 
 		// Manually resolve Character if not already assigned
 		if(Character == null) {
-			CharacterBase? resolved = GetParent()?.GetParent() as CharacterBase;
-			if(resolved == null) {
+			if(GetParent()?.GetParent() is not CharacterBase resolved) {
 				Log.Error("Failed to resolve Character reference for Animator!");
 				return;
 			}
@@ -115,9 +110,7 @@ public sealed partial class Animator : AnimationPlayer {
 		CallDeferred(nameof(SetupPlayerAudioDeferred), player);
 	}
 
-	private void SetupPlayerAudioDeferred(Player player) {
-		Audio?.Setup(player);
-	}
+	private void SetupPlayerAudioDeferred(Player player) => Audio?.Setup(player);
 
 	private void SetupAnimations() {
 		SetLoopMode(IDLE);
@@ -131,9 +124,7 @@ public sealed partial class Animator : AnimationPlayer {
 		AnimationFinished += OnAnimationFinished;
 	}
 
-	private void SetLoopMode(StringName name) {
-		GetAnimation(name).LoopMode = Animation.LoopModeEnum.Linear;
-	}
+	private void SetLoopMode(StringName name) => GetAnimation(name).LoopMode = Animation.LoopModeEnum.Linear;
 
 	public void OnAnimationFinished(StringName name) {
 		if(name == JUMPING || name == LANDING) { SyncAnimation(Character.CurrentState); } else if(name == DODGE) { _ = StartDodgeIdleRecovery(); } else if(IsAttackAnimation(name)) { Character.OnAttackFinished(); }
@@ -168,10 +159,12 @@ public sealed partial class Animator : AnimationPlayer {
 		if(jumped) {
 			Audio?.PlayFootstep(0.90f, -10.0f);
 			PlayingAnimation = AnimState.Jumping;
-		} else if(landed) {
+		}
+		else if(landed) {
 			Audio?.PlayLand();
 			PlayingAnimation = AnimState.Landing;
-		} else { SyncAnimation(to); }
+		}
+		else { SyncAnimation(to); }
 	}
 
 	private bool IsAttackAnimation(StringName name) {
@@ -185,7 +178,7 @@ public sealed partial class Animator : AnimationPlayer {
 	private StringName GetAttackAnimation() {
 		if(AttackVariations.Length == 0) { return ATTACK; }
 		if(!CycleAttackVariations) {
-			int idx = (int) GD.RandRange(0, AttackVariations.Length - 1);
+			int idx = GD.RandRange(0, AttackVariations.Length - 1);
 			return AttackVariations[idx];
 		}
 
@@ -209,7 +202,7 @@ public sealed partial class Animator : AnimationPlayer {
 		// Briefly play idle as a recovery pose to reduce snapping.
 		Play(IDLE);
 		if(DodgeIdleRecoveryTime > 0f) {
-			var timer = GetTree().CreateTimer(DodgeIdleRecoveryTime);
+			SceneTreeTimer timer = GetTree().CreateTimer(DodgeIdleRecoveryTime);
 			await ToSignal(timer, SceneTreeTimer.SignalName.Timeout);
 		}
 		Character.OnDodgeFinished();

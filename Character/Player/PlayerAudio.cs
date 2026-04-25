@@ -30,8 +30,8 @@ public sealed partial class PlayerAudio : Node {
 
 		if(StepSound == null) {
 			Log.Warn($"Step sound not found at {StepSoundPath}");
-		} 
-        else {
+		}
+		else {
 			StepPlayer = new AudioStreamPlayer {
 				Name = "StepSfx",
 				Bus = "SFX",
@@ -43,8 +43,8 @@ public sealed partial class PlayerAudio : Node {
 
 		if(DamageSound == null) {
 			Log.Warn($"Damage sound not found at {DamageSoundPath}");
-		} 
-        else {
+		}
+		else {
 			DamagePlayer = new AudioStreamPlayer {
 				Name = "DamageSfx",
 				Bus = "SFX",
@@ -67,7 +67,7 @@ public sealed partial class PlayerAudio : Node {
 	private void OnHealthChanged(HealthData from, HealthData to) {
 		if(to.Current >= from.Current) { return; }
 
-		DamageDuckUntil = Time.GetTicksMsec() / 1000.0 + DamageDuckSeconds;
+		DamageDuckUntil = (Time.GetTicksMsec() / 1000.0) + DamageDuckSeconds;
 
 		if(DamagePlayer == null || DamageSound == null) {
 			Log.Warn("Damage audio skipped: DamagePlayer or DamageSound is null");

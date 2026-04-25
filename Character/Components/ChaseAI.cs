@@ -26,9 +26,7 @@ public sealed class ChaseAI {
 		PickNewWanderAction();
 	}
 
-	public void SetTarget(Node3D target) {
-		Target = target;
-	}
+	public void SetTarget(Node3D target) => Target = target;
 
 	public Vector3 GetLocation() {
 		if(!GodotObject.IsInstanceValid(Target)) { return Vector3.Zero; }
