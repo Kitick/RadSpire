@@ -15,6 +15,7 @@
 [ext_resource type="PackedScene" uid="uid://bmo8vs5v4lyqv" path="res://Crafting/Interface/CraftingUI.tscn" id="9_y8qxg"]
 [ext_resource type="Script" uid="uid://cl6aplc7wunof" path="res://Inventory/InventoryItem/InventoryItemInformationUI.cs" id="10_y8qxg"]
 [ext_resource type="PackedScene" uid="uid://bfiyahye18w1t" path="res://UI/HUD/WinMenu.tscn" id="15_cgpfr"]
+[ext_resource type="Script" uid="uid://citgwg62boouf" path="res://UI/SegmentBar.cs" id="15_dwvm7"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_cgpfr"]
 
@@ -26,7 +27,9 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_4c1es"]
 
-[node name="HUD" type="Control" unique_id=935922708 node_paths=PackedStringArray("PauseButton", "PauseMenu", "Inventory", "CraftingUI", "InventoryItemInformationUI", "Chest", "QuestLog", "Hotbar", "RespawnMenu", "HealthBar", "WinMenu")]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qjdpa"]
+
+[node name="HUD" type="Control" unique_id=935922708 node_paths=PackedStringArray("PauseButton", "PauseMenu", "Inventory", "CraftingUI", "InventoryItemInformationUI", "Chest", "QuestLog", "Hotbar", "RespawnMenu", "HealthBar", "HealthLabel", "WinMenu")]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 1920.0
@@ -42,6 +45,7 @@ QuestLog = NodePath("QuestLog")
 Hotbar = NodePath("Hotbar")
 RespawnMenu = NodePath("RespawnMenu")
 HealthBar = NodePath("HealthBar")
+HealthLabel = NodePath("HealthBar/HealthLabel")
 WinMenu = NodePath("WinMenu")
 SettingsScene = ExtResource("2_o30d6")
 SaveMenuScene = ExtResource("3_o30d6")
@@ -163,14 +167,26 @@ offset_top = 424.0
 offset_right = -839.0
 offset_bottom = -593.0
 
-[node name="HealthBar" type="ProgressBar" parent="." unique_id=1858352792]
+[node name="HealthBar" type="Control" parent="." unique_id=1038583943]
 editor_description = "
 "
-layout_mode = 0
+anchors_preset = 0
 offset_left = 264.0
 offset_top = 964.0
 offset_right = 537.0
 offset_bottom = 997.0
+script = ExtResource("15_dwvm7")
+
+[node name="HealthLabel" type="Label" parent="HealthBar" unique_id=-1447606267]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/normal = SubResource("StyleBoxEmpty_qjdpa")
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="InteractionPrompt" type="Label" parent="." unique_id=1956403469]
 layout_mode = 0

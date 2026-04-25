@@ -7,13 +7,14 @@ using Godot;
 using InventorySystem;
 using InventorySystem.Interface;
 using Network.Panels;
+using PauseMenu;
 using QuestSystem;
+using RespawnMenu;
 using Root;
+using SaveMenu;
 using Services;
 using Settings.Interface;
-using PauseMenu;
-using RespawnMenu;
-using SaveMenu;
+using UI;
 using MenuState = GameWorld.GameManager.MenuState;
 
 public sealed partial class HUD : Control {
@@ -29,13 +30,19 @@ public sealed partial class HUD : Control {
 	[Export] private QuestLog QuestLog = null!;
 	[Export] public Hotbar Hotbar = null!;
 	[Export] private RespawnMenu RespawnMenu = null!;
-	[Export] private ProgressBar HealthBar = null!;
+	[Export] private SegmentBar HealthBar = null!;
+	[Export] private Label HealthLabel = null!;
 	[Export] private Control WinMenu = null!;
 
 	[ExportCategory("HUD Scenes")]
 	[Export] private PackedScene SettingsScene = null!;
 	[Export] private PackedScene SaveMenuScene = null!;
 	[Export] private PackedScene HostPanelScene = null!;
+
+	[ExportCategory("Health Colors")]
+	[Export] private Color HealthColor = new(0.2f, 0.6f, 0.2f);
+	[Export] private Color RadiationColor = new(0.6f, 0.2f, 0.8f);
+	[Export] private Color EmptyColor = new(0.2f, 0.2f, 0.2f);
 
 	public Player Player = null!;
 
@@ -56,6 +63,7 @@ public sealed partial class HUD : Control {
 	public void Init(Player player, StateMachine<MenuState> stateMachine, QuestManager questManager) {
 		Player = player;
 		Player.Health.OnChanged += (_, _) => UpdateHealthBar();
+		Player.Radiation.OnChanged += (_, _) => UpdateHealthBar();
 		CraftingUI.Inventories.Add(player.Inventory);
 		CraftingUI.Inventories.Add(player.Hotbar);
 		StateMachineRef = stateMachine;
@@ -189,10 +197,17 @@ public sealed partial class HUD : Control {
 
 	private void UpdateHealthBar() {
 		int current = Player.Health.Current;
-		int max = Player.Health.Max;
+		int effectiveMax = Player.Health.Max;
+		int baseMax = Player.BaseMaxHealth;
+		int radiated = baseMax - effectiveMax;
 
-		HealthBar.MaxValue = max;
-		HealthBar.Value = current;
+		HealthBar.SetSegments(
+			new(current, HealthColor),
+			new(effectiveMax - current, EmptyColor),
+			new(radiated, RadiationColor)
+		);
+
+		HealthLabel.Text = $"{current} / {effectiveMax}";
 	}
 
 	public void Win() {
@@ -240,10 +255,12 @@ public sealed partial class HUD : Control {
 		if(StateMachineRef.CurrentState == MenuState.Chest) {
 			Log.Info("Closing Chest");
 			StateMachineRef.TransitionTo(MenuState.Game);
-		} else if(StateMachineRef.CurrentState == MenuState.Inventory) {
+		}
+		else if(StateMachineRef.CurrentState == MenuState.Inventory) {
 			Log.Info("Closing Inventory");
 			StateMachineRef.TransitionTo(MenuState.Game);
-		} else {
+		}
+		else {
 			Log.Info("Opening Inventory");
 			StateMachineRef.TransitionTo(MenuState.Inventory);
 		}
@@ -258,7 +275,8 @@ public sealed partial class HUD : Control {
 		if(StateMachineRef.CurrentState == MenuState.Chest) {
 			Log.Info("Closing Chest");
 			StateMachineRef.TransitionTo(MenuState.Game);
-		} else {
+		}
+		else {
 			Log.Info("Opening Chest");
 			StateMachineRef.TransitionTo(MenuState.Chest);
 		}

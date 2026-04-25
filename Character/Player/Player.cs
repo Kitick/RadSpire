@@ -1,5 +1,3 @@
-using Root;
-
 namespace Character;
 
 using System;
@@ -51,6 +49,9 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData> {
 	private Action? UnsubscribePlace;
 	private Action? UnsubscribePlaceCancel;
 
+	public Radiation Radiation { get; private set; } = new();
+	public int BaseMaxHealth { get; private set; }
+
 	public bool HoldingSword = false;
 	private Vector3 DodgeDirection = Vector3.Zero;
 	private Animator? Animator;
@@ -63,12 +64,11 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData> {
 
 	public override void _Ready() {
 		base._Ready();
+		BaseMaxHealth = InitialHealth;
 		PickupComponent.HandleInteractInput = false;
 		AddToGroup(Group.Player.ToString());
 		Animator = GetNodeOrNull<Animator>("Model/AnimationPlayer");
-		if(Animator != null) {
-			Animator.SetAttackSpeed(3.0f);
-		}
+		Animator?.SetAttackSpeed(3.0f);
 		AddToGroup(Group.Player.ToString());
 		AddChild(PickupComponent);
 		AddChild(InventoryManager);
@@ -90,6 +90,9 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData> {
 	}
 
 	public void Update(float dt, KeyInput keyInput) {
+		Radiation.Accumulate(dt);
+		Health.Max = Math.Max(1, (int) (BaseMaxHealth * (1f - Radiation.Level)));
+
 		if(this.IsDead()) {
 			StateMachine.TransitionTo(State.Dead);
 			return;
@@ -129,20 +132,22 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData> {
 
 		if(!IsOnFloor()) {
 			StateMachine.TransitionTo(State.Falling);
-		} else if(!keyInput.IsMoving) {
+		}
+		else if(!keyInput.IsMoving) {
 			StateMachine.TransitionTo(State.Idle);
-		} else if(keyInput.SprintHeld) {
+		}
+		else if(keyInput.SprintHeld) {
 			StateMachine.TransitionTo(State.Sprinting);
-		} else if(keyInput.CrouchHeld) {
+		}
+		else if(keyInput.CrouchHeld) {
 			StateMachine.TransitionTo(State.Crouching);
-		} else {
+		}
+		else {
 			StateMachine.TransitionTo(State.Walking);
 		}
 	}
 
-	public override void OnAttackFinished() {
-		StateMachine.TransitionTo(State.Idle);
-	}
+	public override void OnAttackFinished() => StateMachine.TransitionTo(State.Idle);
 
 	private float GetMultiplier() {
 		float multiplier = 1.0f;
@@ -169,9 +174,7 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData> {
 		StateMachine.TransitionTo(State.Dodging);
 	}
 
-	public override void OnDodgeFinished() {
-		StateMachine.TransitionTo(State.Idle);
-	}
+	public override void OnDodgeFinished() => StateMachine.TransitionTo(State.Idle);
 
 	private void SetDodgeAnimationFromInput() {
 		if(Animator == null) { return; }
@@ -186,7 +189,8 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData> {
 
 		if(ax > az) {
 			if(input.X < 0f) { Animator.SetDodgeAnimation(new StringName("Dodge_Left")); } else { Animator.SetDodgeAnimation(new StringName("Dodge_Right")); }
-		} else {
+		}
+		else {
 			Animator.SetDodgeAnimation(new StringName("Dodge_Forward"));
 		}
 	}
@@ -258,6 +262,7 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData> {
 		Health = Health.Export(),
 		Offense = Offense.Export(),
 		Defense = Defense.Export(),
+		Radiation = Radiation.Export(),
 		Inventory = Inventory.Export(),
 		Hotbar = Hotbar.Export(),
 	};
@@ -267,6 +272,7 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData> {
 		Health.Import(data.Health);
 		Offense.Import(data.Offense);
 		Defense.Import(data.Defense);
+		Radiation.Import(data.Radiation);
 		Inventory.Import(data.Inventory);
 		Hotbar.Import(data.Hotbar);
 	}
@@ -277,6 +283,7 @@ public readonly record struct PlayerData : ISaveData {
 	public HealthData Health { get; init; }
 	public OffenseData Offense { get; init; }
 	public DefenseData Defense { get; init; }
+	public RadiationData Radiation { get; init; }
 	public InventoryData Inventory { get; init; }
 	public InventoryData Hotbar { get; init; }
 }
