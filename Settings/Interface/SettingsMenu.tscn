@@ -6,6 +6,8 @@
 [ext_resource type="Script" uid="uid://c44ijxtmj7xb" path="res://Settings/Interface/Panels/ControllerPanel.cs" id="5_jh1wv"]
 [ext_resource type="Script" uid="uid://8tuxmuyevsjl" path="res://Settings/Interface/Panels/KeyboardPanel.cs" id="6_uv3og"]
 
+[sub_resource type="SystemFont" id="SystemFont_qufcm"]
+
 [node name="SettingsMenu" type="Control" unique_id=440443673 node_paths=PackedStringArray("BackButton", "ResetButton", "DisplayPanel", "DisplayButton", "SoundPanel", "SoundButton", "ControllerPanel", "ControllerButton", "KeyboardPanel", "KeyboardButton")]
 process_mode = 3
 layout_mode = 3
@@ -479,23 +481,48 @@ disabled = true
 text = "Remap Keys"
 
 [node name="BackButton" type="Button" parent="." unique_id=878620147]
-layout_mode = 0
-offset_left = 64.0
-offset_top = 960.0
-offset_right = 181.0
-offset_bottom = 1023.0
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 50.0
+offset_top = -113.0
+offset_right = 178.0
+offset_bottom = -50.0
 size_flags_horizontal = 0
 focus_neighbor_right = NodePath("../ResetSettingsButton")
 theme_override_font_sizes/font_size = 40
 text = "Back"
 
 [node name="ResetSettingsButton" type="Button" parent="." unique_id=1422098046]
-layout_mode = 0
-offset_left = 1576.0
-offset_top = 960.0
-offset_right = 1856.0
-offset_bottom = 1023.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -341.0
+offset_top = -101.0
+offset_right = -50.0
+offset_bottom = -50.0
 size_flags_horizontal = 0
 focus_neighbor_left = NodePath("../BackButton")
 theme_override_font_sizes/font_size = 40
 text = "Reset Settings"
+
+[node name="Build" type="Label" parent="." unique_id=283825540]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -200.0
+offset_top = -100.0
+offset_right = 200.0
+offset_bottom = -50.0
+theme_override_fonts/font = SubResource("SystemFont_qufcm")
+theme_override_font_sizes/font_size = 32
+text = "Build: 9FF802BA"
+horizontal_alignment = 1
+vertical_alignment = 1
