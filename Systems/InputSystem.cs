@@ -103,6 +103,7 @@ public readonly struct ActionEvent {
 	public static readonly ActionEvent Attack = new("Attack");
 	public static readonly ActionEvent Dodge = new("Dodge");
 	public static readonly ActionEvent QuestLog = new("QuestLog");
+	public static readonly ActionEvent BuildMode = new("BuildMode");
 
 	public static readonly ActionEvent MenuSelect = new("ui_accept");
 	public static readonly ActionEvent MenuExit = new("ui_cancel");
@@ -148,6 +149,7 @@ public readonly struct ActionEvent {
 		yield return Attack;
 		yield return Dodge;
 		yield return QuestLog;
+		yield return BuildMode;
 
 		yield return MenuSelect;
 		yield return MenuExit;

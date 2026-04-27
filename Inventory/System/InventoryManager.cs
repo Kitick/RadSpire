@@ -13,6 +13,7 @@ using UI.HUD;
 
 public partial class InventoryManager : Node {
 	private static readonly LogService Log = new(nameof(InventoryManager), enabled: true);
+	private const string BuildInventoryName = "BuildInventory";
 
 	public Dictionary<string, (Inventory, IInventoryUI)> Inventories = new Dictionary<string, (Inventory, IInventoryUI)>();
 	public InventoryUIManager InventoryUIManager = null!;
@@ -22,6 +23,8 @@ public partial class InventoryManager : Node {
 	private string? LastPickupInventoryName = null;
 	private int LastPickupSlotIndex = -1;
 	private bool IgnoreNextRightRelease = false;
+	private bool InventoryPanelOpen = false;
+	private bool BuildUIOpen = false;
 	public event Action<ItemSlot>? StartMoveItemEvent;
 	public event Action? EndMoveItemEvent;
 	public bool InventoryUIOpen = false;
@@ -55,6 +58,7 @@ public partial class InventoryManager : Node {
 		InventoryUIManager = InventoryUIManagerTemplate.Instantiate<InventoryUIManager>();
 		inventoryUi.AddChild(InventoryUIManager);
 		hud.InventoryRequested += OnInventoryRequested;
+		hud.BuildUIRequested += OnBuildUIRequested;
 		hud.InventoryItemInformationUI.InventoryManager = this;
 	}
 
@@ -98,7 +102,8 @@ public partial class InventoryManager : Node {
 	}
 
 	public void OnInventoryRequested(bool open) {
-		InventoryUIOpen = open;
+		InventoryPanelOpen = open;
+		InventoryUIOpen = InventoryPanelOpen || BuildUIOpen;
 		if(open) {
 			if(GetInventoryUI("Hotbar") is Hotbar hotbar) {
 				ItemSlot temp = hotbar.GetSelectedItemSlot();
@@ -110,7 +115,16 @@ public partial class InventoryManager : Node {
 		Log.Info($"Inventory UI open: {InventoryUIOpen}");
 	}
 
+	public void OnBuildUIRequested(bool open) {
+		BuildUIOpen = open;
+		InventoryUIOpen = InventoryPanelOpen || BuildUIOpen;
+		Log.Info($"Build UI open: {BuildUIOpen}, inventory input enabled: {InventoryUIOpen}");
+	}
+
 	public void HandleOnSlotPressed(string inventoryName, int slotIndex, MouseButton button) {
+		if(BuildUIOpen && inventoryName == BuildInventoryName) {
+			return;
+		}
 		if(InventoryUIOpen == false) {
 			Log.Info("Inventory UI is not open, ignoring slot press.");
 			return;
@@ -127,6 +141,9 @@ public partial class InventoryManager : Node {
 	}
 
 	public void HandleOnSlotReleased(string inventoryName, int slotIndex, MouseButton button) {
+		if(BuildUIOpen && inventoryName == BuildInventoryName) {
+			return;
+		}
 		if(InventoryUIOpen == false) {
 			Log.Info("Inventory UI is not open, ignoring slot release.");
 			return;
@@ -380,6 +397,9 @@ public partial class InventoryManager : Node {
 
 	public override void _Input(InputEvent @event) {
 		if(@event is InputEventMouseButton mouseButton && !mouseButton.Pressed) {
+			if(BuildUIOpen) {
+				return;
+			}
 			if(MouseHasItemSlot) {
 				Vector2 clickPos = mouseButton.GlobalPosition;
 				if(ClickedOutsideInventory(clickPos)) {
@@ -538,5 +558,36 @@ public partial class InventoryManager : Node {
 		remainSlot = AddItemSlotToInventory("Hotbar", remainSlot);
 		remainSlot = AddItemSlotToInventory("Inventory", remainSlot);
 		return remainSlot;
+	}
+
+	public void MovePlaceableItems(Inventory source, Inventory destination) {
+		for(int i = 0; i < source.ItemSlots.Length; i++) {
+			ItemSlot slot = source.ItemSlots[i];
+			if(slot.IsEmpty() || slot.Item == null || !slot.Item.IsPlaceable) {
+				continue;
+			}
+			ItemSlot moveSlot = new ItemSlot(slot.Item, slot.Quantity);
+			ItemSlot remain = destination.AddItem(moveSlot);
+			int moved = slot.Quantity - remain.Quantity;
+			if(moved <= 0) {
+				continue;
+			}
+			int row = source.GetRow(i);
+			int column = source.GetColumn(i);
+			source.RemoveItem(row, column, moved);
+		}
+	}
+
+	public void ReturnInventoryToPlayerOrDrop(Inventory source) {
+		foreach(ItemSlot slot in source.ItemSlots) {
+			if(slot.IsEmpty() || slot.Item == null) {
+				continue;
+			}
+			ItemSlot remain = AddItemSlotToPlayerInventory(new ItemSlot(slot.Item, slot.Quantity));
+			if(!remain.IsEmpty()) {
+				DropItemSlot(remain);
+			}
+			slot.ClearSlot();
+		}
 	}
 }

@@ -37,7 +37,7 @@ public sealed partial class GameManager : Node {
 	private GameWorldManager? WorldManager;
 	public Action? MainMenuRequested;
 
-	public enum MenuState { Game, Paused, Settings, Inventory, Chest, Host, Death }
+	public enum MenuState { Game, Paused, Settings, Inventory, Chest, Build, Host, Death }
 	private readonly StateMachine<MenuState> StateMachine = new(MenuState.Game);
 
 	private string? LoadFile;
@@ -51,6 +51,7 @@ public sealed partial class GameManager : Node {
 	public PackedScene EnemySceneRef => EnemyScene;
 	public PackedScene NPCSceneRef => NPCScene;
 	public QuestManager QuestManagerRef => QuestManager;
+	public HUD? HUDRef => HUD;
 
 	public override void _Ready() {
 		CameraRig = this.AddScene<CameraRig>(CameraScene);
@@ -117,6 +118,7 @@ public sealed partial class GameManager : Node {
 	private void ConfigureStateMachine() {
 		StateMachine.OnEnter(MenuState.Game, () => GetTree().Paused = false);
 		StateMachine.OnExit(MenuState.Game, () => GetTree().Paused = true);
+		StateMachine.OnEnter(MenuState.Build, () => GetTree().Paused = false);
 		StateMachine.OnEnter(MenuState.Death, () => GetTree().Paused = false);
 	}
 
@@ -365,6 +367,16 @@ public sealed partial class GameManager : Node {
 	}
 
 	public Vector3? GetLastKnownMainWorldPlayerPosition() => LastKnownMainWorldPlayerPosition;
+
+	public bool IsPlayerInInteriorWorld() {
+		if(WorldManager == null) {
+			return false;
+		}
+		if(string.IsNullOrEmpty(WorldManager.CurrentGameWorldId) || string.IsNullOrEmpty(WorldManager.MainGameWorldId)) {
+			return false;
+		}
+		return WorldManager.CurrentGameWorldId != WorldManager.MainGameWorldId;
+	}
 
 	private void SyncActiveWorldActorBindings() {
 		if(WorldManager == null || LocalPlayer == null || !IsInstanceValid(LocalPlayer)) {

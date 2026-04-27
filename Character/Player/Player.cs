@@ -46,10 +46,12 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData> {
 	private ObjectPickupUI? ObjectPickupUI;
 	private ObjectHoverTargetingController? ObjectHoverTargetingController;
 	private ObjectHoverOutlineUI? ObjectHoverOutlineUI;
+	private BuildModeController? BuildModeController;
 	private Action? UnsubscribeInteract;
 	private Action? UnsubscribeInteract2;
 	private Action? UnsubscribePlace;
 	private Action? UnsubscribePlaceCancel;
+	private Action? UnsubscribeBuildMode;
 
 	public Radiation Radiation { get; private set; } = new();
 	public int BaseMaxHealth { get; private set; }
@@ -85,6 +87,7 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData> {
 		UnsubscribeInteract2?.Invoke();
 		UnsubscribePlace?.Invoke();
 		UnsubscribePlaceCancel?.Invoke();
+		UnsubscribeBuildMode?.Invoke();
 		ObjectPickupUI?.Dispose();
 		ObjectHoverOutlineUI?.Dispose();
 		ObjectPickup = null;
@@ -92,6 +95,7 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData> {
 		ObjectPlacementManager = null;
 		ObjectHoverTargetingController = null;
 		ObjectHoverOutlineUI = null;
+		BuildModeController = null;
 	}
 
 	public void Update(float dt, KeyInput keyInput) {
@@ -128,7 +132,7 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData> {
 			return;
 		}
 
-		if(keyInput.AttackPressed) {
+		if(keyInput.AttackPressed && (BuildModeController == null || !BuildModeController.IsBuildModeActive)) {
 			StateMachine.TransitionTo(State.Attacking);
 			return;
 		}
@@ -223,6 +227,9 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData> {
 		});
 
 		UnsubscribeInteract2 = ActionEvent.Interact2.WhenPressed(() => {
+			if(BuildModeController != null && BuildModeController.IsBuildModeActive) {
+				return;
+			}
 			if(ObjectPickup.CurrentTargetObjectNode == null) {
 				return;
 			}
@@ -248,6 +255,10 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData> {
 			}
 			ObjectPlacementManager.PlaceCanceled();
 		});
+
+		UnsubscribeBuildMode = ActionEvent.BuildMode.WhenPressed(() => {
+			BuildModeController?.ToggleBuildMode();
+		});
 	}
 
 	public void ConfigureObjectPickup(WorldObjectManager worldObjectManager) {
@@ -264,6 +275,21 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData> {
 			return;
 		}
 		ObjectPlacementManager.Initialize(worldObjectManager, InventoryManager, gameManager, playerHotbar, this);
+		BuildModeController ??= new BuildModeController();
+		if(BuildModeController.GetParent() == null) {
+			AddChild(BuildModeController);
+		}
+		if(gameManager.HUDRef != null) {
+			BuildModeController.Initialize(
+				this,
+				InventoryManager,
+				ObjectPlacementManager,
+				ObjectPlacementUI!,
+				worldObjectManager,
+				gameManager,
+				gameManager.HUDRef.GetBuildUI()
+			);
+		}
 	}
 
 	public PlayerData Export() => new() {

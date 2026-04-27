@@ -29,7 +29,7 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qjdpa"]
 
-[node name="HUD" type="Control" unique_id=935922708 node_paths=PackedStringArray("PauseButton", "PauseMenu", "Inventory", "CraftingUI", "InventoryItemInformationUI", "Chest", "QuestLog", "Hotbar", "RespawnMenu", "HealthBar", "HealthLabel", "WinMenu")]
+[node name="HUD" type="Control" unique_id=935922708 node_paths=PackedStringArray("PauseButton", "PauseMenu", "Inventory", "CraftingUI", "InventoryItemInformationUI", "Chest", "BuildUI", "QuestLog", "Hotbar", "RespawnMenu", "HealthBar", "HealthLabel", "WinMenu")]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 1920.0
@@ -41,6 +41,7 @@ Inventory = NodePath("Inventory")
 CraftingUI = NodePath("Crafting")
 InventoryItemInformationUI = NodePath("ItemInformationUI")
 Chest = NodePath("ChestUI")
+BuildUI = NodePath("BuildUI")
 QuestLog = NodePath("QuestLog")
 Hotbar = NodePath("Hotbar")
 RespawnMenu = NodePath("RespawnMenu")
@@ -50,6 +51,9 @@ WinMenu = NodePath("WinMenu")
 SettingsScene = ExtResource("2_o30d6")
 SaveMenuScene = ExtResource("3_o30d6")
 HostPanelScene = ExtResource("2_3o8sq")
+HealthColor = null
+RadiationColor = null
+EmptyColor = null
 
 [node name="PauseButton" type="Button" parent="." unique_id=948900833]
 layout_mode = 1
@@ -119,6 +123,21 @@ offset_left = -536.0
 offset_top = -139.0
 offset_right = -186.0
 offset_bottom = 111.0
+grow_horizontal = 2
+script = ExtResource("5_q8dl0")
+
+[node name="BuildUI" parent="." unique_id=1495983066 instance=ExtResource("6_785o0")]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 540.0
+offset_top = 237.0
+offset_right = 890.0
+offset_bottom = 487.0
 grow_horizontal = 2
 script = ExtResource("5_q8dl0")
 

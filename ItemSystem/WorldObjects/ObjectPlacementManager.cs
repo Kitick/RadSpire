@@ -32,6 +32,7 @@ public partial class ObjectPlacementManager : Node {
 	private string? CurrentWallAnchorId;
 	private Vector3 CurrentWallNormal = Vector3.Forward;
 	private readonly List<PlacementAreaShapeTemplate> CurrentPlacementAreaShapes = new();
+	private bool ExternalPreviewActive;
 
 	public WorldObjectManager? WorldObjectManager { get; private set; }
 	public InventoryManager? InventoryManager { get; private set; }
@@ -138,46 +139,7 @@ public partial class ObjectPlacementManager : Node {
 			return;
 		}
 
-		int wheelDirection = 0;
-		if(mouseButtonEvent.ButtonIndex == MouseButton.WheelUp) {
-			wheelDirection = -1;
-		}
-		else if(mouseButtonEvent.ButtonIndex == MouseButton.WheelDown) {
-			wheelDirection = 1;
-		}
-
-		if(wheelDirection == 0) {
-			return;
-		}
-		if(IsCurrentPlacingItemWallObject()) {
-			return;
-		}
-
-		Vector3 playerForward = Player.GlobalBasis.Z;
-		playerForward.Y = 0;
-		if(playerForward.LengthSquared() < 0.0001f) {
-			playerForward = Vector3.Forward;
-		}
-		playerForward = playerForward.Normalized();
-
-		Vector3 oldRotation = GetAdjustedPlacementRotation(Player, CurrentPlacingPosition);
-		float oldOriginOffset = GetPlacementOriginOffset(playerForward, oldRotation);
-
-		float oldRotationOffset = CurrentPlacingRotationOffsetY;
-		bool middleMouseHeld = Input.IsMouseButtonPressed(MouseButton.Middle);
-		if(middleMouseHeld) {
-			CurrentPlacingRotationOffsetY = oldRotationOffset + (wheelDirection * PlacementFineRotationStepRadians);
-		}
-		else {
-			CurrentPlacingRotationOffsetY = GetSnappedRotationOffset(oldRotationOffset, wheelDirection);
-		}
-		CurrentPlacingRotationOffsetY = Mathf.Wrap(CurrentPlacingRotationOffsetY, -Mathf.Pi, Mathf.Pi);
-
-		Vector3 newRotation = GetAdjustedPlacementRotation(Player, CurrentPlacingPosition);
-		float newOriginOffset = GetPlacementOriginOffset(playerForward, newRotation);
-
-		// Keep the preview anchored relative to player while rotating by counteracting origin shift.
-		CurrentPlacingDistanceCompensation += oldOriginOffset - newOriginOffset;
+		ApplyPlacementRotationFromWheel(mouseButtonEvent);
 	}
 
 	private float GetSnappedRotationOffset(float currentOffset, int wheelDirection) {
@@ -216,6 +178,153 @@ public partial class ObjectPlacementManager : Node {
 		if(PlaceStateMachine.CurrentState == PlaceState.FindingPlacableLocation || PlaceStateMachine.CurrentState == PlaceState.Placable) {
 			PlaceStateMachine.TransitionTo(PlaceState.Idle);
 		}
+	}
+
+	public bool BeginExternalPlacementPreview(string itemId) {
+		if(!Initalized || !IsPlaceable(itemId)) {
+			return false;
+		}
+		CurrentPlacingItemId = itemId;
+		CurrentPlacingRotationOffsetY = 0.0f;
+		PlacementStartRotationOffsetY = 0.0f;
+		CurrentPlacingDistanceCompensation = 0.0f;
+		CurrentSurfaceObjectId = null;
+		CurrentWallAnchorId = null;
+		CurrentWallNormal = Vector3.Forward;
+		RefreshPlacementAreaShapeTemplates();
+		ExternalPreviewActive = true;
+		return true;
+	}
+
+	public void EndExternalPlacementPreview() {
+		ExternalPreviewActive = false;
+		CurrentPlacingDistanceCompensation = 0.0f;
+		CurrentSurfaceObjectId = null;
+		CurrentWallAnchorId = null;
+		CurrentWallNormal = Vector3.Forward;
+		CurrentPlacementAreaShapes.Clear();
+	}
+
+	public bool TryGetExternalPlacementPose(out Vector3 position, out Vector3 rotation, out bool isValid) {
+		position = Vector3.Zero;
+		rotation = Vector3.Zero;
+		isValid = false;
+		if(!ExternalPreviewActive || !Initalized || Player == null || string.IsNullOrWhiteSpace(CurrentPlacingItemId)) {
+			return false;
+		}
+		position = GetPositionAtMouseCursor(out bool surfaceValid);
+		rotation = GetAdjustedPlacementRotation(Player, position);
+		isValid = surfaceValid && IsPlacementAreaClear(position, rotation);
+		return true;
+	}
+
+	private Vector3 GetPositionAtMouseCursor(out bool success) {
+		success = false;
+		CurrentSurfaceObjectId = null;
+		CurrentWallAnchorId = null;
+		if(GameManager == null) {
+			return Vector3.Zero;
+		}
+
+		Viewport? viewport = GameManager.GetViewport();
+		Camera3D? camera = viewport?.GetCamera3D();
+		if(viewport == null || camera == null || camera.GetWorld3D() == null || !GodotObject.IsInstanceValid(Player)) {
+			return Vector3.Zero;
+		}
+
+		Vector2 mousePosition = viewport.GetMousePosition();
+		Vector3 origin = camera.ProjectRayOrigin(mousePosition);
+		Vector3 to = origin + (camera.ProjectRayNormal(mousePosition) * RayLength);
+
+		PhysicsDirectSpaceState3D spaceState = camera.GetWorld3D().DirectSpaceState;
+		PhysicsRayQueryParameters3D query = PhysicsRayQueryParameters3D.Create(origin, to);
+		query.CollideWithAreas = false;
+		query.Exclude = new Godot.Collections.Array<Rid> { Player!.GetRid() };
+		Godot.Collections.Dictionary result = spaceState.IntersectRay(query);
+		if(result.Count == 0 || !result.ContainsKey("position") || !result.ContainsKey("normal")) {
+			return Vector3.Zero;
+		}
+
+		Vector3 hitPosition = (Vector3) result["position"];
+		Vector3 hitNormal = ((Vector3) result["normal"]).Normalized();
+		Node? colliderNode = result.ContainsKey("collider") ? result["collider"].AsGodotObject() as Node : null;
+
+		if(IsCurrentPlacingItemWallObject()) {
+			if(!TryGetWallAnchorIdFromCollider(colliderNode, out string wallAnchorId)) {
+				return hitPosition;
+			}
+			CurrentWallNormal = hitNormal;
+			CurrentWallAnchorId = wallAnchorId;
+			success = true;
+			return hitPosition;
+		}
+
+		if(hitNormal.Y < MinPlaceSurfaceNormalY) {
+			return hitPosition;
+		}
+
+		ObjectNode? surfaceObjectNode = FindAncestorObjectNode(colliderNode);
+		if(surfaceObjectNode != null) {
+			ItemDefinition? surfaceDefinition = DatabaseManager.Instance.GetItemDefinitionById(surfaceObjectNode.Data.ItemId);
+			if(surfaceDefinition?.Can_Object_Stack != true) {
+				return hitPosition;
+			}
+			CurrentSurfaceObjectId = surfaceObjectNode.Data.Id;
+		}
+
+		if(IsPlacementObstructedByWall(Player!, hitPosition)) {
+			return hitPosition;
+		}
+
+		success = true;
+		return hitPosition;
+	}
+
+	public void HandleExternalPlacementWheelInput(InputEvent @event) {
+		if(!ExternalPreviewActive || !Initalized || Player == null || !GodotObject.IsInstanceValid(Player)) {
+			return;
+		}
+		if(@event is not InputEventMouseButton mouseButtonEvent || !mouseButtonEvent.Pressed) {
+			return;
+		}
+
+		ApplyPlacementRotationFromWheel(mouseButtonEvent);
+	}
+
+	private void ApplyPlacementRotationFromWheel(InputEventMouseButton mouseButtonEvent) {
+		int wheelDirection = 0;
+		if(mouseButtonEvent.ButtonIndex == MouseButton.WheelUp) {
+			wheelDirection = -1;
+		}
+		else if(mouseButtonEvent.ButtonIndex == MouseButton.WheelDown) {
+			wheelDirection = 1;
+		}
+		if(wheelDirection == 0 || IsCurrentPlacingItemWallObject()) {
+			return;
+		}
+
+		Vector3 playerForward = Player!.GlobalBasis.Z;
+		playerForward.Y = 0;
+		if(playerForward.LengthSquared() < 0.0001f) {
+			playerForward = Vector3.Forward;
+		}
+		playerForward = playerForward.Normalized();
+
+		Vector3 oldRotation = GetAdjustedPlacementRotation(Player, CurrentPlacingPosition);
+		float oldOriginOffset = GetPlacementOriginOffset(playerForward, oldRotation);
+		float oldRotationOffset = CurrentPlacingRotationOffsetY;
+		bool middleMouseHeld = Input.IsMouseButtonPressed(MouseButton.Middle);
+		if(middleMouseHeld) {
+			CurrentPlacingRotationOffsetY = oldRotationOffset + (wheelDirection * PlacementFineRotationStepRadians);
+		}
+		else {
+			CurrentPlacingRotationOffsetY = GetSnappedRotationOffset(oldRotationOffset, wheelDirection);
+		}
+		CurrentPlacingRotationOffsetY = Mathf.Wrap(CurrentPlacingRotationOffsetY, -Mathf.Pi, Mathf.Pi);
+
+		Vector3 newRotation = GetAdjustedPlacementRotation(Player, CurrentPlacingPosition);
+		float newOriginOffset = GetPlacementOriginOffset(playerForward, newRotation);
+		CurrentPlacingDistanceCompensation += oldOriginOffset - newOriginOffset;
 	}
 
 	public void OnHotbarSlotSelected(ItemSlot selectedSlot) {

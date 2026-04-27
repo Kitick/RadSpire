@@ -10,8 +10,11 @@ public partial class ObjectPlacementUI : Node {
 
 	private static readonly Color ValidPreviewColor = new Color(0.45f, 0.7f, 1.0f, 0.55f);
 	private static readonly Color InvalidPreviewColor = new Color(1.0f, 0.2f, 0.2f, 0.65f);
+	private static readonly Color BuildValidPreviewColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+	private static readonly Color BuildInvalidPreviewColor = new Color(1.0f, 0.2f, 0.2f, 0.65f);
 
 	private Node3D? PreviewNode;
+	private readonly Dictionary<MeshInstance3D, Material?> PreviousBuildOutlineByMesh = [];
 	private ObjectPlacementManager? ObjectPlacementManager;
 	private bool IsInitialized;
 	public bool HasPreview => PreviewNode != null && GodotObject.IsInstanceValid(PreviewNode);
@@ -88,11 +91,37 @@ public partial class ObjectPlacementUI : Node {
 		return true;
 	}
 
+	public bool BeginBuildDragPreview(string itemId) {
+		EndPreview();
+		ItemDefinition? itemDefinition = DatabaseManager.Instance.GetItemDefinitionById(itemId);
+		if(itemDefinition?.ItemScene == null) {
+			Log.Error($"BeginBuildDragPreview failed: ItemScene missing for ItemId '{itemId}'.");
+			return false;
+		}
+
+		Node3D preview = itemDefinition.ItemScene.Instantiate<Node3D>();
+		PreparePreviewNode(preview);
+		ApplyPreviewTint(preview, BuildInvalidPreviewColor);
+		MeshOutlineOverlayUtility.ApplyOutline(preview, PreviousBuildOutlineByMesh);
+		AddChild(preview);
+		PreviewNode = preview;
+		return true;
+	}
+
+	public void UpdateBuildDragPreview(Vector3 position, Vector3 rotation, bool isValid) {
+		if(!HasPreview) {
+			return;
+		}
+		PreviewNode!.GlobalPosition = position;
+		PreviewNode.GlobalRotation = rotation;
+		ApplyPreviewTint(PreviewNode, isValid ? BuildValidPreviewColor : BuildInvalidPreviewColor);
+	}
+
 	public void EndPreview() {
 		if(HasPreview) {
 			PreviewNode!.QueueFree();
 		}
-
+		MeshOutlineOverlayUtility.RestoreOutline(PreviousBuildOutlineByMesh);
 		PreviewNode = null;
 	}
 

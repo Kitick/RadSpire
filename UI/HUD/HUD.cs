@@ -27,6 +27,7 @@ public sealed partial class HUD : Control {
 	[Export] private CraftingUI CraftingUI = null!;
 	[Export] public InventoryItemInformationUI InventoryItemInformationUI = null!;
 	[Export] private InventoryUI Chest = null!;
+	[Export] private InventoryUI BuildUI = null!;
 	[Export] private QuestLog QuestLog = null!;
 	[Export] public Hotbar Hotbar = null!;
 	[Export] private RespawnMenu RespawnMenu = null!;
@@ -58,6 +59,7 @@ public sealed partial class HUD : Control {
 	public event Action? RespawnRequested;
 	public event Action<bool>? InventoryRequested;
 	public event Action<bool>? ChestRequested;
+	public event Action<bool>? BuildUIRequested;
 	public event Action<string>? SaveRequested;
 
 	public void Init(Player player, StateMachine<MenuState> stateMachine, QuestManager questManager) {
@@ -69,6 +71,7 @@ public sealed partial class HUD : Control {
 		StateMachineRef = stateMachine;
 		Inventory.Initialize(player.Inventory, player);
 		Hotbar.Initialize(player.Hotbar, player);
+		BuildUI.Visible = false;
 		InventoryItemInformationUI.SetUpInventoryItemInformationUI();
 		ConfigureStateMachine(stateMachine);
 		QuestLog?.Init(questManager);
@@ -100,6 +103,7 @@ public sealed partial class HUD : Control {
 		RespawnRequested = null;
 		InventoryRequested = null;
 		ChestRequested = null;
+		BuildUIRequested = null;
 		SaveRequested = null;
 	}
 
@@ -124,6 +128,8 @@ public sealed partial class HUD : Control {
 			RespawnMenu.CloseMenu();
 			Inventory.Visible = false;
 			CraftingUI.Visible = false;
+			BuildUI.Visible = false;
+			BuildUIRequested?.Invoke(false);
 			InventoryItemInformationUI.Visible = false;
 		});
 
@@ -168,6 +174,17 @@ public sealed partial class HUD : Control {
 			InventoryItemInformationUI.Visible = false;
 			Hotbar.Visible = true;
 			InventoryRequested?.Invoke(false);
+		});
+
+		// Build state
+		stateMachine.OnEnter(MenuState.Build, () => {
+			BuildUI.Visible = true;
+			Hotbar.Visible = true;
+			BuildUIRequested?.Invoke(true);
+		});
+		stateMachine.OnExit(MenuState.Build, () => {
+			BuildUI.Visible = false;
+			BuildUIRequested?.Invoke(false);
 		});
 
 		// Host state
@@ -299,6 +316,26 @@ public sealed partial class HUD : Control {
 
 		if(StateMachineRef.CurrentState != MenuState.Chest) {
 			ToggleChest();
+		}
+	}
+
+	public InventoryUI GetBuildUI() => BuildUI;
+
+	public void OpenBuildUI() {
+		if(!StateMachineRef.IsSettled) {
+			StateMachineRef.Start(MenuState.Game);
+		}
+		if(StateMachineRef.CurrentState != MenuState.Build) {
+			StateMachineRef.TransitionTo(MenuState.Build);
+		}
+	}
+
+	public void CloseBuildUI() {
+		if(!StateMachineRef.IsSettled) {
+			return;
+		}
+		if(StateMachineRef.CurrentState == MenuState.Build) {
+			StateMachineRef.TransitionTo(MenuState.Game);
 		}
 	}
 }
