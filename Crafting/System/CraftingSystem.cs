@@ -42,7 +42,7 @@ public static class CraftingSystem {
 		return CraftResult.Ok(outputs);
 	}
 
-	private static int CountAvailable(string itemId, params IEnumerable<Inventory> sources) {
+	public static int CountAvailable(string itemId, IEnumerable<Inventory> sources) {
 		return sources.SelectMany(inv => inv.ItemSlots)
 			.Where(slot => !slot.IsEmpty() && slot.Item!.Id == itemId)
 			.Sum(slot => slot.Quantity);

@@ -10,7 +10,7 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6418f"]
 
-[node name="Crafting" type="Control" unique_id=2111148912 node_paths=PackedStringArray("CraftableDropdown", "RequirementsList", "CraftButton", "QuantityDisplay", "PosButton", "NegButton", "MainBackground", "LightBackground")]
+[node name="Crafting" type="Control" unique_id=2111148912 node_paths=PackedStringArray("CraftableDropdown", "RequirementsList", "CraftButton", "QuantityDisplay", "PosButton", "NegButton", "MainBackground", "LightBackground", "ItemName", "ItemIcon")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -19,13 +19,15 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_8hsgg")
 CraftableDropdown = NodePath("MainBackground/LightBackground/CraftableOptionButton")
-RequirementsList = NodePath("MainBackground/LightBackground/ItemsList")
+RequirementsList = NodePath("MainBackground/LightBackground/ListBackground/ItemsList")
 CraftButton = NodePath("MainBackground/LightBackground/Craft/CraftButton")
 QuantityDisplay = NodePath("MainBackground/LightBackground/Craft/QuantityInput")
 PosButton = NodePath("MainBackground/LightBackground/Craft/PosButton")
 NegButton = NodePath("MainBackground/LightBackground/Craft/NegButton")
 MainBackground = NodePath("MainBackground")
 LightBackground = NodePath("MainBackground/LightBackground")
+ItemName = NodePath("MainBackground/LightBackground/SelectedItem/ItemName")
+ItemIcon = NodePath("MainBackground/LightBackground/SelectedItem/ItemIcon")
 metadata/_edit_horizontal_guides_ = [0.0]
 
 [node name="MainBackground" type="ColorRect" parent="." unique_id=29192493]
@@ -108,43 +110,41 @@ anchor_bottom = 1.0
 texture = ExtResource("2_6418f")
 expand_mode = 2
 
-[node name="ItemsList" type="ItemList" parent="MainBackground/LightBackground" unique_id=1146406095]
+[node name="ListBackground" type="ColorRect" parent="MainBackground/LightBackground" unique_id=1517731112]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.1
 anchor_top = 0.4
 anchor_right = 0.9
 anchor_bottom = 0.7
+color = Color(0.36, 0.32568002, 0.31320003, 1)
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MainBackground/LightBackground/ItemsList" unique_id=1458284799]
+[node name="ItemsList" type="VBoxContainer" parent="MainBackground/LightBackground/ListBackground" unique_id=1146406095]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.041
-anchor_top = 0.034
-anchor_right = 0.45700002
-anchor_bottom = 0.14600001
-offset_left = -0.0720005
-offset_top = 0.021613598
-offset_right = -0.14401245
-offset_bottom = 0.033597946
+offset_left = 10.0
+offset_top = 10.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MainBackground/LightBackground/ListBackground/ItemsList" unique_id=1458284799]
+layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="QuantityNeed" type="Label" parent="MainBackground/LightBackground/ItemsList/HBoxContainer" unique_id=321654156]
+[node name="QuantityNeed" type="Label" parent="MainBackground/LightBackground/ListBackground/ItemsList/HBoxContainer" unique_id=321654156]
 layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxEmpty_egpdf")
 text = "2x"
 
-[node name="MaterialIcon" type="TextureRect" parent="MainBackground/LightBackground/ItemsList/HBoxContainer" unique_id=210631533]
+[node name="MaterialIcon" type="TextureRect" parent="MainBackground/LightBackground/ListBackground/ItemsList/HBoxContainer" unique_id=210631533]
 layout_mode = 2
 texture = ExtResource("2_ccfa1")
 stretch_mode = 3
 
-[node name="MaterialName" type="Label" parent="MainBackground/LightBackground/ItemsList/HBoxContainer" unique_id=603776022]
+[node name="MaterialName" type="Label" parent="MainBackground/LightBackground/ListBackground/ItemsList/HBoxContainer" unique_id=603776022]
 layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxEmpty_ccfa1")
 text = "Material Name"
 
-[node name="QuantityHave" type="Label" parent="MainBackground/LightBackground/ItemsList/HBoxContainer" unique_id=852521692]
+[node name="QuantityHave" type="Label" parent="MainBackground/LightBackground/ListBackground/ItemsList/HBoxContainer" unique_id=852521692]
 layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxEmpty_6418f")
 text = "(3)"

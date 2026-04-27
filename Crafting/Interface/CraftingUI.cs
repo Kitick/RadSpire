@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Crafting;
 using Godot;
 using InventorySystem;
+using ItemSystem;
 using Root;
 using Services;
 
@@ -12,16 +13,15 @@ public sealed partial class CraftingUI : Control {
 	private static readonly LogService Log = new(nameof(CraftingUI), enabled: true);
 
 	[Export] private OptionButton CraftableDropdown = null!;
-	[Export] private ItemList RequirementsList = null!;
+	[Export] private VBoxContainer RequirementsList = null!;
 	[Export] private Button CraftButton = null!;
 	[Export] private LineEdit QuantityDisplay = null!;
 	[Export] private Button PosButton = null!;
 	[Export] private Button NegButton = null!;
 	[Export] private Control MainBackground = null!;
 	[Export] private Control LightBackground = null!;
-
-	private readonly List<CraftingRecipe> CraftableRecipes = [];
-	private readonly List<CraftingRecipe> NonCraftableRecipes = [];
+	[Export] private Label ItemName = null!;
+	[Export] private TextureRect ItemIcon = null!;
 
 	public readonly List<Inventory> Inventories = [];
 
@@ -56,33 +56,31 @@ public sealed partial class CraftingUI : Control {
 	}
 
 	private void OnCraftableSelected() {
-		SelectedRecipe = CraftableDropdown.GetSelectedItem(CraftableRecipes);
+		SelectedRecipe = CraftableDropdown.GetSelectedItem(Recipes.AllRecipes);
+		UpdateSelectedItem();
 		UpdateSelectedRequirements();
 	}
 
 	public void RefreshUI() {
-		CraftableRecipes.Clear();
-		NonCraftableRecipes.Clear();
+		CraftableDropdown.Populate(Recipes.AllRecipes);
 
-		foreach(CraftingRecipe recipe in Recipes.AllRecipes) {
-			if(CraftingSystem.CanCraft(recipe, Inventories, out _)) {
-				CraftableRecipes.Add(recipe);
-			} else {
-				NonCraftableRecipes.Add(recipe);
-			}
-		}
+		SelectedRecipe = Recipes.AllRecipes.Length > 0 ? Recipes.AllRecipes[0] : null;
 
-		CraftableDropdown.Populate(CraftableRecipes);
-
-		if(CraftableRecipes.Count > 0) {
-			SelectedRecipe = CraftableRecipes[0];
-		} else if(NonCraftableRecipes.Count > 0) {
-			SelectedRecipe = NonCraftableRecipes[0];
-		} else {
-			SelectedRecipe = null;
-		}
-
+		UpdateSelectedItem();
 		RefreshQuantity();
+	}
+
+	private void UpdateSelectedItem() {
+		if(SelectedRecipe == null) {
+			ItemName.Text = "";
+			ItemIcon.Texture = null;
+			return;
+		}
+
+		RecipeItem output = SelectedRecipe.Outputs[0];
+		ItemDefinition? def = DatabaseManager.Instance.GetItemDefinitionById(output.ItemId);
+		ItemName.Text = def?.Name ?? output.ItemId;
+		ItemIcon.Texture = def?.IconTexture;
 	}
 
 	private void RefreshQuantity() {
@@ -90,22 +88,54 @@ public sealed partial class CraftingUI : Control {
 		UpdateSelectedRequirements();
 	}
 
-	private void UpdateRequirementsList(CraftingRecipe recipe) {
-		RequirementsList.Clear();
-		if(recipe.Inputs == null) { return; }
-
-		foreach(RecipeItem ingredient in recipe.Inputs) {
-			Log.Info($"Ingredient: {ingredient.ItemId} x {ingredient.Quantity}");
-			int totalCost = ingredient.Quantity * Quantity;
-			RequirementsList.AddItem($"{ingredient.ItemId} x {totalCost}");
-		}
-	}
+	private static readonly StyleBoxEmpty EmptyStyle = new();
 
 	private void UpdateSelectedRequirements() {
-		RequirementsList.Clear();
+		RequirementsList.AddThemeConstantOverride("separation", 2);
 
-		if(SelectedRecipe != null) {
-			UpdateRequirementsList(SelectedRecipe);
+		foreach(Node child in RequirementsList.GetChildren()) {
+			child.QueueFree();
+		}
+
+		if(SelectedRecipe == null) { return; }
+
+		foreach(RecipeItem ingredient in SelectedRecipe.Inputs) {
+			int need = ingredient.Quantity * Quantity;
+			int have = CraftingSystem.CountAvailable(ingredient.ItemId, Inventories);
+			bool sufficient = have >= need;
+			Color color = sufficient ? Colors.White : Colors.Red;
+
+			ItemDefinition? def = DatabaseManager.Instance.GetItemDefinitionById(ingredient.ItemId);
+			string name = def?.Name ?? ingredient.ItemId;
+			Texture2D? icon = def?.IconTexture;
+
+			HBoxContainer row = new();
+			row.AddThemeConstantOverride("separation", 10);
+
+			Label needLabel = new() { Text = $"{need}x" };
+			needLabel.AddThemeStyleboxOverride("normal", EmptyStyle);
+			needLabel.AddThemeColorOverride("font_color", Colors.White);
+
+			TextureRect iconRect = new() {
+				Texture = icon,
+				CustomMinimumSize = new Vector2(24, 24),
+				StretchMode = TextureRect.StretchModeEnum.KeepAspectCentered,
+				ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize,
+			};
+
+			Label nameLabel = new() { Text = name };
+			nameLabel.AddThemeStyleboxOverride("normal", EmptyStyle);
+			nameLabel.AddThemeColorOverride("font_color", Colors.White);
+
+			Label haveLabel = new() { Text = $"({have})", HorizontalAlignment = HorizontalAlignment.Center };
+			haveLabel.AddThemeStyleboxOverride("normal", EmptyStyle);
+			haveLabel.AddThemeColorOverride("font_color", color);
+
+			row.AddChild(needLabel);
+			row.AddChild(iconRect);
+			row.AddChild(nameLabel);
+			row.AddChild(haveLabel);
+			RequirementsList.AddChild(row);
 		}
 	}
 
