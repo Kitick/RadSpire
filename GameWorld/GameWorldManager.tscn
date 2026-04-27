@@ -1,0 +1,8 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://GameWorld/GameWorldManager.cs" id="1_gameworldmanager"]
+[ext_resource type="PackedScene" path="res://GameWorld/Outside.tscn" id="2_mainworld"]
+
+[node name="GameWorldManager" type="Node"]
+script = ExtResource("1_gameworldmanager")
+MainWorldScene = ExtResource("2_mainworld")

@@ -7,6 +7,7 @@ using GameWorld;
 using Godot;
 using InventorySystem;
 using ItemSystem;
+using ItemSystem.WorldObjects.House;
 using ItemSystem.WorldObjects.Hierarchy;
 using Services;
 
@@ -21,10 +22,11 @@ public partial class WorldObjectManager : Node, ISaveable<WorldObjectManagerData
 	private readonly Dictionary<string, Node> AnchorRegistry = new();
 	private readonly HashSet<string> MissingAnchorWarnings = new();
 	private bool MissingParentAnchorWarningLogged;
+	private GameWorldManager? GameWorldManager;
 	private GameManager? GameManager;
 	private bool SetUpComplete = false;
 
-	public void SetUpWorldObjectManager(Node parentNode, Node gameWorldNode, GameManager? gameManager) {
+	public void SetUpWorldObjectManager(Node parentNode, Node gameWorldNode, GameWorldManager? gameWorldManager, GameManager? gameManager) {
 		if(SetUpComplete) {
 			Log.Warn("SetUpWorldObjectManager called more than once. Ignoring duplicate call.");
 			return;
@@ -40,6 +42,7 @@ public partial class WorldObjectManager : Node, ISaveable<WorldObjectManagerData
 		GameWorldNode = gameWorldNode;
 		WorldObjectParentNode = parentNode;
 		BuildAnchorRegistry(GameWorldNode);
+		GameWorldManager = gameWorldManager;
 		GameManager = gameManager;
 		List<WorldObjectSpawnPoint> spawnPoints = GetSpawnPointsRecursive(GameWorldNode);
 		Dictionary<string, (string SpawnPointName, Godot.Collections.Array<WorldObjectSpawnComponentDefinition> ComponentDefinitions)> pendingSpawnComponents = new();
@@ -289,13 +292,13 @@ public partial class WorldObjectManager : Node, ISaveable<WorldObjectManagerData
 	}
 
 	private void InitializeObjectComponents(Object obj) {
-		if(GameManager == null) {
+		if(GameWorldManager == null || GameManager == null) {
 			return;
 		}
 
 		if(obj.ComponentDictionary.Has<DoorComponent>()) {
 			DoorComponent doorComponent = obj.ComponentDictionary.Get<DoorComponent>();
-			doorComponent.Initialize(GameManager);
+			doorComponent.Initialize(GameWorldManager, GameManager);
 		}
 	}
 

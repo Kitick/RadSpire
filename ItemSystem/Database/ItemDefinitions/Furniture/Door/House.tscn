@@ -3,18 +3,12 @@
 [ext_resource type="PackedScene" uid="uid://cagvmojl3m2yq" path="res://ItemSystem/Database/ItemDefinitions/Furniture/Door/House_01_full.fbx" id="1_n86oa"]
 [ext_resource type="Script" uid="uid://klsonhpw4auo" path="res://ItemSystem/WorldObjects/ObjectNode.cs" id="1_ts0mo"]
 [ext_resource type="PackedScene" uid="uid://b7gv62rlbjt5l" path="res://ItemSystem/WorldObjects/SpawnPoint/WorldObjectSpawnPoint.tscn" id="2_lukph"]
-[ext_resource type="Script" uid="uid://cvyjpeuc2pm1x" path="res://ItemSystem/WorldObjects/SpawnPoint/Components/WorldObjectSpawnComponentDefinition.cs" id="3_ww6q7"]
-[ext_resource type="Script" uid="uid://c2531e5uu51o6" path="res://ItemSystem/WorldObjects/SpawnPoint/Components/Door/WorldObjectDoorSpawnDefinition.cs" id="5_pt0sl"]
-[ext_resource type="PackedScene" uid="uid://c3squ8yof2me2" path="res://ItemSystem/WorldObjects/House/Scenes/Room.tscn" id="5_ts0mo"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_lukph"]
+size = Vector3(5.9861236, 5.585722, 4.9250736)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_xscly"]
-size = Vector3(1.3692989, 1.9649582, 1.6255875)
-
-[sub_resource type="Resource" id="Resource_dpnfh"]
-script = ExtResource("5_pt0sl")
-SpawnPositionMarker = Vector3(2.6152735, 1.8797724, 6.2099457)
-BaseScene = ExtResource("5_ts0mo")
-metadata/_custom_type_script = "uid://c2531e5uu51o6"
+size = Vector3(5.9861236, 5.353408, 4.9250736)
 
 [node name="House" type="Node3D" unique_id=1154107609]
 script = ExtResource("1_ts0mo")
@@ -24,15 +18,14 @@ script = ExtResource("1_ts0mo")
 [node name="HouseStaticBody3D" type="StaticBody3D" parent="House_01_full" unique_id=678640799]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="House_01_full/HouseStaticBody3D" unique_id=1578719940]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.038345337, 2.7919006, 0.03173828)
-shape = SubResource("BoxShape3D_xscly")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0059859753, 2.807145, -0.04136944)
+shape = SubResource("BoxShape3D_lukph")
 
 [node name="DoorArea3D" type="Area3D" parent="House_01_full" unique_id=1589183624]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="House_01_full/DoorArea3D" unique_id=83870563]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.528349, 1.2032783, 3.2003884)
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="House_01_full/DoorArea3D" unique_id=210995535]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0059859753, 2.9233022, -0.04136944)
 shape = SubResource("BoxShape3D_xscly")
 
 [node name="WorldObjectSpawnPoint" parent="." unique_id=2064846928 instance=ExtResource("2_lukph")]
 ItemId = "House1"
-ComponentDefinitions = Array[ExtResource("3_ww6q7")]([SubResource("Resource_dpnfh")])

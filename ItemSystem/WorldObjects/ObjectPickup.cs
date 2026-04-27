@@ -37,7 +37,12 @@ public partial class ObjectPickup : Node3D {
 
 	public void HandleBodyEntered(Node objectNode) {
 		ObjectNode? objNode = FindAncestorObjectNode(objectNode);
-		if(objNode == null || objNode.Data == null) {
+		if(objNode == null) {
+			return;
+		}
+		if(objNode.Data == null) {
+			// ObjectNode.Bind can happen just after overlap enters; retry next frame.
+			CallDeferred(nameof(HandleBodyEntered), objectNode);
 			return;
 		}
 		if(ObjectNodesInRange.ContainsKey(objNode.Data.Id)) {

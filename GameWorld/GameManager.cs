@@ -8,6 +8,7 @@ using Components;
 using Godot;
 using InventorySystem;
 using InventorySystem.Interface;
+using ItemSystem.WorldObjects.House;
 using QuestSystem;
 using Root;
 using Services;
@@ -17,28 +18,26 @@ using UI.HUD;
 public sealed partial class GameManager : Node {
 	private static readonly LogService Log = new(nameof(GameManager), enabled: true);
 
+	[Export] private WorldEnvironment? WorldEnvironment;
+
 	[ExportCategory("Scene References")]
 	[Export] private PackedScene CameraScene = null!;
 	[Export] private PackedScene HUDScene = null!;
 	[Export] private PackedScene PlayerScene = null!;
 	[Export] private PackedScene EnemyScene = null!;
+	[Export] private PackedScene GameWorldManagerScene = null!;
 	[Export] private PackedScene NPCScene = null!;
-
-	[ExportCategory("Worlds")]
-	[Export] private Outside OutsideWorld = null!;
-	[Export] private PackedScene RoomScene = null!;
+	[Export] private Node WorldContentRoot = null!;
 
 	private readonly List<Enemy> SpawnedEnemies = [];
 	private readonly List<NPC> SpawnedNPCs = [];
-
-	private Room? ActiveRoom;
-	private Vector3 OutsideReturnPosition;
 
 	private readonly KeyInput KeyInput = new();
 	private readonly QuestManager QuestManager = new();
 	private CameraRig CameraRig = null!;
 	private Player? LocalPlayer;
 	private HUD? HUD;
+	private GameWorldManager? WorldManager;
 	public Action? MainMenuRequested;
 
 	public enum MenuState { Game, Paused, Settings, Inventory, Chest, Host, Death }
@@ -46,20 +45,53 @@ public sealed partial class GameManager : Node {
 
 	private string? LoadFile;
 	private readonly bool Won = false;
+	private Dictionary<string, Vector3> MainWorldReturnPositions = [];
+	private Vector3? LastKnownMainWorldPlayerPosition;
 
 	private const int SpawnHeight = 5;
 	private const int SpawnRadius = 10;
 
+	[ExportCategory("Spawn Points")]
+	[Export] private Marker3D? PlayerSpawnMarker;
+	[Export] private Marker3D? NPCSpawnMarker;
+	[Export] private Godot.Collections.Array<Marker3D> EnemySpawnPoints = [];
+
 	public override void _Ready() {
-		this.ValidateExports();
 		CameraRig = this.AddScene<CameraRig>(CameraScene);
-		DisplaySettings.SetWorldEnvironment(OutsideWorld.WorldEnvironment);
-		OutsideWorld.WorldObjectManager?.SetUpWorldObjectManager(OutsideWorld, OutsideWorld, this);
-		OutsideWorld.Item3DIconManager?.SetUpItem3DIconManager(OutsideWorld);
+		WorldManager = this.AddScene<GameWorldManager>(GameWorldManagerScene);
+		WorldManager.Initialize(WorldContentRoot, this);
+		RefreshWorldReferences();
+		DisplaySettings.SetWorldEnvironment(WorldEnvironment);
 		AddChild(QuestManager);
 		ConfigureStateMachine();
+
 		StartGame();
 		ConnectLocationTriggers();
+	}
+
+	private Node? GetActiveWorldNode() {
+		if(WorldManager?.CurrentGameWorld?.CurrentWorldNode != null && IsInstanceValid(WorldManager.CurrentGameWorld.CurrentWorldNode)) {
+			return WorldManager.CurrentGameWorld.CurrentWorldNode;
+		}
+
+		return null;
+	}
+
+	private void RefreshWorldReferences() {
+		Node? activeWorld = GetActiveWorldNode();
+		if(activeWorld == null) {
+			return;
+		}
+
+		if(activeWorld is not Outside outsideWorld) {
+			WorldEnvironment = activeWorld.GetNodeOrNull<WorldEnvironment>("WorldEnvironment");
+			return;
+		}
+
+		WorldEnvironment = outsideWorld.WorldEnvironment;
+		PlayerSpawnMarker = outsideWorld.PlayerSpawnMarker;
+		NPCSpawnMarker = outsideWorld.NPCSpawnMarker;
+		EnemySpawnPoints = outsideWorld.EnemySpawnPoints;
 	}
 
 	public override void _ExitTree() => DisplaySettings.SetWorldEnvironment(null);
@@ -74,12 +106,18 @@ public sealed partial class GameManager : Node {
 					killed += 1;
 				}
 			}
+
 			if(killed == SpawnedEnemies.Count) { HUD?.Win(); }
 		}
 
 		float dt = (float) delta;
+
 		KeyInput.Update(CameraRig);
 		LocalPlayer.Update(dt, KeyInput);
+
+		if(WorldManager != null && WorldManager.CurrentGameWorldId == WorldManager.MainGameWorldId) {
+			LastKnownMainWorldPlayerPosition = LocalPlayer.GlobalPosition;
+		}
 	}
 
 	private void ConfigureStateMachine() {
@@ -89,44 +127,50 @@ public sealed partial class GameManager : Node {
 	}
 
 	private void SpawnNPC() {
-		if(!IsInstanceValid(OutsideWorld.NPCSpawnMarker)) {
-			Log.Warn("NPCSpawnMarker not set on OutsideWorld. Skipping NPC spawn.");
+		if(!IsInstanceValid(NPCSpawnMarker)) {
+			Log.Warn("NPCSpawn marker not found in active world. Skipping NPC spawn.");
 			return;
 		}
 		NPC npc = this.AddScene<NPC>(NPCScene);
-		npc.GlobalPosition = OutsideWorld.NPCSpawnMarker.GlobalPosition;
+		npc.GlobalPosition = NPCSpawnMarker.GlobalPosition;
 		npc.Init(QuestManager);
-		SubscribeToEvents(npc);
+		SubscribeToNPCEvents(npc);
 		SpawnedNPCs.Add(npc);
 	}
 
 	private void SpawnLocalPlayer() {
-		if(!IsInstanceValid(OutsideWorld.PlayerSpawnMarker)) {
-			Log.Error("PlayerSpawnMarker not set on OutsideWorld. Cannot spawn player.");
+		if(!IsInstanceValid(PlayerSpawnMarker)) {
+			Log.Error("PlayerSpawn marker not found in active world. Cannot spawn player.");
 			return;
 		}
 		LocalPlayer = this.AddScene<Player>(PlayerScene);
-		LocalPlayer.GlobalPosition = OutsideWorld.PlayerSpawnMarker.GlobalPosition;
+		LocalPlayer.GlobalPosition = PlayerSpawnMarker.GlobalPosition;
+
 		LocalPlayer.WhenDead(() => StateMachine.TransitionTo(MenuState.Death));
-		if(OutsideWorld.WorldObjectManager != null) {
-			LocalPlayer.ConfigureObjectPickup(OutsideWorld.WorldObjectManager);
+
+		if(WorldManager?.WorldObjectManager != null) {
+			LocalPlayer.ConfigureObjectPickup(WorldManager.WorldObjectManager);
 		}
+		WorldManager?.BindPlayer(LocalPlayer);
+
 		CameraRig.Target = LocalPlayer;
 		UpdateEnemyTargets(LocalPlayer);
+
 		QuestManager.Init(LocalPlayer);
 		WireEnemyKillEvents();
+
 		AttachHUD();
-		LocalPlayer.ConfigureObjectPlacement(OutsideWorld.WorldObjectManager!, this, HUD!.Hotbar);
+		LocalPlayer.ConfigureObjectPlacement(WorldManager!.WorldObjectManager!, this, HUD!.Hotbar);
 	}
 
 	private void AttachHUD() {
 		HUD = HUDScene.Instantiate<HUD>();
-		AddChild(HUD);
 		SubscribeToEvents(HUD);
 		HUD.Init(LocalPlayer!, StateMachine, QuestManager);
 		Hotbar hotbar = HUD.Hotbar;
 		LocalPlayer!.UseItemComponent.UserHotbar = hotbar;
 		LocalPlayer.EquipItemComponent.Initalize(LocalPlayer, hotbar);
+		AddChild(HUD);
 	}
 
 	private void SubscribeToEvents(HUD hud) {
@@ -144,12 +188,12 @@ public sealed partial class GameManager : Node {
 		QuestManager.GameWon += OnGameWon;
 	}
 
-	private void OnQuestActivated(QuestID id) => Log.Info($"Quest activated: {id}");
+	private void OnQuestActivated(QuestID id) => HUD?.ShowQuestNotification($"Quest Started: {id}");
 	private void OnQuestCompleted(QuestID id) => HUD?.ShowQuestNotification($"Quest Completed: {id}");
-	private void OnStageAdvanced(int stage) => Log.Info($"Stage advanced to {stage}");
+	private void OnStageAdvanced(int stage) => HUD?.ShowQuestNotification($"Stage {stage} reached!");
 	private void OnGameWon() => HUD?.Win();
 
-	private void SubscribeToEvents(NPC npc) {
+	private void SubscribeToNPCEvents(NPC npc) {
 		npc.Talked += QuestManager.NotifyPlayerTalkedToNPC;
 		npc.InteractionPromptChanged += OnNPCInteractionPromptChanged;
 	}
@@ -170,6 +214,7 @@ public sealed partial class GameManager : Node {
 		InventoryData inventoryData = LocalPlayer.Inventory.Export();
 		InventoryData hotbarData = LocalPlayer.Hotbar.Export();
 
+		WorldManager?.UnbindPlayer(LocalPlayer);
 		LocalPlayer.QueueFree();
 		LocalPlayer = null;
 
@@ -179,11 +224,12 @@ public sealed partial class GameManager : Node {
 		LocalPlayer.Hotbar.Import(hotbarData);
 
 		StateMachine.TransitionTo(MenuState.Game);
+
 		Log.Info("Player respawned");
 	}
 
 	public bool SaveGame(string fileName) {
-		if(!IsInstanceValid(LocalPlayer) || !IsInstanceValid(CameraRig)) {
+		if(!IsInstanceValid(LocalPlayer) || !IsInstanceValid(CameraRig) || WorldManager == null) {
 			Log.Error("Cannot save game: game objects are not valid");
 			return false;
 		}
@@ -191,10 +237,14 @@ public sealed partial class GameManager : Node {
 		GameState data = new() {
 			Player = LocalPlayer.Export(),
 			CameraRig = CameraRig.Export(),
+			GameWorldManager = WorldManager.Export(),
+			MainWorldReturnPositions = new Dictionary<string, Vector3>(MainWorldReturnPositions),
+			LastKnownMainWorldPlayerPosition = LastKnownMainWorldPlayerPosition,
 			Progression = QuestManager.Export(),
 		};
 
 		data.Save(fileName);
+
 		Log.Info($"Game saved to '{fileName}'");
 		return true;
 	}
@@ -206,7 +256,8 @@ public sealed partial class GameManager : Node {
 
 		if(loadfile != null && !SaveService.Exists(loadfile)) {
 			Log.Error($"Cannot initialize game: save file '{loadfile}' does not exist");
-		} else {
+		}
+		else {
 			LoadFile = loadfile;
 		}
 	}
@@ -218,48 +269,105 @@ public sealed partial class GameManager : Node {
 		if(LoadFile != null) {
 			LoadData(LoadFile);
 			LoadFile = null;
+			return;
 		}
 	}
 
 	private void LoadData(string file) {
 		GameState data = SaveService.Load<GameState>(file);
+		MainWorldReturnPositions = data.MainWorldReturnPositions ?? new Dictionary<string, Vector3>();
+		LastKnownMainWorldPlayerPosition = data.LastKnownMainWorldPlayerPosition;
+
+		if(LocalPlayer != null) {
+			WorldManager?.UnbindPlayer(LocalPlayer);
+		}
 
 		LocalPlayer!.Import(data.Player);
 		CameraRig!.Import(data.CameraRig);
+		WorldManager!.Import(data.GameWorldManager);
 		QuestManager.Import(data.Progression);
+		RefreshWorldReferences();
+		DisplaySettings.SetWorldEnvironment(WorldEnvironment);
 
-		if(LocalPlayer != null && OutsideWorld.WorldObjectManager != null && HUD != null) {
-			LocalPlayer.ConfigureObjectPickup(OutsideWorld.WorldObjectManager);
-			LocalPlayer.ConfigureObjectPlacement(OutsideWorld.WorldObjectManager, this, HUD.Hotbar);
+		if(LocalPlayer != null && WorldManager.WorldObjectManager != null && HUD != null) {
+			LocalPlayer.ConfigureObjectPickup(WorldManager.WorldObjectManager);
+			LocalPlayer.ConfigureObjectPlacement(WorldManager.WorldObjectManager, this, HUD.Hotbar);
+			WorldManager.BindPlayer(LocalPlayer);
 		}
 	}
 
-	public void SwitchToBuilding(Vector3? spawnPosition = null) {
-		if(ActiveRoom != null) {
-			Log.Warn("SwitchToBuilding called but a room is already loaded.");
-			return;
+	public bool SwitchToGameWorld(string gameWorldId, Vector3? playerSpawnPosition = null) {
+		if(WorldManager == null) {
+			Log.Error("SwitchToGameWorld failed: GameWorldManager is not available.");
+			return false;
+		}
+		if(LocalPlayer == null || !IsInstanceValid(LocalPlayer)) {
+			Log.Error("SwitchToGameWorld failed: LocalPlayer is not available.");
+			return false;
+		}
+		if(HUD == null) {
+			Log.Error("SwitchToGameWorld failed: HUD is not available.");
+			return false;
 		}
 
-		OutsideReturnPosition = LocalPlayer!.GlobalPosition;
-		ActiveRoom = this.AddScene<Room>(RoomScene);
-
-		Vector3 targetPosition = spawnPosition ?? ActiveRoom.PlayerSpawnMarker.GlobalPosition;
-		LocalPlayer.GlobalPosition = targetPosition;
-		Log.Info($"Entered room. Player moved to {targetPosition}");
-	}
-
-	public void SwitchToOutside(Vector3? spawnPosition = null) {
-		if(ActiveRoom == null) {
-			Log.Warn("SwitchToOutside called but no room is loaded.");
-			return;
+		WorldManager.UnbindPlayer(LocalPlayer);
+		if(!WorldManager.SwitchToGameWorld(gameWorldId)) {
+			WorldManager.BindPlayer(LocalPlayer);
+			return false;
 		}
 
-		ActiveRoom.QueueFree();
-		ActiveRoom = null;
+		if(WorldManager.WorldObjectManager == null) {
+			Log.Error("SwitchToGameWorld failed: active world does not have a WorldObjectManager.");
+			WorldManager.BindPlayer(LocalPlayer);
+			return false;
+		}
 
-		LocalPlayer!.GlobalPosition = spawnPosition ?? OutsideReturnPosition;
-		Log.Info($"Returned to outside. Player moved to {LocalPlayer.GlobalPosition}");
+		LocalPlayer.ConfigureObjectPickup(WorldManager.WorldObjectManager);
+		LocalPlayer.ConfigureObjectPlacement(WorldManager.WorldObjectManager, this, HUD.Hotbar);
+		WorldManager.BindPlayer(LocalPlayer);
+		RefreshWorldReferences();
+		DisplaySettings.SetWorldEnvironment(WorldEnvironment);
+
+		if(playerSpawnPosition.HasValue) {
+			LocalPlayer.GlobalPosition = playerSpawnPosition.Value;
+		}
+
+		return true;
 	}
+
+	public bool TryRecordMainWorldReturnPosition(string destinationWorldId, Vector3 playerPosition) {
+		if(WorldManager == null) {
+			Log.Warn("Cannot record return position: GameWorldManager is not available.");
+			return false;
+		}
+		if(string.IsNullOrEmpty(destinationWorldId)) {
+			Log.Warn("Cannot record return position: destination world id is empty.");
+			return false;
+		}
+
+		string mainWorldId = WorldManager.MainGameWorldId;
+		if(string.IsNullOrEmpty(mainWorldId) || destinationWorldId == mainWorldId) {
+			return false;
+		}
+
+		MainWorldReturnPositions[destinationWorldId] = playerPosition;
+		LastKnownMainWorldPlayerPosition = playerPosition;
+		return true;
+	}
+
+	public Vector3? GetMainWorldReturnPosition(string sourceWorldId) {
+		if(string.IsNullOrEmpty(sourceWorldId)) {
+			return null;
+		}
+
+		if(MainWorldReturnPositions.TryGetValue(sourceWorldId, out Vector3 position)) {
+			return position;
+		}
+
+		return null;
+	}
+
+	public Vector3? GetLastKnownMainWorldPlayerPosition() => LastKnownMainWorldPlayerPosition;
 
 	public void ReturnToMainMenu() {
 		QuickSave();
@@ -274,23 +382,35 @@ public sealed partial class GameManager : Node {
 
 	private void CleanupGame() {
 		HUD = null;
+		MainWorldReturnPositions.Clear();
+		LastKnownMainWorldPlayerPosition = null;
+
+		if(IsInstanceValid(LocalPlayer)) {
+			WorldManager?.UnbindPlayer(LocalPlayer!);
+		}
 
 		Cleanup(LocalPlayer);
 		LocalPlayer = null;
 
-		foreach(NPC npc in SpawnedNPCs) { Cleanup(npc); }
+		foreach(NPC npc in SpawnedNPCs) {
+			Cleanup(npc);
+		}
 		SpawnedNPCs.Clear();
+
+		WorldManager?.Cleanup();
+		WorldManager = null;
 
 		foreach(Enemy enemy in SpawnedEnemies) { Cleanup(enemy); }
 		SpawnedEnemies.Clear();
 	}
 
 	private void SpawnEnemies() {
-		if(OutsideWorld.EnemySpawnPoints.Count == 0) {
-			Log.Info("No EnemySpawnPoints on OutsideWorld — skipping enemy spawn.");
+		RefreshWorldReferences();
+		if(EnemySpawnPoints.Count == 0) {
+			Log.Info("No EnemySpawnPoints assigned — skipping enemy spawn.");
 			return;
 		}
-		foreach(Marker3D spawnPoint in OutsideWorld.EnemySpawnPoints) {
+		foreach(Marker3D spawnPoint in EnemySpawnPoints) {
 			if(!IsInstanceValid(spawnPoint)) { continue; }
 
 			Enemy enemy = this.AddScene<Enemy>(EnemyScene);
@@ -328,7 +448,7 @@ public sealed partial class GameManager : Node {
 	}
 
 	private Vector3 RandomLocationNearPlayer() {
-		Vector3 center = IsInstanceValid(LocalPlayer) ? LocalPlayer.GlobalPosition : OutsideWorld.PlayerSpawnMarker?.GlobalPosition ?? Vector3.Zero;
+		Vector3 center = IsInstanceValid(LocalPlayer) ? LocalPlayer.GlobalPosition : PlayerSpawnMarker?.GlobalPosition ?? Vector3.Zero;
 		Vector3 randomPoint = new(
 			center.X + GD.RandRange(-SpawnRadius, SpawnRadius),
 			center.Y + SpawnHeight,
@@ -341,5 +461,8 @@ public sealed partial class GameManager : Node {
 public readonly struct GameState : ISaveData {
 	public PlayerData Player { get; init; }
 	public CameraRigData CameraRig { get; init; }
+	public GameWorldManagerData GameWorldManager { get; init; }
+	public Dictionary<string, Vector3>? MainWorldReturnPositions { get; init; }
+	public Vector3? LastKnownMainWorldPlayerPosition { get; init; }
 	public QuestProgressionData Progression { get; init; }
 }
