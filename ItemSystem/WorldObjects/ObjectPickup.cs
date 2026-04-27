@@ -180,6 +180,12 @@ public partial class ObjectPickup : Node3D {
 		}
 		string targetItemId = CurrentTargetObjectNode.Data.ItemId;
 		Item targetItem = DatabaseManager.Instance.CreateItemInstanceById(targetItemId);
+		ObjectData pickedUpObjectData = CurrentTargetObjectNode.Data.Export();
+		bool hasAttachedDoorWorld = pickedUpObjectData.DoorComponentData.HasValue
+			&& !string.IsNullOrWhiteSpace(pickedUpObjectData.DoorComponentData.Value.WorldID);
+		if(hasAttachedDoorWorld) {
+			targetItem.AttachedWorldObjectData = pickedUpObjectData;
+		}
 		if(!targetItem.Pickupable) {
 			Log.Info($"Item {targetItem.Id} is not pickupable.");
 			return;

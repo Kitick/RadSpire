@@ -363,7 +363,13 @@ public partial class ObjectPlacementManager : Node {
 			Log.Info("PlaceObject canceled: selected hotbar slot no longer has the placing item.");
 			return;
 		}
-		bool created = WorldObjectManager!.CreateWorldObject(currentItemId, CurrentPlacingPosition, CurrentPlacingRotation, CurrentWallAnchorId ?? string.Empty);
+		bool created;
+		if(selectedSlot.Item.AttachedWorldObjectData.HasValue) {
+			created = WorldObjectManager!.CreateWorldObject(selectedSlot.Item.AttachedWorldObjectData.Value, CurrentPlacingPosition, CurrentPlacingRotation, CurrentWallAnchorId ?? string.Empty);
+		}
+		else {
+			created = WorldObjectManager!.CreateWorldObject(currentItemId, CurrentPlacingPosition, CurrentPlacingRotation, CurrentWallAnchorId ?? string.Empty);
+		}
 		if(!created) {
 			Log.Error($"PlaceObject failed to create world object for ItemId '{CurrentPlacingItemId}'.");
 			return;
@@ -493,7 +499,14 @@ public partial class ObjectPlacementManager : Node {
 			return success;
 		}
 
-		bool created = WorldObjectManager!.CreateWorldObject(itemId, position, rotation, CurrentWallAnchorId ?? string.Empty);
+		bool created;
+		ItemSlot selectedSlot = PlayerHotbar!.GetSelectedItemSlot();
+		if(!selectedSlot.IsEmpty() && selectedSlot.Item?.Id == itemId && selectedSlot.Item.AttachedWorldObjectData.HasValue) {
+			created = WorldObjectManager!.CreateWorldObject(selectedSlot.Item.AttachedWorldObjectData.Value, position, rotation, CurrentWallAnchorId ?? string.Empty);
+		}
+		else {
+			created = WorldObjectManager!.CreateWorldObject(itemId, position, rotation, CurrentWallAnchorId ?? string.Empty);
+		}
 		if(!created) {
 			Log.Error($"PlaceObjectInFrontOfPlayer failed to create world object for ItemId '{itemId}'.");
 		}

@@ -6,6 +6,7 @@ using System.Linq;
 using Components;
 using Godot;
 using Services;
+using ItemSystem.WorldObjects;
 
 public partial class Item : ISaveable<ItemData> {
 	private static readonly LogService Log = new(nameof(Item), enabled: true);
@@ -64,6 +65,7 @@ public partial class Item : ISaveable<ItemData> {
 	[Export] public bool IsWallObject { get; set; } = false;
 
 	[Export] public Texture2D IconTexture { get; set; } = null!;
+	public ObjectData? AttachedWorldObjectData { get; set; }
 	public ComponentDictionary<IItemComponent> ComponentDictionary { get; } = new();
 
 	public IEnumerable<IItemComponent> GetComponentsOrdered() {
@@ -96,6 +98,7 @@ public partial class Item : ISaveable<ItemData> {
 		Pickupable = other.Pickupable;
 		IsWallObject = other.IsWallObject;
 		IconTexture = other.IconTexture;
+		AttachedWorldObjectData = other.AttachedWorldObjectData;
 		CopyComponentsFrom(other);
 	}
 
@@ -111,6 +114,7 @@ public partial class Item : ISaveable<ItemData> {
 		return new ItemData {
 			Id = Id,
 			DurabilityData = DurabilityData,
+			AttachedWorldObjectData = AttachedWorldObjectData,
 			// Additional component data can be added here
 		};
 	}
@@ -127,6 +131,7 @@ public partial class Item : ISaveable<ItemData> {
 		Pickupable = item.Pickupable;
 		IsWallObject = item.IsWallObject;
 		IconTexture = item.IconTexture;
+		AttachedWorldObjectData = data.AttachedWorldObjectData;
 		CopyComponentsFrom(item);
 		if(data.DurabilityData != null) {
 			if(ComponentDictionary.Has<Durability>()) {
@@ -215,5 +220,6 @@ public static class ItemExtensions {
 public readonly record struct ItemData : ISaveData {
 	public string Id { get; init; }
 	public DurabilityData? DurabilityData { get; init; }
+	public ObjectData? AttachedWorldObjectData { get; init; }
 	// Additional component data can be added here
 }

@@ -314,9 +314,5 @@ public static class Recipes {
 		CraftTent,
 		CraftHouseSmall,
 		CraftHouseMedium,
-		CraftHouse1,
-		CraftReturnDoor,
-		CraftReturnDoor2,
-		CraftReturnDoorTent,
 	];
 }
