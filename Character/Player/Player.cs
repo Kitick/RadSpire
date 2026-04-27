@@ -55,7 +55,7 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData> {
 	private Action? UnsubscribePlaceCancel;
 	private Action? UnsubscribeBuildMode;
 
-	public Radiation Radiation { get; private set; } = new();
+	public Radiation Radiation { get; private set; } = new Radiation(secondsToFatalDose: 30 * 60);
 	public int BaseMaxHealth { get; private set; }
 
 	public bool HoldingSword = false;
@@ -102,7 +102,7 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData> {
 
 	public void Update(float dt, KeyInput keyInput) {
 		Radiation.Accumulate(dt);
-		Health.Max = Math.Max(1, (int) (BaseMaxHealth * (1f - Radiation.Level)));
+		Health.Max = Math.Max(1, (int) Math.Round(BaseMaxHealth * (1f - Radiation.Level)));
 
 		if(this.IsDead()) {
 			StateMachine.TransitionTo(State.Dead);

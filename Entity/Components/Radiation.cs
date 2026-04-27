@@ -15,7 +15,7 @@ public sealed class Radiation : Component<RadiationData> {
 
 	public void Accumulate(float dt) => Level += RatePerSecond * dt;
 
-	public Radiation(float ratePerSecond = 0.001f) : base(new RadiationData { Level = 0f, RatePerSecond = ratePerSecond }) { }
+	public Radiation(float secondsToFatalDose) : base(new RadiationData { Level = 0f, RatePerSecond = 1f / secondsToFatalDose }) { }
 	public Radiation(RadiationData data) : base(data) { }
 }
 
