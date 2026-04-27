@@ -20,10 +20,10 @@ grow_vertical = 2
 script = ExtResource("1_8hsgg")
 CraftableDropdown = NodePath("MainBackground/LightBackground/CraftableOptionButton")
 RequirementsList = NodePath("MainBackground/LightBackground/ItemsList")
-CraftButton = NodePath("MainBackground/LightBackground/CraftButton")
-QuantityDisplay = NodePath("MainBackground/LightBackground/QuantityInput")
-PosButton = NodePath("MainBackground/LightBackground/PosButton")
-NegButton = NodePath("MainBackground/LightBackground/NegButton")
+CraftButton = NodePath("MainBackground/LightBackground/Craft/CraftButton")
+QuantityDisplay = NodePath("MainBackground/LightBackground/Craft/QuantityInput")
+PosButton = NodePath("MainBackground/LightBackground/Craft/PosButton")
+NegButton = NodePath("MainBackground/LightBackground/Craft/NegButton")
 MainBackground = NodePath("MainBackground")
 LightBackground = NodePath("MainBackground/LightBackground")
 metadata/_edit_horizontal_guides_ = [0.0]
@@ -54,10 +54,10 @@ color = Color(1, 1, 1, 0.60784316)
 [node name="Craftable" type="Label" parent="MainBackground/LightBackground" unique_id=1764258548]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.21000001
-anchor_top = 0.046000004
-anchor_right = 0.79
-anchor_bottom = 0.11100001
+anchor_left = 0.2
+anchor_top = 0.05
+anchor_right = 0.8
+anchor_bottom = 0.1
 offset_left = 0.12799835
 offset_top = -0.09039879
 offset_right = -0.12802124
@@ -66,64 +66,55 @@ grow_horizontal = 2
 theme_override_font_sizes/font_size = 32
 text = "Craftable Items"
 horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="CraftableOptionButton" type="OptionButton" parent="MainBackground/LightBackground" unique_id=1335649761]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.26900002
-anchor_top = 0.18
-anchor_right = 0.711
-anchor_bottom = 0.22800002
-offset_left = 0.06918335
-offset_top = 0.16799164
-offset_right = -0.17037964
-offset_bottom = 0.012786865
-grow_horizontal = 2
+anchor_left = 0.3
+anchor_top = 0.175
+anchor_right = 0.7
+anchor_bottom = 0.225
 
-[node name="Items" type="Label" parent="MainBackground/LightBackground" unique_id=516954877]
+[node name="SelectedItem" type="Control" parent="MainBackground/LightBackground" unique_id=1316492721]
+layout_mode = 1
+anchor_left = 0.2
+anchor_top = 0.275
+anchor_right = 0.8
+anchor_bottom = 0.35
+offset_left = -0.040008545
+offset_top = 0.47998047
+offset_right = -0.040008545
+offset_bottom = 0.47998047
+
+[node name="ItemName" type="Label" parent="MainBackground/LightBackground/SelectedItem" unique_id=516954877]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.26900002
-anchor_top = 0.32900003
-anchor_right = 0.712
-anchor_bottom = 0.384
-offset_left = 0.06919098
-offset_top = 0.14038086
-offset_right = 0.16159058
-offset_bottom = -0.14160156
+anchor_left = 0.25
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_font_sizes/font_size = 24
 text = "Item Name"
-horizontal_alignment = 2
+horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="ItemIcon" type="TextureRect" parent="MainBackground/LightBackground/Items" unique_id=238399205]
+[node name="ItemIcon" type="TextureRect" parent="MainBackground/LightBackground/SelectedItem" unique_id=238399205]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.141
-anchor_top = 0.116000004
-anchor_right = 0.266
-anchor_bottom = 0.81200004
-offset_left = -0.0720005
-offset_top = -0.0020003319
-offset_right = -0.071998596
-offset_bottom = -0.014001846
+anchor_right = 0.2
+anchor_bottom = 1.0
 texture = ExtResource("2_6418f")
 expand_mode = 2
 
 [node name="ItemsList" type="ItemList" parent="MainBackground/LightBackground" unique_id=1146406095]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.048
-anchor_top = 0.43800002
-anchor_right = 0.952
-anchor_bottom = 0.734
-offset_left = -0.19360161
-offset_top = -0.18417358
-offset_right = 0.193573
-offset_bottom = 0.018371582
-grow_horizontal = 2
-grow_vertical = 2
+anchor_left = 0.1
+anchor_top = 0.4
+anchor_right = 0.9
+anchor_bottom = 0.7
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MainBackground/LightBackground/ItemsList" unique_id=1458284799]
 layout_mode = 1
@@ -153,79 +144,50 @@ layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxEmpty_ccfa1")
 text = "Material Name"
 
-[node name="QuantityHave" type="Label" parent="MainBackground/LightBackground/ItemsList" unique_id=852521692]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.469
-anchor_top = 0.034
-anchor_right = 0.523
-anchor_bottom = 0.14600001
-offset_left = 0.1519928
-offset_top = 0.021613598
-offset_right = -0.01600647
-offset_bottom = 0.033597946
+[node name="QuantityHave" type="Label" parent="MainBackground/LightBackground/ItemsList/HBoxContainer" unique_id=852521692]
+layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxEmpty_6418f")
 text = "(3)"
 horizontal_alignment = 1
 
-[node name="NegButton" type="Button" parent="MainBackground/LightBackground" unique_id=974923918]
+[node name="Craft" type="Control" parent="MainBackground/LightBackground" unique_id=93347131]
+layout_mode = 1
+anchor_left = 0.1
+anchor_top = 0.75
+anchor_right = 0.9
+anchor_bottom = 0.95
+
+[node name="NegButton" type="Button" parent="MainBackground/LightBackground/Craft" unique_id=974923918]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.08400001
-anchor_top = 0.77800006
-anchor_right = 0.25800002
-anchor_bottom = 0.81000006
-offset_left = -0.7888069
-offset_top = 0.19274902
-offset_right = -0.16561127
-offset_bottom = 0.9559326
+anchor_right = 0.2
+anchor_bottom = 0.25
 theme_override_font_sizes/font_size = 16
 text = "Less"
 
-[node name="QuantityInput" type="LineEdit" parent="MainBackground/LightBackground" unique_id=1086066354]
+[node name="QuantityInput" type="LineEdit" parent="MainBackground/LightBackground/Craft" unique_id=1086066354]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.34300002
-anchor_top = 0.75900006
-anchor_right = 0.63900006
-anchor_bottom = 0.83400005
-offset_left = 0.012390137
-offset_top = 0.2083435
-offset_right = -0.21481323
-offset_bottom = 0.20837402
+anchor_left = 0.3
+anchor_right = 0.7
+anchor_bottom = 0.25
 alignment = 1
 
-[node name="PosButton" type="Button" parent="MainBackground/LightBackground" unique_id=1355145367]
+[node name="PosButton" type="Button" parent="MainBackground/LightBackground/Craft" unique_id=1355145367]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.726
-anchor_top = 0.77800006
-anchor_right = 0.9110001
-anchor_bottom = 0.81000006
-offset_left = 0.09680176
-offset_top = 0.19274902
-offset_right = -0.04522705
-offset_bottom = 0.9559326
+anchor_left = 0.8
+anchor_right = 1.0
+anchor_bottom = 0.25
 theme_override_font_sizes/font_size = 16
 text = "More"
 
-[node name="CraftButton" type="Button" parent="MainBackground/LightBackground" unique_id=415348296]
+[node name="CraftButton" type="Button" parent="MainBackground/LightBackground/Craft" unique_id=415348296]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.37300003
-anchor_top = 0.89000005
-anchor_right = 0.62700003
-anchor_bottom = 0.95500004
-offset_left = 0.01638794
-offset_top = -0.13604736
-offset_right = -0.016418457
-offset_bottom = -0.24206543
-grow_horizontal = 2
-grow_vertical = 2
+anchor_left = 0.3
+anchor_top = 0.7
+anchor_right = 0.7
+anchor_bottom = 1.0
 theme_override_font_sizes/font_size = 32
 text = "Craft"
-
-[node name="TextureRect" type="TextureRect" parent="." unique_id=374584389]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
