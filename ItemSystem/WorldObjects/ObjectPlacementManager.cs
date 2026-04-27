@@ -33,6 +33,7 @@ public partial class ObjectPlacementManager : Node {
 	private Vector3 CurrentWallNormal = Vector3.Forward;
 	private readonly List<PlacementAreaShapeTemplate> CurrentPlacementAreaShapes = new();
 	private bool ExternalPreviewActive;
+	private float ExternalPreviewBaseRotationY;
 
 	public WorldObjectManager? WorldObjectManager { get; private set; }
 	public InventoryManager? InventoryManager { get; private set; }
@@ -180,7 +181,7 @@ public partial class ObjectPlacementManager : Node {
 		}
 	}
 
-	public bool BeginExternalPlacementPreview(string itemId) {
+	public bool BeginExternalPlacementPreview(string itemId, float? initialRotationY = null) {
 		if(!Initalized || !IsPlaceable(itemId)) {
 			return false;
 		}
@@ -191,6 +192,7 @@ public partial class ObjectPlacementManager : Node {
 		CurrentSurfaceObjectId = null;
 		CurrentWallAnchorId = null;
 		CurrentWallNormal = Vector3.Forward;
+		ExternalPreviewBaseRotationY = initialRotationY ?? 0.0f;
 		RefreshPlacementAreaShapeTemplates();
 		ExternalPreviewActive = true;
 		return true;
@@ -202,6 +204,7 @@ public partial class ObjectPlacementManager : Node {
 		CurrentSurfaceObjectId = null;
 		CurrentWallAnchorId = null;
 		CurrentWallNormal = Vector3.Forward;
+		ExternalPreviewBaseRotationY = 0.0f;
 		CurrentPlacementAreaShapes.Clear();
 	}
 
@@ -614,6 +617,9 @@ public partial class ObjectPlacementManager : Node {
 	private Vector3 GetAdjustedPlacementRotation(Player player, Vector3 objectPosition) {
 		if(IsCurrentPlacingItemWallObject()) {
 			return GetWallPlacementRotation();
+		}
+		if(ExternalPreviewActive) {
+			return new Vector3(0, ExternalPreviewBaseRotationY + CurrentPlacingRotationOffsetY, 0);
 		}
 		Vector3 baseRotation = GetRotationFacingPlayer(player, objectPosition);
 		return new Vector3(baseRotation.X, baseRotation.Y + CurrentPlacingRotationOffsetY, baseRotation.Z);

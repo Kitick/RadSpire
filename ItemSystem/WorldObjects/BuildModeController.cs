@@ -137,7 +137,8 @@ public sealed partial class BuildModeController : Node {
 
 		DragItemId = hoveredObject.Data.ItemId;
 		DraggedWorldObjectId = hoveredObject.Data.Id;
-		if(!PlacementManager.BeginExternalPlacementPreview(DragItemId)) {
+		float initialRotationY = hoveredObject.GlobalRotation.Y;
+		if(!PlacementManager.BeginExternalPlacementPreview(DragItemId, initialRotationY)) {
 			DragItemId = string.Empty;
 			DraggedWorldObjectId = string.Empty;
 			return;
@@ -172,7 +173,8 @@ public sealed partial class BuildModeController : Node {
 			if(!BuildInventory.RemoveItem(BuildInventory.GetRow(i), BuildInventory.GetColumn(i), 1)) {
 				return;
 			}
-			if(!PlacementManager.BeginExternalPlacementPreview(DragItemId)) {
+			float initialRotationY = Player.GlobalRotation.Y;
+			if(!PlacementManager.BeginExternalPlacementPreview(DragItemId, initialRotationY)) {
 				BuildInventory.AddItem(new ItemSlot(slot.Item, 1), BuildInventory.GetRow(i), BuildInventory.GetColumn(i));
 				DragItemId = string.Empty;
 				return;
