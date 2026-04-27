@@ -15,7 +15,7 @@ public interface IObjectPickup {
 
 public partial class ObjectPickup : Node3D {
 	private static readonly LogService Log = new(nameof(ObjectPickup), enabled: true);
-	private const float DefaultHoverTargetDistance = 4.0f;
+	private const float DefaultHoverTargetDistance = 20.0f;
 	public InteractionArea InteractionArea = null!;
 	public InventoryManager InventoryManager = null!;
 	public WorldObjectManager WorldObjectManager = null!;
