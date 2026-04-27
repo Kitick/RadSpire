@@ -3,7 +3,7 @@ namespace Settings;
 using Godot;
 using Services;
 
-public static class MouseKeyboardSettings {
+public static class KeyboardSettings {
 	public static readonly SliderSetting<float> MouseSensitivity = new(
 		name: nameof(MouseSensitivity),
 		getActual: () => MouseSensitivity!.Target,

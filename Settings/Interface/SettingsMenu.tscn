@@ -4,9 +4,9 @@
 [ext_resource type="Script" uid="uid://3t87oippuos7" path="res://Settings/Interface/Panels/DisplayPanel.cs" id="3_qn140"]
 [ext_resource type="Script" uid="uid://cic25iqvdqxp6" path="res://Settings/Interface/Panels/SoundPanel.cs" id="4_jxq57"]
 [ext_resource type="Script" uid="uid://c44ijxtmj7xb" path="res://Settings/Interface/Panels/ControllerPanel.cs" id="5_jh1wv"]
-[ext_resource type="Script" uid="uid://8tuxmuyevsjl" path="res://Settings/Interface/Panels/MkPanel.cs" id="6_uv3og"]
+[ext_resource type="Script" uid="uid://8tuxmuyevsjl" path="res://Settings/Interface/Panels/KeyboardPanel.cs" id="6_uv3og"]
 
-[node name="SettingsMenu" type="Control" unique_id=440443673 node_paths=PackedStringArray("BackButton", "ResetButton", "DisplayPanel", "DisplayButton", "SoundPanel", "SoundButton", "ControllerPanel", "ControllerButton", "MKPanel", "MKButton")]
+[node name="SettingsMenu" type="Control" unique_id=440443673 node_paths=PackedStringArray("BackButton", "ResetButton", "DisplayPanel", "DisplayButton", "SoundPanel", "SoundButton", "ControllerPanel", "ControllerButton", "KeyboardPanel", "KeyboardButton")]
 process_mode = 3
 layout_mode = 3
 anchors_preset = 15
@@ -23,8 +23,8 @@ SoundPanel = NodePath("Sound")
 SoundButton = NodePath("NavBar/Sound_Button")
 ControllerPanel = NodePath("Controller")
 ControllerButton = NodePath("NavBar/Controller_Button")
-MKPanel = NodePath("Keyboard")
-MKButton = NodePath("NavBar/Keyboard_Button")
+KeyboardPanel = NodePath("Keyboard")
+KeyboardButton = NodePath("NavBar/Keyboard_Button")
 
 [node name="PanelArea" type="ColorRect" parent="." unique_id=1866459416]
 layout_mode = 1

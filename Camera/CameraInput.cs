@@ -11,7 +11,7 @@ public sealed partial class CameraRig {
 	[Export] public float FollowSpeed = 5.0f;
 	[Export] public float ZoomSpeed = 1.0f;
 
-	private float MouseRotateSensitivity => MouseKeyboardSettings.MouseSensitivity.Target;
+	private float MouseRotateSensitivity => KeyboardSettings.MouseSensitivity.Target;
 	private float JoystickRotateSensitivity => ControllerSettings.ControllerSensitivity.Target;
 
 	private bool IsPanning = false;
@@ -19,7 +19,7 @@ public sealed partial class CameraRig {
 
 	private Action? Unsubscribe;
 
-	void InitInput() {
+	private void InitInput() {
 		Unsubscribe =
 			ActionEvent.CameraPan.WhenPressed(() => HandlePan(true))
 			+ ActionEvent.CameraPan.WhenReleased(() => HandlePan(false))

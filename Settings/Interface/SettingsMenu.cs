@@ -25,14 +25,14 @@ public sealed partial class SettingsMenu : BaseUIControl {
 	[Export] private Button ControllerButton = null!;
 
 	[ExportCategory("Mouse & Keyboard")]
-	[Export] private MkPanel MKPanel = null!;
-	[Export] private Button MKButton = null!;
+	[Export] private KeyboardPanel KeyboardPanel = null!;
+	[Export] private Button KeyboardButton = null!;
 
 	private (Control panel, Button button)[] Panels => [
 		(DisplayPanel, DisplayButton),
 		(SoundPanel, SoundButton),
 		(ControllerPanel, ControllerButton),
-		(MKPanel, MKButton),
+		(KeyboardPanel, KeyboardButton),
 	];
 
 	private Control InitialPanel => DisplayPanel;
@@ -43,7 +43,7 @@ public sealed partial class SettingsMenu : BaseUIControl {
 		_ when ActivePanel == DisplayPanel => DisplayPanel.FirstControl,
 		_ when ActivePanel == SoundPanel => SoundPanel.FirstControl,
 		_ when ActivePanel == ControllerPanel => ControllerPanel.FirstControl,
-		_ when ActivePanel == MKPanel => MKPanel.FirstControl,
+		_ when ActivePanel == KeyboardPanel => KeyboardPanel.FirstControl,
 		_ => null,
 	};
 
@@ -99,10 +99,10 @@ public sealed partial class SettingsMenu : BaseUIControl {
 			ControllerSettings.Apply();
 			ControllerPanel.Refresh();
 		}
-		else if(ActivePanel == MKPanel) {
-			MouseKeyboardSettings.Reset();
-			MouseKeyboardSettings.Apply();
-			MKPanel.Refresh();
+		else if(ActivePanel == KeyboardPanel) {
+			KeyboardSettings.Reset();
+			KeyboardSettings.Apply();
+			KeyboardPanel.Refresh();
 		}
 	}
 
@@ -133,6 +133,6 @@ public sealed partial class SettingsMenu : BaseUIControl {
 		DisplayPanel.Refresh();
 		SoundPanel.Refresh();
 		ControllerPanel.Refresh();
-		MKPanel.Refresh();
+		KeyboardPanel.Refresh();
 	}
 }

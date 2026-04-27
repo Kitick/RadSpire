@@ -15,7 +15,7 @@ public static class SettingSystem {
 			Display = DisplaySettings.Export(),
 			Audio = AudioSettings.Export(),
 			Controller = ControllerSettings.Export(),
-			MouseKeyboard = MouseKeyboardSettings.Export(),
+			MouseKeyboard = KeyboardSettings.Export(),
 		}.Save(SaveFile);
 		Log.Info("Settings saved");
 	}
@@ -31,7 +31,7 @@ public static class SettingSystem {
 			DisplaySettings.Import(data.Display);
 			AudioSettings.Import(data.Audio);
 			ControllerSettings.Import(data.Controller);
-			MouseKeyboardSettings.Import(data.MouseKeyboard);
+			KeyboardSettings.Import(data.MouseKeyboard);
 		}
 		catch(Exception e) {
 			Log.Info($"Settings file invalid, resetting to defaults: {e.Message}");
@@ -48,14 +48,14 @@ public static class SettingSystem {
 		DisplaySettings.Apply();
 		AudioSettings.Apply();
 		ControllerSettings.Apply();
-		MouseKeyboardSettings.Apply();
+		KeyboardSettings.Apply();
 	}
 
 	public static void Reset() {
 		DisplaySettings.Reset();
 		AudioSettings.Reset();
 		ControllerSettings.Reset();
-		MouseKeyboardSettings.Reset();
+		KeyboardSettings.Reset();
 	}
 }
 
