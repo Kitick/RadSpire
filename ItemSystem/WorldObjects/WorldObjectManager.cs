@@ -195,6 +195,21 @@ public partial class WorldObjectManager : Node, ISaveable<WorldObjectManagerData
 		return WorldObjects.RegisterWorldObject(obj);
 	}
 
+	public bool CreateWorldObject(ObjectData objectData, Vector3 position, Vector3 rotation, string parentAnchorId = "") {
+		if(!SetUpComplete) {
+			Log.Error("Attempted to create world object before WorldObjectManager was set up.");
+			return false;
+		}
+		Object obj = new Object();
+		obj.Import(objectData);
+		obj.WorldLocation.Position = position;
+		obj.WorldLocation.Rotation = rotation;
+		if(!string.IsNullOrWhiteSpace(parentAnchorId)) {
+			obj.ParentAnchorId = parentAnchorId;
+		}
+		return WorldObjects.RegisterWorldObject(obj);
+	}
+
 	public bool RemoveWorldObject(string objectId) {
 		if(!SetUpComplete) {
 			Log.Error("Attempted to remove world object before WorldObjectManager was set up.");

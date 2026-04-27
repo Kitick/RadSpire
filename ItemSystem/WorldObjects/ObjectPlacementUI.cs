@@ -10,11 +10,11 @@ public partial class ObjectPlacementUI : Node {
 
 	private static readonly Color ValidPreviewColor = new Color(0.45f, 0.7f, 1.0f, 0.55f);
 	private static readonly Color InvalidPreviewColor = new Color(1.0f, 0.2f, 0.2f, 0.65f);
-	private static readonly Color BuildValidPreviewColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
 	private static readonly Color BuildInvalidPreviewColor = new Color(1.0f, 0.2f, 0.2f, 0.65f);
 
 	private Node3D? PreviewNode;
 	private readonly Dictionary<MeshInstance3D, Material?> PreviousBuildOutlineByMesh = [];
+	private readonly Dictionary<MeshInstance3D, Material?> OriginalBuildMaterialOverrideByMesh = [];
 	private ObjectPlacementManager? ObjectPlacementManager;
 	private bool IsInitialized;
 	public bool HasPreview => PreviewNode != null && GodotObject.IsInstanceValid(PreviewNode);
@@ -101,6 +101,7 @@ public partial class ObjectPlacementUI : Node {
 
 		Node3D preview = itemDefinition.ItemScene.Instantiate<Node3D>();
 		PreparePreviewNode(preview);
+		CacheOriginalBuildMaterials(preview);
 		ApplyPreviewTint(preview, BuildInvalidPreviewColor);
 		MeshOutlineOverlayUtility.ApplyOutline(preview, PreviousBuildOutlineByMesh);
 		AddChild(preview);
@@ -114,7 +115,12 @@ public partial class ObjectPlacementUI : Node {
 		}
 		PreviewNode!.GlobalPosition = position;
 		PreviewNode.GlobalRotation = rotation;
-		ApplyPreviewTint(PreviewNode, isValid ? BuildValidPreviewColor : BuildInvalidPreviewColor);
+		if(isValid) {
+			RestoreOriginalBuildMaterials();
+		}
+		else {
+			ApplyPreviewTint(PreviewNode, BuildInvalidPreviewColor);
+		}
 	}
 
 	public void EndPreview() {
@@ -122,6 +128,7 @@ public partial class ObjectPlacementUI : Node {
 			PreviewNode!.QueueFree();
 		}
 		MeshOutlineOverlayUtility.RestoreOutline(PreviousBuildOutlineByMesh);
+		OriginalBuildMaterialOverrideByMesh.Clear();
 		PreviewNode = null;
 	}
 
@@ -176,6 +183,23 @@ public partial class ObjectPlacementUI : Node {
 
 		foreach(Node child in node.GetChildren()) {
 			CollectMeshes(child, meshes);
+		}
+	}
+
+	private void CacheOriginalBuildMaterials(Node node) {
+		OriginalBuildMaterialOverrideByMesh.Clear();
+		var meshes = new List<MeshInstance3D>();
+		CollectMeshes(node, meshes);
+		foreach(MeshInstance3D mesh in meshes) {
+			OriginalBuildMaterialOverrideByMesh[mesh] = mesh.MaterialOverride;
+		}
+	}
+
+	private void RestoreOriginalBuildMaterials() {
+		foreach(KeyValuePair<MeshInstance3D, Material?> pair in OriginalBuildMaterialOverrideByMesh) {
+			if(GodotObject.IsInstanceValid(pair.Key)) {
+				pair.Key.MaterialOverride = pair.Value;
+			}
 		}
 	}
 }

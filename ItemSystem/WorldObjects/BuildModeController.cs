@@ -26,6 +26,7 @@ public sealed partial class BuildModeController : Node {
 	private bool IsSubscribedToBuildUISlots;
 	private string DragItemId = string.Empty;
 	private string DraggedWorldObjectId = string.Empty;
+	private ObjectData? DraggedWorldObjectData;
 
 	public bool IsBuildModeActive { get; private set; }
 	public bool IsDraggingFurniture => IsBuildModeActive && IsDragging;
@@ -147,10 +148,12 @@ public sealed partial class BuildModeController : Node {
 
 		DragItemId = hoveredObject.Data.ItemId;
 		DraggedWorldObjectId = hoveredObject.Data.Id;
+		DraggedWorldObjectData = WorldObjectManager.GetWorldObject(DraggedWorldObjectId)?.Export();
 		float initialRotationY = hoveredObject.GlobalRotation.Y;
 		if(!PlacementManager.BeginExternalPlacementPreview(DragItemId, initialRotationY)) {
 			DragItemId = string.Empty;
 			DraggedWorldObjectId = string.Empty;
+			DraggedWorldObjectData = null;
 			return;
 		}
 
@@ -158,6 +161,7 @@ public sealed partial class BuildModeController : Node {
 			PlacementManager.EndExternalPlacementPreview();
 			DragItemId = string.Empty;
 			DraggedWorldObjectId = string.Empty;
+			DraggedWorldObjectData = null;
 			return;
 		}
 
@@ -236,11 +240,17 @@ public sealed partial class BuildModeController : Node {
 		bool overBuildUI = BuildUI.GetGlobalRect().HasPoint(mousePosition);
 		bool placed = false;
 		if(!overBuildUI && PlacementManager.TryGetExternalPlacementPose(out Vector3 position, out Vector3 rotation, out bool isValid) && isValid) {
-			placed = WorldObjectManager.CreateWorldObject(DragItemId, position, rotation);
+			if(DraggedWorldObjectData.HasValue) {
+				placed = WorldObjectManager.CreateWorldObject(DraggedWorldObjectData.Value, position, rotation);
+			}
+			else {
+				placed = WorldObjectManager.CreateWorldObject(DragItemId, position, rotation);
+			}
 		}
 		if(!placed && BuildInventory != null && !string.IsNullOrWhiteSpace(DragItemId)) {
 			Item item = DatabaseManager.Instance.CreateItemInstanceById(DragItemId);
 			BuildInventory.AddItem(new ItemSlot(item, 1));
+			HandleCanceledDraggedObjectInventory();
 		}
 		StopDragging();
 	}
@@ -260,7 +270,36 @@ public sealed partial class BuildModeController : Node {
 		IsDragging = false;
 		DragItemId = string.Empty;
 		DraggedWorldObjectId = string.Empty;
+		DraggedWorldObjectData = null;
 		PlacementManager.EndExternalPlacementPreview();
 		PlacementUI.EndPreview();
+	}
+
+	private void HandleCanceledDraggedObjectInventory() {
+		if(!DraggedWorldObjectData.HasValue || !DraggedWorldObjectData.Value.InventoryComponentData.HasValue || BuildInventory == null) {
+			return;
+		}
+		InventoryData cachedInventoryData = DraggedWorldObjectData.Value.InventoryComponentData.Value.InventoryData;
+		Inventory cachedInventory = new Inventory(cachedInventoryData.MaxSlotsRows, cachedInventoryData.MaxSlotsColumns);
+		cachedInventory.Import(cachedInventoryData);
+		foreach(ItemSlot cachedSlot in cachedInventory.ItemSlots) {
+			if(cachedSlot.IsEmpty() || cachedSlot.Item == null) {
+				continue;
+			}
+			ItemSlot movingSlot = new ItemSlot(cachedSlot.Item, cachedSlot.Quantity);
+			ItemSlot remain;
+			if(cachedSlot.Item.IsPlaceable && cachedSlot.Item.Pickupable) {
+				remain = BuildInventory.AddItem(movingSlot);
+				if(!remain.IsEmpty()) {
+					remain = InventoryManager.AddItemSlotToPlayerInventory(remain);
+				}
+			}
+			else {
+				remain = InventoryManager.AddItemSlotToPlayerInventory(movingSlot);
+			}
+			if(!remain.IsEmpty()) {
+				InventoryManager.DropItemSlot(remain);
+			}
+		}
 	}
 }
