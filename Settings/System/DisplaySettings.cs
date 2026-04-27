@@ -41,7 +41,7 @@ public static class DisplaySettings {
 		name: nameof(IsVSync),
 		getActual: () => DisplayServer.WindowGetVsyncMode() == DisplayServer.VSyncMode.Enabled,
 		setActual: v => DisplayServer.WindowSetVsyncMode(v ? DisplayServer.VSyncMode.Enabled : DisplayServer.VSyncMode.Disabled),
-		defaultValue: false
+		defaultValue: true
 	);
 
 	public static readonly SliderSetting<float> Brightness = new(
@@ -79,7 +79,7 @@ public static class DisplaySettings {
 	public static void Apply() => All.Apply();
 	public static void Reset() => All.Reset();
 
-	public static DisplayData Export() => new DisplayData {
+	public static DisplayData Export() => new() {
 		Resolution = Resolution.Target,
 		IsFullscreen = IsFullscreen.Target,
 		IsVSyncEnabled = IsVSync.Target,
@@ -102,7 +102,7 @@ public readonly record struct Resolution {
 	public int Height { get; init; }
 
 	public readonly Vector2I ToVector2I() => new(Width, Height);
-	public static Resolution FromVector2I(Vector2I size) => new Resolution { Width = size.X, Height = size.Y };
+	public static Resolution FromVector2I(Vector2I size) => new() { Width = size.X, Height = size.Y };
 
 	public override string ToString() => $"{Height}p";
 }
