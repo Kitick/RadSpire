@@ -96,7 +96,7 @@ public sealed partial class EnemyManager : Node, ISaveable<EnemyManagerData> {
 	}
 
 	public EnemyManagerData Export() {
-		Dictionary<string, EnemyData> data = new();
+		Dictionary<string, EnemyData> data = [];
 		foreach((string id, Enemy enemy) in Enemies) {
 			if(!IsInstanceValid(enemy)) {
 				continue;
@@ -143,10 +143,9 @@ public sealed partial class EnemyManager : Node, ISaveable<EnemyManagerData> {
 
 	private void SpawnEnemyAt(Vector3 worldPosition) {
 		Enemy? enemy = CreateAndAddEnemy(Guid.NewGuid().ToString());
-		if(enemy == null) {
-			return;
-		}
-		enemy.GlobalPosition = worldPosition;
+		if(enemy == null) { return; }
+
+		enemy.Position = worldPosition;
 	}
 
 	private Enemy? CreateAndAddEnemy(string id) {

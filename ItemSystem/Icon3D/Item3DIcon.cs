@@ -29,7 +29,7 @@ public partial class Item3DIcon : Entity, ISaveable<Item3DIconData> {
 			return;
 		}
 
-		GlobalPosition = position;
+		Position = position;
 
 		if(Item.IconTexture == null) {
 			Log.Info("Item has no IconTexture; skipping 3D icon spawn.");

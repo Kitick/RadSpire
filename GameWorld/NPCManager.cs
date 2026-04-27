@@ -50,7 +50,7 @@ public sealed partial class NPCManager : Node, ISaveable<NPCManagerData> {
 		npc.Init(QuestManager);
 		NPCs.Add(id, npc);
 
-		Action<string?> handler = prompt => PromptForwarder?.Invoke(prompt);
+		void handler(string? prompt) => PromptForwarder?.Invoke(prompt);
 		PromptHandlers[id] = handler;
 		npc.InteractionPromptChanged += handler;
 
@@ -88,7 +88,7 @@ public sealed partial class NPCManager : Node, ISaveable<NPCManagerData> {
 	}
 
 	public NPCManagerData Export() {
-		Dictionary<string, NPCData> data = new();
+		Dictionary<string, NPCData> data = [];
 		foreach((string id, NPC npc) in NPCs) {
 			if(!IsInstanceValid(npc)) {
 				continue;
@@ -144,10 +144,9 @@ public sealed partial class NPCManager : Node, ISaveable<NPCManagerData> {
 
 	private void SpawnNPCAt(Vector3 worldPosition) {
 		NPC? npc = CreateAndAddNPC(Guid.NewGuid().ToString());
-		if(npc == null) {
-			return;
-		}
-		npc.GlobalPosition = worldPosition;
+		if(npc == null) { return; }
+
+		npc.Position = worldPosition;
 	}
 
 	private NPC? CreateAndAddNPC(string id) {
