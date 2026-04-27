@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://bnjymb23oq215" path="res://Network/Panels/HostPanel.tscn" id="4_jhcbk"]
 [ext_resource type="PackedScene" uid="uid://bg5jxcp2jtwjp" path="res://Network/Panels/JoinPanel.tscn" id="5_32jca"]
 [ext_resource type="AudioStream" uid="uid://sqjqwdegx8bb" path="res://Assets/Audio/Radspire_Main_Theme.wav" id="6_1dhmk"]
+[ext_resource type="PackedScene" uid="uid://pkgl5obnc7eh" path="res://UI/Lore/SplashPanel.tscn" id="7_splash"]
 
 [node name="MainMenu" type="Control" unique_id=2104341140 node_paths=PackedStringArray("ButtonPanel", "SingleplayerButton", "MultiplayerButton", "SettingsButton", "ExtrasButton", "QuitButton", "SingleplayerPanel", "ContinueButton", "LoadSavedButton", "StartNewButton", "MultiplayerPanel", "HostNewButton", "HostSavedButton", "JoinGameButton")]
 layout_mode = 3

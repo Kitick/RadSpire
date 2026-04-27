@@ -12,6 +12,7 @@ public sealed partial class SceneDirector : Node {
 	[ExportCategory("Scene References")]
 	[Export] private PackedScene MainMenuScene = null!;
 	[Export] private PackedScene GameWorldScene = null!;
+	[Export] private PackedScene SplashPanelScene = null!;
 
 	private Node? CurrentScene;
 
@@ -49,7 +50,7 @@ public sealed partial class SceneDirector : Node {
 	private void SubscribeToEvents(MainMenu menu) {
 		menu.OnStartNewGame += () => {
 			Log.Info("Starting new game from MainMenu");
-			SwitchGameScene();
+			ShowSplashThenGame();
 		};
 
 		menu.OnContinueGame += () => {
@@ -66,6 +67,14 @@ public sealed partial class SceneDirector : Node {
 			Log.Info("Quitting application from MainMenu");
 			GetTree().Quit();
 		};
+	}
+
+	private async void ShowSplashThenGame(string? loadfile = null) {
+		Control splashPanel = SplashPanelScene.Instantiate<Control>();
+		SwitchScene(splashPanel);
+
+		await ToSignal(splashPanel, Node.SignalName.TreeExited);
+		SwitchGameScene(loadfile);
 	}
 
 	private void SubscribeToEvents(GameManager manager) {
