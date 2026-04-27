@@ -11,6 +11,7 @@ public sealed partial class ObjectHoverTargetingController : Node {
 	private Player? Player;
 	private ObjectPickup? ObjectPickup;
 	private ObjectNode? CurrentHoveredObjectNode;
+	public ObjectNode? HoveredObjectNode => CurrentHoveredObjectNode;
 
 	public event Action<ObjectNode?>? HoveredObjectNodeChanged;
 

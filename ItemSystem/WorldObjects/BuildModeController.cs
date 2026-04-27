@@ -16,22 +16,26 @@ public sealed partial class BuildModeController : Node {
 	private InventoryManager InventoryManager = null!;
 	private ObjectPlacementManager PlacementManager = null!;
 	private ObjectPlacementUI PlacementUI = null!;
+	private ObjectHoverTargetingController HoverTargetingController = null!;
 	private WorldObjectManager WorldObjectManager = null!;
 	private GameManager GameManager = null!;
 	private InventoryUI BuildUI = null!;
 
 	private Inventory? BuildInventory;
 	private bool IsDragging;
+	private bool IsSubscribedToBuildUISlots;
 	private string DragItemId = string.Empty;
 	private string DraggedWorldObjectId = string.Empty;
 
 	public bool IsBuildModeActive { get; private set; }
+	public bool IsDraggingFurniture => IsBuildModeActive && IsDragging;
 
 	public void Initialize(
 		Player player,
 		InventoryManager inventoryManager,
 		ObjectPlacementManager placementManager,
 		ObjectPlacementUI placementUI,
+		ObjectHoverTargetingController hoverTargetingController,
 		WorldObjectManager worldObjectManager,
 		GameManager gameManager,
 		InventoryUI buildUI
@@ -40,9 +44,16 @@ public sealed partial class BuildModeController : Node {
 		InventoryManager = inventoryManager;
 		PlacementManager = placementManager;
 		PlacementUI = placementUI;
+		HoverTargetingController = hoverTargetingController;
 		WorldObjectManager = worldObjectManager;
 		GameManager = gameManager;
 		BuildUI = buildUI;
+		SubscribeToBuildUISlotEvents();
+	}
+
+	public override void _ExitTree() {
+		base._ExitTree();
+		UnsubscribeFromBuildUISlotEvents();
 	}
 
 	public void ToggleBuildMode() {
@@ -69,12 +80,11 @@ public sealed partial class BuildModeController : Node {
 
 		if(mouseButton.ButtonIndex == MouseButton.Left && mouseButton.Pressed) {
 			if(!IsDragging) {
-				// Prefer world-object drag when clicking directly on furniture.
-				StartDragFromHoveredWorldObject();
-				// Fallback to BuildUI source drag when no world drag started.
-				if(!IsDragging) {
-					TryStartDragFromBuildInventory(mouseButton.GlobalPosition);
+				// Build UI slot presses are handled via slot events.
+				if(BuildUI.GetGlobalRect().HasPoint(mouseButton.GlobalPosition)) {
+					return;
 				}
+				StartDragFromHoveredWorldObject();
 			}
 			return;
 		}
@@ -106,7 +116,7 @@ public sealed partial class BuildModeController : Node {
 	}
 
 	private void EnterBuildMode() {
-		BuildInventory = new Inventory(4, 8) { Name = BuildInventoryName };
+		BuildInventory = new Inventory(3, 5) { Name = BuildInventoryName };
 		BuildUI.Initialize(BuildInventory, Player);
 		BuildUI.SetLabelText("Build");
 		GameManager.HUDRef?.OpenBuildUI();
@@ -126,12 +136,12 @@ public sealed partial class BuildModeController : Node {
 		if(IsDragging || BuildInventory == null) {
 			return;
 		}
-		ObjectNode? hoveredObject = Player.ObjectPickup?.CurrentTargetObjectNode;
+		ObjectNode? hoveredObject = HoverTargetingController.HoveredObjectNode;
 		if(hoveredObject?.Data == null) {
 			return;
 		}
 		ItemDefinition? itemDef = DatabaseManager.Instance.GetItemDefinitionById(hoveredObject.Data.ItemId);
-		if(itemDef?.IsPlaceable != true) {
+		if(itemDef?.IsPlaceable != true || itemDef.Pickupable != true) {
 			return;
 		}
 
@@ -158,33 +168,61 @@ public sealed partial class BuildModeController : Node {
 		}
 	}
 
-	private void TryStartDragFromBuildInventory(Vector2 mousePosition) {
-		if(IsDragging || BuildInventory == null || !BuildUI.GetGlobalRect().HasPoint(mousePosition)) {
+	private void TryStartDragFromBuildInventorySlot(int slotIndex) {
+		if(IsDragging || BuildInventory == null) {
 			return;
 		}
-		for(int i = 0; i < BuildInventory.ItemSlots.Length; i++) {
-			ItemSlot slot = BuildInventory.ItemSlots[i];
-			if(slot.IsEmpty() || slot.Item == null || !slot.Item.IsPlaceable) {
-				continue;
-			}
-			// Start from first available build item when click is inside BuildUI.
-			DragItemId = slot.Item.Id;
-			DraggedWorldObjectId = string.Empty;
-			if(!BuildInventory.RemoveItem(BuildInventory.GetRow(i), BuildInventory.GetColumn(i), 1)) {
-				return;
-			}
-			float initialRotationY = Player.GlobalRotation.Y;
-			if(!PlacementManager.BeginExternalPlacementPreview(DragItemId, initialRotationY)) {
-				BuildInventory.AddItem(new ItemSlot(slot.Item, 1), BuildInventory.GetRow(i), BuildInventory.GetColumn(i));
-				DragItemId = string.Empty;
-				return;
-			}
-			IsDragging = true;
-			if(!PlacementUI.BeginBuildDragPreview(DragItemId)) {
-				CancelDraggingToBuildInventory();
-			}
+		if(slotIndex < 0 || slotIndex >= BuildInventory.ItemSlots.Length) {
 			return;
 		}
+		ItemSlot slot = BuildInventory.ItemSlots[slotIndex];
+		if(slot.IsEmpty() || slot.Item == null || !slot.Item.IsPlaceable || !slot.Item.Pickupable) {
+			// Explicit no-op when clicked slot has no draggable furniture item.
+			return;
+		}
+		DragItemId = slot.Item.Id;
+		DraggedWorldObjectId = string.Empty;
+		int row = BuildInventory.GetRow(slotIndex);
+		int column = BuildInventory.GetColumn(slotIndex);
+		if(!BuildInventory.RemoveItem(row, column, 1)) {
+			return;
+		}
+		float initialRotationY = Player.GlobalRotation.Y;
+		if(!PlacementManager.BeginExternalPlacementPreview(DragItemId, initialRotationY)) {
+			BuildInventory.AddItem(new ItemSlot(slot.Item, 1), row, column);
+			DragItemId = string.Empty;
+			return;
+		}
+		IsDragging = true;
+		if(!PlacementUI.BeginBuildDragPreview(DragItemId)) {
+			CancelDraggingToBuildInventory();
+		}
+	}
+
+	private void SubscribeToBuildUISlotEvents() {
+		if(IsSubscribedToBuildUISlots) {
+			return;
+		}
+		BuildUI.OnSlotPressed += HandleBuildUISlotPressed;
+		IsSubscribedToBuildUISlots = true;
+	}
+
+	private void UnsubscribeFromBuildUISlotEvents() {
+		if(!IsSubscribedToBuildUISlots) {
+			return;
+		}
+		BuildUI.OnSlotPressed -= HandleBuildUISlotPressed;
+		IsSubscribedToBuildUISlots = false;
+	}
+
+	private void HandleBuildUISlotPressed(string inventoryName, int slotIndex, MouseButton button) {
+		if(!IsBuildModeActive || button != MouseButton.Left) {
+			return;
+		}
+		if(inventoryName != BuildInventoryName) {
+			return;
+		}
+		TryStartDragFromBuildInventorySlot(slotIndex);
 	}
 
 	private void FinalizeLeftMouseRelease(Vector2 mousePosition) {

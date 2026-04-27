@@ -34,6 +34,9 @@ public sealed partial class CameraRig {
 	}
 
 	private void HandlePan(bool pressed) {
+		if(pressed && Target is Player player && (player.ObjectPlacementManager?.IsPlacementActive == true || player.IsBuildModeActive)) {
+			return;
+		}
 		if(!IsPanning && pressed) {
 			IsPanning = true;
 			Drag.Start(Pose.Ground);
@@ -79,7 +82,7 @@ public sealed partial class CameraRig {
 	}
 
 	private void TryZoom(float distanceDelta) {
-		if(Target is Player player && player.ObjectPlacementManager?.IsPlacementActive == true) {
+		if(Target is Player player && (player.ObjectPlacementManager?.IsPlacementActive == true || player.IsDraggingBuildFurniture)) {
 			return;
 		}
 		Pose.Distance += distanceDelta;

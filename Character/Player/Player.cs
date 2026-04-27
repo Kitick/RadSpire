@@ -42,6 +42,8 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData> {
 	public readonly EquipItem EquipItemComponent = new();
 	public ObjectPickup? ObjectPickup { get; private set; }
 	public ObjectPlacementManager? ObjectPlacementManager { get; private set; }
+	public bool IsBuildModeActive => BuildModeController?.IsBuildModeActive == true;
+	public bool IsDraggingBuildFurniture => BuildModeController?.IsDraggingFurniture == true;
 	private ObjectPlacementUI? ObjectPlacementUI;
 	private ObjectPickupUI? ObjectPickupUI;
 	private ObjectHoverTargetingController? ObjectHoverTargetingController;
@@ -285,6 +287,7 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData> {
 				InventoryManager,
 				ObjectPlacementManager,
 				ObjectPlacementUI!,
+				ObjectHoverTargetingController!,
 				worldObjectManager,
 				gameManager,
 				gameManager.HUDRef.GetBuildUI()

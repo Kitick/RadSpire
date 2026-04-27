@@ -563,7 +563,7 @@ public partial class InventoryManager : Node {
 	public void MovePlaceableItems(Inventory source, Inventory destination) {
 		for(int i = 0; i < source.ItemSlots.Length; i++) {
 			ItemSlot slot = source.ItemSlots[i];
-			if(slot.IsEmpty() || slot.Item == null || !slot.Item.IsPlaceable) {
+			if(slot.IsEmpty() || slot.Item == null || !slot.Item.IsPlaceable || !slot.Item.Pickupable) {
 				continue;
 			}
 			ItemSlot moveSlot = new ItemSlot(slot.Item, slot.Quantity);
