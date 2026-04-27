@@ -44,6 +44,8 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData> {
 	public ObjectPlacementManager? ObjectPlacementManager { get; private set; }
 	private ObjectPlacementUI? ObjectPlacementUI;
 	private ObjectPickupUI? ObjectPickupUI;
+	private ObjectHoverTargetingController? ObjectHoverTargetingController;
+	private ObjectHoverOutlineUI? ObjectHoverOutlineUI;
 	private Action? UnsubscribeInteract;
 	private Action? UnsubscribeInteract2;
 	private Action? UnsubscribePlace;
@@ -84,9 +86,12 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData> {
 		UnsubscribePlace?.Invoke();
 		UnsubscribePlaceCancel?.Invoke();
 		ObjectPickupUI?.Dispose();
+		ObjectHoverOutlineUI?.Dispose();
 		ObjectPickup = null;
 		ObjectPlacementUI = null;
 		ObjectPlacementManager = null;
+		ObjectHoverTargetingController = null;
+		ObjectHoverOutlineUI = null;
 	}
 
 	public void Update(float dt, KeyInput keyInput) {
@@ -205,6 +210,10 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData> {
 		}
 		ObjectPickup = new ObjectPickup(interactionArea, InventoryManager);
 		ObjectPickupUI = new ObjectPickupUI(ObjectPickup);
+		ObjectHoverTargetingController = new ObjectHoverTargetingController();
+		AddChild(ObjectHoverTargetingController);
+		ObjectHoverTargetingController.Initialize(this, ObjectPickup);
+		ObjectHoverOutlineUI = new ObjectHoverOutlineUI(ObjectHoverTargetingController);
 		UnsubscribeInteract = ActionEvent.Interact.WhenPressed(() => {
 			if(PickupComponent.HasItemsInRange) {
 				PickupComponent.PickupItem();
@@ -214,10 +223,10 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData> {
 		});
 
 		UnsubscribeInteract2 = ActionEvent.Interact2.WhenPressed(() => {
-			if(ObjectPickup.currentTargetObjectNode == null) {
+			if(ObjectPickup.CurrentTargetObjectNode == null) {
 				return;
 			}
-			ObjectPickup.currentTargetObjectNode.Interact(this);
+			ObjectPickup.CurrentTargetObjectNode.Interact(this);
 		});
 
 		ObjectPlacementManager = new ObjectPlacementManager();

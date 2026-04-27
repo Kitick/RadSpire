@@ -15,11 +15,17 @@ public interface IObjectPickup {
 
 public partial class ObjectPickup : Node3D {
 	private static readonly LogService Log = new(nameof(ObjectPickup), enabled: true);
+	private const float DefaultHoverTargetDistance = 4.0f;
 	public InteractionArea InteractionArea = null!;
 	public InventoryManager InventoryManager = null!;
 	public WorldObjectManager WorldObjectManager = null!;
 	public Dictionary<string, ObjectNode> ObjectNodesInRange = new Dictionary<string, ObjectNode>();
-	public ObjectNode? currentTargetObjectNode = null;
+	private ObjectNode? BaseTargetObjectNode;
+	private ObjectNode? HoverOverrideObjectNode;
+	public ObjectNode? CurrentTargetObjectNode { get; private set; }
+	// Kept for compatibility with existing call sites.
+	public ObjectNode? currentTargetObjectNode => CurrentTargetObjectNode;
+	public float HoverTargetDistance { get; set; } = DefaultHoverTargetDistance;
 	public event Action<ObjectNode>? AddedTargetObjectNode;
 	public event Action<ObjectNode>? RemovedTargetObjectNode;
 
@@ -49,9 +55,9 @@ public partial class ObjectPickup : Node3D {
 			return;
 		}
 		ObjectNodesInRange.Add(objNode.Data.Id, objNode);
-		if(currentTargetObjectNode == null) {
-			currentTargetObjectNode = objNode;
-			AddedTargetObjectNode?.Invoke(currentTargetObjectNode);
+		if(BaseTargetObjectNode == null) {
+			BaseTargetObjectNode = objNode;
+			RecomputeEffectiveTarget();
 		}
 	}
 
@@ -61,17 +67,17 @@ public partial class ObjectPickup : Node3D {
 			return;
 		}
 		ObjectNodesInRange.Remove(objNode.Data.Id);
-		if(currentTargetObjectNode != null && currentTargetObjectNode.Data.Id == objNode.Data.Id) {
-			currentTargetObjectNode = null;
-			RemovedTargetObjectNode?.Invoke(objNode);
-
+		if(BaseTargetObjectNode != null && BaseTargetObjectNode.Data != null && BaseTargetObjectNode.Data.Id == objNode.Data.Id) {
+			BaseTargetObjectNode = null;
 			string nextId = GetClosestObjectNodeId();
 			if(!string.IsNullOrEmpty(nextId)) {
-				ObjectNode nextTarget = ObjectNodesInRange[nextId];
-				currentTargetObjectNode = nextTarget;
-				AddedTargetObjectNode?.Invoke(currentTargetObjectNode);
+				BaseTargetObjectNode = ObjectNodesInRange[nextId];
 			}
 		}
+		if(HoverOverrideObjectNode != null && HoverOverrideObjectNode.Data != null && HoverOverrideObjectNode.Data.Id == objNode.Data.Id) {
+			HoverOverrideObjectNode = null;
+		}
+		RecomputeEffectiveTarget();
 	}
 
 	private static ObjectNode? FindAncestorObjectNode(Node node) {
@@ -103,12 +109,76 @@ public partial class ObjectPickup : Node3D {
 		return closestId;
 	}
 
+	public void SetHoverOverride(ObjectNode? hoveredObjectNode) {
+		if(hoveredObjectNode == null || !IsInstanceValid(hoveredObjectNode) || hoveredObjectNode.Data == null) {
+			ClearHoverOverride();
+			return;
+		}
+
+		float distance = hoveredObjectNode.GlobalPosition.DistanceTo(InteractionArea.GlobalPosition);
+		if(distance > HoverTargetDistance) {
+			ClearHoverOverride();
+			return;
+		}
+
+		if(HoverOverrideObjectNode == hoveredObjectNode) {
+			return;
+		}
+
+		HoverOverrideObjectNode = hoveredObjectNode;
+		RecomputeEffectiveTarget();
+	}
+
+	public void ClearHoverOverride() {
+		if(HoverOverrideObjectNode == null) {
+			return;
+		}
+
+		HoverOverrideObjectNode = null;
+		RecomputeEffectiveTarget();
+	}
+
+	private void RecomputeEffectiveTarget() {
+		ObjectNode? nextTarget = ResolveEffectiveTarget();
+		if(CurrentTargetObjectNode == nextTarget) {
+			return;
+		}
+
+		ObjectNode? previous = CurrentTargetObjectNode;
+		CurrentTargetObjectNode = nextTarget;
+
+		if(previous != null) {
+			RemovedTargetObjectNode?.Invoke(previous);
+		}
+		if(CurrentTargetObjectNode != null) {
+			AddedTargetObjectNode?.Invoke(CurrentTargetObjectNode);
+		}
+	}
+
+	private ObjectNode? ResolveEffectiveTarget() {
+		if(IsValidHoverOverride(HoverOverrideObjectNode)) {
+			return HoverOverrideObjectNode;
+		}
+		if(BaseTargetObjectNode != null && IsInstanceValid(BaseTargetObjectNode) && BaseTargetObjectNode.Data != null) {
+			return BaseTargetObjectNode;
+		}
+		return null;
+	}
+
+	private bool IsValidHoverOverride(ObjectNode? objectNode) {
+		if(objectNode == null || !IsInstanceValid(objectNode) || objectNode.Data == null) {
+			return false;
+		}
+
+		return objectNode.GlobalPosition.DistanceTo(InteractionArea.GlobalPosition) <= HoverTargetDistance;
+	}
+
 	public void AttemptPickup() {
-		if(currentTargetObjectNode == null) {
+		if(CurrentTargetObjectNode == null) {
 			Log.Info("Attempted pickup but no target object node.");
 			return;
 		}
-		string targetItemId = currentTargetObjectNode.Data.ItemId;
+		string targetItemId = CurrentTargetObjectNode.Data.ItemId;
 		Item targetItem = DatabaseManager.Instance.CreateItemInstanceById(targetItemId);
 		if(!targetItem.Pickupable) {
 			Log.Info($"Item {targetItem.Id} is not pickupable.");
@@ -119,8 +189,8 @@ public partial class ObjectPickup : Node3D {
 		if(remainSlot.IsEmpty()) {
 			HandleChestPickup();
 			Log.Info("Successfully picked up item.");
-			string removedId = currentTargetObjectNode.Data.Id;
-			HandleBodyExited(currentTargetObjectNode);
+			string removedId = CurrentTargetObjectNode.Data.Id;
+			HandleBodyExited(CurrentTargetObjectNode);
 			WorldObjectManager.RemoveWorldObject(removedId);
 		}
 		else {
@@ -129,11 +199,11 @@ public partial class ObjectPickup : Node3D {
 	}
 
 	public void HandleChestPickup() {
-		if(currentTargetObjectNode == null) {
+		if(CurrentTargetObjectNode == null) {
 			return;
 		}
-		if(currentTargetObjectNode.Data.ComponentDictionary.Has<InventoryComponent>()) {
-			Inventory chestInventory = currentTargetObjectNode.Data.ComponentDictionary.Get<InventoryComponent>().Inventory;
+		if(CurrentTargetObjectNode.Data.ComponentDictionary.Has<InventoryComponent>()) {
+			Inventory chestInventory = CurrentTargetObjectNode.Data.ComponentDictionary.Get<InventoryComponent>().Inventory;
 			foreach(ItemSlot slot in chestInventory.ItemSlots) {
 				if(slot.IsEmpty()) {
 					continue;
