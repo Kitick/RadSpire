@@ -66,6 +66,7 @@ public sealed partial class PlayerAudio : Node {
 
 	private void OnHealthChanged(HealthData from, HealthData to) {
 		if(to.Current >= from.Current) { return; }
+		if(to.Current == to.Max) { return; }
 
 		DamageDuckUntil = (Time.GetTicksMsec() / 1000.0) + DamageDuckSeconds;
 
