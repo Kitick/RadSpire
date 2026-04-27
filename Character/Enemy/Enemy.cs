@@ -188,7 +188,7 @@ public sealed partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 
 	private static void SetupSprite(Sprite3D sprite, Color color, float width, float height) {
 		if(sprite.Texture == null) {
-			var image = Image.Create(1, 1, false, Image.Format.Rgba8);
+			Image image = Image.CreateEmpty(1, 1, false, Image.Format.Rgba8);
 			image.Fill(Colors.White);
 			sprite.Texture = ImageTexture.CreateFromImage(image);
 		}
@@ -226,7 +226,7 @@ public sealed partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 			AddChild(HealthUIRoot);
 		}
 
-		var label = new Label3D {
+		Label3D label = new() {
 			Text = $"-{amount}",
 			FontSize = DamageNumberFontSize,
 			Billboard = BaseMaterial3D.BillboardModeEnum.Enabled,

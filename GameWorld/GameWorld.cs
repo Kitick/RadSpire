@@ -40,13 +40,12 @@ public sealed partial class GameWorldState : Node, ISaveable<GameWorldStateData>
 		SetupManagers();
 
 		Node worldNode = ActiveWorldNode ?? WorldRoot ?? this;
-		bool hasSavedData = SavedData.HasValue;
 		WorldObjectManager!.SetUpWorldObjectManager(worldNode, worldNode, GameWorldManager!, GameManager!);
-		EnemyManager!.Initialize(worldNode, GameManager!.EnemySceneRef, spawnFromWorld: !hasSavedData);
-		NPCManager!.Initialize(worldNode, GameManager.NPCSceneRef, GameManager.QuestManagerRef, spawnFromWorld: !hasSavedData);
-		Log.Info($"Initialize world '{Id}' managers: objects={(WorldObjectManager != null)}, enemies={EnemyManager?.Enemies.Count ?? 0}, npcs={NPCManager?.NPCs.Count ?? 0}");
+		EnemyManager!.Initialize(worldNode, GameManager!.EnemySceneRef, spawnFromWorld: !SavedData.HasValue);
+		NPCManager!.Initialize(worldNode, GameManager.NPCSceneRef, GameManager.QuestManagerRef, spawnFromWorld: !SavedData.HasValue);
+		Log.Info($"Initialize world '{Id}' managers: objects={WorldObjectManager != null}, enemies={EnemyManager?.Enemies.Count ?? 0}, npcs={NPCManager?.NPCs.Count ?? 0}");
 
-		if(hasSavedData) {
+		if(SavedData.HasValue) {
 			ApplySavedData(SavedData.Value);
 		}
 		else {
