@@ -17,6 +17,10 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_7b88o")
+SettingsScene = ExtResource("2_a712v")
+SaveMenuScene = ExtResource("3_1dhmk")
+HostPanelScene = ExtResource("4_jhcbk")
+JoinPanelScene = ExtResource("5_32jca")
 ButtonPanel = NodePath("ButtonPanel")
 SingleplayerButton = NodePath("ButtonPanel/Singleplayer_Button")
 MultiplayerButton = NodePath("ButtonPanel/Multiplayer_Button")
@@ -31,10 +35,6 @@ MultiplayerPanel = NodePath("ButtonPanel/Multiplayer_Button/Multiplayer_Popup")
 HostNewButton = NodePath("ButtonPanel/Multiplayer_Button/Multiplayer_Popup/Host_New_Button")
 HostSavedButton = NodePath("ButtonPanel/Multiplayer_Button/Multiplayer_Popup/Host_Saved_Button")
 JoinGameButton = NodePath("ButtonPanel/Multiplayer_Button/Multiplayer_Popup/Join_Game_Button")
-SettingsScene = ExtResource("2_a712v")
-SaveMenuScene = ExtResource("3_1dhmk")
-HostPanelScene = ExtResource("4_jhcbk")
-JoinPanelScene = ExtResource("5_32jca")
 
 [node name="Music" type="AudioStreamPlayer" parent="." unique_id=2128160467]
 stream = ExtResource("6_1dhmk")
@@ -72,6 +72,9 @@ offset_bottom = 279.0
 
 [node name="Singleplayer_Button" type="Button" parent="ButtonPanel" unique_id=1691967867]
 layout_mode = 2
+focus_neighbor_top = NodePath("../Quit_Button")
+focus_neighbor_right = NodePath("Singleplayer_Popup/Continue_Button")
+focus_neighbor_bottom = NodePath("../Multiplayer_Button")
 theme_override_font_sizes/font_size = 40
 text = "Singleplayer"
 
@@ -90,24 +93,36 @@ offset_bottom = 105.0
 
 [node name="Continue_Button" type="Button" parent="ButtonPanel/Singleplayer_Button/Singleplayer_Popup" unique_id=964876287]
 layout_mode = 2
+focus_neighbor_left = NodePath("../..")
+focus_neighbor_top = NodePath("../Start_New_Button")
+focus_neighbor_bottom = NodePath("../Load_Saved_Button")
 theme_override_font_sizes/font_size = 30
 text = "> Continue"
 alignment = 0
 
 [node name="Load_Saved_Button" type="Button" parent="ButtonPanel/Singleplayer_Button/Singleplayer_Popup" unique_id=933429725]
 layout_mode = 2
+focus_neighbor_left = NodePath("../..")
+focus_neighbor_top = NodePath("../Continue_Button")
+focus_neighbor_bottom = NodePath("../Start_New_Button")
 theme_override_font_sizes/font_size = 30
 text = "> Load Saved"
 alignment = 0
 
 [node name="Start_New_Button" type="Button" parent="ButtonPanel/Singleplayer_Button/Singleplayer_Popup" unique_id=226862696]
 layout_mode = 2
+focus_neighbor_left = NodePath("../..")
+focus_neighbor_top = NodePath("../Load_Saved_Button")
+focus_neighbor_bottom = NodePath("../Continue_Button")
 theme_override_font_sizes/font_size = 30
 text = "> Start New"
 alignment = 0
 
 [node name="Multiplayer_Button" type="Button" parent="ButtonPanel" unique_id=2106788877]
 layout_mode = 2
+focus_neighbor_top = NodePath("../Singleplayer_Button")
+focus_neighbor_right = NodePath("Multiplayer_Popup/Host_New_Button")
+focus_neighbor_bottom = NodePath("../Settings_Button")
 theme_override_font_sizes/font_size = 40
 disabled = true
 text = "Multiplayer"
@@ -126,6 +141,9 @@ offset_right = 140.0
 
 [node name="Host_New_Button" type="Button" parent="ButtonPanel/Multiplayer_Button/Multiplayer_Popup" unique_id=337774414]
 layout_mode = 2
+focus_neighbor_left = NodePath("../..")
+focus_neighbor_top = NodePath("../Join_Game_Button")
+focus_neighbor_bottom = NodePath("../Host_Saved_Button")
 theme_override_font_sizes/font_size = 30
 disabled = true
 text = "> Host New"
@@ -133,6 +151,9 @@ alignment = 0
 
 [node name="Host_Saved_Button" type="Button" parent="ButtonPanel/Multiplayer_Button/Multiplayer_Popup" unique_id=495328532]
 layout_mode = 2
+focus_neighbor_left = NodePath("../..")
+focus_neighbor_top = NodePath("../Host_New_Button")
+focus_neighbor_bottom = NodePath("../Join_Game_Button")
 theme_override_font_sizes/font_size = 30
 disabled = true
 text = "> Host Saved"
@@ -140,6 +161,9 @@ alignment = 0
 
 [node name="Join_Game_Button" type="Button" parent="ButtonPanel/Multiplayer_Button/Multiplayer_Popup" unique_id=1757166324]
 layout_mode = 2
+focus_neighbor_left = NodePath("../..")
+focus_neighbor_top = NodePath("../Host_Saved_Button")
+focus_neighbor_bottom = NodePath("../Host_New_Button")
 theme_override_font_sizes/font_size = 30
 disabled = true
 text = "> Join"
@@ -147,15 +171,21 @@ alignment = 0
 
 [node name="Settings_Button" type="Button" parent="ButtonPanel" unique_id=1623634328]
 layout_mode = 2
+focus_neighbor_top = NodePath("../Multiplayer_Button")
+focus_neighbor_bottom = NodePath("../Extras_Button")
 theme_override_font_sizes/font_size = 40
 text = "Settings"
 
 [node name="Extras_Button" type="Button" parent="ButtonPanel" unique_id=41319027]
 layout_mode = 2
+focus_neighbor_top = NodePath("../Settings_Button")
+focus_neighbor_bottom = NodePath("../Quit_Button")
 theme_override_font_sizes/font_size = 40
 text = "Extras"
 
 [node name="Quit_Button" type="Button" parent="ButtonPanel" unique_id=968431614]
 layout_mode = 2
+focus_neighbor_top = NodePath("../Extras_Button")
+focus_neighbor_bottom = NodePath("../Singleplayer_Button")
 theme_override_font_sizes/font_size = 40
 text = "Quit"
