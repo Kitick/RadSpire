@@ -1,6 +1,8 @@
 namespace ItemSystem.WorldObjects.House;
 
 using System;
+using System.Collections.Generic;
+using Character;
 using GameWorld;
 using Godot;
 using ItemSystem.Icons;
@@ -8,6 +10,7 @@ using ItemSystem.WorldObjects;
 using Services;
 
 public sealed partial class GameWorldState : Node, ISaveable<GameWorldStateData> {
+	private static readonly LogService Log = new(nameof(GameWorldState), enabled: true);
 	[Export] public PackedScene BaseScene = null!;
 	public string Id { get; private set; } = Guid.NewGuid().ToString();
 
@@ -18,11 +21,14 @@ public sealed partial class GameWorldState : Node, ISaveable<GameWorldStateData>
 	private bool IsInitialized;
 	public Item3DIconManager? Item3DIconManager;
 	public WorldObjectManager? WorldObjectManager;
+	public EnemyManager? EnemyManager;
+	public NPCManager? NPCManager;
 	private GameWorldStateData? SavedData;
 	public Node? CurrentWorldNode => ActiveWorldNode;
 
 	public void Initialize(Node worldRoot, GameWorldManager gameWorldManager, GameManager? gameManager) {
 		if(IsInitialized) {
+			Log.Info($"Initialize skipped for world '{Id}' (already initialized).");
 			return;
 		}
 
@@ -34,9 +40,13 @@ public sealed partial class GameWorldState : Node, ISaveable<GameWorldStateData>
 		SetupManagers();
 
 		Node worldNode = ActiveWorldNode ?? WorldRoot ?? this;
+		bool hasSavedData = SavedData.HasValue;
 		WorldObjectManager!.SetUpWorldObjectManager(worldNode, worldNode, GameWorldManager!, GameManager!);
+		EnemyManager!.Initialize(worldNode, GameManager!.EnemySceneRef, spawnFromWorld: !hasSavedData);
+		NPCManager!.Initialize(worldNode, GameManager.NPCSceneRef, GameManager.QuestManagerRef, spawnFromWorld: !hasSavedData);
+		Log.Info($"Initialize world '{Id}' managers: objects={(WorldObjectManager != null)}, enemies={EnemyManager?.Enemies.Count ?? 0}, npcs={NPCManager?.NPCs.Count ?? 0}");
 
-		if(SavedData.HasValue) {
+		if(hasSavedData) {
 			ApplySavedData(SavedData.Value);
 		}
 		else {
@@ -44,6 +54,7 @@ public sealed partial class GameWorldState : Node, ISaveable<GameWorldStateData>
 		}
 
 		IsInitialized = true;
+		Log.Info($"Initialize complete for world '{Id}'.");
 	}
 
 	public GameWorldState(PackedScene baseScene, Node worldRoot, GameWorldManager gameWorldManager, GameManager? gameManager) {
@@ -59,6 +70,8 @@ public sealed partial class GameWorldState : Node, ISaveable<GameWorldStateData>
 			BaseScenePath = BaseScene?.ResourcePath ?? string.Empty,
 			Item3DIconManager = Item3DIconManager?.Export() ?? SavedData?.Item3DIconManager ?? new Item3DIconManagerData(),
 			WorldObjectManager = WorldObjectManager?.Export() ?? SavedData?.WorldObjectManager ?? new WorldObjectManagerData(),
+			EnemyManager = EnemyManager?.Export() ?? SavedData?.EnemyManager ?? new EnemyManagerData { Enemies = new Dictionary<string, EnemyData>() },
+			NPCManager = NPCManager?.Export() ?? SavedData?.NPCManager ?? new NPCManagerData { NPCs = new Dictionary<string, NPCData>() },
 		};
 
 		SavedData = data;
@@ -84,14 +97,28 @@ public sealed partial class GameWorldState : Node, ISaveable<GameWorldStateData>
 		if(WorldObjectManager != null) {
 			WorldObjectManager.Import(data.WorldObjectManager);
 		}
+		if(EnemyManager != null) {
+			EnemyManager.Import(data.EnemyManager);
+		}
+		if(NPCManager != null) {
+			NPCManager.Import(data.NPCManager);
+		}
+		Log.Info($"Import world '{Id}' data: enemyRecords={data.EnemyManager.Enemies?.Count ?? 0}, npcRecords={data.NPCManager.NPCs?.Count ?? 0}");
 	}
 
 	public void Cleanup() {
+		Log.Info($"Cleanup start for world '{Id}'. enemies={EnemyManager?.Enemies.Count ?? 0}, npcs={NPCManager?.NPCs.Count ?? 0}");
 		if(IsInstanceValid(Item3DIconManager)) {
 			Item3DIconManager.QueueFree();
 		}
 		if(IsInstanceValid(WorldObjectManager)) {
 			WorldObjectManager.QueueFree();
+		}
+		if(IsInstanceValid(EnemyManager)) {
+			EnemyManager.QueueFree();
+		}
+		if(IsInstanceValid(NPCManager)) {
+			NPCManager.QueueFree();
 		}
 		if(IsInstanceValid(ActiveWorldNode)) {
 			ActiveWorldNode.QueueFree();
@@ -99,9 +126,12 @@ public sealed partial class GameWorldState : Node, ISaveable<GameWorldStateData>
 
 		Item3DIconManager = null;
 		WorldObjectManager = null;
+		EnemyManager = null;
+		NPCManager = null;
 		ActiveWorldNode = null;
 		WorldRoot = null;
 		IsInitialized = false;
+		Log.Info($"Cleanup complete for world '{Id}'.");
 	}
 
 	private void ApplySavedData(GameWorldStateData data) {
@@ -110,6 +140,12 @@ public sealed partial class GameWorldState : Node, ISaveable<GameWorldStateData>
 		}
 		if(WorldObjectManager != null) {
 			WorldObjectManager.Import(data.WorldObjectManager);
+		}
+		if(EnemyManager != null) {
+			EnemyManager.Import(data.EnemyManager);
+		}
+		if(NPCManager != null) {
+			NPCManager.Import(data.NPCManager);
 		}
 	}
 
@@ -142,6 +178,14 @@ public sealed partial class GameWorldState : Node, ISaveable<GameWorldStateData>
 			WorldObjectManager = new WorldObjectManager();
 			AddChild(WorldObjectManager);
 		}
+		if(EnemyManager == null) {
+			EnemyManager = new EnemyManager();
+			AddChild(EnemyManager);
+		}
+		if(NPCManager == null) {
+			NPCManager = new NPCManager();
+			AddChild(NPCManager);
+		}
 	}
 }
 
@@ -150,4 +194,6 @@ public readonly record struct GameWorldStateData : ISaveData {
 	public string BaseScenePath { get; init; }
 	public Item3DIconManagerData Item3DIconManager { get; init; }
 	public WorldObjectManagerData WorldObjectManager { get; init; }
+	public EnemyManagerData EnemyManager { get; init; }
+	public NPCManagerData NPCManager { get; init; }
 }

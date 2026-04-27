@@ -54,12 +54,15 @@ public sealed class DoorComponent : IObjectComponent, IInteract, ISaveable<DoorC
 			string mainWorldId = GameWorldManager.MainGameWorldId;
 			WorldID = mainWorldId;
 
-			Vector3? resolvedSpawnPosition = HasConfiguredSpawnPosition(SpawnPosition) ? SpawnPosition : null;
-			if(!resolvedSpawnPosition.HasValue && !string.IsNullOrEmpty(currentWorldId) && currentWorldId != mainWorldId) {
+			Vector3? resolvedSpawnPosition = null;
+			if(!string.IsNullOrEmpty(currentWorldId) && currentWorldId != mainWorldId) {
 				resolvedSpawnPosition = GameManager.GetMainWorldReturnPosition(currentWorldId);
 				if(!resolvedSpawnPosition.HasValue) {
 					resolvedSpawnPosition = GameManager.GetLastKnownMainWorldPlayerPosition();
 				}
+			}
+			if(!resolvedSpawnPosition.HasValue && HasConfiguredSpawnPosition(SpawnPosition)) {
+				resolvedSpawnPosition = SpawnPosition;
 			}
 
 			Log.Info($"Door returning player to main world: {WorldID}");

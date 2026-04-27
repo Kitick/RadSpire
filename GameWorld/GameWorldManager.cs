@@ -25,6 +25,8 @@ public partial class GameWorldManager : Node, ISaveable<GameWorldManagerData> {
 	public GameWorldState? CurrentGameWorld => GetCurrentGameWorld();
 	public Item3DIconManager? Item3DIconManager => CurrentGameWorld?.Item3DIconManager;
 	public WorldObjectManager? WorldObjectManager => CurrentGameWorld?.WorldObjectManager;
+	public EnemyManager? EnemyManager => CurrentGameWorld?.EnemyManager;
+	public NPCManager? NPCManager => CurrentGameWorld?.NPCManager;
 
 	public void Initialize(Node worldRoot, GameManager? gameManager) {
 		WorldRoot = worldRoot;
@@ -61,18 +63,24 @@ public partial class GameWorldManager : Node, ISaveable<GameWorldManagerData> {
 			return true;
 		}
 
+		Log.Info($"SwitchToGameWorld start: from='{CurrentGameWorldId}' to='{gameWorldId}', worlds={GameWorlds.Count}");
+
 		if(CurrentGameWorld != null) {
 			GameWorldStateData currentData = CurrentGameWorld.Export();
+			Log.Info($"Exported current world '{CurrentGameWorldId}'.");
 			CurrentGameWorld.Cleanup();
 			CurrentGameWorld.Import(currentData);
+			Log.Info($"Cleaned + re-imported world '{CurrentGameWorldId}'.");
 		}
 
 		CurrentGameWorldId = gameWorldId;
 
 		if(IsInitialized && WorldRoot != null) {
 			gameWorld.Initialize(WorldRoot, this, GameManager);
+			Log.Info($"Initialized target world '{gameWorldId}'.");
 		}
 
+		Log.Info($"SwitchToGameWorld end: current='{CurrentGameWorldId}'");
 		return true;
 	}
 
