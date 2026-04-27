@@ -1,8 +1,9 @@
 namespace UI.RespawnMenu;
 
 using Godot;
+using UI;
 
-public partial class RespawnMenu : Control {
+public partial class RespawnMenu : BaseUIControl {
 	public Button RespawnButton = null!;
 	public Button MainMenuButton = null!;
 
@@ -11,7 +12,10 @@ public partial class RespawnMenu : Control {
 	private const string RESPAWN_BUTTON = $"{BUTTONS}/Respawn";
 	private const string MAIN_MENU = $"{BUTTONS}/Main_Menu";
 
+	protected override Button? DefaultFocus => RespawnButton;
+
 	public override void _Ready() {
+		base._Ready();
 		GetComponents();
 	}
 
@@ -22,6 +26,7 @@ public partial class RespawnMenu : Control {
 
 	public void OpenMenu() {
 		Visible = true;
+		OnOpen();
 	}
 
 	public void CloseMenu() {

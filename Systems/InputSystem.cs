@@ -15,6 +15,12 @@ public sealed partial class InputSystem : Node {
 	public event Action<InputEventMouseMotion>? OnMouseMoved;
 	public event Action<InputEventJoypadMotion>? OnJoypadMoved;
 
+	public enum InputMode { MouseKeyboard, Controller }
+	public InputMode CurrentInputMode { get; private set; } = InputMode.MouseKeyboard;
+	public event Action<InputMode>? OnInputModeChanged;
+
+	private const float ControllerModeDeadzoneDefault = 0.2f;
+
 	public override void _Ready() {
 		Instance = this;
 		ProcessMode = ProcessModeEnum.Always;
@@ -23,14 +29,27 @@ public sealed partial class InputSystem : Node {
 
 	public override void _Input(InputEvent input) {
 		if(input is InputEventMouseMotion mouse) {
+			SetInputMode(InputMode.MouseKeyboard);
 			Log.Info($"Mouse moved {mouse.Relative}");
 			OnMouseMoved?.Invoke(mouse);
-		} else if(input is InputEventJoypadMotion joypad) {
+		}
+		else if(input is InputEventJoypadMotion joypad) {
+			if(Mathf.Abs(joypad.AxisValue) > ControllerModeDeadzoneDefault) { SetInputMode(InputMode.Controller); }
 			Log.Info($"Joypad moved {joypad.Axis} : {joypad.AxisValue}");
 			OnJoypadMoved?.Invoke(joypad);
-		} else {
+		}
+		else {
+			if(input is InputEventKey or InputEventMouseButton) { SetInputMode(InputMode.MouseKeyboard); }
+			else if(input is InputEventJoypadButton) { SetInputMode(InputMode.Controller); }
 			CheckActionEvents(input);
 		}
+	}
+
+	private void SetInputMode(InputMode mode) {
+		if(CurrentInputMode == mode) { return; }
+		CurrentInputMode = mode;
+		Log.Info($"Input mode changed: {mode}");
+		OnInputModeChanged?.Invoke(mode);
 	}
 
 	private void CheckActionEvents(InputEvent input) {
@@ -41,7 +60,8 @@ public sealed partial class InputSystem : Node {
 			if(input.IsActionPressed(action.Name)) {
 				Log.Info($"Pressed {action.Name}");
 				OnActionPressed?.Invoke(action);
-			} else if(input.IsActionReleased(action.Name)) {
+			}
+			else if(input.IsActionReleased(action.Name)) {
 				Log.Info($"Released {action.Name}");
 				OnActionReleased?.Invoke(action);
 			}

@@ -6,7 +6,7 @@
 [BUG] Enemies attack your dead body
 [BUG] Esc will close the respawn menu
 [BUG] Enemy sprinting isnt much faster
-[BUG] A selectionbox is shown on pause open
+[BUG] Main menu controller navigation is not consistant
 
 [IMP] Killing enemies is too easy
 [IMP] Add in world game music

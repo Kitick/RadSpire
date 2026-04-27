@@ -3,8 +3,9 @@ namespace UI.PauseMenu;
 using Godot;
 using Network;
 using Root;
+using UI;
 
-public sealed partial class PauseMenu : Control {
+public sealed partial class PauseMenu : BaseUIControl {
 	[ExportCategory("Buttons")]
 	[Export] public Button ResumeButton = null!;
 	[Export] public Button SaveButton = null!;
@@ -12,7 +13,10 @@ public sealed partial class PauseMenu : Control {
 	[Export] public Button SettingsButton = null!;
 	[Export] public Button MainMenuButton = null!;
 
+	protected override Button? DefaultFocus => ResumeButton;
+
 	public override void _Ready() {
+		base._Ready();
 		this.ValidateExports();
 		ProcessMode = ProcessModeEnum.WhenPaused;
 	}
@@ -20,7 +24,7 @@ public sealed partial class PauseMenu : Control {
 	public void OpenMenu() {
 		UpdateHostButtonText();
 		Visible = true;
-		ResumeButton.GrabFocus();
+		OnOpen();
 	}
 
 	public void CloseMenu() {

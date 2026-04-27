@@ -4,8 +4,9 @@ using System;
 using Godot;
 using Root;
 using Services;
+using UI;
 
-public sealed partial class SaveMenu : Control {
+public sealed partial class SaveMenu : BaseUIControl {
 	private static readonly LogService Log = new(nameof(SaveMenu), enabled: true);
 
 	[ExportCategory("UI Elements")]
@@ -29,9 +30,12 @@ public sealed partial class SaveMenu : Control {
 
 	public SaveMode Mode { get; private set; }
 
+	protected override Button? DefaultFocus => SlotButtons[0];
+
 	public static string SlotFile(int slot) => $"slot{slot}";
 
 	public override void _Ready() {
+		base._Ready();
 		this.ValidateExports();
 		ProcessMode = ProcessModeEnum.Always;
 
@@ -41,6 +45,7 @@ public sealed partial class SaveMenu : Control {
 	}
 
 	public override void _ExitTree() {
+		base._ExitTree();
 		OnExit?.Invoke();
 	}
 
@@ -63,6 +68,11 @@ public sealed partial class SaveMenu : Control {
 			SlotButtons[i] = button;
 			SlotContainer.AddChild(button);
 		}
+
+		for(int i = 0; i < SlotCount; i++) {
+			SlotButtons[i].FocusNeighborTop = SlotButtons[(i - 1 + SlotCount) % SlotCount].GetPath();
+			SlotButtons[i].FocusNeighborBottom = SlotButtons[(i + 1) % SlotCount].GetPath();
+		}
 	}
 
 	private void SetCallbacks() {
@@ -84,6 +94,7 @@ public sealed partial class SaveMenu : Control {
 		Mode = mode;
 
 		RefreshSlotDisplay();
+		OnOpen();
 	}
 
 	private void CloseMenu() {

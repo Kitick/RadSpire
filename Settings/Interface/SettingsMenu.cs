@@ -46,6 +46,7 @@ public sealed partial class SettingsMenu : BaseUIControl {
 	private event Action? OnExit;
 
 	public override void _Ready() {
+		base._Ready();
 		this.ValidateExports();
 		ProcessMode = ProcessModeEnum.Always;
 
@@ -56,6 +57,7 @@ public sealed partial class SettingsMenu : BaseUIControl {
 	}
 
 	public override void _ExitTree() {
+		base._ExitTree();
 		OnExit?.Invoke();
 	}
 
@@ -109,20 +111,11 @@ public sealed partial class SettingsMenu : BaseUIControl {
 		}
 	}
 
+	protected override Button? DefaultFocus => DisplayButton;
+
 	public void OpenMenu() {
 		LoadData();
-
-		if(ActivePanel == null) {
-			DisplayButton.GrabFocus();
-		}
-		else {
-			foreach(var (panel, button) in Panels) {
-				if(panel == ActivePanel) {
-					button.GrabFocus();
-					break;
-				}
-			}
-		}
+		OnOpen();
 	}
 
 	private void CloseMenu() {
