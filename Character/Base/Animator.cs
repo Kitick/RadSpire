@@ -8,7 +8,7 @@ using Services;
 using CharState = CharacterBase.State;
 
 public sealed partial class Animator : AnimationPlayer {
-	private static readonly LogService Log = new(nameof(Animator), enabled: true);
+	private static readonly LogService Log = new(nameof(Animator), enabled: false);
 
 	private PlayerAudio? Audio;
 
