@@ -33,69 +33,71 @@ public static class RarityDefinitions {
 
 	public static readonly RarityDefinition Common = new(
 		RarityLevel: Rarity.Common,
-		UpperBound: 12,
-		LowerBound: 6,
+		UpperBound: 9,
+		LowerBound: 4,
 		PossibleContents: [
 			new(ItemID.AppleGreen, 4),
 				new(ItemID.BananaYellow, 4),
-				new(ItemID.BerryGreen, 3),
+				new(ItemID.BerryGreen, 4),
 				new(ItemID.BlueberryGreen, 3),
 				new(ItemID.CherryGreen, 2),
 				new(ItemID.StrawberryGreen, 2),
-				new(ItemID.Wood, 4),
-				new(ItemID.Stick, 4),
-				new(ItemID.StonePiece, 3),
-				new(ItemID.Stone, 2)
+				new(ItemID.Wood, 6),
+				new(ItemID.Stick, 6),
+				new(ItemID.StonePiece, 5),
+				new(ItemID.Stone, 3)
 		]
 	);
 
 	public static readonly RarityDefinition Rare = new(
 		RarityLevel: Rarity.Rare,
-		UpperBound: 18,
-		LowerBound: 10,
+		UpperBound: 12,
+		LowerBound: 6,
 		PossibleContents: [
-			new(ItemID.AppleRed, 4),
-				new(ItemID.AppleYellow, 4),
+			new(ItemID.AppleRed, 3),
+				new(ItemID.AppleYellow, 3),
 				new(ItemID.BananaGreen, 3),
 				new(ItemID.BerryRed, 3),
-				new(ItemID.CherryRed, 3),
+				new(ItemID.CherryRed, 2),
 				new(ItemID.BerryBlack, 2),
 				new(ItemID.BlueberryBlue, 2),
 				new(ItemID.StrawberryRed, 2),
-				new(ItemID.BananaYellow, 1),
-				new(ItemID.Barrel, 1),
-				new(ItemID.IronOre, 3),
-				new(ItemID.IronChunk, 2),
-				new(ItemID.IronBar, 1),
+				new(ItemID.Wood, 3),
+				new(ItemID.Stone, 3),
+				new(ItemID.IronOre, 5),
+				new(ItemID.IronChunk, 3),
+				new(ItemID.IronBar, 2),
 				new(ItemID.GoldOre, 2),
 				new(ItemID.GoldChunk, 1),
 				new(ItemID.SwordWood, 1),
-				new(ItemID.ShieldWood, 1)
+				new(ItemID.ShieldWood, 1),
+				new(ItemID.Barrel, 1)
 		]
 	);
 
 	public static readonly RarityDefinition Precious = new(
 		RarityLevel: Rarity.Precious,
-		UpperBound: 24,
-		LowerBound: 14,
+		UpperBound: 16,
+		LowerBound: 9,
 		PossibleContents: [
-			new(ItemID.CoconutGreenOpen, 4),
-				new(ItemID.CoconutBrownOpen, 4),
-				new(ItemID.StrawberryRed, 3),
-				new(ItemID.BlueberryBlue, 3),
+			new(ItemID.CoconutGreenOpen, 3),
+				new(ItemID.CoconutBrownOpen, 3),
+				new(ItemID.StrawberryRed, 2),
+				new(ItemID.BlueberryBlue, 2),
 				new(ItemID.BerryBlack, 2),
 				new(ItemID.CherryRed, 2),
-				new(ItemID.Bonfire, 2),
+				new(ItemID.Bonfire, 1),
 				new(ItemID.Barrel, 1),
-				new(ItemID.IronBar, 3),
-				new(ItemID.GoldBar, 2),
-				new(ItemID.GoldChunk, 2),
+				new(ItemID.IronBar, 5),
+				new(ItemID.GoldChunk, 4),
+				new(ItemID.GoldBar, 3),
 				new(ItemID.SwordIron, 2),
 				new(ItemID.SwordGold, 1),
 				new(ItemID.ShieldIron, 2),
 				new(ItemID.HeadpieceIron, 1),
 				new(ItemID.ChestpieceIron, 1),
-				new(ItemID.PantpieceIron, 1)
+				new(ItemID.PantpieceIron, 1),
+				new(ItemID.ChestRare, 1)
 		]
 	);
 

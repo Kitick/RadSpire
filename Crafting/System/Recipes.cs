@@ -131,8 +131,8 @@ public static class Recipes {
 	public static readonly CraftingRecipe CraftChestCommon = new(
 		RecipeName: "Craft Common Chest",
 		Inputs: [
-			new(ItemID.Wood, 4),
-				new(ItemID.IronBar, 1)
+			new(ItemID.Wood, 6),
+				new(ItemID.Stick, 2)
 		],
 		Outputs: [new(ItemID.ChestCommon, 1)]
 	);
@@ -141,8 +141,8 @@ public static class Recipes {
 		RecipeName: "Craft Rare Chest",
 		Inputs: [
 			new(ItemID.ChestCommon, 1),
-				new(ItemID.IronBar, 3),
-				new(ItemID.Stone, 2)
+				new(ItemID.IronBar, 4),
+				new(ItemID.Stone, 6)
 		],
 		Outputs: [new(ItemID.ChestRare, 1)]
 	);
@@ -151,7 +151,8 @@ public static class Recipes {
 		RecipeName: "Craft Precious Chest",
 		Inputs: [
 			new(ItemID.ChestRare, 1),
-				new(ItemID.GoldBar, 3)
+				new(ItemID.GoldBar, 5),
+				new(ItemID.IronBar, 2)
 		],
 		Outputs: [new(ItemID.ChestPrecious, 1)]
 	);
@@ -274,12 +275,6 @@ public static class Recipes {
 		RecipeName: "Craft Medium House",
 		Inputs: [new(ItemID.Wood, 32), new(ItemID.Stone, 20), new(ItemID.IronBar, 6), new(ItemID.Stick, 10)],
 		Outputs: [new(ItemID.HouseMedium, 1)]
-	);
-
-	public static readonly CraftingRecipe CraftHouse1 = new(
-		RecipeName: "Craft House",
-		Inputs: [new(ItemID.Wood, 45), new(ItemID.Stone, 28), new(ItemID.IronBar, 10), new(ItemID.GoldBar, 3), new(ItemID.Stick, 14)],
-		Outputs: [new(ItemID.House1, 1)]
 	);
 
 	public static readonly CraftingRecipe[] AllRecipes = [
