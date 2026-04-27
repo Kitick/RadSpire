@@ -5,8 +5,8 @@ using Godot;
 using Network.Panels;
 using Root;
 using Services;
-using UI.SaveMenu;
 using Settings.Interface;
+using UI.SaveMenu;
 
 public sealed partial class MainMenu : BaseUIControl {
 	private static readonly LogService Log = new(nameof(MainMenu), enabled: true);
@@ -110,7 +110,7 @@ public sealed partial class MainMenu : BaseUIControl {
 
 	private bool IsMouseInside(params Control[] nodes) {
 		Vector2 mousePos = GetViewport().GetMousePosition();
-		foreach(var node in nodes) {
+		foreach(Control node in nodes) {
 			if(node.GetGlobalRect().HasPoint(mousePos)) {
 				return true;
 			}
@@ -125,9 +125,10 @@ public sealed partial class MainMenu : BaseUIControl {
 
 	// Local popup management
 	private void OpenSettings() {
-		var settings = this.AddScene<SettingsMenu>(SettingsScene);
+		SettingsMenu settings = this.AddScene<SettingsMenu>(SettingsScene);
 
 		settings.TreeExited += () => {
+			if(!IsInsideTree()) { return; }
 			ButtonPanel.Visible = true;
 
 			if(UsingNavigation) {
@@ -140,21 +141,21 @@ public sealed partial class MainMenu : BaseUIControl {
 	}
 
 	private void OpenSaveMenu() {
-		var saveMenu = this.AddScene<SaveMenu>(SaveMenuScene);
+		SaveMenu saveMenu = this.AddScene<SaveMenu>(SaveMenuScene);
 		saveMenu.OnLoad += fileName => OnLoadGame?.Invoke(fileName);
-		saveMenu.TreeExited += () => LoadSavedButton.GrabFocus();
+		saveMenu.TreeExited += () => { if(IsInsideTree()) { LoadSavedButton.GrabFocus(); } };
 		saveMenu.OpenMenu(SaveMenu.SaveMode.Load);
 	}
 
 	private void OpenHostPanel() {
-		var host = this.AddScene<HostPanel>(HostPanelScene);
-		host.TreeExited += () => HostNewButton.GrabFocus();
+		HostPanel host = this.AddScene<HostPanel>(HostPanelScene);
+		host.TreeExited += () => { if(IsInsideTree()) { HostNewButton.GrabFocus(); } };
 		host.OpenMenu();
 	}
 
 	private void OpenJoinPanel() {
-		var join = this.AddScene<JoinPanel>(JoinPanelScene);
-		join.TreeExited += () => JoinGameButton.GrabFocus();
+		JoinPanel join = this.AddScene<JoinPanel>(JoinPanelScene);
+		join.TreeExited += JoinGameButton.GrabFocus;
 		join.OpenMenu();
 	}
 
@@ -175,7 +176,7 @@ public sealed partial class MainMenu : BaseUIControl {
 	public override void _Process(double delta) {
 		if(!UsingNavigation) { return; }
 
-		var focused = GetViewport().GuiGetFocusOwner();
+		Control focused = GetViewport().GuiGetFocusOwner();
 
 		if(focused == SingleplayerButton || focused == ContinueButton ||
 		   focused == LoadSavedButton || focused == StartNewButton) {
