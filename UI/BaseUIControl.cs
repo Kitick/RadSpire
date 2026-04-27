@@ -5,7 +5,7 @@ using Services;
 
 public abstract partial class BaseUIControl : Control {
 
-	protected virtual Button? DefaultFocus => null;
+	protected virtual Control? DefaultFocus => null;
 
 	public override void _Ready() {
 		ApplyHoverFocus(this);
@@ -27,9 +27,11 @@ public abstract partial class BaseUIControl : Control {
 
 	protected void OnOpen() {
 		if(InputSystem.Instance.CurrentInputMode == InputSystem.InputMode.Controller) {
-			DefaultFocus?.GrabFocus();
+			CallDeferred(MethodName.GrabDefaultFocus);
 		}
 	}
+
+	private void GrabDefaultFocus() => DefaultFocus?.GrabFocus();
 
 	private void OnInputModeChanged(InputSystem.InputMode mode) {
 		if(!IsInsideTree()) { return; }
@@ -38,12 +40,12 @@ public abstract partial class BaseUIControl : Control {
 		}
 		else {
 			if(GetViewport().GuiGetFocusOwner() == null) {
-				DefaultFocus?.GrabFocus();
+				CallDeferred(MethodName.GrabDefaultFocus);
 			}
 		}
 	}
 
-	protected void ApplyHoverFocus(Control root) {
+	protected static void ApplyHoverFocus(Control root) {
 		foreach(Node child in root.GetChildren()) {
 			if(child is Control control) {
 				if(control.FocusMode != FocusModeEnum.None) {

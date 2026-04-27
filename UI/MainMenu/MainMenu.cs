@@ -41,7 +41,7 @@ public sealed partial class MainMenu : BaseUIControl {
 
 	private const float HideDelay = 0.25f;
 
-	protected override Button? DefaultFocus => SingleplayerButton;
+	protected override Control? DefaultFocus => SingleplayerButton;
 
 	public event Action? OnStartNewGame;
 	public event Action? OnContinueGame;

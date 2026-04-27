@@ -1,12 +1,12 @@
 [BUG] crafting the sword does not equip it right away
 [BUG] shield does nothing
 [BUG] Crafting UI is broken
+[BUG] Menu music doesnt loop
 
 [BUG] Respawning crashes the game
 [BUG] Enemies attack your dead body
 [BUG] Esc will close the respawn menu
 [BUG] Enemy sprinting isnt much faster
-[BUG] Main menu controller navigation is not consistant
 
 [IMP] Killing enemies is too easy
 [IMP] Add in world game music

@@ -11,6 +11,8 @@ public sealed partial class ControllerPanel : VBoxContainer {
 	[Export] private HSlider ControllerSensitivitySlider = null!;
 	[Export] private Button RemapButtonsButton = null!;
 
+	public Control FirstControl => ControllerSensitivitySlider;
+
 	public override void _Ready() {
 		this.ValidateExports();
 		DeadzoneSlider.ApplyBounds(ControllerSettings.Deadzone);

@@ -12,6 +12,8 @@ public sealed partial class SoundPanel : VBoxContainer {
 	[Export] private CheckBox MuteAllCheckBox = null!;
 	[Export] private OptionButton OutputDeviceOption = null!;
 
+	public Control FirstControl => MasterSlider;
+
 	public override void _Ready() {
 		this.ValidateExports();
 

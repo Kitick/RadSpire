@@ -12,9 +12,8 @@ public sealed partial class DisplayPanel : VBoxContainer {
 	[Export] private HSlider BrightnessSlider = null!;
 	[Export] private OptionButton FramerateOption = null!;
 
-	public Control[] Order => [
-		ResolutionOption, FullscreenCheck, VSyncCheck, BrightnessSlider, FramerateOption
-	];
+	public Control FirstControl => ResolutionOption;
+
 
 	public override void _Ready() {
 		this.ValidateExports();

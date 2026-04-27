@@ -23,8 +23,8 @@ SoundPanel = NodePath("Sound")
 SoundButton = NodePath("NavBar/Sound_Button")
 ControllerPanel = NodePath("Controller")
 ControllerButton = NodePath("NavBar/Controller_Button")
-MKPanel = NodePath("MK")
-MKButton = NodePath("NavBar/MK_Button")
+MKPanel = NodePath("Keyboard")
+MKButton = NodePath("NavBar/Keyboard_Button")
 
 [node name="PanelArea" type="ColorRect" parent="." unique_id=1866459416]
 layout_mode = 1
@@ -48,33 +48,35 @@ alignment = 1
 
 [node name="Display_Button" type="Button" parent="NavBar" unique_id=465923652]
 layout_mode = 2
+focus_neighbor_left = NodePath("../Controller_Button")
 focus_neighbor_right = NodePath("../Sound_Button")
-focus_neighbor_bottom = NodePath("../../Display")
+focus_neighbor_bottom = NodePath("../../Display/Resolution/OptionButton")
 theme_override_font_sizes/font_size = 35
 text = "Display"
 
 [node name="Sound_Button" type="Button" parent="NavBar" unique_id=1150145720]
 layout_mode = 2
 focus_neighbor_left = NodePath("../Display_Button")
-focus_neighbor_right = NodePath("../Controller_Button")
-focus_neighbor_bottom = NodePath("../../Sound")
+focus_neighbor_right = NodePath("../Keyboard_Button")
+focus_neighbor_bottom = NodePath("../../Sound/Master/HSlider")
 theme_override_font_sizes/font_size = 35
 text = "Sound"
 
-[node name="Controller_Button" type="Button" parent="NavBar" unique_id=1841363012]
+[node name="Keyboard_Button" type="Button" parent="NavBar" unique_id=1818435186]
 layout_mode = 2
 focus_neighbor_left = NodePath("../Sound_Button")
-focus_neighbor_right = NodePath("../MK_Button")
-focus_neighbor_bottom = NodePath("../../Controller")
-theme_override_font_sizes/font_size = 35
-text = "Controller"
-
-[node name="MK_Button" type="Button" parent="NavBar" unique_id=1818435186]
-layout_mode = 2
-focus_neighbor_left = NodePath("../Controller_Button")
-focus_neighbor_bottom = NodePath("../../MK")
+focus_neighbor_right = NodePath("../Controller_Button")
+focus_neighbor_bottom = NodePath("../../Keyboard/Mouse_Sense/HSlider")
 theme_override_font_sizes/font_size = 35
 text = "Keyboard"
+
+[node name="Controller_Button" type="Button" parent="NavBar" unique_id=1841363012]
+layout_mode = 2
+focus_neighbor_left = NodePath("../Keyboard_Button")
+focus_neighbor_right = NodePath("../Display_Button")
+focus_neighbor_bottom = NodePath("../../Controller/Controller_Sense/HSlider")
+theme_override_font_sizes/font_size = 35
+text = "Controller"
 
 [node name="Display" type="VBoxContainer" parent="." unique_id=730687821 node_paths=PackedStringArray("ResolutionOption", "FullscreenCheck", "VSyncCheck", "BrightnessSlider", "FramerateOption")]
 layout_mode = 1
@@ -108,6 +110,7 @@ offset_top = -16.0
 offset_right = 48.0
 offset_bottom = 16.0
 focus_neighbor_top = NodePath("../../../NavBar/Display_Button")
+focus_neighbor_bottom = NodePath("../../../Display/Fullscreen/CheckBox")
 theme_override_font_sizes/font_size = 20
 
 [node name="Fullscreen" type="Label" parent="Display" unique_id=872083276]
@@ -126,6 +129,8 @@ anchor_bottom = 0.5
 offset_left = 28.0
 offset_top = -16.0
 scale = Vector2(1.5, 1.5)
+focus_neighbor_top = NodePath("../../../Display/Resolution/OptionButton")
+focus_neighbor_bottom = NodePath("../../../Display/VSync/CheckBox")
 
 [node name="VSync" type="Label" parent="Display" unique_id=2147413102]
 layout_mode = 2
@@ -143,6 +148,8 @@ anchor_bottom = 0.5
 offset_left = 28.0
 offset_top = -16.0
 scale = Vector2(1.5, 1.5)
+focus_neighbor_top = NodePath("../../../Display/Fullscreen/CheckBox")
+focus_neighbor_bottom = NodePath("../../../Display/Brightness/HSlider")
 
 [node name="Brightness" type="Label" parent="Display" unique_id=803022101]
 layout_mode = 2
@@ -161,6 +168,8 @@ offset_left = 78.0
 offset_top = -18.0
 offset_right = 193.0
 offset_bottom = 18.0
+focus_neighbor_top = NodePath("../../../Display/VSync/CheckBox")
+focus_neighbor_bottom = NodePath("../../../Display/Framerate/OptionButton")
 max_value = 2.0
 step = 0.01
 value = 1.0
@@ -182,6 +191,8 @@ offset_left = 32.0
 offset_top = -16.0
 offset_right = 48.0
 offset_bottom = 16.0
+focus_neighbor_top = NodePath("../../../Display/Brightness/HSlider")
+focus_neighbor_bottom = NodePath("../../../BackButton")
 theme_override_font_sizes/font_size = 20
 
 [node name="Sound" type="VBoxContainer" parent="." unique_id=626981101 node_paths=PackedStringArray("MasterSlider", "MusicSlider", "SFXSlider", "MuteAllCheckBox", "OutputDeviceOption")]
@@ -218,6 +229,7 @@ offset_top = -18.0
 offset_right = 193.0
 offset_bottom = 18.0
 focus_neighbor_top = NodePath("../../../NavBar/Sound_Button")
+focus_neighbor_bottom = NodePath("../../../Sound/Music/HSlider")
 
 [node name="Music" type="Label" parent="Sound" unique_id=1613468907]
 layout_mode = 2
@@ -236,6 +248,8 @@ offset_left = 78.0
 offset_top = -18.0
 offset_right = 193.0
 offset_bottom = 18.0
+focus_neighbor_top = NodePath("../../../Sound/Master/HSlider")
+focus_neighbor_bottom = NodePath("../../../Sound/SFX/HSlider")
 
 [node name="SFX" type="Label" parent="Sound" unique_id=1434505635]
 layout_mode = 2
@@ -254,6 +268,8 @@ offset_left = 78.0
 offset_top = -18.0
 offset_right = 193.0
 offset_bottom = 18.0
+focus_neighbor_top = NodePath("../../../Sound/Music/HSlider")
+focus_neighbor_bottom = NodePath("../../../Sound/Mute/CheckBox")
 
 [node name="Mute" type="Label" parent="Sound" unique_id=520914139]
 layout_mode = 2
@@ -272,6 +288,8 @@ offset_left = 28.0
 offset_top = -16.0
 offset_right = 44.0
 scale = Vector2(1.5, 1.5)
+focus_neighbor_top = NodePath("../../../Sound/SFX/HSlider")
+focus_neighbor_bottom = NodePath("../../../Sound/OutputDevice/OptionButton")
 
 [node name="OutputDevice" type="Label" parent="Sound" unique_id=1624693647]
 layout_mode = 2
@@ -290,6 +308,8 @@ offset_left = 34.0
 offset_top = -16.0
 offset_right = 50.0
 offset_bottom = 16.0
+focus_neighbor_top = NodePath("../../../Sound/Mute/CheckBox")
+focus_neighbor_bottom = NodePath("../../../BackButton")
 theme_override_font_sizes/font_size = 20
 
 [node name="Controller" type="VBoxContainer" parent="." unique_id=1706615415 node_paths=PackedStringArray("VibrationCheckBox", "DeadzoneSlider", "ControllerSensitivitySlider", "RemapButtonsButton")]
@@ -326,6 +346,7 @@ offset_top = -18.0
 offset_right = 196.0
 offset_bottom = 18.0
 focus_neighbor_top = NodePath("../../../NavBar/Controller_Button")
+focus_neighbor_bottom = NodePath("../../../Controller/Vibration/CheckBox")
 max_value = 300.0
 
 [node name="Vibration" type="Label" parent="Controller" unique_id=765539001]
@@ -345,6 +366,8 @@ offset_left = 31.0
 offset_top = -16.0
 offset_right = 47.0
 scale = Vector2(1.5, 1.5)
+focus_neighbor_top = NodePath("../../../Controller/Controller_Sense/HSlider")
+focus_neighbor_bottom = NodePath("../../../Controller/Deadzone/HSlider")
 
 [node name="Deadzone" type="Label" parent="Controller" unique_id=1100646173]
 layout_mode = 2
@@ -363,15 +386,19 @@ offset_left = 81.0
 offset_top = -18.0
 offset_right = 196.0
 offset_bottom = 18.0
+focus_neighbor_top = NodePath("../../../Controller/Vibration/CheckBox")
+focus_neighbor_bottom = NodePath("../../../Controller/Remap_Buttons")
 
 [node name="Remap_Buttons" type="Button" parent="Controller" unique_id=479465820]
 layout_mode = 2
 size_flags_horizontal = 0
+focus_neighbor_top = NodePath("../Deadzone/HSlider")
+focus_neighbor_bottom = NodePath("../../BackButton")
 theme_override_font_sizes/font_size = 32
 disabled = true
 text = "Remap Buttons"
 
-[node name="MK" type="VBoxContainer" parent="." unique_id=1252852007 node_paths=PackedStringArray("MouseSenseSlider", "InvertedYAxisCheckBox", "RawInputCheckBox", "RemapKeysButton")]
+[node name="Keyboard" type="VBoxContainer" parent="." unique_id=1252852007 node_paths=PackedStringArray("MouseSenseSlider", "InvertedYAxisCheckBox", "RawInputCheckBox", "RemapKeysButton")]
 visible = false
 layout_mode = 1
 anchors_preset = -1
@@ -385,12 +412,12 @@ InvertedYAxisCheckBox = NodePath("Invert_Y-Axis/CheckBox")
 RawInputCheckBox = NodePath("Enable_Raw_Input/CheckBox")
 RemapKeysButton = NodePath("Remap_Keys")
 
-[node name="Mouse_Sense" type="Label" parent="MK" unique_id=2053511060]
+[node name="Mouse_Sense" type="Label" parent="Keyboard" unique_id=2053511060]
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
 text = "Mouse Sense"
 
-[node name="HSlider" type="HSlider" parent="MK/Mouse_Sense" unique_id=830775731]
+[node name="HSlider" type="HSlider" parent="Keyboard/Mouse_Sense" unique_id=830775731]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 1.0
@@ -401,16 +428,17 @@ offset_left = 83.0
 offset_top = -18.0
 offset_right = 198.0
 offset_bottom = 18.0
-focus_neighbor_top = NodePath("../../../NavBar/MK_Button")
+focus_neighbor_top = NodePath("../../../NavBar/Keyboard_Button")
+focus_neighbor_bottom = NodePath("../../Invert_Y-Axis/CheckBox")
 max_value = 2.0
 step = 0.1
 
-[node name="Invert_Y-Axis" type="Label" parent="MK" unique_id=648042255]
+[node name="Invert_Y-Axis" type="Label" parent="Keyboard" unique_id=648042255]
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
 text = "Invert Y-Axis"
 
-[node name="CheckBox" type="CheckBox" parent="MK/Invert_Y-Axis" unique_id=118223002]
+[node name="CheckBox" type="CheckBox" parent="Keyboard/Invert_Y-Axis" unique_id=118223002]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 1.0
@@ -420,13 +448,15 @@ anchor_bottom = 0.5
 offset_left = 33.0
 offset_top = -16.0
 scale = Vector2(1.5, 1.5)
+focus_neighbor_top = NodePath("../../Mouse_Sense/HSlider")
+focus_neighbor_bottom = NodePath("../../Enable_Raw_Input/CheckBox")
 
-[node name="Enable_Raw_Input" type="Label" parent="MK" unique_id=76786761]
+[node name="Enable_Raw_Input" type="Label" parent="Keyboard" unique_id=76786761]
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
 text = "Enable Raw Input"
 
-[node name="CheckBox" type="CheckBox" parent="MK/Enable_Raw_Input" unique_id=692041654]
+[node name="CheckBox" type="CheckBox" parent="Keyboard/Enable_Raw_Input" unique_id=692041654]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 1.0
@@ -436,10 +466,14 @@ anchor_bottom = 0.5
 offset_left = 33.0
 offset_top = -16.0
 scale = Vector2(1.5, 1.5)
+focus_neighbor_top = NodePath("../../Invert_Y-Axis/CheckBox")
+focus_neighbor_bottom = NodePath("../../Remap_Keys")
 
-[node name="Remap_Keys" type="Button" parent="MK" unique_id=1463648465]
+[node name="Remap_Keys" type="Button" parent="Keyboard" unique_id=1463648465]
 layout_mode = 2
 size_flags_horizontal = 0
+focus_neighbor_top = NodePath("../Enable_Raw_Input/CheckBox")
+focus_neighbor_bottom = NodePath("../../BackButton")
 theme_override_font_sizes/font_size = 32
 disabled = true
 text = "Remap Keys"
@@ -451,6 +485,7 @@ offset_top = 960.0
 offset_right = 181.0
 offset_bottom = 1023.0
 size_flags_horizontal = 0
+focus_neighbor_right = NodePath("../ResetSettingsButton")
 theme_override_font_sizes/font_size = 40
 text = "Back"
 
@@ -461,5 +496,6 @@ offset_top = 960.0
 offset_right = 1856.0
 offset_bottom = 1023.0
 size_flags_horizontal = 0
+focus_neighbor_left = NodePath("../BackButton")
 theme_override_font_sizes/font_size = 40
 text = "Reset Settings"

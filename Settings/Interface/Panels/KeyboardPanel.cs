@@ -10,6 +10,8 @@ public sealed partial class MkPanel : VBoxContainer {
 	[Export] private CheckBox RawInputCheckBox = null!;
 	[Export] private Button RemapKeysButton = null!;
 
+	public Control FirstControl => MouseSenseSlider;
+
 	public override void _Ready() {
 		this.ValidateExports();
 		MouseSenseSlider.ApplyBounds(MouseKeyboardSettings.MouseSensitivity);

@@ -13,7 +13,7 @@ public sealed partial class PauseMenu : BaseUIControl {
 	[Export] public Button SettingsButton = null!;
 	[Export] public Button MainMenuButton = null!;
 
-	protected override Button? DefaultFocus => ResumeButton;
+	protected override Control? DefaultFocus => ResumeButton;
 
 	public override void _Ready() {
 		base._Ready();

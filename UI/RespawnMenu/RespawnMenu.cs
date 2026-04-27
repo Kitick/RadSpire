@@ -12,7 +12,7 @@ public partial class RespawnMenu : BaseUIControl {
 	private const string RESPAWN_BUTTON = $"{BUTTONS}/Respawn";
 	private const string MAIN_MENU = $"{BUTTONS}/Main_Menu";
 
-	protected override Button? DefaultFocus => RespawnButton;
+	protected override Control? DefaultFocus => RespawnButton;
 
 	public override void _Ready() {
 		base._Ready();

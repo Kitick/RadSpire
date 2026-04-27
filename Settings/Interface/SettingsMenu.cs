@@ -28,10 +28,6 @@ public sealed partial class SettingsMenu : BaseUIControl {
 	[Export] private MkPanel MKPanel = null!;
 	[Export] private Button MKButton = null!;
 
-	public Control[] Order => [
-		DisplayPanel, SoundPanel, ControllerPanel, MKPanel, ResetButton, BackButton
-	];
-
 	private (Control panel, Button button)[] Panels => [
 		(DisplayPanel, DisplayButton),
 		(SoundPanel, SoundButton),
@@ -42,6 +38,14 @@ public sealed partial class SettingsMenu : BaseUIControl {
 	private Control InitialPanel => DisplayPanel;
 
 	private Control ActivePanel = null!;
+
+	protected override Control? DefaultFocus => ActivePanel switch {
+		_ when ActivePanel == DisplayPanel => DisplayPanel.FirstControl,
+		_ when ActivePanel == SoundPanel => SoundPanel.FirstControl,
+		_ when ActivePanel == ControllerPanel => ControllerPanel.FirstControl,
+		_ when ActivePanel == MKPanel => MKPanel.FirstControl,
+		_ => null,
+	};
 
 	private event Action? OnExit;
 
@@ -69,7 +73,7 @@ public sealed partial class SettingsMenu : BaseUIControl {
 		BackButton.Pressed += OnBackButtonPressed;
 		ResetButton.Pressed += OnResetSettingsButtonPressed;
 
-		foreach(var (panel, button) in Panels) {
+		foreach((Control panel, Button button) in Panels) {
 			button.Pressed += () => SwitchToPanel(panel);
 		}
 	}
@@ -104,14 +108,12 @@ public sealed partial class SettingsMenu : BaseUIControl {
 
 	private void SwitchToPanel(Control target) {
 		ActivePanel = target;
-		foreach(var (panel, button) in Panels) {
-			var isTarget = panel == target;
+		foreach((Control panel, Button button) in Panels) {
+			bool isTarget = panel == target;
 			panel.Visible = isTarget;
 			button.Disabled = isTarget;
 		}
 	}
-
-	protected override Button? DefaultFocus => DisplayButton;
 
 	public void OpenMenu() {
 		LoadData();

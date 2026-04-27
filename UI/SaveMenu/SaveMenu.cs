@@ -30,7 +30,7 @@ public sealed partial class SaveMenu : BaseUIControl {
 
 	public SaveMode Mode { get; private set; }
 
-	protected override Button? DefaultFocus => SlotButtons[0];
+	protected override Control? DefaultFocus => SlotButtons[0];
 
 	public static string SlotFile(int slot) => $"slot{slot}";
 
