@@ -7,16 +7,23 @@ using CharState = CharacterBase.State;
 
 public sealed partial class PlayerAudio : Node {
 	private static readonly LogService Log = new(nameof(PlayerAudio), enabled: true);
-	private const string StepSoundPath = "res://Assets/Audio/NewStep.wav";
-	private const string DamageSoundPath = "res://Assets/Audio/PlayerTakeDamage.wav";
+
+	public AudioStream? FootstepSound;
+	public AudioStream? DamageSound;
 
 	private AudioStreamPlayer? StepPlayer;
 	private AudioStreamPlayer? DamagePlayer;
-	private AudioStream? StepSound;
-	private AudioStream? DamageSound;
 	private Player? OwnerPlayer;
 	private double LastFootstepTime;
 	private double DamageDuckUntil;
+
+	private const float FootstepVolumeDb = -10.0f;
+	private const float FootstepPitchVariance = 0.03f;
+	private const float LandVolumeDb = -4.0f;
+	private const float LandPitch = 0.82f;
+	private const float DamageVolumeDb = -4.0f;
+	private const double DamagePitchMin = 0.95;
+	private const double DamagePitchMax = 1.03;
 
 	public float WalkStepIntervalSeconds = 0.40f;
 	public float SprintStepIntervalSeconds = 0.24f;
@@ -25,34 +32,22 @@ public sealed partial class PlayerAudio : Node {
 
 	public void Setup(Player player) {
 		OwnerPlayer = player;
-		StepSound = GD.Load<AudioStream>(StepSoundPath);
-		DamageSound = GD.Load<AudioStream>(DamageSoundPath);
 
-		if(StepSound == null) {
-			Log.Warn($"Step sound not found at {StepSoundPath}");
-		}
-		else {
-			StepPlayer = new AudioStreamPlayer {
-				Name = "StepSfx",
-				Bus = "SFX",
-				VolumeDb = -30.0f,
-				Stream = StepSound,
-			};
-			AddChild(StepPlayer);
-		}
+		StepPlayer = new AudioStreamPlayer {
+			Name = "StepSfx",
+			Bus = "SFX",
+			VolumeDb = FootstepVolumeDb,
+			Stream = FootstepSound,
+		};
+		AddChild(StepPlayer);
 
-		if(DamageSound == null) {
-			Log.Warn($"Damage sound not found at {DamageSoundPath}");
-		}
-		else {
-			DamagePlayer = new AudioStreamPlayer {
-				Name = "DamageSfx",
-				Bus = "SFX",
-				VolumeDb = -4.0f,
-				Stream = DamageSound,
-			};
-			AddChild(DamagePlayer);
-		}
+		DamagePlayer = new AudioStreamPlayer {
+			Name = "DamageSfx",
+			Bus = "SFX",
+			VolumeDb = DamageVolumeDb,
+			Stream = DamageSound,
+		};
+		AddChild(DamagePlayer);
 
 		OwnerPlayer.Health.OnChanged += OnHealthChanged;
 		Log.Info("Player audio ready");
@@ -70,16 +65,12 @@ public sealed partial class PlayerAudio : Node {
 
 		DamageDuckUntil = (Time.GetTicksMsec() / 1000.0) + DamageDuckSeconds;
 
-		if(DamagePlayer == null || DamageSound == null) {
-			Log.Warn("Damage audio skipped: DamagePlayer or DamageSound is null");
-			return;
-		}
+		if(DamagePlayer == null) { return; }
 
-		DamagePlayer.Stream = DamageSound;
 		if(DamagePlayer.Playing) {
 			DamagePlayer.Stop();
 		}
-		DamagePlayer.PitchScale = (float) GD.RandRange(0.95, 1.03);
+		DamagePlayer.PitchScale = (float) GD.RandRange(DamagePitchMin, DamagePitchMax);
 		DamagePlayer.Play();
 	}
 
@@ -91,25 +82,25 @@ public sealed partial class PlayerAudio : Node {
 		}
 	}
 
-	public void PlayFootstep(float pitch = 1.0f, float volumeDb = -30.0f) {
-		if(StepPlayer == null || StepSound == null) { return; }
+	public void PlayFootstep(float pitch = 1.0f, float volumeDb = FootstepVolumeDb) {
+		if(StepPlayer == null) { return; }
 
 		double now = Time.GetTicksMsec() / 1000.0;
 		float adjustedVolumeDb = now < DamageDuckUntil
 			? volumeDb + DamageFootstepPenaltyDb
 			: volumeDb;
 
-		StepPlayer.PitchScale = pitch + (float) GD.RandRange(-0.03, 0.03);
+		StepPlayer.PitchScale = pitch + (float) GD.RandRange(-FootstepPitchVariance, FootstepPitchVariance);
 		StepPlayer.VolumeDb = adjustedVolumeDb;
 		StepPlayer.Play();
 		LastFootstepTime = now;
 	}
 
 	public void PlayLand() {
-		if(StepPlayer == null || StepSound == null) { return; }
+		if(StepPlayer == null) { return; }
 
-		StepPlayer.PitchScale = 0.82f;
-		StepPlayer.VolumeDb = -8.5f;
+		StepPlayer.PitchScale = LandPitch;
+		StepPlayer.VolumeDb = LandVolumeDb;
 		StepPlayer.Play();
 		LastFootstepTime = Time.GetTicksMsec() / 1000.0;
 	}

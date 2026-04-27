@@ -6,6 +6,7 @@ using System.Linq;
 using System.Numerics;
 using System.Reflection;
 using Godot;
+using Godot.Collections;
 using Quaternion = Godot.Quaternion;
 using Vector3 = Godot.Vector3;
 
@@ -19,8 +20,8 @@ public static class NumericExtensions {
 
 public static class MathExtensions {
 	// Vector Components
-	public static Vector3 Horizontal(this Vector3 vector) => new Vector3(vector.X, 0, vector.Z);
-	public static Vector3 Vertical(this Vector3 vector) => new Vector3(0, vector.Y, 0);
+	public static Vector3 Horizontal(this Vector3 vector) => new(vector.X, 0, vector.Z);
+	public static Vector3 Vertical(this Vector3 vector) => new(0, vector.Y, 0);
 
 	public static Vector3 ToPolar(float heading, float pitch, float radius = 1) {
 		float cosHDG = MathF.Cos(heading);
@@ -47,12 +48,12 @@ public static class MathExtensions {
 	public static void ApplyRotation(this Node3D node, Vector3 axis, float angle, float speed, float dt) {
 		// Get current rotation
 		Transform3D currentTransform = node.Transform;
-		Quaternion currentRotationQ = new Quaternion(currentTransform.Basis);
+		Quaternion currentRotationQ = new(currentTransform.Basis);
 
 		// Calculate target rotation
 		Transform3D targetTransform = node.Transform;
 		targetTransform.Basis = new Basis(axis, angle);
-		Quaternion targetRotationQ = new Quaternion(targetTransform.Basis);
+		Quaternion targetRotationQ = new(targetTransform.Basis);
 
 		// Interpolate and apply
 		Quaternion newRotationQ = currentRotationQ.SmoothSlerp(targetRotationQ, speed, dt);
@@ -61,18 +62,16 @@ public static class MathExtensions {
 	}
 
 	public static float IntersectRay(this Node3D space, Vector3 origin, Vector3 direction, float distance) =>
-		space.IntersectRay(origin, origin + direction.Normalized() * distance);
+		space.IntersectRay(origin, origin + (direction.Normalized() * distance));
 
-	public static float IntersectRay(this Node3D space, Vector3 origin, Vector3 target) {
-		return space.IntersectRay(origin, target, null);
-	}
+	public static float IntersectRay(this Node3D space, Vector3 origin, Vector3 target) => space.IntersectRay(origin, target, null);
 
 	public static float IntersectRay(this Node3D space, Vector3 origin, Vector3 target, IEnumerable<Rid>? exclusions) {
-		var spaceState = space.GetWorld3D().DirectSpaceState;
-		var query = PhysicsRayQueryParameters3D.Create(origin, target);
+		PhysicsDirectSpaceState3D spaceState = space.GetWorld3D().DirectSpaceState;
+		PhysicsRayQueryParameters3D query = PhysicsRayQueryParameters3D.Create(origin, target);
 		query.CollideWithAreas = false;
 		if(exclusions is not null) {
-			var exclude = new Godot.Collections.Array<Rid>();
+			Array<Rid> exclude = [];
 			foreach(Rid rid in exclusions) {
 				if(rid.IsValid) {
 					exclude.Add(rid);
@@ -81,7 +80,7 @@ public static class MathExtensions {
 			query.Exclude = exclude;
 		}
 
-		var result = spaceState.IntersectRay(query);
+		Dictionary result = spaceState.IntersectRay(query);
 		if(result.Count == 0) { return (target - origin).Length(); }
 
 		Vector3 hitpoint = (Vector3) result["position"];
@@ -92,9 +91,11 @@ public static class MathExtensions {
 public static class NodeExtensions {
 	public static void ValidateExports(this Node node) {
 		Type type = node.GetType();
-		foreach(var field in type.GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)) {
+		foreach(FieldInfo field in type.GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)) {
 			if(!field.IsDefined(typeof(ExportAttribute), inherit: false)) { continue; }
 			if(field.GetValue(node) is not null) { continue; }
+			NullabilityInfo nullability = new NullabilityInfoContext().Create(field);
+			if(nullability.WriteState == NullabilityState.Nullable) { continue; }
 			GD.PushError($"[{type.Name}] {field.Name} is missing export assignment!");
 		}
 	}
@@ -110,7 +111,7 @@ public static class NodeExtensions {
 	// OptionButton
 	public static void Populate<T>(this OptionButton button, params IEnumerable<T> values) where T : notnull {
 		button.Clear();
-		foreach(var value in values) {
+		foreach(T value in values) {
 			button.AddItem(value.ToString());
 		}
 	}

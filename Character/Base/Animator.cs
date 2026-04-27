@@ -14,6 +14,8 @@ public sealed partial class Animator : AnimationPlayer {
 
 	[ExportCategory("References")]
 	[Export] private CharacterBase Character = null!;
+	[Export] private AudioStream? FootstepSound;
+	[Export] private AudioStream? DamageSound;
 
 	[ExportCategory("Animation Names")]
 	[Export] private StringName IDLE = null!;
@@ -105,7 +107,10 @@ public sealed partial class Animator : AnimationPlayer {
 		Audio = new PlayerAudio {
 			WalkStepIntervalSeconds = WalkStepIntervalSeconds,
 			SprintStepIntervalSeconds = SprintStepIntervalSeconds,
+			FootstepSound = FootstepSound,
+			DamageSound = DamageSound,
 		};
+
 		AddChild(Audio);
 		CallDeferred(nameof(SetupPlayerAudioDeferred), player);
 	}
