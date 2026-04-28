@@ -5,14 +5,15 @@
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_k73ll"]
 albedo_texture = ExtResource("2_x0bxe")
-metallic = 0.4
+metallic = 0.54
+roughness = 0.41
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_whfh3"]
 size = Vector3(12.067726, 8.172769, 4.178713)
 
 [node name="Bunker2" unique_id=690382644 instance=ExtResource("1_n4ddb")]
 
-[node name="Bunker2" parent="." index="0" unique_id=1507962773]
+[node name="Bunker2" parent="." index="0" unique_id=890510192]
 surface_material_override/0 = SubResource("StandardMaterial3D_k73ll")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Bunker2" index="0" unique_id=1335725896]

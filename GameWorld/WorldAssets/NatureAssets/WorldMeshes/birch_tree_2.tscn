@@ -8,7 +8,7 @@ radius = 0.5522461
 
 [node name="Birch_Tree_2" unique_id=402148634 instance=ExtResource("1_21n3n")]
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Birch_Tree_2" parent_id_path=PackedInt32Array(308416932) index="0" unique_id=902787747]
+[node name="StaticBody3D" type="StaticBody3D" parent="Birch_Tree_2" parent_id_path=PackedInt32Array(736831142) index="0" unique_id=902787747]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0489707, 4.112199, -0.17046046)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Birch_Tree_2/StaticBody3D" index="0" unique_id=817587863]

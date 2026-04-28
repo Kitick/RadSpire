@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://dsoftkiu1wcbb" path="res://Character/Player/Player.tscn" id="3_julfq"]
 [ext_resource type="PackedScene" uid="uid://dxvau62v0efr7" path="res://UI/HUD/HUD.tscn" id="3_twhtb"]
 [ext_resource type="PackedScene" uid="uid://depb51jl62dp6" path="res://Character/Enemy/Enemy.tscn" id="4_twhtb"]
-[ext_resource type="PackedScene" path="res://GameWorld/GameWorldManager.tscn" id="5_mgr"]
+[ext_resource type="PackedScene" uid="uid://fnwjdltfwluf" path="res://GameWorld/GameWorldManager.tscn" id="5_mgr"]
 [ext_resource type="PackedScene" uid="uid://vp1fks511c7d" path="res://Character/NPC/NPC.tscn" id="8_tc1fg"]
 
 [node name="GameManager" type="Node" unique_id=564337281 node_paths=PackedStringArray("WorldContentRoot")]
@@ -18,4 +18,4 @@ GameWorldManagerScene = ExtResource("5_mgr")
 NPCScene = ExtResource("8_tc1fg")
 WorldContentRoot = NodePath("WorldContentRoot")
 
-[node name="WorldContentRoot" type="Node" parent="."]
+[node name="WorldContentRoot" type="Node" parent="." unique_id=562708914]

@@ -1,8 +1,8 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://fnwjdltfwluf"]
 
-[ext_resource type="Script" path="res://GameWorld/GameWorldManager.cs" id="1_gameworldmanager"]
-[ext_resource type="PackedScene" path="res://GameWorld/Outside.tscn" id="2_mainworld"]
+[ext_resource type="Script" uid="uid://1nehybh0b0dp" path="res://GameWorld/GameWorldManager.cs" id="1_gameworldmanager"]
+[ext_resource type="PackedScene" uid="uid://dpm2alxlwbkpr" path="res://GameWorld/Outside.tscn" id="2_mainworld"]
 
-[node name="GameWorldManager" type="Node"]
+[node name="GameWorldManager" type="Node" unique_id=1371098200]
 script = ExtResource("1_gameworldmanager")
 MainWorldScene = ExtResource("2_mainworld")

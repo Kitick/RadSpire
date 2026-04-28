@@ -38,7 +38,7 @@ corner_radius_bottom_left = 5
 oversampling_override = 1.0
 title = "Terrain3D Channel Packer"
 initial_position = 1
-size = Vector2i(734, 1226)
+size = Vector2i(736, 1247)
 wrap_controls = true
 always_on_top = true
 

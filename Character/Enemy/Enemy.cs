@@ -23,6 +23,7 @@ public sealed partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 	[Export] private float HealthBarWidth = 1.4f;
 	[Export] private float HealthBarHeight = 0.12f;
 	[Export] private float HealthBarYOffset = 2.2f;
+	[Export] private float DamageNumberYOffset = 1.6f;
 	[Export] private Color HealthBarFillColor = new(0.2f, 0.9f, 0.2f);
 	[Export] private Color HealthBarBackColor = new(0f, 0f, 0f, 0.6f);
 	[Export] private float DamageNumberLifetime = 0.9f;
@@ -30,6 +31,7 @@ public sealed partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 	[Export] private float DamageNumberHorizontalJitter = 0.25f;
 	[Export] private Color DamageNumberColor = new(1f, 0.85f, 0.2f);
 	[Export] private int DamageNumberFontSize = 55;
+	[Export] private PackedScene? HitSparkScene;
 
 	protected override int InitialHealth => InitialHealthValue;
 	protected override int InitialDamage => InitialDamageValue;
@@ -81,6 +83,7 @@ public sealed partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 			int damageTaken = from.Current - to.Current;
 			if(damageTaken > 0) {
 				SpawnDamageNumber(damageTaken);
+				SpawnHitSpark();
 			}
 
 			UpdateHealthUI();
@@ -234,7 +237,7 @@ public sealed partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 		};
 
 		float jitter = (float) GD.RandRange(-DamageNumberHorizontalJitter, DamageNumberHorizontalJitter);
-		label.Position = new Vector3(jitter, HealthBarYOffset + 0.25f, 0f);
+		label.Position = new Vector3(jitter, DamageNumberYOffset, 0f);
 		HealthUIRoot.AddChild(label);
 
 		Tween tween = GetTree().CreateTween();
@@ -250,6 +253,19 @@ public sealed partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 				label.QueueFree();
 			}
 		};
+	}
+
+	private void SpawnHitSpark() {
+		if(HitSparkScene?.Instantiate() is not Node3D spark) {
+			return;
+		}
+
+		GetParent()?.AddChild(spark);
+		spark.GlobalPosition = GlobalPosition + new Vector3(0f, 1f, 0f);
+		if(spark.GetNodeOrNull<GpuParticles3D>("GPUParticles3D") is { } particles) {
+			particles.Restart();
+			particles.Emitting = true;
+		}
 	}
 
 	private void UpdateMovementState() {
