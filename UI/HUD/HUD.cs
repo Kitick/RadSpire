@@ -257,8 +257,9 @@ public sealed partial class HUD : Control {
 	}
 
 	private void OpenSettingsPanel() {
+		Hotbar.Visible = false;
 		SettingsMenu settings = this.AddScene<SettingsMenu>(SettingsScene);
-		settings.TreeExited += () => PauseRequested?.Invoke();
+		settings.TreeExited += () => { Hotbar.Visible = true; PauseRequested?.Invoke(); };
 		settings.OpenMenu();
 	}
 
@@ -269,8 +270,10 @@ public sealed partial class HUD : Control {
 	}
 
 	private void OpenSaveMenu() {
+		Hotbar.Visible = false;
 		SaveMenu saveMenu = this.AddScene<SaveMenu>(SaveMenuScene);
 		saveMenu.OnSave += fileName => SaveRequested?.Invoke(fileName);
+		saveMenu.TreeExited += () => Hotbar.Visible = true;
 		saveMenu.OpenMenu(SaveMenu.SaveMode.Save);
 	}
 
