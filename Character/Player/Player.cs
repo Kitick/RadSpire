@@ -63,9 +63,12 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData>, IAtta
 	public Radiation Radiation { get; private set; } = new Radiation(secondsToFatalDose: 30 * 60);
 	public int BaseMaxHealth { get; private set; }
 	public bool IsSleeping = false;
-	public int SleepRate = 0;
 	public Vector3 LocationBeforeSleep = Vector3.Zero;
 	public Vector3 RotationBeforeSleep = Vector3.Zero;
+
+	private float SleepHealAccumulator = 0f;
+	private const float SleepHealthPerSecond = 2f;
+	private const float SleepRadiationPerSecond = 5f / (30f * 60f); // clears full radiation in ~6 minutes
 
 	public bool HoldingSword = false;
 	public bool HoldingStaff = false;
@@ -169,9 +172,14 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData>, IAtta
 
 	public void Update(float dt, KeyInput keyInput) {
 		if(IsSleeping) {
-			Radiation.Deccumulate(dt, SleepRate);
+			Radiation.Deccumulate(dt, SleepRadiationPerSecond);
 			Health.Max = Math.Max(1, (int) Math.Round(BaseMaxHealth * (1f - Radiation.Level)));
-			this.Heal(SleepRate);
+			SleepHealAccumulator += SleepHealthPerSecond * dt;
+			int healAmount = (int) SleepHealAccumulator;
+			if(healAmount > 0) {
+				this.Heal(healAmount);
+				SleepHealAccumulator -= healAmount;
+			}
 			Velocity = Vector3.Zero;
 			if(this.IsDead()) {
 				StateMachine.TransitionTo(State.Dead);
@@ -384,13 +392,12 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData>, IAtta
 		bolt.Init(this, direction, Offense.Damage);
 	}
 
-	public void Sleep(int Amount, Vector3 Location, Vector3 Rotation) {
+	public void Sleep(Vector3 Location, Vector3 Rotation) {
 		if(IsSleeping) {
 			return;
 		}
 
 		IsSleeping = true;
-		SleepRate = Amount;
 		LocationBeforeSleep = GlobalTransform.Origin;
 		RotationBeforeSleep = GlobalRotation;
 		GlobalPosition = Location;
@@ -405,7 +412,7 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData>, IAtta
 		}
 
 		IsSleeping = false;
-		SleepRate = 0;
+		SleepHealAccumulator = 0f;
 		GlobalPosition = LocationBeforeSleep;
 		GlobalRotation = RotationBeforeSleep;
 		Velocity = Vector3.Zero;
