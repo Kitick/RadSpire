@@ -27,8 +27,13 @@ public sealed partial class GameManager : Node {
 	[Export] private PackedScene GameWorldManagerScene = null!;
 	[Export] private PackedScene NPCScene = null!;
 	[Export] private Node WorldContentRoot = null!;
+
 	[ExportCategory("Audio")]
-	[Export] private AudioStream? GameWorldMusic = GD.Load<AudioStream>("res://Assets/Audio/Candlelit Keep.wav");
+	[Export] private AudioStream GameWorldMusic = null!;
+	private const float GameWorldMusicVolumeDb = -15.0f;
+
+	[ExportCategory("Spawn Points")]
+	[Export] private Marker3D? PlayerSpawnMarker;
 
 	private readonly KeyInput KeyInput = new();
 	private readonly QuestManager QuestManager = new();
@@ -47,9 +52,6 @@ public sealed partial class GameManager : Node {
 	private readonly bool Won = false;
 	private Dictionary<string, Vector3> MainWorldReturnPositions = [];
 	private Vector3? LastKnownMainWorldPlayerPosition;
-
-	[ExportCategory("Spawn Points")]
-	[Export] private Marker3D? PlayerSpawnMarker;
 
 	public PackedScene EnemySceneRef => EnemyScene;
 	public PackedScene NPCSceneRef => NPCScene;
@@ -76,7 +78,7 @@ public sealed partial class GameManager : Node {
 		GameWorldMusicPlayer = new AudioStreamPlayer {
 			Name = "GameWorldMusicPlayer",
 			Bus = "Music",
-			VolumeDb = -20.0f,
+			VolumeDb = GameWorldMusicVolumeDb,
 			Stream = GameWorldMusic,
 			Autoplay = false,
 		};

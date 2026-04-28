@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://dxvau62v0efr7" path="res://UI/HUD/HUD.tscn" id="3_twhtb"]
 [ext_resource type="PackedScene" uid="uid://depb51jl62dp6" path="res://Character/Enemy/Enemy.tscn" id="4_twhtb"]
 [ext_resource type="PackedScene" uid="uid://fnwjdltfwluf" path="res://GameWorld/GameWorldManager.tscn" id="5_mgr"]
+[ext_resource type="AudioStream" uid="uid://boq0o2xnxbbjh" path="res://Assets/Audio/Candlelit Keep.wav" id="8_qjcv8"]
 [ext_resource type="PackedScene" uid="uid://vp1fks511c7d" path="res://Character/NPC/NPC.tscn" id="8_tc1fg"]
 
 [node name="GameManager" type="Node" unique_id=564337281 node_paths=PackedStringArray("WorldContentRoot")]
@@ -17,5 +18,6 @@ EnemyScene = ExtResource("4_twhtb")
 GameWorldManagerScene = ExtResource("5_mgr")
 NPCScene = ExtResource("8_tc1fg")
 WorldContentRoot = NodePath("WorldContentRoot")
+GameWorldMusic = ExtResource("8_qjcv8")
 
 [node name="WorldContentRoot" type="Node" parent="." unique_id=562708914]
