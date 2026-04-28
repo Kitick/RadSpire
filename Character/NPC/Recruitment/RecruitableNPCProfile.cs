@@ -15,6 +15,26 @@ public sealed record RecruitableNPCProfile(
 );
 
 public static class RecruitableNPCProfiles {
+	public static readonly RecruitableNPCProfile David = new(
+		NpcId: NPCID.David,
+		DisplayName: "David",
+		PrereqQuests: [QuestID.WhatTheFlameForgot],
+		CollectionQuest: QuestID.AManWorthFollowing,
+		PostCollectionQuests: [QuestID.RestWithoutFear],
+		ModelScenePath: string.Empty,
+		FollowingDialogue: [
+			"I do not follow people lightly.",
+			"But you survive. And you listen.",
+			"I will come with you.",
+			"Put me somewhere quiet.",
+			"I work best where knowledge can breathe."
+		],
+		AssignedDialogue: [
+			"Radiation leaves scars even when you do not see them.",
+			"So does the truth."
+		]
+	);
+
 	public static readonly RecruitableNPCProfile Mara = new(
 		NpcId: NPCID.Mara,
 		DisplayName: "Mara",
@@ -91,6 +111,7 @@ public static class RecruitableNPCProfiles {
 
 	public static readonly IReadOnlyDictionary<NPCID, RecruitableNPCProfile> All =
 		new Dictionary<NPCID, RecruitableNPCProfile> {
+			[David.NpcId] = David,
 			[Mara.NpcId] = Mara,
 			[Colin.NpcId] = Colin,
 			[Rowan.NpcId] = Rowan,

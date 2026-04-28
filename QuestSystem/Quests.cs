@@ -405,6 +405,156 @@ public static class Quests {
 		]
 	);
 
+	public static readonly QuestDefinition ThePriceOfKnowing = new(
+		Title: "The Price of Knowing",
+		Description: "Bring David 3 gold bars to buy his first truth.",
+		Type: QuestType.Side,
+		StageRequirement: 0,
+		Objectives: [
+			new CollectObjective("Bring David 3 Gold Bars", RequiredCount: 3, ItemId: ItemID.GoldBar),
+		],
+		NpcId: NPCID.David,
+		InitialDialogue: [
+			"You do not look lost.",
+			"You look curious. Curiosity is expensive.",
+			"I deal in information. Real information. The kind people kill for.",
+			"If you want the first truth, bring me three gold bars.",
+			"Not tomorrow. Not promises. Bars.",
+			"Then I will tell you something useful."
+		],
+		ActiveDialogue: [
+			"Three gold bars.",
+			"I do not bargain."
+		],
+		CompletionDialogue: [
+			"Good.",
+			"Most people try to lie first.",
+			"You did not.",
+			"Here is your truth.",
+			"There are radiation anomalies that are not spires.",
+			"Tools. Weapons. Things the flare twisted instead of killing.",
+			"If that interests you, it will cost more."
+		]
+	);
+
+	public static readonly QuestDefinition MoreThanRumors = new(
+		Title: "More Than Rumors",
+		Description: "Bring David 3 more gold bars for the next layer of information.",
+		Type: QuestType.Side,
+		StageRequirement: 0,
+		Objectives: [
+			new CollectObjective("Bring David 3 More Gold Bars", RequiredCount: 3, ItemId: ItemID.GoldBar),
+		],
+		NpcId: NPCID.David,
+		Prerequisites: [QuestID.ThePriceOfKnowing],
+		InitialDialogue: [
+			"Information always comes in layers.",
+			"If you want the second one, you already know the price.",
+			"Three more gold bars.",
+			"This truth is heavier."
+		],
+		ActiveDialogue: [
+			"You cannot half pay for half a secret.",
+			"Three gold bars."
+		],
+		CompletionDialogue: [
+			"Good.",
+			"Now listen carefully.",
+			"Before the flare, some research bunkers were sealed automatically.",
+			"One of them still exists.",
+			"Inside is a weapon that feeds on radiation instead of flesh.",
+			"A staff.",
+			"If you are foolish or brave enough, I will tell you where."
+		]
+	);
+
+	public static readonly QuestDefinition WhatTheFlameForgot = new(
+		Title: "What the Flame Forgot",
+		Description: "Retrieve the Radiation Staff from the buried bunker.",
+		Type: QuestType.Side,
+		StageRequirement: 0,
+		Objectives: [
+			new CollectObjective("Retrieve the Radiation Staff from the bunker", RequiredCount: 1, ItemId: ItemID.RadiationStaff),
+		],
+		NpcId: NPCID.David,
+		Prerequisites: [QuestID.MoreThanRumors],
+		InitialDialogue: [
+			"The bunker is buried east of here.",
+			"Concrete shell. Manual lock. Radiation thick enough to sting.",
+			"The staff is inside.",
+			"It will not feel safe in your hands.",
+			"If you bring it back, I will know you are worth trusting."
+		],
+		ActiveDialogue: [
+			"The staff does not kill quickly.",
+			"It erodes.",
+			"Keep that in mind when you decide how to use it."
+		],
+		CompletionDialogue: [
+			"You came back alive.",
+			"And you brought it.",
+			"That staff has killed more slowly than any blade ever could.",
+			"You did not sell it.",
+			"You did not run.",
+			"That tells me more than gold ever could."
+		]
+	);
+
+	public static readonly QuestDefinition AManWorthFollowing = new(
+		Title: "A Man Worth Following",
+		Description: "Talk to David and bring him to your camp.",
+		Type: QuestType.Side,
+		StageRequirement: 0,
+		Objectives: [
+			new TalkObjective("Talk to David", NPCID.David),
+		],
+		NpcId: NPCID.David,
+		Prerequisites: [QuestID.WhatTheFlameForgot],
+		InitialDialogue: [
+			"I do not follow people lightly.",
+			"But you survive. And you listen.",
+			"I will come with you.",
+			"Put me somewhere quiet.",
+			"I work best where knowledge can breathe."
+		],
+		ActiveDialogue: [
+			"Put me somewhere quiet.",
+			"I work best where knowledge can breathe."
+		],
+		CompletionDialogue: [
+			"I will come with you.",
+			"Put me somewhere quiet."
+		]
+	);
+
+	public static readonly QuestDefinition RestWithoutFear = new(
+		Title: "Rest Without Fear",
+		Description: "Craft a big bed for David so camp feels like somewhere worth staying.",
+		Type: QuestType.Side,
+		StageRequirement: 0,
+		Objectives: [
+			new CollectObjective("Craft a Big Bed", RequiredCount: 1, ItemId: ItemID.BedBig),
+		],
+		NpcId: NPCID.David,
+		Prerequisites: [QuestID.AManWorthFollowing],
+		OfferMode: QuestOfferMode.OfferedByNpc,
+		InitialDialogue: [
+			"I have not slept properly in years.",
+			"Every place I stayed expected me to run.",
+			"Build a big bed.",
+			"Something meant for staying.",
+			"If I am going to help you, I need rest that does not feel temporary."
+		],
+		ActiveDialogue: [
+			"A real bed changes how a man thinks."
+		],
+		CompletionDialogue: [
+			"Good.",
+			"This is the first time in a long while that I do not feel the need to leave before morning.",
+			"Now we can plan properly."
+		]
+	);
+
 	public static readonly Dictionary<QuestID, QuestDefinition> All = new() {
 		[QuestID.LeftForDead] = LeftForDead,
 		[QuestID.ArmYourself] = ArmYourself,
@@ -420,5 +570,10 @@ public static class Quests {
 		[QuestID.FoundationsThatLast] = FoundationsThatLast,
 		[QuestID.MaraJoinsTheCamp] = MaraJoinsTheCamp,
 		[QuestID.HearthAgainstTheAsh] = HearthAgainstTheAsh,
+		[QuestID.ThePriceOfKnowing] = ThePriceOfKnowing,
+		[QuestID.MoreThanRumors] = MoreThanRumors,
+		[QuestID.WhatTheFlameForgot] = WhatTheFlameForgot,
+		[QuestID.AManWorthFollowing] = AManWorthFollowing,
+		[QuestID.RestWithoutFear] = RestWithoutFear,
 	};
 }

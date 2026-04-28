@@ -27,7 +27,7 @@ public enum Group { Player, Enemy, QuestLocation }
 
 public enum EnemyType { None, MeldoranWarrior, RadiationCaster }
 
-public enum NPCID { None, Sera, Dag, Rowan, Colin, Mara }
+public enum NPCID { None, Sera, Dag, Rowan, Colin, Mara, David }
 
 public enum LocationID { None, OfficeBuilding, GasStation }
 
@@ -45,7 +45,12 @@ public enum QuestID {
 	BladeOfLegacy,
 	FoundationsThatLast,
 	MaraJoinsTheCamp,
-	HearthAgainstTheAsh
+	HearthAgainstTheAsh,
+	ThePriceOfKnowing,
+	MoreThanRumors,
+	WhatTheFlameForgot,
+	AManWorthFollowing,
+	RestWithoutFear
 }
 
 public static class ItemID {
@@ -96,6 +101,7 @@ public static class ItemID {
 	public static readonly StringName ReturnDoor = "ReturnDoor";
 	public static readonly StringName ReturnDoor2 = "ReturnDoor2";
 	public static readonly StringName ReturnDoorTent = "ReturnDoorTent";
+	public static readonly StringName RadiationStaff = "RadiationStaff";
 	public static readonly StringName ShelfBigDown = "ShelfBigDown";
 	public static readonly StringName ShelfBigUp = "ShelfBigUp";
 	public static readonly StringName ShieldIron = "ShieldIron";
