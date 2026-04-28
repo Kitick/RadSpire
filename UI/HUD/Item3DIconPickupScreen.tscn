@@ -12,20 +12,24 @@ layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 1357.0
-offset_top = 321.0
-offset_right = -154.0
-offset_bottom = -396.0
+offset_left = 1384.0
+offset_top = 385.0
+offset_right = -127.0
+offset_bottom = -332.0
 grow_horizontal = 2
 grow_vertical = 2
 
 [node name="ScrollContainer" type="ScrollContainer" parent="." unique_id=1277965903]
 custom_minimum_size = Vector2(360, 220)
-layout_mode = 0
-offset_left = 1.0
-offset_top = 33.0
-offset_right = 528.0
-offset_bottom = 384.0
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = -12.0
+offset_top = -151.5
+offset_right = 515.0
+offset_bottom = 199.5
+grow_vertical = 2
 
 [node name="PromptContainer" type="VBoxContainer" parent="ScrollContainer" unique_id=256953515]
 layout_mode = 2
@@ -33,19 +37,31 @@ theme_override_constants/separation = 83
 
 [node name="Instruction" type="Panel" parent="." unique_id=1313330555]
 z_index = 1
-layout_mode = 0
-offset_top = -23.0
-offset_right = 224.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = -0.027
+anchor_right = -0.027
+offset_left = 0.04300022
+offset_top = -27.0
+offset_right = 235.043
 offset_bottom = 29.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_jxj8p")
 
 [node name="Label" type="Label" parent="Instruction" unique_id=1443046589]
 z_index = 2
-layout_mode = 0
-offset_left = 6.0
-offset_top = 4.0
-offset_right = 215.0
-offset_bottom = 49.0
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -104.5
+offset_top = -22.5
+offset_right = 104.5
+offset_bottom = 22.5
+grow_horizontal = 2
+grow_vertical = 2
 theme_override_font_sizes/font_size = 25
 text = "Press F to Collect"
+horizontal_alignment = 1
 vertical_alignment = 1
