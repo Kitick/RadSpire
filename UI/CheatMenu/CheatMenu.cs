@@ -1,6 +1,8 @@
 namespace UI.CheatMenu;
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Character;
 using Components;
 using Godot;
@@ -21,14 +23,14 @@ public sealed partial class CheatMenu : BaseUIControl {
 	[Export] public Button ClearRadButton = null!;
 	[Export] public Button AddRadButton = null!;
 	[Export] public Button RemoveRadButton = null!;
-	[Export] public Button MaxRadButton = null!;
+	[Export] public Button SuperStrengthButton = null!;
 
 	[Export] public Button ClearInventoryButton = null!;
 
 	[Export] public Button SuperSpeedButton = null!;
 
 	[ExportCategory("Give Item")]
-	[Export] public LineEdit GiveItemInput = null!;
+	[Export] public OptionButton GiveItemDropdown = null!;
 	[Export] public SpinBox GiveItemQuantity = null!;
 	[Export] public Button GiveItemButton = null!;
 
@@ -36,14 +38,16 @@ public sealed partial class CheatMenu : BaseUIControl {
 
 	private const int HealthStep = 10;
 	private const float RadStep = 0.1f;
-	private const float SuperSpeed = 20.0f;
+	private const float SuperSpeedMultiplier = 5f;
+	private const int SuperStrengthMultiplier = 10;
 
 	private float OriginalSpeed;
 	private bool IsSuperSpeedActive;
+	private int OriginalDamage;
+	private bool IsSuperStrengthActive;
 
 	private Player? Player;
 	private bool Bound;
-	private LineEdit.TextSubmittedEventHandler? GiveItemSubmitHandler;
 
 	public override void _Ready() {
 		base._Ready();
@@ -55,6 +59,7 @@ public sealed partial class CheatMenu : BaseUIControl {
 		Player = player;
 		Visible = true;
 		OnOpen();
+		PopulateItemDropdown();
 		BindButtons();
 	}
 
@@ -75,12 +80,10 @@ public sealed partial class CheatMenu : BaseUIControl {
 		ClearRadButton.Pressed += CheatClearRad;
 		AddRadButton.Pressed += CheatAddRad;
 		RemoveRadButton.Pressed += CheatRemoveRad;
-		MaxRadButton.Pressed += CheatMaxRad;
+		SuperStrengthButton.Pressed += CheatToggleSuperStrength;
 		ClearInventoryButton.Pressed += CheatClearInventory;
 		SuperSpeedButton.Pressed += CheatToggleSuperSpeed;
 		GiveItemButton.Pressed += CheatGiveItemFromInput;
-		GiveItemSubmitHandler = _ => CheatGiveItemFromInput();
-		GiveItemInput.TextSubmitted += GiveItemSubmitHandler;
 	}
 
 	private void UnbindButtons() {
@@ -94,11 +97,10 @@ public sealed partial class CheatMenu : BaseUIControl {
 		ClearRadButton.Pressed -= CheatClearRad;
 		AddRadButton.Pressed -= CheatAddRad;
 		RemoveRadButton.Pressed -= CheatRemoveRad;
-		MaxRadButton.Pressed -= CheatMaxRad;
+		SuperStrengthButton.Pressed -= CheatToggleSuperStrength;
 		ClearInventoryButton.Pressed -= CheatClearInventory;
 		SuperSpeedButton.Pressed -= CheatToggleSuperSpeed;
 		GiveItemButton.Pressed -= CheatGiveItemFromInput;
-		if(GiveItemSubmitHandler != null) { GiveItemInput.TextSubmitted -= GiveItemSubmitHandler; }
 	}
 
 	private void CheatHealFull() {
@@ -125,9 +127,17 @@ public sealed partial class CheatMenu : BaseUIControl {
 		Player.Radiation.Level = Math.Clamp(Player.Radiation.Level - RadStep, 0f, 1f);
 	}
 
-	private void CheatMaxRad() {
+	private void CheatToggleSuperStrength() {
 		if(Player == null) { return; }
-		Player.Radiation.Level = 1f;
+		if(IsSuperStrengthActive) {
+			Player.Offense.Damage = OriginalDamage;
+			IsSuperStrengthActive = false;
+		}
+		else {
+			OriginalDamage = Player.Offense.Damage;
+			Player.Offense.Damage = OriginalDamage * SuperStrengthMultiplier;
+			IsSuperStrengthActive = true;
+		}
 	}
 
 	private void CheatClearInventory() {
@@ -138,12 +148,30 @@ public sealed partial class CheatMenu : BaseUIControl {
 		Player.Hotbar.NotifyChanged();
 	}
 
+	private void PopulateItemDropdown() {
+		GiveItemDropdown.Clear();
+		List<string> ids = [];
+		foreach(ItemDefinition def in DatabaseManager.Instance.ItemsDefinitions.Values) {
+			bool hasDoor = false;
+			bool hasStructure = false;
+			foreach(ItemComponentDefinition comp in def.ComponentsResources) {
+				if(comp is DoorDefinition) { hasDoor = true; }
+				if(comp is StructureDefinition) { hasStructure = true; }
+			}
+			if(hasDoor && !hasStructure) { continue; }
+			ids.Add(def.Id);
+		}
+		ids.Sort(StringComparer.OrdinalIgnoreCase);
+		foreach(string id in ids) {
+			GiveItemDropdown.AddItem(id);
+		}
+	}
+
 	private void CheatGiveItemFromInput() {
-		string id = GiveItemInput.Text.Trim();
+		string id = GiveItemDropdown.GetItemText(GiveItemDropdown.Selected);
 		if(string.IsNullOrEmpty(id)) { return; }
 		int quantity = (int) GiveItemQuantity.Value;
 		GiveItem(new StringName(id), quantity);
-		GiveItemInput.Clear();
 	}
 
 	private void CheatToggleSuperSpeed() {
@@ -154,7 +182,7 @@ public sealed partial class CheatMenu : BaseUIControl {
 		}
 		else {
 			OriginalSpeed = Player.Movement.BaseSpeed;
-			Player.Movement.BaseSpeed = SuperSpeed;
+			Player.Movement.BaseSpeed = OriginalSpeed * SuperSpeedMultiplier;
 			IsSuperSpeedActive = true;
 		}
 	}

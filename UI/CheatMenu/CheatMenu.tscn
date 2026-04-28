@@ -503,6 +503,16 @@ cache/0/18/0/underline_position = 0.0
 cache/0/18/0/underline_thickness = 0.0
 cache/0/18/0/scale = 1.0
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_4u2pc"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8xt0k"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bna1o"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_j2hcr"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tgiiv"]
+
 [sub_resource type="FontFile" id="SystemFont_bvhu7"]
 subpixel_positioning = 0
 msdf_pixel_range = 14
@@ -532,17 +542,7 @@ cache/0/18/0/underline_position = 0.0
 cache/0/18/0/underline_thickness = 0.0
 cache/0/18/0/scale = 1.0
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_4u2pc"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8xt0k"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bna1o"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_j2hcr"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tgiiv"]
-
-[node name="CheatMenu" type="Control" unique_id=41462272 node_paths=PackedStringArray("CloseButton", "HealFullButton", "HealButton", "HurtButton", "KillButton", "ClearRadButton", "AddRadButton", "RemoveRadButton", "MaxRadButton", "ClearInventoryButton", "SuperSpeedButton", "GiveItemInput", "GiveItemQuantity", "GiveItemButton")]
+[node name="CheatMenu" type="Control" unique_id=41462272 node_paths=PackedStringArray("CloseButton", "HealFullButton", "HealButton", "HurtButton", "KillButton", "ClearRadButton", "AddRadButton", "RemoveRadButton", "SuperStrengthButton", "ClearInventoryButton", "SuperSpeedButton", "GiveItemDropdown", "GiveItemQuantity", "GiveItemButton")]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 1000.0
@@ -557,10 +557,10 @@ KillButton = NodePath("PanelArea/Grid/Kill")
 ClearRadButton = NodePath("PanelArea/Grid/ClearRad")
 AddRadButton = NodePath("PanelArea/Grid/AddRad")
 RemoveRadButton = NodePath("PanelArea/Grid/RemoveRad")
-MaxRadButton = NodePath("PanelArea/Grid/MaxRad")
+SuperStrengthButton = NodePath("PanelArea/Grid/SuperStrength")
 ClearInventoryButton = NodePath("PanelArea/Grid/ClearInventory")
 SuperSpeedButton = NodePath("PanelArea/Grid/SuperSpeed")
-GiveItemInput = NodePath("PanelArea/GiveRow/GiveItemInput")
+GiveItemDropdown = NodePath("PanelArea/GiveRow/GiveItemDropdown")
 GiveItemQuantity = NodePath("PanelArea/GiveRow/GiveItemQuantity")
 GiveItemButton = NodePath("PanelArea/GiveRow/GiveItemButton")
 
@@ -581,6 +581,7 @@ theme_override_constants/separation = 0
 [node name="Title" type="RichTextLabel" parent="PanelArea/Header" unique_id=100000002]
 layout_mode = 2
 size_flags_horizontal = 3
+size_flags_stretch_ratio = 4.0
 theme_override_fonts/normal_font = SubResource("SystemFont_3bghr")
 theme_override_fonts/bold_font = SubResource("SystemFont_ci0a7")
 theme_override_fonts/bold_italics_font = SubResource("SystemFont_ob74a")
@@ -592,8 +593,9 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="Close" type="Button" parent="PanelArea/Header" unique_id=40147227]
-custom_minimum_size = Vector2(90, 0)
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 1.0
 theme_override_fonts/font = SubResource("SystemFont_y7kl3")
 theme_override_font_sizes/font_size = 20
 theme_override_styles/normal = SubResource("StyleBoxEmpty_h2gaj")
@@ -723,7 +725,7 @@ theme_override_styles/focus = SubResource("StyleBoxEmpty_2y06q")
 text = "RADIATION
 +10%"
 
-[node name="MaxRad" type="Button" parent="PanelArea/Grid" unique_id=227245817]
+[node name="SuperStrength" type="Button" parent="PanelArea/Grid" unique_id=227245817]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -734,8 +736,7 @@ theme_override_styles/pressed = SubResource("StyleBoxEmpty_ljvsf")
 theme_override_styles/hover = SubResource("StyleBoxEmpty_acsfq")
 theme_override_styles/disabled = SubResource("StyleBoxEmpty_fh4tq")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_mipmn")
-text = "MAX
-RADIATION"
+text = "SUPER STRENGTH"
 
 [node name="Kill" type="Button" parent="PanelArea/Grid" unique_id=1064081175]
 layout_mode = 2
@@ -758,23 +759,29 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 theme_override_constants/separation = 6
 
-[node name="GiveItemInput" type="LineEdit" parent="PanelArea/GiveRow" unique_id=300000002]
+[node name="GiveItemDropdown" type="OptionButton" parent="PanelArea/GiveRow" unique_id=300000002]
 layout_mode = 2
 size_flags_horizontal = 3
+size_flags_stretch_ratio = 3.0
 theme_override_fonts/font = SubResource("SystemFont_lbye4")
 theme_override_font_sizes/font_size = 18
-placeholder_text = "Item ID (e.g. SwordIron)"
+theme_override_styles/normal = SubResource("StyleBoxEmpty_4u2pc")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_8xt0k")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_bna1o")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_j2hcr")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_tgiiv")
+alignment = 1
 
 [node name="GiveItemQuantity" type="SpinBox" parent="PanelArea/GiveRow" unique_id=300000003]
-custom_minimum_size = Vector2(90, 0)
 layout_mode = 2
+size_flags_horizontal = 3
 min_value = 1.0
 max_value = 99.0
 value = 1.0
 
 [node name="GiveItemButton" type="Button" parent="PanelArea/GiveRow" unique_id=300000004]
-custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
+size_flags_horizontal = 3
 theme_override_fonts/font = SubResource("SystemFont_bvhu7")
 theme_override_font_sizes/font_size = 18
 theme_override_styles/normal = SubResource("StyleBoxEmpty_4u2pc")
