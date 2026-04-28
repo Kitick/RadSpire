@@ -8,15 +8,15 @@ albedo_texture = ExtResource("2_ovvyh")
 
 [node name="Stone Chest" unique_id=365201895 instance=ExtResource("1_26spg")]
 
-[node name="Armature Chest Stone" parent="." index="0" unique_id=1158308760]
+[node name="Armature Chest Stone" parent="." index="0" unique_id=1721567017]
 transform = Transform3D(181.10768, 0, 0, 0, -7.916468e-06, 181.10768, 0, -181.10768, -7.916468e-06, 1.4572749e-17, 0.065629825, -1.3257225)
 
-[node name="Skeleton3D" parent="Armature Chest Stone" index="0" unique_id=311836479]
+[node name="Skeleton3D" parent="Armature Chest Stone" index="0" unique_id=1150637929]
 bones/1/rotation = Quaternion(0.36467975, 0.001575706, -0.0040223915, 0.931123)
 bones/4/rotation = Quaternion(0.0739601, 0.07271989, -0.71433425, 0.6920754)
 bones/7/rotation = Quaternion(-0.7052729, 0.7076682, 0.004696102, -0.04211702)
 bones/10/rotation = Quaternion(0.07316647, 0.073538795, -0.714416, 0.6919888)
 bones/13/rotation = Quaternion(-0.70507205, 0.7086359, -0.017477227, -0.020077594)
 
-[node name="Stone Chest" parent="Armature Chest Stone/Skeleton3D" index="0" unique_id=115332382]
+[node name="Stone Chest" parent="Armature Chest Stone/Skeleton3D" index="0" unique_id=231261663]
 surface_material_override/0 = SubResource("StandardMaterial3D_5sdnc")
