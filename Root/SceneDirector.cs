@@ -77,6 +77,8 @@ public sealed partial class SceneDirector : Node {
 		SwitchScene(splashPanel);
 
 		await ToSignal(splashPanel, Node.SignalName.TreeExited);
+		await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+
 		SwitchGameScene(loadfile);
 	}
 
