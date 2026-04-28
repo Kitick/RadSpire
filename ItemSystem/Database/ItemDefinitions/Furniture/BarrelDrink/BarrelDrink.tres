@@ -1,6 +1,7 @@
 [gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://bipordnq3u8mm"]
 
 [ext_resource type="Script" uid="uid://cnm5iegiuj4xu" path="res://ItemSystem/Definitions/ItemComponentDefinition.cs" id="1_bbasb"]
+[ext_resource type="Resource" path="res://ItemSystem/Database/ComponentDefinitions/FurnitureValueDefinition/FurnitureValue_10.tres" id="2_0t02r"]
 [ext_resource type="Script" uid="uid://bxmh4fd7kjvv1" path="res://ItemSystem/Definitions/ItemDefinition.cs" id="2_ejwn4"]
 [ext_resource type="Texture2D" uid="uid://tawl4cjh4kr3" path="res://ItemSystem/Database/ItemDefinitions/Furniture/BarrelDrink/BarrelDrink.png" id="2_fnvss"]
 [ext_resource type="PackedScene" uid="uid://fgofiw2ygshn" path="res://ItemSystem/Database/ItemDefinitions/Furniture/BarrelDrink/BarrelDrink.tscn" id="3_0t02r"]
@@ -16,4 +17,5 @@ Pickupable = true
 Can_Object_Stack = true
 IconTexture = ExtResource("2_fnvss")
 ItemScene = ExtResource("3_0t02r")
+ComponentsResources = Array[ExtResource("1_bbasb")]([ExtResource("2_0t02r")])
 metadata/_custom_type_script = "uid://bxmh4fd7kjvv1"

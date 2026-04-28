@@ -5,6 +5,7 @@
 [ext_resource type="Resource" uid="uid://c1huxqjph6pmk" path="res://ItemSystem/Database/ComponentDefinitions/InventoryComponentDefinition/3x5InventoryDefinition.tres" id="2_tr6eg"]
 [ext_resource type="PackedScene" uid="uid://daitp4ui7bvx5" path="res://ItemSystem/Database/ItemDefinitions/Furniture/Barrel/Barrel.tscn" id="3_0p077"]
 [ext_resource type="Texture2D" uid="uid://4xo8i3bds6a0" path="res://ItemSystem/Database/ItemDefinitions/Furniture/Barrel/BarrelNew.png" id="3_7y62p"]
+[ext_resource type="Resource" path="res://ItemSystem/Database/ComponentDefinitions/FurnitureValueDefinition/FurnitureValue_05.tres" id="3_jmxdj"]
 
 [resource]
 script = ExtResource("2_4fcn1")
@@ -17,5 +18,5 @@ Pickupable = true
 Can_Object_Stack = true
 IconTexture = ExtResource("3_7y62p")
 ItemScene = ExtResource("3_0p077")
-ComponentsResources = Array[ExtResource("1_e7y2w")]([ExtResource("2_tr6eg")])
+ComponentsResources = Array[ExtResource("1_e7y2w")]([ExtResource("2_tr6eg"), ExtResource("3_jmxdj")])
 metadata/_custom_type_script = "uid://bxmh4fd7kjvv1"

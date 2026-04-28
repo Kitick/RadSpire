@@ -4,6 +4,7 @@
 [ext_resource type="Resource" uid="uid://c1huxqjph6pmk" path="res://ItemSystem/Database/ComponentDefinitions/InventoryComponentDefinition/3x5InventoryDefinition.tres" id="2_qlkpw"]
 [ext_resource type="Texture2D" uid="uid://dsj1ej0e5kb1n" path="res://ItemSystem/Database/ItemDefinitions/Furniture/Chest/RareChest/RareChest.png" id="3_0pfoe"]
 [ext_resource type="Resource" uid="uid://ciovc0daoe5t0" path="res://ItemSystem/Database/ComponentDefinitions/ChestRarityDefinition/RareChestRarityDefinition.tres" id="3_nx2w0"]
+[ext_resource type="Resource" path="res://ItemSystem/Database/ComponentDefinitions/FurnitureValueDefinition/FurnitureValue_15.tres" id="4_et6cq"]
 [ext_resource type="PackedScene" uid="uid://dov4o4rrxb65j" path="res://ItemSystem/Database/ItemDefinitions/Furniture/Chest/RareChest/RareChest.tscn" id="4_jvw3p"]
 [ext_resource type="Script" uid="uid://bxmh4fd7kjvv1" path="res://ItemSystem/Definitions/ItemDefinition.cs" id="5_n6obt"]
 
@@ -17,5 +18,5 @@ IsPlaceable = true
 Pickupable = true
 IconTexture = ExtResource("3_0pfoe")
 ItemScene = ExtResource("4_jvw3p")
-ComponentsResources = Array[ExtResource("1_ehckv")]([ExtResource("2_qlkpw"), ExtResource("3_nx2w0")])
+ComponentsResources = Array[ExtResource("1_ehckv")]([ExtResource("2_qlkpw"), ExtResource("3_nx2w0"), ExtResource("4_et6cq")])
 metadata/_custom_type_script = "uid://bxmh4fd7kjvv1"
