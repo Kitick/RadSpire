@@ -24,7 +24,7 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData>, IAtta
 	[Export] public StringName StaffAttackAnimation = default;
 
 	[Export] private int InitialHealthValue = 100;
-	[Export] public int InitialDamageValue = 10;
+	[Export] public int InitialDamageValue = 3;
 	[Export] private int InitialDefenseValue = 5;
 
 	protected override int InitialHealth => InitialHealthValue;
@@ -38,6 +38,8 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData>, IAtta
 	[Export] private float ComboHit2Multiplier = 1.15f;
 	[Export] private float ComboHit3Multiplier = 1.30f;
 	[Export] private float StaffAttackCooldown = 0.45f;
+	[Export] private int StaffProjectileDamage = 10;
+	[Export] private float StaffRadiationPerShot = 0.01f;
 
 	// Inventories
 	public readonly Inventory Inventory = new(3, 5);
@@ -63,12 +65,16 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData>, IAtta
 	public Radiation Radiation { get; private set; } = new Radiation(secondsToFatalDose: 30 * 60);
 	public int BaseMaxHealth { get; private set; }
 	public bool IsSleeping = false;
-	public int SleepRate = 0;
 	public Vector3 LocationBeforeSleep = Vector3.Zero;
 	public Vector3 RotationBeforeSleep = Vector3.Zero;
 
+	private float SleepHealAccumulator = 0f;
+	private const float SleepHealthPerSecond = 2f;
+	private const float SleepRadiationPerSecond = 5f / (30f * 60f); // clears full radiation in ~6 minutes
+
 	public bool HoldingSword = false;
 	public bool HoldingStaff = false;
+	public WeaponBase? EquippedWeapon { get; set; }
 	private Vector3 DodgeDirection = Vector3.Zero;
 	private Animator? Animator;
 	private int ComboIndex = 0;
@@ -95,6 +101,7 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData>, IAtta
 		AddToGroup(Group.Player.ToString());
 		Animator = GetNodeOrNull<Animator>("Model/AnimationPlayer");
 		Animator?.SetAttackSpeed(3.0f);
+		RefreshCombatStats();
 		if(StaffMesh != null) {
 			StaffMesh.Visible = HoldingStaff;
 		}
@@ -169,9 +176,14 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData>, IAtta
 
 	public void Update(float dt, KeyInput keyInput) {
 		if(IsSleeping) {
-			Radiation.Deccumulate(dt, SleepRate);
+			Radiation.Deccumulate(dt, SleepRadiationPerSecond);
 			Health.Max = Math.Max(1, (int) Math.Round(BaseMaxHealth * (1f - Radiation.Level)));
-			this.Heal(SleepRate);
+			SleepHealAccumulator += SleepHealthPerSecond * dt;
+			int healAmount = (int) SleepHealAccumulator;
+			if(healAmount > 0) {
+				this.Heal(healAmount);
+				SleepHealAccumulator -= healAmount;
+			}
 			Velocity = Vector3.Zero;
 			if(this.IsDead()) {
 				StateMachine.TransitionTo(State.Dead);
@@ -373,24 +385,45 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData>, IAtta
 		_ => ComboHit3Multiplier,
 	};
 
+	public int GetMeleeDamage() {
+		int damage = InitialDamageValue;
+		if(EquippedWeapon?.VisualType == WeaponBase.WeaponVisualType.Sword) {
+			damage += EquippedWeapon.BaseAttack;
+		}
+		return damage;
+	}
+
+	public void RefreshCombatStats() {
+		if(Offense != null) {
+			Offense.Damage = GetMeleeDamage();
+		}
+	}
+
+	private int GetStaffProjectileDamage() {
+		if(EquippedWeapon?.VisualType == WeaponBase.WeaponVisualType.Staff) {
+			return EquippedWeapon.BaseAttack;
+		}
+		return StaffProjectileDamage;
+	}
+
 	private void SpawnStaffProjectile() {
 		if(RadiationBoltScene.Instantiate() is not RadiationBolt bolt) {
 			return;
 		}
 
+		Radiation.Level += StaffRadiationPerShot;
 		GetTree().CurrentScene?.AddChild(bolt);
 		bolt.GlobalTransform = StaffCastPoint.GlobalTransform;
 		Vector3 direction = -StaffCastPoint.GlobalTransform.Basis.Z;
-		bolt.Init(this, direction, Offense.Damage);
+		bolt.Init(this, direction, GetStaffProjectileDamage());
 	}
 
-	public void Sleep(int Amount, Vector3 Location, Vector3 Rotation) {
+	public void Sleep(Vector3 Location, Vector3 Rotation) {
 		if(IsSleeping) {
 			return;
 		}
 
 		IsSleeping = true;
-		SleepRate = Amount;
 		LocationBeforeSleep = GlobalTransform.Origin;
 		RotationBeforeSleep = GlobalRotation;
 		GlobalPosition = Location;
@@ -405,7 +438,7 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData>, IAtta
 		}
 
 		IsSleeping = false;
-		SleepRate = 0;
+		SleepHealAccumulator = 0f;
 		GlobalPosition = LocationBeforeSleep;
 		GlobalRotation = RotationBeforeSleep;
 		Velocity = Vector3.Zero;
@@ -502,6 +535,7 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData>, IAtta
 		Movement.Import(data.Movement);
 		Health.Import(data.Health);
 		Offense.Import(data.Offense);
+		RefreshCombatStats();
 		Defense.Import(data.Defense);
 		Radiation.Import(data.Radiation);
 		Inventory.Import(data.Inventory);

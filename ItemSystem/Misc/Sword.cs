@@ -9,8 +9,6 @@ public partial class Sword : Area3D {
 
 	private Node3D WeaponOwner = null!;
 
-	public int Damage = 10;
-
 	public override void _Ready() {
 		WeaponOwner = GetOwner<Node3D>();
 		Monitoring = false;
@@ -21,9 +19,14 @@ public partial class Sword : Area3D {
 		if(body == WeaponOwner) {
 			return;
 		}
-		
-		if(body is IHealth health) {
-			health.Hurt(Damage);
+
+		if(WeaponOwner is IOffense attacker && body is IHealth health) {
+			attacker.Attack(health);
+			return;
+		}
+
+		if(body is IHealth fallbackHealth) {
+			fallbackHealth.Hurt(10);
 		}
 	}
 }
