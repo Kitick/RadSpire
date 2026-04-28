@@ -22,10 +22,10 @@ public readonly record struct LogService {
 	}
 
 	public readonly void Warn(string message, [CallerMemberName] string? method = null) {
-		if(Enabled) { GD.PrintErr($"{FormatMessage(message, method)}"); }
+		if(Enabled) { GD.PushWarning(FormatMessage(message, method)); }
 	}
 
 	public readonly void Error(string message, [CallerMemberName] string? method = null) {
-		GD.PrintErr($"{FormatMessage(message, method)}");
+		GD.PushError(FormatMessage(message, method));
 	}
 }

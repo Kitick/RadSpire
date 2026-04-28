@@ -31,7 +31,7 @@ public static class CraftingSystem {
 	public static CraftResult Craft(CraftingRecipe recipe, params IEnumerable<Inventory> sources) {
 		Inventory[] inventories = [.. sources];
 		if(!CanCraft(recipe, inventories, out RecipeItem[]? missing)) {
-			Log.Info($"Craft failed for '{recipe.RecipeName}': {missing.Length} ingredient(s) missing.");
+			Log.Warn($"Craft failed for '{recipe.RecipeName}': {missing.Length} ingredient(s) missing.");
 			return CraftResult.Fail(CraftStatus.MissingIngredients, missing);
 		}
 

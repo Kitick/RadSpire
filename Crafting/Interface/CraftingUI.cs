@@ -2,6 +2,7 @@ namespace Crafting.Interface;
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Crafting;
 using Godot;
 using InventorySystem;
@@ -26,6 +27,7 @@ public sealed partial class CraftingUI : Control {
 	public readonly List<Inventory> Inventories = [];
 
 	private CraftingRecipe? SelectedRecipe;
+	private CraftingRecipe[] SortedRecipes = [];
 
 	private int Quantity {
 		get;
@@ -53,21 +55,35 @@ public sealed partial class CraftingUI : Control {
 		NegButton.Pressed += () => Quantity--;
 
 		CraftableDropdown.ItemSelected += (_) => OnCraftableSelected();
+		QuantityDisplay.TextChanged += OnQuantityTextChanged;
 	}
 
 	private void OnCraftableSelected() {
-		SelectedRecipe = CraftableDropdown.GetSelectedItem(Recipes.AllRecipes);
+		SelectedRecipe = CraftableDropdown.GetSelectedItem(SortedRecipes);
 		UpdateSelectedItem();
 		UpdateSelectedRequirements();
 	}
 
 	public void RefreshUI() {
-		CraftableDropdown.Populate(Recipes.AllRecipes);
+		SortedRecipes = [
+			.. Recipes.AllRecipes.Where(r => CraftingSystem.CanCraft(r, Inventories, out _)),
+			.. Recipes.AllRecipes.Where(r => !CraftingSystem.CanCraft(r, Inventories, out _)),
+		];
 
-		SelectedRecipe = Recipes.AllRecipes.Length > 0 ? Recipes.AllRecipes[0] : null;
+		CraftableDropdown.Populate(SortedRecipes);
+
+		SelectedRecipe = SortedRecipes.Length > 0 ? SortedRecipes[0] : null;
 
 		UpdateSelectedItem();
 		RefreshQuantity();
+	}
+
+	private void UpdateDropdown() {
+		PopupMenu popup = CraftableDropdown.GetPopup();
+		for(int i = 0; i < SortedRecipes.Length; i++) {
+			bool canCraft = CraftingSystem.CanCraft(SortedRecipes[i], Inventories, out _);
+			popup.SetItemText(i, canCraft ? $"✓ {SortedRecipes[i].RecipeName}" : $"✕ {SortedRecipes[i].RecipeName}");
+		}
 	}
 
 	private void UpdateSelectedItem() {
@@ -83,9 +99,16 @@ public sealed partial class CraftingUI : Control {
 		ItemIcon.Texture = def?.IconTexture;
 	}
 
+	private void OnQuantityTextChanged(string text) {
+		if(int.TryParse(text, out int value)) {
+			Quantity = value;
+		}
+	}
+
 	private void RefreshQuantity() {
 		QuantityDisplay.Text = Quantity.ToString();
 		UpdateSelectedRequirements();
+		UpdateDropdown();
 	}
 
 	private static readonly StyleBoxEmpty EmptyStyle = new();
@@ -123,7 +146,7 @@ public sealed partial class CraftingUI : Control {
 				ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize,
 			};
 
-			Label nameLabel = new() { Text = name };
+			Label nameLabel = new() { Text = name, SizeFlagsHorizontal = SizeFlags.ExpandFill };
 			nameLabel.AddThemeStyleboxOverride("normal", EmptyStyle);
 			nameLabel.AddThemeColorOverride("font_color", Colors.White);
 
@@ -156,8 +179,8 @@ public sealed partial class CraftingUI : Control {
 				}
 				Log.Info($"Crafted '{SelectedRecipe.RecipeName}' x {Quantity}.");
 				craftedAtLeastOne = true;
-			} else {
-				Log.Warn($"Crafting failed: {result.Status}");
+			}
+			else {
 				break;
 			}
 		}
