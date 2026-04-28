@@ -4,7 +4,7 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gxyg8"]
 
-[node name="SplashPanel" type="Control" unique_id=865181656]
+[node name="SplashPanel" type="Control" unique_id=865181656 node_paths=PackedStringArray("SkipButton")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -12,6 +12,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1")
+SkipButton = NodePath("ColorRect/SkipButton")
 
 [node name="ColorRect" type="ColorRect" parent="." unique_id=2099039547]
 layout_mode = 1
@@ -216,3 +217,12 @@ offset_bottom = -0.52008057
 theme_override_font_sizes/font_size = 40
 theme_override_styles/normal = SubResource("StyleBoxEmpty_gxyg8")
 text = "Take back what was stolen."
+
+[node name="SkipButton" type="Button" parent="ColorRect" unique_id=1520401157]
+layout_mode = 0
+offset_left = 1712.0
+offset_top = 920.0
+offset_right = 1856.0
+offset_bottom = 1000.0
+theme_override_font_sizes/font_size = 48
+text = "Skip"

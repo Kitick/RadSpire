@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Godot;
 
@@ -8,8 +9,14 @@ public partial class SplashPanel : Control {
 	[Export] public float ReadingCharactersPerSecond = 18.0f;
 	[Export] public float MaxDelayBetweenLabelsSeconds = 20.0f;
 	[Export] public float FadeDurationSeconds = 0.7f;
+	[Export] public float SkipUnlockDelaySeconds = 8.0f;
+	[Export] private Button SkipButton = null!;
 
-	public override async void _Ready() {
+	private bool IsSkipRequested;
+	private readonly List<Label> Labels = [];
+	private int NextLabelIndex;
+
+	public override void _Ready() {
 		ColorRect labelContainer = GetNodeOrNull<ColorRect>("ColorRect");
 
 		if(labelContainer == null) {
@@ -17,44 +24,37 @@ public partial class SplashPanel : Control {
 			return;
 		}
 
-		List<Label> labels = [];
+		if(!IsInstanceValid(SkipButton)) {
+			GD.PushWarning("SplashPanel: exported 'SkipButton' is not assigned.");
+		}
+		else {
+			SkipButton.Visible = false;
+			SkipButton.Disabled = true;
+			SkipButton.Pressed += OnSkipButtonPressed;
+			StartTimer(SkipUnlockDelaySeconds, EnableSkipButton);
+		}
 
 		foreach(Node child in labelContainer.GetChildren()) {
 			if(child is Label label) {
-				labels.Add(label);
+				Labels.Add(label);
 				label.Visible = false;
 				label.Modulate = new Color(1f, 1f, 1f, 0f);
 				label.Scale = Vector2.One;
 			}
 		}
 
-		if(labels.Count == 0) {
+		if(Labels.Count == 0) {
 			GD.PushWarning("SplashPanel: No Label children were found under 'ColorRect'.");
 			return;
 		}
 
-		if(InitialDelaySeconds > 0f) {
-			await ToSignal(GetTree().CreateTimer(InitialDelaySeconds), SceneTreeTimer.SignalName.Timeout);
+		StartTimer(InitialDelaySeconds, RevealNextLabel);
+	}
+
+	public override void _ExitTree() {
+		if(IsInstanceValid(SkipButton)) {
+			SkipButton.Pressed -= OnSkipButtonPressed;
 		}
-
-		for(int i = 0; i < labels.Count; i++) {
-			ShowLabelWithReveal(labels[i]);
-
-			if(i < labels.Count - 1) {
-				float waitSeconds = GetDelayForLabel(labels[i]);
-
-				if(waitSeconds > 0f) {
-					await ToSignal(GetTree().CreateTimer(waitSeconds), SceneTreeTimer.SignalName.Timeout);
-				}
-			}
-		}
-
-		float finalLabelDelaySeconds = Mathf.Max(FadeDurationSeconds, GetDelayForLabel(labels[labels.Count - 1]));
-		if(finalLabelDelaySeconds > 0f) {
-			await ToSignal(GetTree().CreateTimer(finalLabelDelaySeconds), SceneTreeTimer.SignalName.Timeout);
-		}
-
-		QueueFree();
 	}
 
 	private float GetDelayForLabel(Label label) {
@@ -69,9 +69,72 @@ public partial class SplashPanel : Control {
 	}
 
 	private void ShowLabelWithReveal(Label label) {
+		if(!IsInstanceValid(label)) {
+			return;
+		}
+
 		label.Visible = true;
 
 		Tween tween = CreateTween();
 		tween.TweenProperty(label, "modulate:a", 1.0f, FadeDurationSeconds).From(0.0f);
+	}
+
+	private void RevealNextLabel() {
+		if(IsSkipRequested || !IsInsideTree()) {
+			return;
+		}
+
+		if(NextLabelIndex >= Labels.Count) {
+			QueueFree();
+			return;
+		}
+
+		Label currentLabel = Labels[NextLabelIndex];
+		ShowLabelWithReveal(currentLabel);
+
+		float waitSeconds = NextLabelIndex < Labels.Count - 1
+			? GetDelayForLabel(currentLabel)
+			: Mathf.Max(FadeDurationSeconds, GetDelayForLabel(currentLabel));
+
+		NextLabelIndex += 1;
+		StartTimer(waitSeconds, RevealNextLabel);
+	}
+
+	private void EnableSkipButton() {
+		if(IsSkipRequested || !IsInsideTree() || !IsInstanceValid(SkipButton)) {
+			return;
+		}
+
+		SkipButton.Visible = true;
+		SkipButton.Disabled = false;
+	}
+
+	private void StartTimer(float seconds, Action callback) {
+		if(IsSkipRequested || !IsInsideTree()) {
+			return;
+		}
+
+		if(seconds <= 0f) {
+			callback();
+			return;
+		}
+
+		SceneTreeTimer timer = GetTree().CreateTimer(seconds);
+		timer.Timeout += () => {
+			if(IsSkipRequested || !IsInsideTree()) {
+				return;
+			}
+
+			callback();
+		};
+	}
+
+	private void OnSkipButtonPressed() {
+		if(IsSkipRequested) {
+			return;
+		}
+
+		IsSkipRequested = true;
+		QueueFree();
 	}
 }
