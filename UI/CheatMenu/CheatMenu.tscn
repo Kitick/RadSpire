@@ -545,6 +545,8 @@ cache/0/18/0/scale = 1.0
 [node name="CheatMenu" type="Control" unique_id=41462272 node_paths=PackedStringArray("CloseButton", "HealFullButton", "HealButton", "HurtButton", "KillButton", "ClearRadButton", "AddRadButton", "RemoveRadButton", "MaxRadButton", "ClearInventoryButton", "SuperSpeedButton", "GiveItemInput", "GiveItemQuantity", "GiveItemButton")]
 layout_mode = 3
 anchors_preset = 0
+offset_right = 1000.0
+offset_bottom = 350.0
 theme = SubResource("Theme_default")
 script = ExtResource("1_cheat")
 CloseButton = NodePath("PanelArea/Header/Close")
@@ -565,8 +567,8 @@ GiveItemButton = NodePath("PanelArea/GiveRow/GiveItemButton")
 [node name="PanelArea" type="ColorRect" parent="." unique_id=2094560823]
 layout_mode = 1
 anchors_preset = -1
-offset_right = 1000.0
-offset_bottom = 340.0
+anchor_right = 1.0
+anchor_bottom = 1.0
 color = Color(0.23537064, 0.23537049, 0.23537052, 1)
 
 [node name="Header" type="HBoxContainer" parent="PanelArea" unique_id=100000001]

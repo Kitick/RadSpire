@@ -57,6 +57,7 @@ SaveMenuScene = ExtResource("3_o30d6")
 HostPanelScene = ExtResource("2_3o8sq")
 
 [node name="InteractionPrompt" type="Label" parent="." unique_id=1956403469]
+visible = false
 layout_mode = 0
 offset_left = 835.0
 offset_top = 352.0
@@ -83,7 +84,6 @@ theme_override_styles/focus = SubResource("StyleBoxEmpty_4c1es")
 expand_icon = true
 
 [node name="Inventory" parent="." unique_id=209910365 instance=ExtResource("6_785o0")]
-visible = false
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
@@ -98,12 +98,16 @@ grow_horizontal = 2
 script = ExtResource("5_q8dl0")
 
 [node name="Crafting" parent="." unique_id=2111148912 instance=ExtResource("9_y8qxg")]
-visible = false
 layout_mode = 1
-offset_left = 320.0
-offset_top = 240.0
-offset_right = 320.0
-offset_bottom = 240.0
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -766.0
+offset_top = -334.0
+offset_right = -216.0
+offset_bottom = 329.0
 
 [node name="ChestUI" parent="." unique_id=162888265 instance=ExtResource("6_785o0")]
 visible = false
@@ -136,12 +140,16 @@ grow_horizontal = 2
 script = ExtResource("5_q8dl0")
 
 [node name="ItemInformationUI" parent="." unique_id=1729341677 instance=ExtResource("9_2y2n3")]
-visible = false
 layout_mode = 1
-offset_left = 1146.0
-offset_top = 458.0
-offset_right = 1146.0
-offset_bottom = 458.0
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 190.0
+offset_top = -100.0
+offset_right = 340.0
+offset_bottom = 100.0
 script = ExtResource("10_y8qxg")
 
 [node name="QuestLog" parent="." unique_id=1556372553 instance=ExtResource("8_6ymr8")]
@@ -149,10 +157,10 @@ layout_mode = 1
 anchors_preset = -1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -306.0
+offset_left = -370.0
 offset_top = 50.0
 offset_right = -50.0
-offset_bottom = 400.0
+offset_bottom = 500.0
 
 [node name="Hotbar" parent="." unique_id=546357907 instance=ExtResource("5_c358i")]
 layout_mode = 1
@@ -190,11 +198,13 @@ offset_right = -839.0
 offset_bottom = -593.0
 
 [node name="CheatMenu" parent="." unique_id=41462272 instance=ExtResource("1_cheatmenu")]
+visible = false
 layout_mode = 1
+anchors_preset = -1
 offset_left = 50.0
 offset_top = 50.0
-offset_right = 50.0
-offset_bottom = 50.0
+offset_right = 1050.0
+offset_bottom = 400.0
 
 [node name="HealthBar" type="Control" parent="." unique_id=1038583943]
 editor_description = "
