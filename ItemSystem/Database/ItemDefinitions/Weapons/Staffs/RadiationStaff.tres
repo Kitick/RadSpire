@@ -1,4 +1,4 @@
-[gd_resource type="Resource" format=3 uid="uid://jpnl6pwx3beu"]
+[gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://jpnl6pwx3beu"]
 
 [ext_resource type="Script" uid="uid://cnm5iegiuj4xu" path="res://ItemSystem/Definitions/ItemComponentDefinition.cs" id="1_wap71"]
 [ext_resource type="Script" uid="uid://b3r1li6nl8bs3" path="res://ItemSystem/Definitions/WeaponBaseDefinition.cs" id="2_ghdt7"]
@@ -14,7 +14,12 @@ script = ExtResource("4_3jhsb")
 Id = "StaffRadiation"
 Name = "Radiation Staff"
 Description = "A staff humming with unstable radiation"
+MaxStackSize = null
 IsConsumable = false
+IsPlaceable = null
+Pickupable = null
+IsWallObject = null
+Can_Object_Stack = null
 IconTexture = ExtResource("3_b17dw")
 ComponentsResources = Array[ExtResource("1_wap71")]([SubResource("Resource_4ic2l")])
 metadata/_custom_type_script = "uid://bxmh4fd7kjvv1"

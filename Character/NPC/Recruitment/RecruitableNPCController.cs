@@ -97,7 +97,7 @@ public sealed partial class RecruitableNPCController : Node {
 
 	public void AssignToStructure(Object structureObject) {
 		AssignedStructureObjectId = structureObject.Id;
-		HomePosition = structureObject.WorldLocation.Position + new Vector3(1.5f, 0f, 0f);
+		HomePosition = structureObject.WorldLocation.Position + new Vector3(3.0f, 0f, 0f);
 		HomeRotation = structureObject.WorldLocation.Rotation;
 		Npc.GlobalPosition = HomePosition;
 		Npc.GlobalRotation = HomeRotation;
@@ -118,7 +118,7 @@ public sealed partial class RecruitableNPCController : Node {
 
 	private string? GetPromptText() {
 		return State switch {
-			RecruitableNPCState.Locked => null,
+			RecruitableNPCState.Locked => "Press F to talk",
 			RecruitableNPCState.Following => "Press F to talk",
 			RecruitableNPCState.AssignedToStructure => "Press F to talk",
 			RecruitableNPCState.IdleAtStructure => "Press F to talk",

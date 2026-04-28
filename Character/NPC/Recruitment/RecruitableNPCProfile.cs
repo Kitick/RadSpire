@@ -15,6 +15,23 @@ public sealed record RecruitableNPCProfile(
 );
 
 public static class RecruitableNPCProfiles {
+	public static readonly RecruitableNPCProfile Colin = new(
+		NpcId: NPCID.Colin,
+		DisplayName: "Colin",
+		PrereqQuests: [QuestID.ColinRadiationCamp],
+		CollectionQuest: QuestID.ColinFollowToCamp,
+		PostCollectionQuests: [QuestID.ColinCraftBed],
+		ModelScenePath: string.Empty,
+		FollowingDialogue: [
+			"Keep moving. I'll follow you to the tent.",
+			"Once the tent is placed, assign me and I'll stay on camp duty."
+		],
+		AssignedDialogue: [
+			"Looks like an amazing base camp. I'll stay here and help you along the way.",
+			"Next quest is simple: craft a bed so you can heal radiation damage."
+		]
+	);
+
 	public static readonly RecruitableNPCProfile Rowan = new(
 		NpcId: NPCID.Rowan,
 		DisplayName: "Rowan",
@@ -51,6 +68,7 @@ public static class RecruitableNPCProfiles {
 
 	public static readonly IReadOnlyDictionary<NPCID, RecruitableNPCProfile> All =
 		new Dictionary<NPCID, RecruitableNPCProfile> {
+			[Colin.NpcId] = Colin,
 			[Rowan.NpcId] = Rowan,
 			[Dag.NpcId] = Dag,
 		};

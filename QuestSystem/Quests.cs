@@ -164,6 +164,71 @@ public static class Quests {
 		]
 	);
 
+	public static readonly QuestDefinition ColinRadiationCamp = new(
+		Title: "Set Up a Base Camp",
+		Description: "Colin warned you about radiation. Craft a tent so you can establish a safe base camp.",
+		Type: QuestType.Side,
+		StageRequirement: 0,
+		Objectives: [
+			new CollectObjective("Craft a tent", RequiredCount: 1, ItemId: ItemID.Tent),
+		],
+		NpcId: NPCID.Colin,
+		InitialDialogue: [
+			"There is radiation all around here. You need to set up a base camp before it chews through you.",
+			"Go craft a tent, then come back to me."
+		],
+		ActiveDialogue: [
+			"Craft a tent first. You need a base camp to survive out here.",
+		],
+		CompletionDialogue: [
+			"Good. Now place that tent down and I'll follow you there.",
+		]
+	);
+
+	public static readonly QuestDefinition ColinFollowToCamp = new(
+		Title: "Lead Colin to Camp",
+		Description: "Talk to Colin so he can follow you, then place down your tent and assign him to your camp.",
+		Type: QuestType.Side,
+		StageRequirement: 0,
+		Objectives: [
+			new TalkObjective("Talk to Colin", NPCID.Colin),
+		],
+		NpcId: NPCID.Colin,
+		Prerequisites: [QuestID.ColinRadiationCamp],
+		InitialDialogue: [
+			"Alright, let's move. Place the tent down and assign me there once we're at camp.",
+		],
+		ActiveDialogue: [
+			"Place that tent and assign me when you are ready.",
+		],
+		CompletionDialogue: [
+			"Right behind you. Let's get this base camp running.",
+		]
+	);
+
+	public static readonly QuestDefinition ColinCraftBed = new(
+		Title: "Build a Bed",
+		Description: "Craft a bed so you can heal radiation damage while resting at camp.",
+		Type: QuestType.Side,
+		StageRequirement: 0,
+		Objectives: [
+			new CollectObjective("Craft a bed", RequiredCount: 1, ItemId: ItemID.BedSmall),
+		],
+		NpcId: NPCID.Colin,
+		Prerequisites: [QuestID.ColinFollowToCamp],
+		OfferMode: QuestOfferMode.OfferedByNpc,
+		InitialDialogue: [
+			"Looks like an amazing base camp. I'll stay here and help you along the way.",
+			"Next step: craft a bed. That's how you can heal your radiation damage.",
+		],
+		ActiveDialogue: [
+			"Get a bed crafted. Sleeping is your best way to clear radiation buildup.",
+		],
+		CompletionDialogue: [
+			"Perfect. With a bed in camp you'll recover from radiation a lot faster.",
+		]
+	);
+
 	public static readonly Dictionary<QuestID, QuestDefinition> All = new() {
 		[QuestID.LeftForDead] = LeftForDead,
 		[QuestID.ArmYourself] = ArmYourself,
@@ -171,5 +236,8 @@ public static class Quests {
 		[QuestID.ADealIsADeal] = ADealIsADeal,
 		[QuestID.RowanJoinsCamp] = RowanJoinsCamp,
 		[QuestID.RowanStockTheShelter] = RowanStockTheShelter,
+		[QuestID.ColinRadiationCamp] = ColinRadiationCamp,
+		[QuestID.ColinFollowToCamp] = ColinFollowToCamp,
+		[QuestID.ColinCraftBed] = ColinCraftBed,
 	};
 }

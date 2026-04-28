@@ -13,7 +13,7 @@ public sealed class NPCDialogueRouter {
 
 	public string[] GetDialogue(RecruitableNPCState state) {
 		return state switch {
-			RecruitableNPCState.Locked => [],
+			RecruitableNPCState.Locked => QuestManager.GetDialogueFor(Profile.NpcId),
 			RecruitableNPCState.Following => Profile.FollowingDialogue,
 			RecruitableNPCState.AssignedToStructure => GetAssignedDialogue(),
 			RecruitableNPCState.IdleAtStructure => GetAssignedDialogue(),

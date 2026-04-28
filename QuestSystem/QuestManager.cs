@@ -73,6 +73,9 @@ public sealed partial class QuestManager : Node, ISaveable<QuestProgressionData>
 				Log.Info($"Quest activated after dialogue: '{id}'");
 				QuestActivated?.Invoke(id);
 				CheckCollectsForAllInventories();
+				// If this quest starts from speaking to this NPC, count the same interaction immediately.
+				QuestProgress talkUpdated = QuestSystem.ApplyTalk(def, Progresses[id], npc);
+				UpdateProgress(id, talkUpdated);
 				notifications.Add($"Quest Started: {def.Title}");
 			} else if(progress.Status == QuestStatus.Active && !progress.InitialDialogueDelivered) {
 				Progresses[id] = progress with { InitialDialogueDelivered = true };
@@ -203,6 +206,8 @@ public sealed partial class QuestManager : Node, ISaveable<QuestProgressionData>
 		Progresses[id] = progress with { Status = QuestStatus.Completed };
 		Log.Info($"Quest completed: '{id}'");
 		QuestCompleted?.Invoke(id);
+		// A completed quest can unlock prerequisite-gated quests at the same stage.
+		TryMakeQuestsPending();
 
 		TryAdvanceStage();
 		CheckGameWon();
