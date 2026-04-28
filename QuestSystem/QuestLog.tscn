@@ -31,6 +31,7 @@ offset_bottom = -0.12000275
 grow_horizontal = 2
 text = "Quest Log"
 horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="QuestList" type="ItemList" parent="QuestPanel" unique_id=923011852]
 layout_mode = 1
