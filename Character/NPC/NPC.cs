@@ -18,6 +18,8 @@ public sealed partial class NPC : CharacterBody3D, ISaveable<NPCData> {
 	public event Action<NPCID>? Talked;
 	public event Action<string?>? InteractionPromptChanged;
 
+	[Export] private Label3D DialogueLabel = null!;
+
 	private bool PlayerInRange;
 	private event Action? OnExit;
 	private Node3D? Player;
@@ -30,6 +32,7 @@ public sealed partial class NPC : CharacterBody3D, ISaveable<NPCData> {
 	public void Init(QuestManager questManager) => QuestManager = questManager;
 
 	public override void _Ready() {
+		this.ValidateExports();
 		if(Identity == NPCID.None) {
 			Log.Error($"{Name}: Identity not assigned.");
 			return;
@@ -58,6 +61,12 @@ public sealed partial class NPC : CharacterBody3D, ISaveable<NPCData> {
 		ClearEvents();
 	}
 
+	private void SetDialogue(string? text) {
+		InteractionPromptChanged?.Invoke(text);
+		DialogueLabel.Text = text ?? "";
+		DialogueLabel.Visible = text != null;
+	}
+
 	private void ClearEvents() {
 		Talked = null;
 		InteractionPromptChanged = null;
@@ -84,7 +93,7 @@ public sealed partial class NPC : CharacterBody3D, ISaveable<NPCData> {
 		if(!body.IsInGroup(Group.Player.ToString())) { return; }
 		PlayerInRange = true;
 		Player = body;
-		InteractionPromptChanged?.Invoke("Press F to talk");
+		SetDialogue("Press F to talk");
 		Log.Info("Player entered NPC interaction range");
 	}
 
@@ -93,7 +102,7 @@ public sealed partial class NPC : CharacterBody3D, ISaveable<NPCData> {
 		PlayerInRange = false;
 		Player = null;
 		InDialogue = false;
-		InteractionPromptChanged?.Invoke(null);
+		SetDialogue(null);
 		Log.Info("Player left NPC interaction range");
 	}
 
@@ -105,7 +114,7 @@ public sealed partial class NPC : CharacterBody3D, ISaveable<NPCData> {
 		}
 
 		if(InDialogue && CurrentLineIndex < CurrentLines.Length) {
-			InteractionPromptChanged?.Invoke($"{Identity}: {CurrentLines[CurrentLineIndex]}");
+			SetDialogue($"{Identity}: {CurrentLines[CurrentLineIndex]}");
 			CurrentLineIndex++;
 			return;
 		}
@@ -117,11 +126,11 @@ public sealed partial class NPC : CharacterBody3D, ISaveable<NPCData> {
 			CurrentLines = notifications;
 			CurrentLineIndex = 0;
 			InDialogue = true;
-			InteractionPromptChanged?.Invoke(CurrentLines[CurrentLineIndex]);
+			SetDialogue(CurrentLines[CurrentLineIndex]);
 			CurrentLineIndex++;
 		}
 		else {
-			InteractionPromptChanged?.Invoke(null);
+			SetDialogue(null);
 			InDialogue = false;
 		}
 	}

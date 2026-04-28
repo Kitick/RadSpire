@@ -177,9 +177,6 @@ public sealed partial class GameManager : Node {
 
 	private void OnSaveRequested(string fileName) => SaveGame(fileName);
 
-	private void OnNPCInteractionPromptChanged(string? prompt) {
-		if(prompt == null) { HUD?.HideInteractionPrompt(); } else { HUD?.ShowInteractionPrompt(prompt); }
-	}
 
 	public void RespawnPlayer() {
 		if(!IsInstanceValid(LocalPlayer)) {
@@ -386,7 +383,6 @@ public sealed partial class GameManager : Node {
 		WorldManager.EnemyManager?.SetTarget(LocalPlayer);
 		WorldManager.EnemyManager?.BindQuestEvents(QuestManager);
 		WorldManager.NPCManager?.UnbindPromptForwarder();
-		WorldManager.NPCManager?.BindPromptForwarder(OnNPCInteractionPromptChanged);
 	}
 
 	public void ReturnToMainMenu() {
