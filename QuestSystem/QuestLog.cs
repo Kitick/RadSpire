@@ -24,12 +24,16 @@ public sealed partial class QuestLog : Control {
 
 		QuestList.Clear();
 
+		bool first = true;
 		foreach((QuestID id, QuestProgress progress) in QuestManagerRef.GetAllProgresses()) {
 			if(progress.Status != QuestStatus.Active) { continue; }
 			QuestDefinition? def = QuestManagerRef.GetDefinition(id);
 			if(def == null) { continue; }
 
-			QuestList.AddItem(def.Title);
+			if(!first) { QuestList.AddItem("─────────────────"); }
+			first = false;
+
+			QuestList.AddItem(def.Title.ToUpper());
 
 			for(int i = 0; i < def.Objectives.Length; i++) {
 				QuestObjective objDef = def.Objectives[i];
