@@ -40,6 +40,13 @@ public sealed partial class NPC : CharacterBody3D, ISaveable<NPCData> {
 		SetupInteraction();
 	}
 
+	private float IdleLookTarget;
+	private float IdleLookTimer;
+	private float IdleLookInterval;
+
+	private const float IdleLookIntervalMin = 3f;
+	private const float IdleLookIntervalMax = 8f;
+
 	public override void _PhysicsProcess(double delta) {
 		if(PlayerInRange && Player != null) {
 			Vector3 direction = Player.GlobalPosition - GlobalPosition;
@@ -51,6 +58,20 @@ public sealed partial class NPC : CharacterBody3D, ISaveable<NPCData> {
 			Rotation = new Vector3(
 				0,
 				Mathf.LerpAngle(Rotation.Y, targetRotation, (float) delta * 5f),
+				0
+			);
+		}
+		else {
+			IdleLookTimer -= (float) delta;
+			if(IdleLookTimer <= 0f) {
+				IdleLookTarget = (float) GD.RandRange(0, Mathf.Tau);
+				IdleLookInterval = (float) GD.RandRange(IdleLookIntervalMin, IdleLookIntervalMax);
+				IdleLookTimer = IdleLookInterval;
+			}
+
+			Rotation = new Vector3(
+				0,
+				Mathf.LerpAngle(Rotation.Y, IdleLookTarget, (float) delta * 2f),
 				0
 			);
 		}
