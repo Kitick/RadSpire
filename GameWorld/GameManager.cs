@@ -76,7 +76,7 @@ public sealed partial class GameManager : Node {
 		GameWorldMusicPlayer = new AudioStreamPlayer {
 			Name = "GameWorldMusicPlayer",
 			Bus = "Music",
-			VolumeDb = 0.0f,
+			VolumeDb = -20.0f,
 			Stream = GameWorldMusic,
 			Autoplay = false,
 		};
