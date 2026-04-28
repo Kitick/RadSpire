@@ -27,11 +27,11 @@ public enum Group { Player, Enemy, QuestLocation }
 
 public enum EnemyType { None, MeldoranWarrior }
 
-public enum NPCID { None, Sera, Dag }
+public enum NPCID { None, Sera, Dag, Rowan }
 
 public enum LocationID { None, OfficeBuilding, GasStation }
 
-public enum QuestID { LeftForDead, ArmYourself, ArmYourselfSide, ADealIsADeal }
+public enum QuestID { LeftForDead, ArmYourself, ArmYourselfSide, ADealIsADeal, RowanJoinsCamp, RowanStockTheShelter }
 
 public static class ItemID {
 	public static readonly StringName AppleCider = "AppleCider";

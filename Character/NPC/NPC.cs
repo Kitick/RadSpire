@@ -28,8 +28,27 @@ public sealed partial class NPC : CharacterBody3D, ISaveable<NPCData> {
 	private string[] CurrentLines = [];
 	private int CurrentLineIndex = 0;
 	private bool InDialogue = false;
+	private bool UseDefaultFacing = true;
+	private Func<string[]>? DialogueProviderOverride;
+	private Func<string[]>? DialogueFinishedOverride;
+	private Func<string?>? PromptProviderOverride;
+	private string RecruitmentStateId = string.Empty;
+	private string AssignedStructureObjectId = string.Empty;
+	private Vector3 AssignedHomePosition = Vector3.Zero;
+	private Vector3 AssignedHomeRotation = Vector3.Zero;
+
+	public NPCID NpcIdentity => Identity;
+	public string DisplayName => string.IsNullOrWhiteSpace(NPCName) ? Identity.ToString() : NPCName;
+	public Player? NearbyPlayer => Player as Player;
 
 	public void Init(QuestManager questManager) => QuestManager = questManager;
+
+	public void ConfigureIdentity(NPCID identity, string displayName = "") {
+		Identity = identity;
+		if(!string.IsNullOrWhiteSpace(displayName)) {
+			NPCName = displayName;
+		}
+	}
 
 	public override void _Ready() {
 		this.ValidateExports();
@@ -48,6 +67,10 @@ public sealed partial class NPC : CharacterBody3D, ISaveable<NPCData> {
 	private const float IdleLookIntervalMax = 8f;
 
 	public override void _PhysicsProcess(double delta) {
+		if(!UseDefaultFacing) {
+			return;
+		}
+
 		if(PlayerInRange && Player != null) {
 			Vector3 direction = Player.GlobalPosition - GlobalPosition;
 			direction.Y = 0;
@@ -88,6 +111,57 @@ public sealed partial class NPC : CharacterBody3D, ISaveable<NPCData> {
 		DialogueLabel.Visible = text != null;
 	}
 
+	public void SetDefaultFacingEnabled(bool enabled) {
+		UseDefaultFacing = enabled;
+		if(enabled) {
+			Velocity = Vector3.Zero;
+		}
+	}
+
+	public void ConfigureDialogueOverrides(
+		Func<string[]>? dialogueProvider,
+		Func<string[]>? dialogueFinished,
+		Func<string?>? promptProvider = null
+	) {
+		DialogueProviderOverride = dialogueProvider;
+		DialogueFinishedOverride = dialogueFinished;
+		PromptProviderOverride = promptProvider;
+		RefreshInteractionPrompt();
+	}
+
+	public void ClearDialogueOverrides() {
+		DialogueProviderOverride = null;
+		DialogueFinishedOverride = null;
+		PromptProviderOverride = null;
+		RefreshInteractionPrompt();
+	}
+
+	public void SetDisplayName(string name) {
+		NPCName = name ?? string.Empty;
+	}
+
+	public Node3D? GetVisualRoot() => GetNodeOrNull<Node3D>("Mage");
+
+	public void SetRecruitmentSaveState(string stateId, string structureObjectId, Vector3 homePosition, Vector3 homeRotation) {
+		RecruitmentStateId = stateId ?? string.Empty;
+		AssignedStructureObjectId = structureObjectId ?? string.Empty;
+		AssignedHomePosition = homePosition;
+		AssignedHomeRotation = homeRotation;
+	}
+
+	public (string StateId, string StructureObjectId, Vector3 HomePosition, Vector3 HomeRotation) GetRecruitmentSaveState() =>
+		(RecruitmentStateId, AssignedStructureObjectId, AssignedHomePosition, AssignedHomeRotation);
+
+	public void RefreshInteractionPrompt() {
+		if(!PlayerInRange) {
+			return;
+		}
+
+		SetDialogue(GetInteractionPrompt());
+	}
+
+	private string? GetInteractionPrompt() => PromptProviderOverride?.Invoke() ?? "Press F to talk";
+
 	private void ClearEvents() {
 		Talked = null;
 		InteractionPromptChanged = null;
@@ -114,7 +188,7 @@ public sealed partial class NPC : CharacterBody3D, ISaveable<NPCData> {
 		if(!body.IsInGroup(Group.Player.ToString())) { return; }
 		PlayerInRange = true;
 		Player = body;
-		SetDialogue("Press F to talk");
+		SetDialogue(GetInteractionPrompt());
 		Log.Info("Player entered NPC interaction range");
 	}
 
@@ -129,9 +203,13 @@ public sealed partial class NPC : CharacterBody3D, ISaveable<NPCData> {
 
 	private void Interact() {
 		if(!InDialogue) {
-			CurrentLines = QuestManager?.GetDialogueFor(Identity) ?? [];
+			CurrentLines = DialogueProviderOverride?.Invoke() ?? QuestManager?.GetDialogueFor(Identity) ?? [];
 			CurrentLineIndex = 0;
 			InDialogue = CurrentLines.Length > 0;
+			if(!InDialogue && DialogueProviderOverride != null) {
+				SetDialogue(PlayerInRange ? GetInteractionPrompt() : null);
+				return;
+			}
 		}
 
 		if(InDialogue && CurrentLineIndex < CurrentLines.Length) {
@@ -141,7 +219,7 @@ public sealed partial class NPC : CharacterBody3D, ISaveable<NPCData> {
 		}
 
 		Talked?.Invoke(Identity);
-		string[] notifications = QuestManager?.NotifyDialogueFinished(Identity) ?? [];
+		string[] notifications = DialogueFinishedOverride?.Invoke() ?? QuestManager?.NotifyDialogueFinished(Identity) ?? [];
 
 		if(notifications.Length > 0) {
 			CurrentLines = notifications;
@@ -151,28 +229,46 @@ public sealed partial class NPC : CharacterBody3D, ISaveable<NPCData> {
 			CurrentLineIndex++;
 		}
 		else {
-			SetDialogue(null);
+			SetDialogue(PlayerInRange ? GetInteractionPrompt() : null);
 			InDialogue = false;
 		}
 	}
 
 	public NPCData Export() => new() {
 		Id = Id,
+		Identity = Identity,
+		NPCName = NPCName,
 		GlobalPosition = GlobalPosition,
 		GlobalRotation = GlobalRotation,
+		RecruitmentStateId = RecruitmentStateId,
+		AssignedStructureObjectId = AssignedStructureObjectId,
+		AssignedHomePosition = AssignedHomePosition,
+		AssignedHomeRotation = AssignedHomeRotation,
 	};
 
 	public void Import(NPCData data) {
 		if(!string.IsNullOrEmpty(data.Id)) {
 			Id = data.Id;
 		}
+		Identity = data.Identity;
+		NPCName = data.NPCName ?? string.Empty;
 		GlobalPosition = data.GlobalPosition;
 		GlobalRotation = data.GlobalRotation;
+		RecruitmentStateId = data.RecruitmentStateId ?? string.Empty;
+		AssignedStructureObjectId = data.AssignedStructureObjectId ?? string.Empty;
+		AssignedHomePosition = data.AssignedHomePosition;
+		AssignedHomeRotation = data.AssignedHomeRotation;
 	}
 }
 
 public readonly record struct NPCData : ISaveData {
 	public string Id { get; init; }
+	public NPCID Identity { get; init; }
+	public string NPCName { get; init; }
 	public Vector3 GlobalPosition { get; init; }
 	public Vector3 GlobalRotation { get; init; }
+	public string RecruitmentStateId { get; init; }
+	public string AssignedStructureObjectId { get; init; }
+	public Vector3 AssignedHomePosition { get; init; }
+	public Vector3 AssignedHomeRotation { get; init; }
 }

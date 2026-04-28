@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using Camera;
 using Character;
+using Character.Recruitment;
 using Components;
 using Godot;
 using InventorySystem.Interface;
@@ -42,6 +43,7 @@ public sealed partial class GameManager : Node {
 	private HUD? HUD;
 	private GameWorldManager? WorldManager;
 	private AudioStreamPlayer? GameWorldMusicPlayer;
+	private NPCRecruitmentManager? NPCRecruitmentManager;
 	public Action? MainMenuRequested;
 
 	public enum MenuState { Game, Paused, Settings, Inventory, Chest, Build, Host, Death }
@@ -163,6 +165,10 @@ public sealed partial class GameManager : Node {
 
 		CameraRig.Target = LocalPlayer;
 		QuestManager.Init(LocalPlayer);
+		NPCRecruitmentManager = new NPCRecruitmentManager { Name = "NPCRecruitmentManager" };
+		AddChild(NPCRecruitmentManager);
+		NPCRecruitmentManager.Initialize(LocalPlayer, QuestManager, WorldManager!);
+		LocalPlayer.NPCRecruitmentManager = NPCRecruitmentManager;
 
 		AttachHUD();
 		LocalPlayer.ConfigureObjectPlacement(WorldManager!.WorldObjectManager!, this, HUD!.Hotbar);
@@ -283,6 +289,7 @@ public sealed partial class GameManager : Node {
 			LocalPlayer.ConfigureObjectPickup(WorldManager.WorldObjectManager);
 			LocalPlayer.ConfigureObjectPlacement(WorldManager.WorldObjectManager, this, HUD.Hotbar);
 			WorldManager.BindPlayer(LocalPlayer);
+			LocalPlayer.NPCRecruitmentManager = NPCRecruitmentManager;
 			SyncActiveWorldActorBindings();
 		}
 
@@ -431,6 +438,7 @@ public sealed partial class GameManager : Node {
 		WorldManager.EnemyManager?.SetTarget(LocalPlayer);
 		WorldManager.EnemyManager?.BindQuestEvents(QuestManager);
 		WorldManager.NPCManager?.UnbindPromptForwarder();
+		NPCRecruitmentManager?.BindCurrentWorld(WorldManager.NPCManager);
 	}
 
 	public void ReturnToMainMenu() {
@@ -461,6 +469,8 @@ public sealed partial class GameManager : Node {
 
 		Cleanup(LocalPlayer);
 		LocalPlayer = null;
+		Cleanup(NPCRecruitmentManager);
+		NPCRecruitmentManager = null;
 
 		WorldManager?.Cleanup();
 		WorldManager = null;

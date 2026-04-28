@@ -7,6 +7,8 @@ public enum QuestStatus { Pending, Active, Completed }
 
 public enum QuestType { Main, Side }
 
+public enum QuestOfferMode { AutoByStage, OfferedByNpc }
+
 public readonly record struct QuestObjectiveProgress : ISaveData {
 	public int CurrentCount { get; init; }
 	public bool IsCompleted { get; init; }

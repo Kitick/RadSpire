@@ -7,7 +7,24 @@ using InventorySystem;
 using Root;
 
 public static class QuestSystem {
-	public static bool CanMakePending(QuestDefinition def, bool alreadyRegistered, int currentStage) => !alreadyRegistered && def.StageRequirement == currentStage;
+	public static bool CanMakePending(
+		QuestDefinition def,
+		bool alreadyRegistered,
+		int currentStage,
+		Func<QuestID, bool> isQuestCompleted
+	) {
+		if(alreadyRegistered || def.StageRequirement != currentStage || def.OfferMode != QuestOfferMode.AutoByStage) {
+			return false;
+		}
+
+		foreach(QuestID prerequisite in def.Prerequisites ?? []) {
+			if(!isQuestCompleted(prerequisite)) {
+				return false;
+			}
+		}
+
+		return true;
+	}
 
 	public static QuestProgress ApplyKill(QuestDefinition def, QuestProgress progress, EnemyType enemyType) {
 		return ApplyToObjectives(def, progress, (objectives, i) => {

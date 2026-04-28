@@ -24,6 +24,8 @@ public sealed record QuestDefinition(
 	int StageRequirement,
 	QuestObjective[] Objectives,
 	NPCID NpcId = NPCID.None,
+	QuestID[] Prerequisites = null!,
+	QuestOfferMode OfferMode = QuestOfferMode.AutoByStage,
 	string[] InitialDialogue = null!,
 	string[] ActiveDialogue = null!,
 	string[] CompletionDialogue = null!
@@ -115,10 +117,59 @@ public static class Quests {
 		]
 	);
 
+	public static readonly QuestDefinition RowanJoinsCamp = new(
+		Title: "A New Hand",
+		Description: "Talk to Rowan and convince him to join you.",
+		Type: QuestType.Side,
+		StageRequirement: 0,
+		Objectives: [
+			new TalkObjective("Talk to Rowan", NPCID.Rowan),
+		],
+		NpcId: NPCID.Rowan,
+		InitialDialogue: [
+			"You're alive. Good. I was starting to think I'd be the next body on this road.",
+			"My name is Rowan. I was scavenging alone until the raiders started circling back through here.",
+			"I don't want to stay exposed out here. If you've got room for one more, I'll come with you.",
+			"Get me somewhere with walls and a roof, and I'll make myself useful."
+		],
+		ActiveDialogue: [
+			"If you're taking me in, say the word. I am ready to move.",
+		],
+		CompletionDialogue: [
+			"Right. I'm with you now. Lead on and I'll follow.",
+		]
+	);
+
+	public static readonly QuestDefinition RowanStockTheShelter = new(
+		Title: "Stock the Shelter",
+		Description: "Bring Rowan enough wood to start making your shelter livable.",
+		Type: QuestType.Side,
+		StageRequirement: 0,
+		Objectives: [
+			new CollectObjective("Bring Rowan 10 wood", RequiredCount: 10, ItemId: ItemID.Wood),
+		],
+		NpcId: NPCID.Rowan,
+		Prerequisites: [QuestID.RowanJoinsCamp],
+		OfferMode: QuestOfferMode.OfferedByNpc,
+		InitialDialogue: [
+			"If I'm staying here, this place needs supplies.",
+			"Bring me ten pieces of wood and I'll get started shoring things up."
+		],
+		ActiveDialogue: [
+			"Ten pieces of wood. That's enough to get a proper stockpile started.",
+		],
+		CompletionDialogue: [
+			"This is exactly what I needed. Good haul.",
+			"Give me a little time and I'll turn this pile into something useful."
+		]
+	);
+
 	public static readonly Dictionary<QuestID, QuestDefinition> All = new() {
 		[QuestID.LeftForDead] = LeftForDead,
 		[QuestID.ArmYourself] = ArmYourself,
 		[QuestID.ArmYourselfSide] = ArmYourselfSide,
 		[QuestID.ADealIsADeal] = ADealIsADeal,
+		[QuestID.RowanJoinsCamp] = RowanJoinsCamp,
+		[QuestID.RowanStockTheShelter] = RowanStockTheShelter,
 	};
 }

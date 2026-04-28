@@ -1,6 +1,7 @@
 namespace Character;
 
 using System;
+using Character.Recruitment;
 using Components;
 using GameWorld;
 using Godot;
@@ -79,6 +80,7 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData>, IAtta
 	private static readonly StringName ComboAttack1 = new("1H_Melee_Attack_Slice_Diagonal");
 	private static readonly StringName ComboAttack2 = new("1H_Melee_Attack_Stab");
 	private static readonly StringName ComboAttack3 = new("1H_Melee_Attack_Chop");
+	public NPCRecruitmentManager? NPCRecruitmentManager { get; set; }
 
 	public Player() {
 		Movement = new Movement(this);
@@ -117,6 +119,16 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData>, IAtta
 				return;
 			}
 			ObjectPickup.CurrentTargetObjectNode.Interact(this);
+		});
+
+		OnExit += ActionEvent.AssignNPC.WhenPressed(() => {
+			if(BuildModeController != null && BuildModeController.IsBuildModeActive) {
+				return;
+			}
+			if(ObjectPickup?.CurrentTargetObjectNode?.Data == null) {
+				return;
+			}
+			NPCRecruitmentManager?.TryAssignFollowingNpc(ObjectPickup.CurrentTargetObjectNode.Data);
 		});
 
 		OnExit += ActionEvent.Pickup.WhenPressed(ObjectPickup!.AttemptPickup);

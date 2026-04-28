@@ -30,23 +30,32 @@ public sealed partial class QuestManager : Node, ISaveable<QuestProgressionData>
 		TryMakeQuestsPending();
 	}
 
+	public bool IsQuestCompleted(QuestID id) =>
+		Progresses.TryGetValue(id, out QuestProgress progress) && progress.Status == QuestStatus.Completed;
+
+	public string[] GetDialogueForQuest(QuestID id) {
+		if(!Quests.All.TryGetValue(id, out QuestDefinition? def)) {
+			return [];
+		}
+
+		if(!Progresses.TryGetValue(id, out QuestProgress progress)) {
+			string[] intro = def.InitialDialogue ?? [];
+			return intro.Length > 0 ? intro : [];
+		}
+
+		return progress.Status switch {
+			QuestStatus.Pending => def.InitialDialogue ?? [],
+			QuestStatus.Active when !progress.InitialDialogueDelivered => def.InitialDialogue ?? [],
+			QuestStatus.Active => def.ActiveDialogue ?? [],
+			QuestStatus.Completed => def.CompletionDialogue ?? [],
+			_ => [],
+		};
+	}
+
 	public string[] GetDialogueFor(NPCID npc) {
 		foreach((QuestID id, QuestDefinition def) in Quests.All) {
 			if(def.NpcId != npc) { continue; }
-
-			if(!Progresses.TryGetValue(id, out QuestProgress progress)) {
-				string[] intro = def.InitialDialogue ?? [];
-				if(intro.Length > 0) { return intro; }
-				continue;
-			}
-
-			string[] lines = progress.Status switch {
-				QuestStatus.Pending => def.InitialDialogue ?? [],
-				QuestStatus.Active when !progress.InitialDialogueDelivered => def.InitialDialogue ?? [],
-				QuestStatus.Active => def.ActiveDialogue ?? [],
-				QuestStatus.Completed => def.CompletionDialogue ?? [],
-				_ => [],
-			};
+			string[] lines = GetDialogueForQuest(id);
 
 			if(lines.Length > 0) { return lines; }
 		}
@@ -94,6 +103,36 @@ public sealed partial class QuestManager : Node, ISaveable<QuestProgressionData>
 		}
 	}
 
+	public bool OfferQuest(QuestID id) {
+		if(Progresses.ContainsKey(id)) {
+			return false;
+		}
+		if(!Quests.All.TryGetValue(id, out QuestDefinition? def)) {
+			return false;
+		}
+		if(def.OfferMode != QuestOfferMode.OfferedByNpc) {
+			return false;
+		}
+
+		foreach(QuestID prerequisite in def.Prerequisites ?? []) {
+			if(!IsQuestCompleted(prerequisite)) {
+				return false;
+			}
+		}
+
+		Progresses[id] = def.StageRequirement == 0 ? QuestProgress.Active(def) : QuestProgress.Pending(def);
+		if(def.StageRequirement == 0) {
+			Log.Info($"Quest auto-activated after explicit offer: '{id}'");
+			QuestActivated?.Invoke(id);
+			CheckCollectsForAllInventories();
+			return true;
+		}
+
+		Log.Info($"Quest offered and set pending: '{id}'");
+		QuestBecamePending?.Invoke(id);
+		return true;
+	}
+
 	public IReadOnlyDictionary<QuestID, QuestProgress> GetAllProgresses() => Progresses;
 
 	public QuestProgress GetProgress(QuestID id) =>
@@ -123,7 +162,7 @@ public sealed partial class QuestManager : Node, ISaveable<QuestProgressionData>
 
 	private void TryMakePending(QuestID id, QuestDefinition def) {
 		bool alreadyRegistered = Progresses.ContainsKey(id);
-		if(!QuestSystem.CanMakePending(def, alreadyRegistered, CurrentStage)) { return; }
+		if(!QuestSystem.CanMakePending(def, alreadyRegistered, CurrentStage, IsQuestCompleted)) { return; }
 
 		if(def.StageRequirement == 0) {
 			Progresses[id] = QuestProgress.Active(def);

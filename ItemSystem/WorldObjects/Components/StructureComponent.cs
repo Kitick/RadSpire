@@ -20,9 +20,11 @@ public sealed class StructureComponent : IObjectComponent, ISaveable<StructureCo
     public string StructureName { get; set; } = string.Empty;
     public int Value { get; set; } = 0;
     public int TotalValue { get; set; }
+    public string AttachedNpcId { get; private set; } = string.Empty;
+    public string AttachedNpcName { get; private set; } = string.Empty;
     public bool HasWorld => WorldID != string.Empty && GameWorldManager != null && GameWorldManager.HasGameWorld(WorldID);
     public NPC? AttachedNPC { get; set; }
-    public bool HasAttachedNPC => AttachedNPC != null;
+    public bool HasAttachedNPC => AttachedNPC != null || !string.IsNullOrWhiteSpace(AttachedNpcId);
 
     public StructureComponent(Object owner) {
         ComponentOwner = owner;
@@ -68,22 +70,59 @@ public sealed class StructureComponent : IObjectComponent, ISaveable<StructureCo
 
     public void AddAttachedNPC(NPC npc) {
         AttachedNPC = npc;
+        AttachedNpcId = npc?.Id ?? string.Empty;
+        AttachedNpcName = npc?.DisplayName ?? string.Empty;
     }
     
     public void RemoveAttachedNPC() {
         AttachedNPC = null;
+        AttachedNpcId = string.Empty;
+        AttachedNpcName = string.Empty;
+    }
+
+    public void RestoreAttachedNpc(string npcId, string npcName) {
+        AttachedNpcId = npcId ?? string.Empty;
+        AttachedNpcName = npcName ?? string.Empty;
+    }
+
+    public NPC? ResolveAttachedNPC() {
+        if(AttachedNPC != null && GodotObject.IsInstanceValid(AttachedNPC)) {
+            return AttachedNPC;
+        }
+        if(string.IsNullOrWhiteSpace(AttachedNpcId)) {
+            return null;
+        }
+        if(GameWorldManager?.NPCManager == null) {
+            return null;
+        }
+
+        foreach(NPC npc in GameWorldManager.NPCManager.NPCs.Values) {
+            if(npc.Id != AttachedNpcId) {
+                continue;
+            }
+            AttachedNPC = npc;
+            AttachedNpcName = npc.DisplayName;
+            return npc;
+        }
+
+        return null;
     }
 
 	public StructureComponentData Export() => new StructureComponentData {
         WorldID = WorldID,
         StructureName = StructureName,
-        TotalValue = TotalValue
+        TotalValue = TotalValue,
+        AttachedNpcId = AttachedNpcId,
+        AttachedNpcName = AttachedNpcName,
 	};
 
 	public void Import(StructureComponentData data) {
 		WorldID = data.WorldID;
         StructureName = data.StructureName;
         TotalValue = data.TotalValue;
+        AttachedNpcId = data.AttachedNpcId ?? string.Empty;
+        AttachedNpcName = data.AttachedNpcName ?? string.Empty;
+        AttachedNPC = null;
 	}
 }
 
@@ -91,4 +130,6 @@ public readonly record struct StructureComponentData : ISaveData {
     public string WorldID { get; init; }
     public string StructureName { get; init; }
     public int TotalValue { get; init; }
+    public string AttachedNpcId { get; init; }
+    public string AttachedNpcName { get; init; }
 }

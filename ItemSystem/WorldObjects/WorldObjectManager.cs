@@ -319,6 +319,11 @@ public partial class WorldObjectManager : Node, ISaveable<WorldObjectManagerData
 			DoorComponent doorComponent = obj.ComponentDictionary.Get<DoorComponent>();
 			doorComponent.Initialize(GameWorldManager, GameManager);
 		}
+		if(obj.ComponentDictionary.Has<StructureComponent>()) {
+			StructureComponent structureComponent = obj.ComponentDictionary.Get<StructureComponent>();
+			structureComponent.GameWorldManager = GameWorldManager;
+			structureComponent.ResolveAttachedNPC();
+		}
 	}
 
 	private void HandleOnWorldObjectRemoved(string objectId) {

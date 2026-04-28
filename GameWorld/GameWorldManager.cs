@@ -279,9 +279,16 @@ public partial class GameWorldManager : Node, ISaveable<GameWorldManagerData> {
 				structureComponent.WorldID = structureWorldId;
 				structureComponent.UpdateTotalValue();
 			}
+			structureComponent.RestoreAttachedNpc(
+				structureObject.StructureComponentData?.AttachedNpcId ?? string.Empty,
+				structureObject.StructureComponentData?.AttachedNpcName ?? string.Empty
+			);
+			structureComponent.ResolveAttachedNPC();
 		}
 		int totalValue = structureComponent?.TotalValue ?? 0;
-		string npcName = structureComponent?.AttachedNPC?.Name ?? "-";
+		string npcName = structureComponent?.ResolveAttachedNPC()?.DisplayName
+			?? structureComponent?.AttachedNpcName
+			?? "-";
 		WorldObjectManager.RemoveWorldObject(structureObject.Id);
 		StructureInfoRefreshRequested?.Invoke(structureName, npcName, totalValue);
 	}

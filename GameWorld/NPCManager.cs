@@ -30,7 +30,7 @@ public sealed partial class NPCManager : Node, ISaveable<NPCManagerData> {
 		QuestManager = questManager;
 
 		if(spawnFromWorld && worldNode is INPCSpawnWorld spawnWorld && IsInstanceValid(spawnWorld.NPCSpawnMarker)) {
-			SpawnNPCAt(spawnWorld.NPCSpawnMarker.GlobalPosition);
+			SpawnDefaultWorldNPCs(spawnWorld.NPCSpawnMarker.GlobalPosition);
 		}
 
 		IsInitialized = true;
@@ -142,15 +142,23 @@ public sealed partial class NPCManager : Node, ISaveable<NPCManagerData> {
 		Log.Info("Cleanup complete.");
 	}
 
-	private void SpawnNPCAt(Vector3 worldPosition) {
-		NPC? npc = CreateAndAddNPC(Guid.NewGuid().ToString());
+	private void SpawnDefaultWorldNPCs(Vector3 baseWorldPosition) {
+		SpawnNPCAt(baseWorldPosition, "npc-sera", NPCID.Sera, "Sera");
+		SpawnNPCAt(baseWorldPosition + new Vector3(4f, 0f, 2f), "npc-rowan", NPCID.Rowan, "Rowan");
+	}
+
+	private void SpawnNPCAt(Vector3 worldPosition, string id, NPCID identity, string displayName) {
+		NPC? npc = CreateAndAddNPC(id, identity, displayName);
 		if(npc == null) { return; }
 
 		npc.Position = worldPosition;
 	}
 
-	private NPC? CreateAndAddNPC(string id) {
+	private NPC? CreateAndAddNPC(string id, NPCID? identity = null, string displayName = "") {
 		NPC npc = NPCScene.Instantiate<NPC>();
+		if(identity.HasValue) {
+			npc.ConfigureIdentity(identity.Value, displayName);
+		}
 		return AddNPC(id, npc) ? npc : null;
 	}
 }

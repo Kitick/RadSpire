@@ -120,6 +120,7 @@ public readonly struct ActionEvent {
 
 	// Interaction
 	public static readonly ActionEvent Interact = new("Interact");
+	public static readonly ActionEvent AssignNPC = new("AssignNPC");
 	public static readonly ActionEvent Pickup = new("Pickup");
 	public static readonly ActionEvent UseItem = new("UseItem");
 	public static readonly ActionEvent DropItem = new("DropItem");
@@ -172,6 +173,7 @@ public readonly struct ActionEvent {
 
 		// Interaction
 		yield return Interact;
+		yield return AssignNPC;
 		yield return Pickup;
 		yield return UseItem;
 		yield return DropItem;
