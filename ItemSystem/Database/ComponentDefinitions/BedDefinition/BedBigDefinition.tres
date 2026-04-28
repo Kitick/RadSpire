@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="BedDefinition" format=3 uid="uid://c38fceg3pwsp0"]
+
+[ext_resource type="Script" uid="uid://dhjj7k7iixni0" path="res://ItemSystem/Definitions/BedDefinition.cs" id="1_yjntw"]
+
+[resource]
+script = ExtResource("1_yjntw")
+RestoreAmount = 2
+Location = Vector3(0, 0.5, 0.5)
+metadata/_custom_type_script = "uid://dhjj7k7iixni0"

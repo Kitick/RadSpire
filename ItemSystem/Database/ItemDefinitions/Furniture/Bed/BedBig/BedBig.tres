@@ -1,9 +1,10 @@
 [gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://da5h2pry0ke1y"]
 
 [ext_resource type="Script" uid="uid://cnm5iegiuj4xu" path="res://ItemSystem/Definitions/ItemComponentDefinition.cs" id="1_ejyjs"]
+[ext_resource type="Resource" uid="uid://c38fceg3pwsp0" path="res://ItemSystem/Database/ComponentDefinitions/BedDefinition/BedBigDefinition.tres" id="2_70kc3"]
 [ext_resource type="Script" uid="uid://bxmh4fd7kjvv1" path="res://ItemSystem/Definitions/ItemDefinition.cs" id="2_gg8xo"]
-[ext_resource type="Resource" path="res://ItemSystem/Database/ComponentDefinitions/FurnitureValueDefinition/FurnitureValue_20.tres" id="2_xm1jg"]
 [ext_resource type="PackedScene" uid="uid://cenyrqx2nu0bs" path="res://ItemSystem/Database/ItemDefinitions/Furniture/Bed/BedBig/BedBig.tscn" id="3_7by0t"]
+[ext_resource type="Resource" path="res://ItemSystem/Database/ComponentDefinitions/FurnitureValueDefinition/FurnitureValue_30.tres" id="3_38cwq"]
 [ext_resource type="Texture2D" uid="uid://cfnx8veqmor0" path="res://ItemSystem/Database/ItemDefinitions/Furniture/Bed/BedBig/BedBig.png" id="3_70kc3"]
 
 [resource]
@@ -16,5 +17,5 @@ IsPlaceable = true
 Pickupable = true
 IconTexture = ExtResource("3_70kc3")
 ItemScene = ExtResource("3_7by0t")
-ComponentsResources = Array[ExtResource("1_ejyjs")]([ExtResource("2_xm1jg")])
+ComponentsResources = Array[ExtResource("1_ejyjs")]([ExtResource("2_70kc3"), ExtResource("3_38cwq")])
 metadata/_custom_type_script = "uid://bxmh4fd7kjvv1"

@@ -17,6 +17,7 @@
 [ext_resource type="PackedScene" uid="uid://dpnrof8tn33ch" path="res://ItemSystem/Database/ItemDefinitions/Furniture/FirePlace/Fireplace.tscn" id="16_g24kw"]
 [ext_resource type="PackedScene" uid="uid://mbqixjb2j1y5" path="res://ItemSystem/Database/ItemDefinitions/Furniture/Crate/CrateRegular/Crate.tscn" id="17_rxxdl"]
 [ext_resource type="PackedScene" uid="uid://cvu13u444u4i8" path="res://ItemSystem/Database/ItemDefinitions/Furniture/Crate/CrateBig/CrateBig.tscn" id="18_cx761"]
+[ext_resource type="PackedScene" uid="uid://cenyrqx2nu0bs" path="res://ItemSystem/Database/ItemDefinitions/Furniture/Bed/BedBig/BedBig.tscn" id="18_rxxdl"]
 
 [sub_resource type="Environment" id="Environment_wqm31"]
 background_mode = 1
@@ -454,3 +455,6 @@ transform = Transform3D(0.9792723, 0, 0.20254803, 0, 1, 0, -0.20254803, 0, 0.979
 
 [node name="Crate6" parent="." unique_id=979051028 instance=ExtResource("17_rxxdl")]
 transform = Transform3D(0.9095048, 0, -0.41569355, 0, 1, 0, 0.41569355, 0, 0.9095048, -1.131746, 0.014396535, -1.0615287)
+
+[node name="Node3D" parent="." unique_id=106433350 instance=ExtResource("18_rxxdl")]
+transform = Transform3D(-0.015183743, 0, 0.9998847, 0, 1, 0, -0.9998847, 0, -0.015183743, -3.2710671, 0.0045161247, -6.150782)

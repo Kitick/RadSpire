@@ -99,6 +99,10 @@ public sealed partial class DatabaseManager : Node {
 					InventoryComponent objComp = new InventoryComponent(invDef.Rows, invDef.Columns, obj);
 					obj.ComponentDictionary.Add(objComp);
 				}
+				else if(comp is BedDefinition bedDef) {
+					BedComponent bedComp = new BedComponent(bedDef.RestoreAmount, bedDef.Location, obj);
+					obj.ComponentDictionary.Add(bedComp);
+				}
 				else if(comp is ChestRarityDefinition chestRarityDef) {
 					ChestRarityComponent rarityComp = new ChestRarityComponent(chestRarityDef.RarityLevel, obj);
 					obj.ComponentDictionary.Add(rarityComp);

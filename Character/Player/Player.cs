@@ -64,6 +64,7 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData>, IAtta
 	public bool IsSleeping = false;
 	public int SleepRate = 0;
 	public Vector3 LocationBeforeSleep = Vector3.Zero;
+	public Vector3 RotationBeforeSleep = Vector3.Zero;
 
 	public bool HoldingSword = false;
 	public bool HoldingStaff = false;
@@ -371,7 +372,7 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData>, IAtta
 		bolt.Init(this, direction, Offense.Damage);
 	}
 
-	public void Sleep(int Amount, Vector3 Location) {
+	public void Sleep(int Amount, Vector3 Location, Vector3 Rotation) {
 		if(IsSleeping) {
 			return;
 		}
@@ -379,7 +380,9 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData>, IAtta
 		IsSleeping = true;
 		SleepRate = Amount;
 		LocationBeforeSleep = GlobalTransform.Origin;
+		RotationBeforeSleep = GlobalRotation;
 		GlobalPosition = Location;
+		GlobalRotation = Rotation;
 		Velocity = Vector3.Zero;
 		Animator?.Play(new StringName("Lie_Idle"));
 	}
@@ -392,6 +395,7 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData>, IAtta
 		IsSleeping = false;
 		SleepRate = 0;
 		GlobalPosition = LocationBeforeSleep;
+		GlobalRotation = RotationBeforeSleep;
 		Velocity = Vector3.Zero;
 		Animator?.Play(new StringName("Idle"));
 	}

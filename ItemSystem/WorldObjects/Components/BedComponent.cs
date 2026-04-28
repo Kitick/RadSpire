@@ -29,12 +29,30 @@ public sealed class BedComponent : IObjectComponent, IInteract {
         if(interactor is not Player player) {
             return false;
         }
+        // Convert the stored local bed location to a global position using the owner's world location
+        Vector3 globalLocation = Location;
+        if(ComponentOwner?.WorldLocation != null) {
+            // Apply owner's rotation then translation
+            Basis b = Basis.FromEuler(ComponentOwner.WorldLocation.Rotation);
+            globalLocation = ComponentOwner.WorldLocation.Position + (b * Location);
+        }
+
         if(IsSleeping) {
             player.EndSleep();
             IsSleeping = false;
             return true;
         }
-        player.Sleep(RestoreAmount, Location);
+        // Compute desired global rotation so player's forward (GlobalBasis.Z) aligns with the bed's local +Z
+        Vector3 desiredRotation = Vector3.Zero;
+        if(ComponentOwner?.WorldLocation != null) {
+            Basis ownerBasis = Basis.FromEuler(ComponentOwner.WorldLocation.Rotation);
+            Vector3 bedLocalPositiveZ = new Vector3(0, 0, 1);
+            Vector3 bedZWorld = (ownerBasis * bedLocalPositiveZ).Normalized();
+            float yaw = Mathf.Atan2(bedZWorld.X, bedZWorld.Z);
+            desiredRotation = new Vector3(0, yaw, 0);
+        }
+
+        player.Sleep(RestoreAmount, globalLocation, desiredRotation);
         IsSleeping = true;
         return true;
     }
