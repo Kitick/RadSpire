@@ -66,13 +66,21 @@ public sealed class DoorComponent : IObjectComponent, IInteract, ISaveable<DoorC
 			}
 
 			Log.Info($"Door returning player to main world: {WorldID}");
-			return TrySwitchToWorld(WorldID, resolvedSpawnPosition);
+			bool switchedToMainWorld = TrySwitchToWorld(WorldID, resolvedSpawnPosition);
+			if(switchedToMainWorld) {
+				GameWorldManager.CurrentStructureObject = null;
+			}
+			return switchedToMainWorld;
 		}
 
 		if(HasWorldID) {
 			Log.Info($"Player is entering door to WorldID: {WorldID}");
 			TryCaptureMainWorldReturnPosition(player, WorldID);
-			return TrySwitchToWorld(WorldID, HasConfiguredSpawnPosition(SpawnPosition) ? SpawnPosition : null);
+			bool switchedToInteriorWorld = TrySwitchToWorld(WorldID, HasConfiguredSpawnPosition(SpawnPosition) ? SpawnPosition : null);
+			if(switchedToInteriorWorld) {
+				GameWorldManager.CurrentStructureObject = ComponentOwner.ItemId;
+			}
+			return switchedToInteriorWorld;
 		}
 
 		Log.Info("Door has no target WorldID set.");
@@ -89,7 +97,11 @@ public sealed class DoorComponent : IObjectComponent, IInteract, ISaveable<DoorC
 		Log.Info($"Created new world with ID: {newWorldId} for door.");
 		WorldID = newWorldId;
 		TryCaptureMainWorldReturnPosition(player, WorldID);
-		return TrySwitchToWorld(WorldID, HasConfiguredSpawnPosition(SpawnPosition) ? SpawnPosition : null);
+		bool switchedToNewInteriorWorld = TrySwitchToWorld(WorldID, HasConfiguredSpawnPosition(SpawnPosition) ? SpawnPosition : null);
+		if(switchedToNewInteriorWorld) {
+			GameWorldManager.CurrentStructureObject = ComponentOwner.ItemId;
+		}
+		return switchedToNewInteriorWorld;
 	}
 
 	private static bool HasConfiguredSpawnPosition(Vector3? spawnPosition) {

@@ -322,6 +322,9 @@ public sealed partial class GameManager : Node {
 		if(resolvedSpawnPosition.HasValue) {
 			LocalPlayer.GlobalPosition = resolvedSpawnPosition.Value;
 		}
+		if(gameWorldId == WorldManager.MainGameWorldId) {
+			WorldManager.CurrentStructureObject = null;
+		}
 		LocalPlayer.Velocity = Vector3.Zero;
 		SyncActiveWorldActorBindings();
 

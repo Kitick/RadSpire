@@ -28,6 +28,8 @@ public partial class GameWorldManager : Node, ISaveable<GameWorldManagerData> {
 	public EnemyManager? EnemyManager => CurrentGameWorld?.EnemyManager;
 	public NPCManager? NPCManager => CurrentGameWorld?.NPCManager;
 
+	public string? CurrentStructureObject { get; set; }
+
 	public void Initialize(Node worldRoot, GameManager? gameManager) {
 		WorldRoot = worldRoot;
 		GameManager = gameManager;
@@ -160,6 +162,7 @@ public partial class GameWorldManager : Node, ISaveable<GameWorldManagerData> {
 	public GameWorldManagerData Export() => new() {
 		CurrentGameWorldId = CurrentGameWorldId,
 		MainGameWorldId = MainGameWorldId,
+		CurrentStructureObject = CurrentStructureObject,
 		GameWorlds = ExportGameWorlds(),
 	};
 
@@ -170,6 +173,7 @@ public partial class GameWorldManager : Node, ISaveable<GameWorldManagerData> {
 
 		CurrentGameWorldId = data.CurrentGameWorldId;
 		MainGameWorldId = data.MainGameWorldId;
+		CurrentStructureObject = data.CurrentStructureObject;
 		GameWorlds = new Dictionary<string, GameWorldState>();
 
 		foreach(KeyValuePair<string, GameWorldStateData> pair in data.GameWorlds) {
@@ -197,6 +201,7 @@ public partial class GameWorldManager : Node, ISaveable<GameWorldManagerData> {
 		IsInitialized = false;
 		CurrentGameWorldId = null!;
 		MainGameWorldId = null!;
+		CurrentStructureObject = null;
 	}
 
 	private Dictionary<string, GameWorldStateData> ExportGameWorlds() {
@@ -234,5 +239,6 @@ public partial class GameWorldManager : Node, ISaveable<GameWorldManagerData> {
 public readonly record struct GameWorldManagerData : ISaveData {
 	public string CurrentGameWorldId { get; init; }
 	public string MainGameWorldId { get; init; }
+	public string? CurrentStructureObject { get; init; }
 	public Dictionary<string, GameWorldStateData> GameWorlds { get; init; }
 }
