@@ -1,17 +1,21 @@
 namespace Character;
 
 using System;
+using System.Collections.Generic;
 using Components;
 using Godot;
 using ItemSystem;
 using Root;
 using Services;
+using ItemSystem.WorldObjects;
+
 
 public sealed partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 	private static readonly LogService Log = new(nameof(Enemy), enabled: true);
 	public string Id { get; set; } = Guid.NewGuid().ToString();
 
 	[Export] public EnemyType EnemyType { get; set; } = EnemyType.None;
+	[Export] public Rarity DropRarity { get; set; } = Rarity.Common;
 
 	[Export] private int InitialHealthValue = 50;
 	[Export] private int InitialDamageValue = 5;
@@ -353,16 +357,49 @@ public sealed partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 	}
 
 	public EnemyData Export() => new() {
+		Id = Id,
+		DropRarity = DropRarity,
 		Health = Health.Export(),
 		Movement = Movement.Export(),
 		Offense = Offense.Export(),
 		Defense = Defense.Export(),
 	};
 
+	public void DropItems(Action<string> onItemDrop) {
+		if(onItemDrop == null) {
+			return;
+		}
+
+		EnemyDropDefinition? definition = EnemyDrops.Get(EnemyType);
+		if(definition == null) {
+			Log.Warn($"No drop definition found for enemy type '{EnemyType}'");
+			return;
+		}
+
+		int lowerBound = Math.Max(0, Math.Min(definition.LowerBound, definition.UpperBound));
+		int upperBound = Math.Max(lowerBound, Math.Max(definition.LowerBound, definition.UpperBound));
+		int numberOfItemsToDrop = ((int)GD.Randi() % (upperBound - lowerBound + 1)) + lowerBound;
+
+		for(int i = 0; i < numberOfItemsToDrop; i++) {
+			ItemProbabilities? selected = EnemyDrops.PickWeightedItem(definition.PossibleContents);
+			if(selected == null) {
+				break;
+			}
+
+			if(DatabaseManager.Instance.GetItemDefinitionById(selected.Value.ItemId) == null) {
+				Log.Warn($"Drop definition for enemy type '{EnemyType}' references unknown item '{selected.Value.ItemId}'. Skipping.");
+				continue;
+			}
+
+			onItemDrop(selected.Value.ItemId);
+		}
+	}
+
 	public void Import(EnemyData data) {
 		if(!string.IsNullOrEmpty(data.Id)) {
 			Id = data.Id;
 		}
+		DropRarity = data.DropRarity;
 		Health.Import(data.Health);
 		Movement.Import(data.Movement);
 		Offense.Import(data.Offense);
@@ -372,8 +409,126 @@ public sealed partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 
 public readonly record struct EnemyData : ISaveData {
 	public string Id { get; init; }
+	public Rarity DropRarity { get; init; }
 	public HealthData Health { get; init; }
 	public MovementData Movement { get; init; }
 	public OffenseData Offense { get; init; }
 	public DefenseData Defense { get; init; }
+}
+
+public record EnemyDropDefinition(
+	EnemyType EnemyType,
+	int UpperBound,
+	int LowerBound,
+	ItemProbabilities[] PossibleContents
+);
+
+public static class EnemyDrops {
+	private static readonly Random Random = new();
+
+	public static readonly EnemyDropDefinition Enemy = new(
+		EnemyType: EnemyType.None,
+		UpperBound: 9,
+		LowerBound: 4,
+		PossibleContents: [
+			new(ItemID.AppleGreen, 4),
+				new(ItemID.BananaYellow, 4),
+				new(ItemID.BerryGreen, 4),
+				new(ItemID.BlueberryGreen, 3),
+				new(ItemID.CherryGreen, 2),
+				new(ItemID.StrawberryGreen, 2),
+				new(ItemID.Wood, 6),
+				new(ItemID.Stick, 6),
+				new(ItemID.StonePiece, 5),
+				new(ItemID.Stone, 3)
+		]
+	);
+
+	public static readonly EnemyDropDefinition EnemyRanged = new(
+		EnemyType: EnemyType.MeldoranWarrior,
+		UpperBound: 12,
+		LowerBound: 6,
+		PossibleContents: [
+			new(ItemID.AppleRed, 3),
+				new(ItemID.AppleYellow, 3),
+				new(ItemID.BananaGreen, 3),
+				new(ItemID.BerryRed, 3),
+				new(ItemID.CherryRed, 2),
+				new(ItemID.BerryBlack, 2),
+				new(ItemID.BlueberryBlue, 2),
+				new(ItemID.StrawberryRed, 2),
+				new(ItemID.Wood, 3),
+				new(ItemID.Stone, 3),
+				new(ItemID.IronOre, 5),
+				new(ItemID.IronChunk, 3),
+				new(ItemID.IronBar, 2),
+				new(ItemID.GoldOre, 2),
+				new(ItemID.GoldChunk, 1),
+				new(ItemID.SwordWood, 1),
+				new(ItemID.ShieldWood, 1),
+				new(ItemID.Barrel, 1)
+		]
+	);
+
+	public static readonly EnemyDropDefinition BossEnemy = new(
+		EnemyType: EnemyType.RadiationCaster,
+		UpperBound: 16,
+		LowerBound: 9,
+		PossibleContents: [
+			new(ItemID.CoconutGreenOpen, 3),
+				new(ItemID.CoconutBrownOpen, 3),
+				new(ItemID.StrawberryRed, 2),
+				new(ItemID.BlueberryBlue, 2),
+				new(ItemID.BerryBlack, 2),
+				new(ItemID.CherryRed, 2),
+				new(ItemID.Bonfire, 1),
+				new(ItemID.Barrel, 1),
+				new(ItemID.IronBar, 5),
+				new(ItemID.GoldChunk, 4),
+				new(ItemID.GoldBar, 3),
+				new(ItemID.SwordIron, 2),
+				new(ItemID.SwordGold, 1),
+				new(ItemID.ShieldIron, 2),
+				new(ItemID.HeadpieceIron, 1),
+				new(ItemID.ChestpieceIron, 1),
+				new(ItemID.PantpieceIron, 1),
+				new(ItemID.ChestRare, 1)
+		]
+	);
+
+	private static readonly Dictionary<EnemyType, EnemyDropDefinition> ByEnemyType = new() {
+		{ EnemyType.None, Enemy },
+		{ EnemyType.MeldoranWarrior, EnemyRanged },
+		{ EnemyType.RadiationCaster, BossEnemy },
+	};
+
+	public static EnemyDropDefinition? Get(EnemyType enemyType) {
+		if(ByEnemyType.TryGetValue(enemyType, out EnemyDropDefinition? definition)) {
+			return definition;
+		}
+		return Enemy; // Fallback to default
+	}
+
+	public static ItemProbabilities? PickWeightedItem(ItemProbabilities[] possibleContents) {
+		if(possibleContents == null || possibleContents.Length == 0) {
+			return null;
+		}
+		int totalWeight = 0;
+		for(int i = 0; i < possibleContents.Length; i++) {
+			totalWeight += Math.Max(0, possibleContents[i].ChanceWeight);
+		}
+		if(totalWeight <= 0) {
+			return null;
+		}
+		int roll = Random.Next(0, totalWeight);
+		int cumulative = 0;
+		for(int i = 0; i < possibleContents.Length; i++) {
+			int weight = Math.Max(0, possibleContents[i].ChanceWeight);
+			cumulative += weight;
+			if(roll < cumulative) {
+				return possibleContents[i];
+			}
+		}
+		return possibleContents[^1];
+	}
 }

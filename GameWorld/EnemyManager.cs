@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Character;
 using Components;
 using Godot;
+using ItemSystem.Icons;
 using QuestSystem;
 using Services;
 
@@ -13,7 +14,9 @@ public sealed partial class EnemyManager : Node, ISaveable<EnemyManagerData> {
 
 	public Dictionary<string, Enemy> Enemies { get; } = [];
 
-	private readonly Dictionary<string, Action> DeathUnsubscribers = [];
+	private readonly Dictionary<string, Action> QuestDeathUnsubscribers = [];
+	private readonly Dictionary<string, Action> ItemDropUnsubscribers = [];
+	private Item3DIconManager? Item3DIconManager = null;
 	private PackedScene EnemyScene = null!;
 	private bool IsInitialized;
 
@@ -57,8 +60,12 @@ public sealed partial class EnemyManager : Node, ISaveable<EnemyManagerData> {
 			return false;
 		}
 
-		if(DeathUnsubscribers.Remove(id, out Action? unsubscribe)) {
+		if(QuestDeathUnsubscribers.Remove(id, out Action? unsubscribe)) {
 			unsubscribe();
+		}
+
+		if(ItemDropUnsubscribers.Remove(id, out Action? dropUnsubscribe)) {
+			dropUnsubscribe();
 		}
 
 		if(IsInstanceValid(enemy)) {
@@ -84,15 +91,47 @@ public sealed partial class EnemyManager : Node, ISaveable<EnemyManagerData> {
 				continue;
 			}
 
-			DeathUnsubscribers[id] = enemy.WhenDead(() => questManager.NotifyEnemyKilled(enemy.EnemyType));
+			QuestDeathUnsubscribers[id] = enemy.WhenDead(() => questManager.NotifyEnemyKilled(enemy.EnemyType));
 		}
 	}
 
 	public void UnbindQuestEvents() {
-		foreach(Action unsubscribe in DeathUnsubscribers.Values) {
+		foreach(Action unsubscribe in QuestDeathUnsubscribers.Values) {
 			unsubscribe();
 		}
-		DeathUnsubscribers.Clear();
+		QuestDeathUnsubscribers.Clear();
+	}
+
+	public void SetItem3DIconManager(Item3DIconManager iconManager) {
+		Item3DIconManager = iconManager;
+	}
+
+	public void BindItemDropEvents() {
+		UnbindItemDropEvents();
+
+		if(Item3DIconManager == null) {
+			Log.Warn("Item3DIconManager not set. Item drops will not spawn.");
+			return;
+		}
+
+		foreach((string id, Enemy enemy) in Enemies) {
+			if(!IsInstanceValid(enemy)) {
+				continue;
+			}
+
+			ItemDropUnsubscribers[id] = enemy.WhenDead(() => {
+				if(IsInstanceValid(enemy)) {
+					enemy.DropItems(itemId => Item3DIconManager.SpawnItem(itemId, enemy.GlobalPosition));
+				}
+			});
+		}
+	}
+
+	public void UnbindItemDropEvents() {
+		foreach(Action unsubscribe in ItemDropUnsubscribers.Values) {
+			unsubscribe();
+		}
+		ItemDropUnsubscribers.Clear();
 	}
 
 	public EnemyManagerData Export() {
@@ -131,6 +170,7 @@ public sealed partial class EnemyManager : Node, ISaveable<EnemyManagerData> {
 	public void Cleanup() {
 		Log.Info($"Cleanup start. total={Enemies.Count}");
 		UnbindQuestEvents();
+		UnbindItemDropEvents();
 
 		foreach(Enemy enemy in Enemies.Values) {
 			if(IsInstanceValid(enemy)) {
