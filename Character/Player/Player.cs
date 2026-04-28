@@ -12,7 +12,7 @@ using ItemSystem.WorldObjects;
 using Root;
 using Services;
 
-public sealed partial class Player : CharacterBase, ISaveable<PlayerData> {
+public sealed partial class Player : CharacterBase, ISaveable<PlayerData>, IAttackModifier {
 	private static readonly LogService Log = new(nameof(Player), enabled: true);
 
 	[Export] public MeshInstance3D SwordMesh = null!;
@@ -29,6 +29,9 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData> {
 	[Export] private float SprintMultiplier = 3.25f;
 	[Export] private float CrouchMultiplier = 0.5f;
 	[Export] private float DodgeSpeedMultiplier = 3.0f;
+	[Export] private float ComboResetTime = 0.75f;
+	[Export] private float ComboHit2Multiplier = 1.15f;
+	[Export] private float ComboHit3Multiplier = 1.30f;
 
 	// Inventories
 	public readonly Inventory Inventory = new(3, 5);
@@ -57,6 +60,13 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData> {
 	public bool HoldingSword = false;
 	private Vector3 DodgeDirection = Vector3.Zero;
 	private Animator? Animator;
+	private int ComboIndex = 0;
+	private float ComboTimer = 0f;
+	private bool BufferedAttack = false;
+	private float CurrentAttackMultiplier = 1.0f;
+	private static readonly StringName ComboAttack1 = new("1H_Melee_Attack_Slice_Diagonal");
+	private static readonly StringName ComboAttack2 = new("1H_Melee_Attack_Stab");
+	private static readonly StringName ComboAttack3 = new("1H_Melee_Attack_Chop");
 
 	public Player() {
 		Movement = new Movement(this);
@@ -133,6 +143,12 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData> {
 	public void Update(float dt, KeyInput keyInput) {
 		Radiation.Accumulate(dt);
 		Health.Max = Math.Max(1, (int) Math.Round(BaseMaxHealth * (1f - Radiation.Level)));
+		if(ComboTimer > 0f) {
+			ComboTimer -= dt;
+			if(ComboTimer <= 0f && CurrentState != State.Attacking) {
+				ResetCombo();
+			}
+		}
 
 		if(this.IsDead()) {
 			StateMachine.TransitionTo(State.Dead);
@@ -165,7 +181,12 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData> {
 		}
 
 		if(keyInput.AttackPressed && (BuildModeController == null || !BuildModeController.IsBuildModeActive)) {
-			StateMachine.TransitionTo(State.Attacking);
+			if(StateMachine.CurrentState == State.Attacking) {
+				QueueComboAttack();
+			}
+			else {
+				StartComboAttack();
+			}
 			return;
 		}
 
@@ -188,7 +209,27 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData> {
 		}
 	}
 
-	public override void OnAttackFinished() => StateMachine.TransitionTo(State.Idle);
+	public override void OnAttackFinished() {
+		if(BufferedAttack && ComboIndex < 2) {
+			BufferedAttack = false;
+			ComboIndex++;
+			StartComboAttack();
+			return;
+		}
+
+		BufferedAttack = false;
+		if(ComboIndex < 2) {
+			ComboIndex++;
+			ComboTimer = ComboResetTime;
+		}
+		else {
+			ResetCombo();
+		}
+
+		StateMachine.TransitionTo(State.Idle);
+	}
+
+	public float GetAttackMultiplier() => CurrentAttackMultiplier;
 
 	private float GetMultiplier() {
 		float multiplier = 1.0f;
@@ -214,6 +255,49 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData> {
 		SetDodgeAnimationFromInput();
 		StateMachine.TransitionTo(State.Dodging);
 	}
+
+	private void StartComboAttack() {
+		if(ComboTimer <= 0f) {
+			ResetCombo();
+		}
+
+		CurrentAttackMultiplier = GetCurrentComboMultiplier();
+		BufferedAttack = false;
+		ComboTimer = ComboResetTime;
+		if(Animator != null) {
+			Animator.SetAttackAnimation(GetCurrentComboAnimation());
+			if(StateMachine.CurrentState == State.Attacking) {
+				Animator.PlayAttackNow();
+				return;
+			}
+		}
+		StateMachine.TransitionTo(State.Attacking);
+	}
+
+	private void QueueComboAttack() {
+		if(ComboIndex >= 2) { return; }
+		BufferedAttack = true;
+		ComboTimer = ComboResetTime;
+	}
+
+	private void ResetCombo() {
+		ComboIndex = 0;
+		ComboTimer = 0f;
+		BufferedAttack = false;
+		CurrentAttackMultiplier = 1.0f;
+	}
+
+	private StringName GetCurrentComboAnimation() => ComboIndex switch {
+		0 => ComboAttack1,
+		1 => ComboAttack2,
+		_ => ComboAttack3,
+	};
+
+	private float GetCurrentComboMultiplier() => ComboIndex switch {
+		0 => 1.0f,
+		1 => ComboHit2Multiplier,
+		_ => ComboHit3Multiplier,
+	};
 
 	public override void OnDodgeFinished() => StateMachine.TransitionTo(State.Idle);
 

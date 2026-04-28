@@ -28,8 +28,6 @@ public sealed partial class Animator : AnimationPlayer {
 	[Export] private StringName ATTACK = null!;
 	[Export] private StringName DEATH = null!;
 	[Export] private StringName DODGE = null!;
-	[Export] private StringName[] AttackVariations = [];
-	[Export] private bool CycleAttackVariations = false;
 
 	[ExportCategory("Animation Settings")]
 	[Export] private float SprintSpeed = 1.0f;
@@ -44,8 +42,19 @@ public sealed partial class Animator : AnimationPlayer {
 	[Export] private float DodgeToMoveBlend = 0.25f;
 	[Export] private float DodgeIdleRecoveryTime = 0.15f;
 	private bool UseDodgeIdleRecovery = true;
+	private bool HasAttackAnimationOverride = false;
+	private StringName AttackAnimationOverride = default;
+	private StringName LastPlayedAttackAnimation = default;
 
 	public void SetAttackSpeed(float speed) => AttackSpeed = Math.Max(0.1f, speed);
+	public void SetAttackAnimation(StringName name) {
+		AttackAnimationOverride = name;
+		HasAttackAnimationOverride = true;
+	}
+
+	public void PlayAttackNow() {
+		PlayingAnimation = AnimState.Attacking;
+	}
 
 	public void SetDodgeIdleRecovery(bool enabled) => UseDodgeIdleRecovery = enabled;
 
@@ -69,8 +78,6 @@ public sealed partial class Animator : AnimationPlayer {
 			}
 		}
 	}
-
-	private int AttackVariationIndex = 0;
 
 	public void SetDodgeAnimation(StringName name) {
 		DODGE = name;
@@ -173,27 +180,18 @@ public sealed partial class Animator : AnimationPlayer {
 	}
 
 	private bool IsAttackAnimation(StringName name) {
-		if(name == ATTACK) { return true; }
-		for(int i = 0; i < AttackVariations.Length; i++) {
-			if(AttackVariations[i] == name) { return true; }
-		}
-		return false;
+		return name == ATTACK || name == LastPlayedAttackAnimation;
 	}
 
 	private StringName GetAttackAnimation() {
-		if(AttackVariations.Length == 0) { return ATTACK; }
-		if(!CycleAttackVariations) {
-			int idx = GD.RandRange(0, AttackVariations.Length - 1);
-			return AttackVariations[idx];
+		if(HasAttackAnimationOverride) {
+			HasAttackAnimationOverride = false;
+			LastPlayedAttackAnimation = AttackAnimationOverride;
+			return AttackAnimationOverride;
 		}
 
-		if(AttackVariationIndex < 0 || AttackVariationIndex >= AttackVariations.Length) {
-			AttackVariationIndex = 0;
-		}
-
-		StringName picked = AttackVariations[AttackVariationIndex];
-		AttackVariationIndex = (AttackVariationIndex + 1) % AttackVariations.Length;
-		return picked;
+		LastPlayedAttackAnimation = ATTACK;
+		return ATTACK;
 	}
 
 	private StringName CurrentDodgeAnimation() => DODGE;

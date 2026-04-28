@@ -3,11 +3,18 @@ namespace Components;
 using System;
 using ItemSystem;
 
+public interface IAttackModifier {
+	float GetAttackMultiplier();
+}
+
 public static class Interactions {
 	public static void Attack<TAttacker, TDefender>(this TAttacker attacker, TDefender defender)
 	where TAttacker : IOffense
 	where TDefender : IHealth {
 		int damage = attacker.Offense.Damage;
+		if(attacker is IAttackModifier modifier) {
+			damage = (int) Math.Round(damage * modifier.GetAttackMultiplier());
+		}
 
 		if(defender is IDefense defendable) {
 			damage = Math.Max(0, damage - defendable.Defense.Armor);
