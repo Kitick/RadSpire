@@ -10,9 +10,13 @@ public abstract partial class CharacterBase : CharacterBody3D, IHealth, IOffense
 	protected abstract int InitialDamage { get; }
 	protected abstract int InitialDefense { get; }
 
-	public Health Health { get; private set; } = null!;
-	public Offense Offense { get; private set; } = null!;
-	public Defense Defense { get; private set; } = null!;
+	private Health? _health;
+	private Offense? _offense;
+	private Defense? _defense;
+
+	public Health Health => _health ??= new Health(InitialHealth);
+	public Offense Offense => _offense ??= new Offense(InitialDamage);
+	public Defense Defense => _defense ??= new Defense(InitialDefense);
 
 	public enum State { Idle, Walking, Sprinting, Crouching, Falling, Attacking, Dodging, Dead }
 
@@ -25,10 +29,6 @@ public abstract partial class CharacterBase : CharacterBody3D, IHealth, IOffense
 	public virtual void OnDodgeFinished() { }
 
 	public override void _Ready() {
-		Health = new Health(InitialHealth);
-		Offense = new Offense(InitialDamage);
-		Defense = new Defense(InitialDefense);
-
 		StateMachine.OnChange((from, to) => OnStateChanged?.Invoke(from, to));
 	}
 }

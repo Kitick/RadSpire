@@ -31,7 +31,7 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData>, IAtta
 	protected override int InitialDamage => InitialDamageValue;
 	protected override int InitialDefense => InitialDefenseValue;
 
-	[Export] private float SprintMultiplier = 3.25f;
+	[Export] private float SprintMultiplier = 4.0f;
 	[Export] private float CrouchMultiplier = 0.5f;
 	[Export] private float DodgeSpeedMultiplier = 3.0f;
 	[Export] private float ComboResetTime = 0.75f;

@@ -121,7 +121,7 @@ public sealed partial class EnemyManager : Node, ISaveable<EnemyManagerData> {
 
 			ItemDropUnsubscribers[id] = enemy.WhenDead(() => {
 				if(IsInstanceValid(enemy)) {
-					enemy.DropItems(itemId => Item3DIconManager.SpawnItem(itemId, enemy.GlobalPosition));
+					enemy.DropItems(itemId => Item3DIconManager.SpawnItem(itemId, enemy.GlobalPosition + Vector3.Up * 0.5f));
 				}
 			});
 		}

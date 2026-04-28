@@ -211,10 +211,11 @@ public sealed partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 
 		SetupSprite(HealthBarBack, HealthBarBackColor, HealthBarWidth, HealthBarHeight);
 		SetupSprite(HealthBarFill, HealthBarFillColor, HealthBarWidth, HealthBarHeight);
+		HealthBarFill.Position = new Vector3(0f, 0f, 0.001f);
 
 		HealthLabel.FontSize = 18;
 		HealthLabel.Billboard = BaseMaterial3D.BillboardModeEnum.Enabled;
-		HealthLabel.Position = new Vector3(0f, HealthBarHeight * 1.8f, 0f);
+		HealthLabel.Position = new Vector3(0f, HealthBarHeight * 1.8f, 0.002f);
 	}
 
 	private static void SetupSprite(Sprite3D sprite, Color color, float width, float height) {
@@ -243,7 +244,7 @@ public sealed partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 		scale.Y = HealthBarHeight;
 		scale.Z = 1f;
 		HealthBarFill.Scale = scale;
-		HealthBarFill.Position = new Vector3(-(HealthBarWidth - scale.X) * 0.5f, 0f, 0f);
+		HealthBarFill.Position = new Vector3(-(HealthBarWidth - scale.X) * 0.5f, 0f, 0.001f);
 
 		HealthLabel.Text = $"{Health.Current}/{Health.Max}";
 		HealthUIRoot.Visible = Health.Current > 0 && Health.Current < Health.Max;

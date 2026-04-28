@@ -33,7 +33,7 @@ public sealed class Offense : Component<OffenseData> {
 		Damage = damage,
 		CritChance = 0.05f,
 		CritMultiplier = 1.2f,
-		DamageVariance = 0f,
+		DamageVariance = 0.2f,
 		ArmorPenetration = 0f,
 	}) { }
 }
