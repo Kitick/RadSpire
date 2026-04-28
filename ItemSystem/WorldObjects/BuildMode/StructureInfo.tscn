@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://ccyy7jpldj54i" path="res://ItemSystem/WorldObjects/BuildMode/StructureInfo.cs" id="1_structureinfo"]
 
-[node name="StructureInfo" type="Control" unique_id=1227864560]
+[node name="StructureInfo" type="Control" unique_id=1227864560 node_paths=PackedStringArray("NameLabel", "NpcLabel", "ValueLabel")]
 visible = false
 layout_mode = 3
 anchors_preset = 0
@@ -11,6 +11,9 @@ offset_top = 140.0
 offset_right = 370.0
 offset_bottom = 240.0
 script = ExtResource("1_structureinfo")
+NameLabel = NodePath("NameLabel")
+NpcLabel = NodePath("NpcLabel")
+ValueLabel = NodePath("ValueLabel")
 
 [node name="Panel" type="Panel" parent="." unique_id=933615418]
 layout_mode = 1
