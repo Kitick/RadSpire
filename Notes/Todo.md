@@ -1,11 +1,9 @@
 [BUG] crafting the sword does not equip it right away
 [BUG] shield does nothing
 
-[BUG] Respawning crashes the game
 [BUG] Enemies attack your dead body
 [BUG] Esc will close the respawn menu
 [BUG] Enemy sprinting isnt much faster
-[BUG] ground collision doesnt cover the map
 [BUG] loot in chests regenerate on load
 [BUG] items adding/removing while crafting open doesnt update list
 
@@ -20,17 +18,8 @@
 [BUG] remove the 5 barrels
 
 [IMP] make the health bar higher for easier visibility
-[IMP] pickup item should be its own key
 [IMP] Killing enemies is too easy
-[IMP] Add in world game music
-[IMP] Add lore brief screen before new game
-[IMP] Make control scheme more clear
-[IMP] NPC dialogs are too small, label and size
-[IMP] make questlog background a scroll
-[IMP] add debug menu with cheat commands
-[IMP] Add more types of enemies
 
-[FET] Add loading screen for transitions
 [FET] add equipment menu for armor, and an offhand for sheild
 
 [FET] add a radspire to emit radation as you get closer
