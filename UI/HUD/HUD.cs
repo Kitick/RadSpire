@@ -42,7 +42,7 @@ public sealed partial class HUD : Control {
 
 	[ExportCategory("Health Colors")]
 	[Export] private Color HealthColor = new(0.2f, 0.6f, 0.2f);
-	[Export] private Color RadiationColor = new(0.6f, 0.2f, 0.8f);
+	[Export] private Color RadiationColor = new(0.6f, 0.2f, 0.2f);
 	[Export] private Color EmptyColor = new(0.2f, 0.2f, 0.2f);
 
 	public Player Player = null!;
@@ -259,8 +259,13 @@ public sealed partial class HUD : Control {
 		InteractionPrompt.Visible = false;
 	}
 
+	private SceneTreeTimer? QuestNotificationTimer;
+
 	public void ShowQuestNotification(string text) {
 		ShowInteractionPrompt(text);
+		QuestNotificationTimer?.Disconnect(SceneTreeTimer.SignalName.Timeout, Callable.From(HideInteractionPrompt));
+		QuestNotificationTimer = GetTree().CreateTimer(4.0);
+		QuestNotificationTimer.Timeout += HideInteractionPrompt;
 	}
 
 	private void ToggleInventory() {

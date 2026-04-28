@@ -51,9 +51,6 @@ WinMenu = NodePath("WinMenu")
 SettingsScene = ExtResource("2_o30d6")
 SaveMenuScene = ExtResource("3_o30d6")
 HostPanelScene = ExtResource("2_3o8sq")
-HealthColor = Color(0.2, 0.6, 0.2, 1)
-RadiationColor = Color(0.6, 0.2, 0.8, 1)
-EmptyColor = Color(0.2, 0.2, 0.2, 1)
 
 [node name="PauseButton" type="Button" parent="." unique_id=948900833]
 layout_mode = 1
