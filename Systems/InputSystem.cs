@@ -105,33 +105,31 @@ public readonly struct ActionEvent {
 	public readonly StringName Name;
 	private ActionEvent(StringName name) => Name = name;
 
+	// Movement
 	public static readonly ActionEvent MoveForward = new("MoveForward");
 	public static readonly ActionEvent MoveBack = new("MoveBack");
 	public static readonly ActionEvent MoveLeft = new("MoveLeft");
 	public static readonly ActionEvent MoveRight = new("MoveRight");
-
 	public static readonly ActionEvent Jump = new("Jump");
 	public static readonly ActionEvent Sprint = new("Sprint");
 	public static readonly ActionEvent Crouch = new("Crouch");
+	public static readonly ActionEvent Dodge = new("Dodge");
 
+	// Combat
+	public static readonly ActionEvent Attack = new("Attack");
+
+	// Interaction
 	public static readonly ActionEvent Interact = new("Interact");
 	public static readonly ActionEvent Pickup = new("Pickup");
-	public static readonly ActionEvent Place = new("Place");
-	public static readonly ActionEvent PlaceCancel = new("PlaceCancel");
 	public static readonly ActionEvent UseItem = new("UseItem");
 	public static readonly ActionEvent DropItem = new("DropItem");
-	public static readonly ActionEvent Inventory = new("Inventory");
-	public static readonly ActionEvent Attack = new("Attack");
-	public static readonly ActionEvent Dodge = new("Dodge");
-	public static readonly ActionEvent QuestLog = new("QuestLog");
+
+	// Building
+	public static readonly ActionEvent Place = new("Place");
+	public static readonly ActionEvent PlaceCancel = new("PlaceCancel");
 	public static readonly ActionEvent BuildMode = new("BuildMode");
 
-	public static readonly ActionEvent MenuSelect = new("ui_accept");
-	public static readonly ActionEvent MenuExit = new("ui_cancel");
-
-	public static readonly ActionEvent PageLeft = new("PageLeft");
-	public static readonly ActionEvent PageRight = new("PageRight");
-
+	// Hotbar
 	public static readonly ActionEvent Hotbar1 = new("Hotbar1");
 	public static readonly ActionEvent Hotbar2 = new("Hotbar2");
 	public static readonly ActionEvent Hotbar3 = new("Hotbar3");
@@ -140,41 +138,50 @@ public readonly struct ActionEvent {
 	public static readonly ActionEvent HotbarNext = new("HotbarNext");
 	public static readonly ActionEvent HotbarPrev = new("HotbarPrev");
 
+	// Camera
 	public static readonly ActionEvent CameraRotate = new("RotateCamera");
 	public static readonly ActionEvent CameraPan = new("PanCamera");
 	public static readonly ActionEvent CameraReset = new("ResetCamera");
-
 	public static readonly ActionEvent ZoomIn = new("ZoomIn");
 	public static readonly ActionEvent ZoomOut = new("ZoomOut");
 
+	// UI
+	public static readonly ActionEvent Inventory = new("Inventory");
+	public static readonly ActionEvent QuestLog = new("QuestLog");
+	public static readonly ActionEvent MenuSelect = new("ui_accept");
+	public static readonly ActionEvent MenuExit = new("ui_cancel");
+	public static readonly ActionEvent PageLeft = new("PageLeft");
+	public static readonly ActionEvent PageRight = new("PageRight");
+
+	// Dev
+	public static readonly ActionEvent DevMode = new("DevMode");
+
 	public static IEnumerable<ActionEvent> Actions() {
+		// Movement
 		yield return MoveForward;
 		yield return MoveBack;
 		yield return MoveLeft;
 		yield return MoveRight;
-
 		yield return Jump;
 		yield return Sprint;
 		yield return Crouch;
+		yield return Dodge;
 
+		// Combat
+		yield return Attack;
+
+		// Interaction
 		yield return Interact;
 		yield return Pickup;
-		yield return Place;
-		yield return PlaceCancel;
 		yield return UseItem;
 		yield return DropItem;
-		yield return Inventory;
-		yield return Attack;
-		yield return Dodge;
-		yield return QuestLog;
+
+		// Building
+		yield return Place;
+		yield return PlaceCancel;
 		yield return BuildMode;
 
-		yield return MenuSelect;
-		yield return MenuExit;
-
-		yield return PageLeft;
-		yield return PageRight;
-
+		// Hotbar
 		yield return Hotbar1;
 		yield return Hotbar2;
 		yield return Hotbar3;
@@ -183,10 +190,22 @@ public readonly struct ActionEvent {
 		yield return HotbarNext;
 		yield return HotbarPrev;
 
-		yield return CameraReset;
-		yield return CameraPan;
+		// Camera
 		yield return CameraRotate;
+		yield return CameraPan;
+		yield return CameraReset;
 		yield return ZoomIn;
 		yield return ZoomOut;
+
+		// UI
+		yield return Inventory;
+		yield return QuestLog;
+		yield return MenuSelect;
+		yield return MenuExit;
+		yield return PageLeft;
+		yield return PageRight;
+
+		// Dev
+		yield return DevMode;
 	}
 }

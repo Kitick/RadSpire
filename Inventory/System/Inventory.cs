@@ -60,6 +60,8 @@ public sealed partial class Inventory : ISaveable<InventoryData> {
 		return index % MaxColumns;
 	}
 
+	public void NotifyChanged() => OnInventoryChanged?.Invoke();
+
 	public bool IsFull() {
 		for(int i = 0; i < ItemSlots.Length; i++) {
 			if(ItemSlots[i].IsEmpty()) {

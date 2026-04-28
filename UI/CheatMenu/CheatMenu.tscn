@@ -1,0 +1,161 @@
+[gd_scene format=3 uid="uid://cheatmenu0001"]
+
+[ext_resource type="Script" uid="uid://dqclg6jv1iw33" path="res://UI/CheatMenu/CheatMenu.cs" id="1_cheat"]
+[ext_resource type="Texture2D" uid="uid://n3pg68s8kwf3" path="res://UI/Theme/Button_Sprites/wood_back_panel.png" id="2_cheat"]
+
+[sub_resource type="Theme" id="Theme_default"]
+
+[node name="CheatMenu" type="Control" unique_id=41462272 node_paths=PackedStringArray("CloseButton", "HealFullButton", "HealButton", "HurtButton", "KillButton", "ClearRadButton", "AddRadButton", "RemoveRadButton", "MaxRadButton", "ClearInventoryButton", "GiveItemInput", "GiveItemQuantity", "GiveItemButton")]
+layout_mode = 3
+anchors_preset = 0
+theme = SubResource("Theme_default")
+script = ExtResource("1_cheat")
+CloseButton = NodePath("PanelArea/Header/Close")
+HealFullButton = NodePath("PanelArea/Grid/HealFull")
+HealButton = NodePath("PanelArea/Grid/Heal")
+HurtButton = NodePath("PanelArea/Grid/Hurt")
+KillButton = NodePath("PanelArea/Grid/Kill")
+ClearRadButton = NodePath("PanelArea/Grid/ClearRad")
+AddRadButton = NodePath("PanelArea/Grid/AddRad")
+RemoveRadButton = NodePath("PanelArea/Grid/RemoveRad")
+MaxRadButton = NodePath("PanelArea/Grid/MaxRad")
+ClearInventoryButton = NodePath("PanelArea/Grid/ClearInventory")
+GiveItemInput = NodePath("PanelArea/GiveRow/GiveItemInput")
+GiveItemQuantity = NodePath("PanelArea/GiveRow/GiveItemQuantity")
+GiveItemButton = NodePath("PanelArea/GiveRow/GiveItemButton")
+
+[node name="PanelArea" type="TextureRect" parent="." unique_id=386284298]
+layout_mode = 1
+anchors_preset = -1
+offset_right = 1000.0
+offset_bottom = 340.0
+texture = ExtResource("2_cheat")
+
+[node name="Header" type="HBoxContainer" parent="PanelArea" unique_id=100000001]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.22
+theme_override_constants/separation = 0
+
+[node name="Title" type="RichTextLabel" parent="PanelArea/Header" unique_id=100000002]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/normal_font_size = 22
+text = "CHEAT MENU"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Close" type="Button" parent="PanelArea/Header" unique_id=40147227]
+custom_minimum_size = Vector2(90, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "CLOSE"
+
+[node name="Grid" type="GridContainer" parent="PanelArea" unique_id=200000001]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.22
+anchor_right = 1.0
+anchor_bottom = 0.84
+theme_override_constants/h_separation = 6
+theme_override_constants/v_separation = 6
+columns = 5
+
+[node name="HealFull" type="Button" parent="PanelArea/Grid" unique_id=1854590548]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_font_sizes/font_size = 17
+text = "HEAL FULL
++ CLEAR RAD"
+
+[node name="Heal" type="Button" parent="PanelArea/Grid" unique_id=1854590549]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_font_sizes/font_size = 17
+text = "HEAL
++10%"
+
+[node name="Hurt" type="Button" parent="PanelArea/Grid" unique_id=1854590550]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_font_sizes/font_size = 17
+text = "HURT
+-10%"
+
+[node name="Kill" type="Button" parent="PanelArea/Grid" unique_id=1064081175]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_font_sizes/font_size = 17
+text = "KILL PLAYER"
+
+[node name="ClearRad" type="Button" parent="PanelArea/Grid" unique_id=1014355000]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_font_sizes/font_size = 17
+text = "CLEAR
+RADIATION"
+
+[node name="AddRad" type="Button" parent="PanelArea/Grid" unique_id=1014355001]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_font_sizes/font_size = 17
+text = "ADD RAD
++10%"
+
+[node name="RemoveRad" type="Button" parent="PanelArea/Grid" unique_id=1014355002]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_font_sizes/font_size = 17
+text = "REMOVE RAD
+-10%"
+
+[node name="MaxRad" type="Button" parent="PanelArea/Grid" unique_id=227245817]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_font_sizes/font_size = 17
+text = "MAX
+RADIATION"
+
+[node name="ClearInventory" type="Button" parent="PanelArea/Grid" unique_id=914178640]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_font_sizes/font_size = 17
+text = "CLEAR
+INVENTORY"
+
+[node name="GiveRow" type="HBoxContainer" parent="PanelArea" unique_id=300000001]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.84
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme_override_constants/separation = 6
+
+[node name="GiveItemInput" type="LineEdit" parent="PanelArea/GiveRow" unique_id=300000002]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 18
+placeholder_text = "Item ID (e.g. SwordIron)"
+
+[node name="GiveItemQuantity" type="SpinBox" parent="PanelArea/GiveRow" unique_id=300000003]
+custom_minimum_size = Vector2(90, 0)
+layout_mode = 2
+min_value = 1.0
+max_value = 99.0
+value = 1.0
+
+[node name="GiveItemButton" type="Button" parent="PanelArea/GiveRow" unique_id=300000004]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "GIVE ITEM"

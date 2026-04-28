@@ -15,6 +15,7 @@ using SaveMenu;
 using Services;
 using Settings.Interface;
 using UI;
+using UI.CheatMenu;
 using MenuState = GameWorld.GameManager.MenuState;
 
 public sealed partial class HUD : Control {
@@ -34,6 +35,7 @@ public sealed partial class HUD : Control {
 	[Export] private SegmentBar HealthBar = null!;
 	[Export] private Label HealthLabel = null!;
 	[Export] private Control WinMenu = null!;
+	[Export] private CheatMenu CheatMenu = null!;
 
 	[ExportCategory("HUD Scenes")]
 	[Export] private PackedScene SettingsScene = null!;
@@ -85,6 +87,8 @@ public sealed partial class HUD : Control {
 		InteractionPrompt = GetNode<Label>("InteractionPrompt");
 		InteractionPrompt.Visible = false;
 
+		CheatMenu.Visible = false;
+
 		SetCallbacks();
 		SetInputCallbacks();
 	}
@@ -115,10 +119,20 @@ public sealed partial class HUD : Control {
 		});
 
 		OnExit += ActionEvent.QuestLog.WhenPressed(ToggleQuestLog);
+		OnExit += ActionEvent.DevMode.WhenPressed(ToggleCheatMenu);
 	}
 
 	private void ToggleQuestLog() {
 		QuestLog?.Visible = !QuestLog.Visible;
+	}
+
+	private void ToggleCheatMenu() {
+		if(CheatMenu.Visible) {
+			CheatMenu.CloseMenu();
+		}
+		else {
+			CheatMenu.OpenMenu(Player);
+		}
 	}
 
 	private void ConfigureStateMachine(StateMachine<MenuState> stateMachine) {
