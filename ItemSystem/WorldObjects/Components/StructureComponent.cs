@@ -39,6 +39,32 @@ public sealed class StructureComponent : IObjectComponent, ISaveable<StructureCo
         GameWorldManager = gameWorldManager;
     }
 
+    public void UpdateTotalValue() {
+        if(!HasWorld) {
+            Log.Error("Cannot update total value: StructureComponent is not associated with a world.");
+            return;
+        }
+        GameWorldState? gameWorld = GameWorldManager.GetGameWorld(WorldID);
+        if(gameWorld == null) {
+            Log.Error($"Cannot update total value: Game world with ID {WorldID} not found.");
+            return;
+        }
+        TotalValue = Value;
+        if(gameWorld.WorldObjectManager == null) {
+            Log.Error($"Cannot update total value: WorldObjectManager for world ID {WorldID} not found.");
+            return;
+        }
+
+        foreach(Object worldObject in gameWorld.WorldObjectManager.GetWorldObjects()) {
+            if(!worldObject.ComponentDictionary.Has<FurnitureValueComponent>()) {
+                continue;
+            }
+
+            FurnitureValueComponent furnitureValue = worldObject.ComponentDictionary.Get<FurnitureValueComponent>();
+            TotalValue += furnitureValue.GetValue();
+        }
+    }
+
     public void AddAttachedNPC(NPC npc) {
         AttachedNPC = npc;
     }

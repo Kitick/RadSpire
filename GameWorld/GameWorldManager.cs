@@ -116,6 +116,16 @@ public partial class GameWorldManager : Node, ISaveable<GameWorldManagerData> {
 		return null;
 	}
 
+	public GameWorldState? GetGameWorld(string gameWorldId) {
+		if(gameWorldId == null) {
+			return null;
+		}
+		if(HasGameWorld(gameWorldId)) {
+			return GameWorlds[gameWorldId];
+		}
+		return null;
+	}
+
 	public bool RegisterGameWorld(GameWorldState gameWorld) {
 		if(GameWorlds.ContainsKey(gameWorld.Id)) {
 			return false;

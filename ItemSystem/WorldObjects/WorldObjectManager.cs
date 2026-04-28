@@ -229,6 +229,10 @@ public partial class WorldObjectManager : Node, ISaveable<WorldObjectManagerData
 		return null;
 	}
 
+	public IEnumerable<Object> GetWorldObjects() {
+		return WorldObjects.Objects.Values;
+	}
+
 	public ObjectNode? GetWorldObjectNode(string objectId) {
 		if(!SetUpComplete) {
 			Log.Error("Attempted to get world object node before WorldObjectManager was set up.");
