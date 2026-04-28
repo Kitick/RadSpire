@@ -419,10 +419,10 @@ public partial class InventoryManager : Node {
 				}
 			}
 		}
-		if(@event.IsActionPressed("DropItem")) {
+		if(@event.IsActionPressed(ActionEvent.DropItem.Name)) {
 			HandleItemDropWithKeyboard();
 		}
-		if(@event.IsActionPressed("Consume")) {
+		if(@event.IsActionPressed(ActionEvent.UseItem.Name)) {
 
 		}
 	}

@@ -49,11 +49,7 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData> {
 	private ObjectHoverTargetingController? ObjectHoverTargetingController;
 	private ObjectHoverOutlineUI? ObjectHoverOutlineUI;
 	private BuildModeController? BuildModeController;
-	private Action? UnsubscribeInteract;
-	private Action? UnsubscribeInteract2;
-	private Action? UnsubscribePlace;
-	private Action? UnsubscribePlaceCancel;
-	private Action? UnsubscribeBuildMode;
+	private event Action? OnExit;
 
 	public Radiation Radiation { get; private set; } = new Radiation(secondsToFatalDose: 30 * 60);
 	public int BaseMaxHealth { get; private set; }
@@ -83,13 +79,47 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData> {
 		SetupChildren();
 	}
 
+	private void SubscribeInputActions() {
+		OnExit += ActionEvent.Interact.WhenPressed(() => {
+			if(PickupComponent.HasItemsInRange) {
+				PickupComponent.PickupItem();
+				return;
+			}
+			if(BuildModeController != null && BuildModeController.IsBuildModeActive) {
+				return;
+			}
+			if(ObjectPickup!.CurrentTargetObjectNode == null) {
+				return;
+			}
+			ObjectPickup.CurrentTargetObjectNode.Interact(this);
+		});
+
+		OnExit += ActionEvent.Pickup.WhenPressed(ObjectPickup!.AttemptPickup);
+
+		OnExit += ActionEvent.Place.WhenPressed(() => {
+			if(ObjectPlacementManager == null) {
+				Log.Error("Place action pressed but ObjectPlacementManager is not initialized.");
+				return;
+			}
+			ObjectPlacementManager.PlaceRequested();
+		});
+
+		OnExit += ActionEvent.PlaceCancel.WhenPressed(() => {
+			if(ObjectPlacementManager == null) {
+				Log.Error("PlaceCancel action pressed but ObjectPlacementManager is not initialized.");
+				return;
+			}
+			ObjectPlacementManager.PlaceCanceled();
+		});
+
+		OnExit += ActionEvent.BuildMode.WhenPressed(() => {
+			BuildModeController?.ToggleBuildMode();
+		});
+	}
+
 	public override void _ExitTree() {
 		base._ExitTree();
-		UnsubscribeInteract?.Invoke();
-		UnsubscribeInteract2?.Invoke();
-		UnsubscribePlace?.Invoke();
-		UnsubscribePlaceCancel?.Invoke();
-		UnsubscribeBuildMode?.Invoke();
+		OnExit?.Invoke();
 		ObjectPickupUI?.Dispose();
 		ObjectHoverOutlineUI?.Dispose();
 		ObjectPickup = null;
@@ -220,47 +250,13 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData> {
 		AddChild(ObjectHoverTargetingController);
 		ObjectHoverTargetingController.Initialize(this, ObjectPickup);
 		ObjectHoverOutlineUI = new ObjectHoverOutlineUI(ObjectHoverTargetingController);
-		UnsubscribeInteract = ActionEvent.Interact.WhenPressed(() => {
-			if(PickupComponent.HasItemsInRange) {
-				PickupComponent.PickupItem();
-				return;
-			}
-			ObjectPickup.AttemptPickup();
-		});
-
-		UnsubscribeInteract2 = ActionEvent.Interact2.WhenPressed(() => {
-			if(BuildModeController != null && BuildModeController.IsBuildModeActive) {
-				return;
-			}
-			if(ObjectPickup.CurrentTargetObjectNode == null) {
-				return;
-			}
-			ObjectPickup.CurrentTargetObjectNode.Interact(this);
-		});
-
 		ObjectPlacementManager = new ObjectPlacementManager();
 		AddChild(ObjectPlacementManager);
 		ObjectPlacementUI = new ObjectPlacementUI();
 		AddChild(ObjectPlacementUI);
 		ObjectPlacementUI.Initialize(ObjectPlacementManager);
-		UnsubscribePlace = ActionEvent.Place.WhenPressed(() => {
-			if(ObjectPlacementManager == null) {
-				Log.Error("Place action pressed but ObjectPlacementManager is not initialized.");
-				return;
-			}
-			ObjectPlacementManager.PlaceRequested();
-		});
-		UnsubscribePlaceCancel = ActionEvent.PlaceCancel.WhenPressed(() => {
-			if(ObjectPlacementManager == null) {
-				Log.Error("PlaceCancel action pressed but ObjectPlacementManager is not initialized.");
-				return;
-			}
-			ObjectPlacementManager.PlaceCanceled();
-		});
 
-		UnsubscribeBuildMode = ActionEvent.BuildMode.WhenPressed(() => {
-			BuildModeController?.ToggleBuildMode();
-		});
+		SubscribeInputActions();
 	}
 
 	public void ConfigureObjectPickup(WorldObjectManager worldObjectManager) {

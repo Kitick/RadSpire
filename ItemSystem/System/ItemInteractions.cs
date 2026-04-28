@@ -46,7 +46,7 @@ public partial class UseItem : Node {
 	}
 
 	void SetInputCallbacks() {
-		UnsubscribeUse = ActionEvent.Consume.WhenPressed(() => {
+		UnsubscribeUse = ActionEvent.UseItem.WhenPressed(() => {
 			Log.Info("UseItem action pressed.");
 			if(User == null || UserHotbar == null) {
 				Log.Info("User or UserHotbar is null");

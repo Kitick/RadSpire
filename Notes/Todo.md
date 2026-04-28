@@ -14,12 +14,7 @@
 [BUG] Item name tooltip in the world clips and is unreadable
 [BUG] inventory item tooltip too small
 
-[BUG] npc dialog clips though pause and questlog
-[BUG] npc dialog isnt center aligned.
-[BUG] npc dialog is too long in some cases
 [BUG] space can select buttons
-
-[BUG] control scheme is confusing
 
 [BUG] green apples dont get consumed
 [BUG] remove the 5 barrels

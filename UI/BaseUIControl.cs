@@ -17,7 +17,7 @@ public abstract partial class BaseUIControl : Control {
 	}
 
 	public override void _Input(InputEvent @event) {
-		if(@event.IsActionPressed("ui_cancel") && OnCancel()) {
+		if(@event.IsActionPressed(ActionEvent.MenuExit.Name) && OnCancel()) {
 			GetViewport().SetInputAsHandled();
 		}
 	}
