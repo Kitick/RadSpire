@@ -179,4 +179,3 @@ public static class ChestRarityComponentExtensions {
 		return possibleContents[possibleContents.Length - 1];
 	}
 }
-

@@ -13,4 +13,9 @@ namespace ItemSystem;
         public float AttackSpeed {
             get; set;
         } = 1f;
+
+        [Export]
+        public WeaponBase.WeaponVisualType VisualType {
+            get; set;
+        } = WeaponBase.WeaponVisualType.Sword;
     }

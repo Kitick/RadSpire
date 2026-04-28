@@ -1,0 +1,29 @@
+[gd_scene format=3 uid="uid://copfp8cqnp7gd"]
+
+[ext_resource type="Script" uid="uid://dt2rbhlstsh6l" path="res://ItemSystem/Projectiles/RadiationBolt.cs" id="1_tsy6e"]
+[ext_resource type="PackedScene" uid="uid://nfpyd0xqh8px" path="res://Effects/Combat/RadiationHit.tscn" id="2_kmwe8"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_n7y3v"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tsy6e"]
+transparency = 1
+albedo_color = Color(1.4716992, 2.1528766, 0.7905218, 0.5137255)
+emission_enabled = true
+emission = Color(0.9529412, 0.9529412, 0.30588236, 1)
+emission_energy_multiplier = 2.72
+
+[sub_resource type="SphereMesh" id="SphereMesh_kmwe8"]
+material = SubResource("StandardMaterial3D_tsy6e")
+
+[node name="RadiationBolt" type="Area3D" unique_id=2029167552]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0)
+script = ExtResource("1_tsy6e")
+HitSparkScene = ExtResource("2_kmwe8")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=103594226]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
+shape = SubResource("SphereShape3D_n7y3v")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1618605744]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
+mesh = SubResource("SphereMesh_kmwe8")

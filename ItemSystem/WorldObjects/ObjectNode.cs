@@ -38,4 +38,3 @@ public partial class ObjectNode : Node3D {
 		Unsubscribe?.Invoke();
 	}
 }
-

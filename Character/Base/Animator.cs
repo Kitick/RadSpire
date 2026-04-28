@@ -139,7 +139,19 @@ public sealed partial class Animator : AnimationPlayer {
 	private void SetLoopMode(StringName name) => GetAnimation(name).LoopMode = Animation.LoopModeEnum.Linear;
 
 	public void OnAnimationFinished(StringName name) {
-		if(name == JUMPING || name == LANDING) { SyncAnimation(Character.CurrentState); } else if(name == DODGE) { _ = StartDodgeIdleRecovery(); } else if(IsAttackAnimation(name)) { Character.OnAttackFinished(); }
+		if(name == JUMPING || name == LANDING) {
+			SyncAnimation(Character.CurrentState);
+			return;
+		}
+
+		if(name == DODGE) {
+			_ = StartDodgeIdleRecovery();
+			return;
+		}
+
+		if(Character.CurrentState == CharState.Attacking && IsAttackAnimation(name)) {
+			Character.OnAttackFinished();
+		}
 	}
 
 	public void AnimEventFootstep() => Audio?.PlayFootstep();

@@ -81,7 +81,7 @@ public sealed partial class DatabaseManager : Node {
 					item.AddComponent(durabilityComp);
 				}
 				else if(comp is WeaponBaseDefinition weaponDef) {
-					WeaponBase weaponComp = new WeaponBase(weaponDef.BaseAttack, weaponDef.AttackSpeed);
+					WeaponBase weaponComp = new WeaponBase(weaponDef.BaseAttack, weaponDef.AttackSpeed, weaponDef.VisualType);
 					item.AddComponent(weaponComp);
 				}
 			}

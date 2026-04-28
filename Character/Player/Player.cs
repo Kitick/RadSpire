@@ -17,6 +17,10 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData>, IAtta
 
 	[Export] public MeshInstance3D SwordMesh = null!;
 	[Export] public MeshInstance3D ShieldMesh = null!;
+	[Export] public MeshInstance3D StaffMesh = null!;
+	[Export] public Node3D StaffCastPoint = null!;
+	[Export] public PackedScene RadiationBoltScene = null!;
+	[Export] public StringName StaffAttackAnimation = default;
 
 	[Export] private int InitialHealthValue = 100;
 	[Export] public int InitialDamageValue = 10;
@@ -32,6 +36,7 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData>, IAtta
 	[Export] private float ComboResetTime = 0.75f;
 	[Export] private float ComboHit2Multiplier = 1.15f;
 	[Export] private float ComboHit3Multiplier = 1.30f;
+	[Export] private float StaffAttackCooldown = 0.45f;
 
 	// Inventories
 	public readonly Inventory Inventory = new(3, 5);
@@ -58,12 +63,15 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData>, IAtta
 	public int BaseMaxHealth { get; private set; }
 
 	public bool HoldingSword = false;
+	public bool HoldingStaff = false;
 	private Vector3 DodgeDirection = Vector3.Zero;
 	private Animator? Animator;
 	private int ComboIndex = 0;
 	private float ComboTimer = 0f;
 	private bool BufferedAttack = false;
 	private float CurrentAttackMultiplier = 1.0f;
+	private float StaffAttackCooldownTimer = 0f;
+	private bool IsStaffAttackActive = false;
 	private static readonly StringName ComboAttack1 = new("1H_Melee_Attack_Slice_Diagonal");
 	private static readonly StringName ComboAttack2 = new("1H_Melee_Attack_Stab");
 	private static readonly StringName ComboAttack3 = new("1H_Melee_Attack_Chop");
@@ -81,6 +89,9 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData>, IAtta
 		AddToGroup(Group.Player.ToString());
 		Animator = GetNodeOrNull<Animator>("Model/AnimationPlayer");
 		Animator?.SetAttackSpeed(3.0f);
+		if(StaffMesh != null) {
+			StaffMesh.Visible = HoldingStaff;
+		}
 		AddToGroup(Group.Player.ToString());
 		AddChild(PickupComponent);
 		AddChild(InventoryManager);
@@ -143,6 +154,9 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData>, IAtta
 	public void Update(float dt, KeyInput keyInput) {
 		Radiation.Accumulate(dt);
 		Health.Max = Math.Max(1, (int) Math.Round(BaseMaxHealth * (1f - Radiation.Level)));
+		if(StaffAttackCooldownTimer > 0f) {
+			StaffAttackCooldownTimer = Math.Max(0f, StaffAttackCooldownTimer - dt);
+		}
 		if(ComboTimer > 0f) {
 			ComboTimer -= dt;
 			if(ComboTimer <= 0f && CurrentState != State.Attacking) {
@@ -181,6 +195,11 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData>, IAtta
 		}
 
 		if(keyInput.AttackPressed && (BuildModeController == null || !BuildModeController.IsBuildModeActive)) {
+			if(HoldingStaff) {
+				TryStartStaffAttack();
+				return;
+			}
+
 			if(StateMachine.CurrentState == State.Attacking) {
 				QueueComboAttack();
 			}
@@ -210,6 +229,12 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData>, IAtta
 	}
 
 	public override void OnAttackFinished() {
+		if(IsStaffAttackActive) {
+			IsStaffAttackActive = false;
+			StateMachine.TransitionTo(State.Idle);
+			return;
+		}
+
 		if(BufferedAttack && ComboIndex < 2) {
 			BufferedAttack = false;
 			ComboIndex++;
@@ -280,6 +305,28 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData>, IAtta
 		ComboTimer = ComboResetTime;
 	}
 
+	private void TryStartStaffAttack() {
+		if(Animator == null || RadiationBoltScene == null || StaffCastPoint == null) {
+			return;
+		}
+		if(CurrentState == State.Attacking || StaffAttackCooldownTimer > 0f) {
+			return;
+		}
+
+		ResetCombo();
+		BufferedAttack = false;
+		CurrentAttackMultiplier = 1.0f;
+		StaffAttackCooldownTimer = StaffAttackCooldown;
+		IsStaffAttackActive = true;
+
+		if(!StaffAttackAnimation.Equals(default(StringName))) {
+			Animator.SetAttackAnimation(StaffAttackAnimation);
+		}
+
+		SpawnStaffProjectile();
+		StateMachine.TransitionTo(State.Attacking);
+	}
+
 	private void ResetCombo() {
 		ComboIndex = 0;
 		ComboTimer = 0f;
@@ -298,6 +345,17 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData>, IAtta
 		1 => ComboHit2Multiplier,
 		_ => ComboHit3Multiplier,
 	};
+
+	private void SpawnStaffProjectile() {
+		if(RadiationBoltScene.Instantiate() is not RadiationBolt bolt) {
+			return;
+		}
+
+		GetTree().CurrentScene?.AddChild(bolt);
+		bolt.GlobalTransform = StaffCastPoint.GlobalTransform;
+		Vector3 direction = -StaffCastPoint.GlobalTransform.Basis.Z;
+		bolt.Init(this, direction, Offense.Damage);
+	}
 
 	public override void OnDodgeFinished() => StateMachine.TransitionTo(State.Idle);
 
