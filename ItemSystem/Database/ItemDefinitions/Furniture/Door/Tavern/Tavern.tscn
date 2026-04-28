@@ -1,0 +1,45 @@
+[gd_scene format=3 uid="uid://dhtvp7aus1jif"]
+
+[ext_resource type="Script" uid="uid://klsonhpw4auo" path="res://ItemSystem/WorldObjects/ObjectNode.cs" id="1_kb658"]
+[ext_resource type="PackedScene" uid="uid://bekuw4gs5ulr6" path="res://ItemSystem/Database/ItemDefinitions/Furniture/Door/HouseMedium/medieval_building.glb" id="2_gr5ev"]
+[ext_resource type="PackedScene" uid="uid://b7gv62rlbjt5l" path="res://ItemSystem/WorldObjects/SpawnPoint/WorldObjectSpawnPoint.tscn" id="3_28wjo"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_jsvou"]
+size = Vector3(7.838188, 7.3491364, 5.1987305)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ec0eo"]
+size = Vector3(2.8823776, 5.7296906, 7.5651855)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_eoord"]
+size = Vector3(7.7087097, 7.089859, 5.038574)
+
+[node name="House" type="Node3D" unique_id=1154107609]
+script = ExtResource("1_kb658")
+
+[node name="medieval_building" parent="." unique_id=1497182942 instance=ExtResource("2_gr5ev")]
+transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="medieval_building" unique_id=1108996401]
+transform = Transform3D(2.5, 0, 0, 0, 2.5, 0, 0, 0, 2.5, 0, 0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="medieval_building/StaticBody3D" unique_id=1081963147]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.012470245, 3.7053757, 1.1374512)
+shape = SubResource("BoxShape3D_jsvou")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="medieval_building/StaticBody3D" unique_id=1810447675]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.13539505, 2.8322296, -0.13024902)
+shape = SubResource("BoxShape3D_ec0eo")
+
+[node name="Area3D" type="Area3D" parent="medieval_building" unique_id=1692703390]
+transform = Transform3D(2.5, 0, 0, 0, 2.5, 0, 0, 0, 2.5, 0, 0, 0)
+
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="medieval_building/Area3D" unique_id=2016520283]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.021896362, 3.8350143, 1.1330566)
+shape = SubResource("BoxShape3D_eoord")
+
+[node name="CollisionShape3D4" type="CollisionShape3D" parent="medieval_building/Area3D" unique_id=1847536250]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.13539505, 3.1062546, -0.13024902)
+shape = SubResource("BoxShape3D_ec0eo")
+
+[node name="WorldObjectSpawnPoint" parent="." unique_id=2064846928 instance=ExtResource("3_28wjo")]
+ItemId = "Tavern"

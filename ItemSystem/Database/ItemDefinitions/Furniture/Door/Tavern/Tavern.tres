@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://dq4bnlq3qa5xl"]
+
+[ext_resource type="Script" uid="uid://cnm5iegiuj4xu" path="res://ItemSystem/Definitions/ItemComponentDefinition.cs" id="1_xl0wi"]
+[ext_resource type="Resource" uid="uid://bls1glagl8hol" path="res://ItemSystem/Database/ComponentDefinitions/DoorDefinition/Door1.tres" id="2_u1wkg"]
+[ext_resource type="Resource" path="res://ItemSystem/Database/ComponentDefinitions/StructureDefinition/Structure_MediumHouse.tres" id="3_fhonu"]
+[ext_resource type="Texture2D" uid="uid://kfiin6aw1gx2" path="res://ItemSystem/Database/ItemDefinitions/Furniture/Door/Tavern/Tavern.png" id="4_fvceg"]
+[ext_resource type="PackedScene" uid="uid://dhtvp7aus1jif" path="res://ItemSystem/Database/ItemDefinitions/Furniture/Door/Tavern/Tavern.tscn" id="5_w64xi"]
+[ext_resource type="Script" uid="uid://bxmh4fd7kjvv1" path="res://ItemSystem/Definitions/ItemDefinition.cs" id="6_5mn2i"]
+
+[resource]
+script = ExtResource("6_5mn2i")
+Id = "Tavern"
+Name = "Tavern"
+Description = "A nice cozy tavern."
+IsConsumable = false
+IsPlaceable = true
+Pickupable = true
+IconTexture = ExtResource("4_fvceg")
+ItemScene = ExtResource("5_w64xi")
+ComponentsResources = Array[ExtResource("1_xl0wi")]([ExtResource("2_u1wkg"), ExtResource("3_fhonu")])
+metadata/_custom_type_script = "uid://bxmh4fd7kjvv1"
