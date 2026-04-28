@@ -1,9 +1,11 @@
 namespace Root;
 
+using System.Threading.Tasks;
 using GameWorld;
 using Godot;
 using Services;
 using Settings;
+using UI;
 using UI.MainMenu;
 
 public sealed partial class SceneDirector : Node {
@@ -38,7 +40,6 @@ public sealed partial class SceneDirector : Node {
 	private void SwitchMainMenu() {
 		MainMenu menu = MainMenuScene.Instantiate<MainMenu>();
 		SubscribeToEvents(menu);
-
 		SwitchScene(menu);
 	}
 
@@ -53,7 +54,7 @@ public sealed partial class SceneDirector : Node {
 	private void SubscribeToEvents(MainMenu menu) {
 		menu.OnStartNewGame += () => {
 			Log.Info("Starting new game from MainMenu");
-			ShowSplashThenGame();
+			StartNewGame();
 		};
 
 		menu.OnContinueGame += () => {
@@ -72,14 +73,45 @@ public sealed partial class SceneDirector : Node {
 		};
 	}
 
-	private async void ShowSplashThenGame(string? loadfile = null) {
-		Control splashPanel = SplashPanelScene.Instantiate<Control>();
-		SwitchScene(splashPanel);
+	private async void StartNewGame() {
+		AudioBus.Music.SetMuted(true);
+		AudioBus.SFX.SetMuted(true);
 
-		await ToSignal(splashPanel, Node.SignalName.TreeExited);
+		// Free the main menu immediately
+		if(IsInstanceValid(CurrentScene)) {
+			CurrentScene.QueueFree();
+		}
+		CurrentScene = null;
+
+		// Load the game manager invisibly
+		GameManager manager = GameWorldScene.Instantiate<GameManager>();
+		SubscribeToEvents(manager);
+		manager.InitGame();
+
+		TaskCompletionSource managerReady = new();
+		manager.Initialized += managerReady.SetResult;
+		AddChild(manager);
+		manager.HUDRef?.Hide();
+		await managerReady.Task;
+
+		// Show the splash, wait one frame for it to render, then start music
+		SplashPanel splashPanel = SplashPanelScene.Instantiate<SplashPanel>();
+		AddChild(splashPanel);
 		await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+		AudioBus.Music.SetMuted(false);
+		manager.PlayGameMusic();
 
-		SwitchGameScene(loadfile);
+		// Wait for finish or skip
+		TaskCompletionSource splashDone = new();
+		splashPanel.Finished += splashDone.SetResult;
+		await splashDone.Task;
+
+		AudioBus.SFX.SetMuted(AudioSettings.IsMuted.Target);
+		splashPanel.QueueFree();
+
+		manager.HUDRef?.Show();
+		CurrentScene = manager;
+		GetTree().Paused = false;
 	}
 
 	private void SubscribeToEvents(GameManager manager) {

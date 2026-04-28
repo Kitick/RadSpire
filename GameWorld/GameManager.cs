@@ -43,6 +43,7 @@ public sealed partial class GameManager : Node {
 	private GameWorldManager? WorldManager;
 	private AudioStreamPlayer? GameWorldMusicPlayer;
 	public Action? MainMenuRequested;
+	public event Action? Initialized;
 
 	public enum MenuState { Game, Paused, Settings, Inventory, Chest, Build, Host, Death }
 	private readonly StateMachine<MenuState> StateMachine = new(MenuState.Game);
@@ -72,6 +73,8 @@ public sealed partial class GameManager : Node {
 		StartGame();
 		ConnectLocationTriggers();
 		UpdateGameWorldMusic();
+
+		Initialized?.Invoke();
 	}
 
 	private void InitializeAudio() {
@@ -242,6 +245,12 @@ public sealed partial class GameManager : Node {
 	}
 
 	public bool QuickSave() => SaveGame(Constants.AutosaveFile);
+
+	public void PlayGameMusic() {
+		if(GameWorldMusicPlayer == null || !IsInstanceValid(GameWorldMusicPlayer)) { return; }
+		GameWorldMusicPlayer.Stream ??= GameWorldMusic;
+		GameWorldMusicPlayer.Play();
+	}
 
 	public void InitGame(string? loadfile = null) {
 		Log.Info("Initializing game");
