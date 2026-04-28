@@ -17,6 +17,7 @@
 [ext_resource type="Script" uid="uid://cl6aplc7wunof" path="res://Inventory/InventoryItem/InventoryItemInformationUI.cs" id="10_y8qxg"]
 [ext_resource type="PackedScene" uid="uid://bfiyahye18w1t" path="res://UI/HUD/WinMenu.tscn" id="15_cgpfr"]
 [ext_resource type="Script" uid="uid://citgwg62boouf" path="res://UI/SegmentBar.cs" id="15_dwvm7"]
+[ext_resource type="PackedScene" path="res://UI/HUD/StructureInfo.tscn" id="16_structureinfo"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_cgpfr"]
 
@@ -30,7 +31,7 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qjdpa"]
 
-[node name="HUD" type="Control" unique_id=935922708 node_paths=PackedStringArray("PauseButton", "PauseMenu", "Inventory", "CraftingUI", "InventoryItemInformationUI", "Chest", "BuildUI", "QuestLog", "Hotbar", "RespawnMenu", "HealthBar", "HealthLabel", "WinMenu", "CheatMenu")]
+[node name="HUD" type="Control" unique_id=935922708 node_paths=PackedStringArray("PauseButton", "PauseMenu", "Inventory", "CraftingUI", "InventoryItemInformationUI", "Chest", "BuildUI", "QuestLog", "Hotbar", "RespawnMenu", "HealthBar", "HealthLabel", "WinMenu", "CheatMenu", "StructureInfo")]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 1920.0
@@ -50,6 +51,7 @@ HealthBar = NodePath("HealthBar")
 HealthLabel = NodePath("HealthBar/HealthLabel")
 WinMenu = NodePath("WinMenu")
 CheatMenu = NodePath("CheatMenu")
+StructureInfo = NodePath("StructureInfo")
 SettingsScene = ExtResource("2_o30d6")
 SaveMenuScene = ExtResource("3_o30d6")
 HostPanelScene = ExtResource("2_3o8sq")
@@ -223,3 +225,9 @@ offset_left = 838.0
 offset_top = 418.0
 offset_right = -838.0
 offset_bottom = -599.0
+
+[node name="StructureInfo" parent="." unique_id=1736470766 instance=ExtResource("16_structureinfo")]
+offset_left = 92.0
+offset_top = 925.0
+offset_right = 432.0
+offset_bottom = 1025.0

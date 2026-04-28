@@ -36,6 +36,7 @@ public sealed partial class HUD : Control {
 	[Export] private Label HealthLabel = null!;
 	[Export] private Control WinMenu = null!;
 	[Export] private CheatMenu CheatMenu = null!;
+	[Export] private StructureInfo StructureInfo = null!;
 
 	[ExportCategory("HUD Scenes")]
 	[Export] private PackedScene SettingsScene = null!;
@@ -143,6 +144,7 @@ public sealed partial class HUD : Control {
 			Inventory.Visible = false;
 			CraftingUI.Visible = false;
 			BuildUI.Visible = false;
+			StructureInfo.Visible = false;
 			BuildUIRequested?.Invoke(false);
 			InventoryItemInformationUI.Visible = false;
 		});
@@ -194,10 +196,12 @@ public sealed partial class HUD : Control {
 		stateMachine.OnEnter(MenuState.Build, () => {
 			BuildUI.Visible = true;
 			Hotbar.Visible = true;
+			StructureInfo.Visible = true;
 			BuildUIRequested?.Invoke(true);
 		});
 		stateMachine.OnExit(MenuState.Build, () => {
 			BuildUI.Visible = false;
+			StructureInfo.Visible = false;
 			BuildUIRequested?.Invoke(false);
 		});
 

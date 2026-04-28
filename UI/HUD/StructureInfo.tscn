@@ -1,0 +1,42 @@
+[gd_scene format=3]
+
+[node name="StructureInfo" type="Control"]
+visible = false
+layout_mode = 1
+anchors_preset = 0
+offset_left = 30.0
+offset_top = 140.0
+offset_right = 370.0
+offset_bottom = 240.0
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="NameLabel" type="Label" parent="."]
+layout_mode = 1
+offset_left = 12.0
+offset_top = 12.0
+offset_right = 320.0
+offset_bottom = 35.0
+text = "Name: -"
+
+[node name="NpcLabel" type="Label" parent="."]
+layout_mode = 1
+offset_left = 12.0
+offset_top = 40.0
+offset_right = 320.0
+offset_bottom = 63.0
+text = "NPC attached: -"
+
+[node name="ValueLabel" type="Label" parent="."]
+layout_mode = 1
+offset_left = 12.0
+offset_top = 68.0
+offset_right = 320.0
+offset_bottom = 91.0
+text = "Total value: 0"
