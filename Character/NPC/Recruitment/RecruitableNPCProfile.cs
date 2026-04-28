@@ -15,6 +15,28 @@ public sealed record RecruitableNPCProfile(
 );
 
 public static class RecruitableNPCProfiles {
+	public static readonly RecruitableNPCProfile Mara = new(
+		NpcId: NPCID.Mara,
+		DisplayName: "Mara",
+		PrereqQuests: [QuestID.FoundationsThatLast],
+		CollectionQuest: QuestID.MaraJoinsTheCamp,
+		PostCollectionQuests: [QuestID.HearthAgainstTheAsh],
+		ModelScenePath: string.Empty,
+		FollowingDialogue: [
+			"I will come with you.",
+			"Not because I trust you.",
+			"But because standing still will get us both killed.",
+			"My work does not leave me much choice.",
+			"Assign me somewhere with a view of the land.",
+			"I need to see threats before they reach us."
+		],
+		AssignedDialogue: [
+			"The spires do not move.",
+			"But people do.",
+			"And people are more dangerous."
+		]
+	);
+
 	public static readonly RecruitableNPCProfile Colin = new(
 		NpcId: NPCID.Colin,
 		DisplayName: "Colin",
@@ -69,6 +91,7 @@ public static class RecruitableNPCProfiles {
 
 	public static readonly IReadOnlyDictionary<NPCID, RecruitableNPCProfile> All =
 		new Dictionary<NPCID, RecruitableNPCProfile> {
+			[Mara.NpcId] = Mara,
 			[Colin.NpcId] = Colin,
 			[Rowan.NpcId] = Rowan,
 			[Dag.NpcId] = Dag,

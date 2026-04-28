@@ -247,6 +247,164 @@ public static class Quests {
 		]
 	);
 
+	public static readonly QuestDefinition GildedProof = new(
+		Title: "Gilded Proof",
+		Description: "Bring Mara proof you can recover rare resources from the ashfields.",
+		Type: QuestType.Side,
+		StageRequirement: 0,
+		Objectives: [
+			new CollectObjective("Collect 3 Gold Bars", RequiredCount: 3, ItemId: ItemID.GoldBar),
+		],
+		NpcId: NPCID.Mara,
+		InitialDialogue: [
+			"Do not come any closer.",
+			"Gold is rare out here. Rarer still in hands that have not stolen it.",
+			"You want answers. Everyone does.",
+			"But answers are expensive, and lies are cheap.",
+			"Bring me three gold bars.",
+			"Not ore. Not scraps. Bars.",
+			"Then we will speak."
+		],
+		ActiveDialogue: [
+			"Three gold bars.",
+			"If you found them easily, someone else died for it.",
+			"Remember that."
+		],
+		CompletionDialogue: [
+			"So you can gather what the flare buried.",
+			"Good. That tells me you are persistent.",
+			"Persistence is useful.",
+			"But persistence alone breaks people.",
+			"If you want to understand what is happening in this land, you will need more than gold."
+		]
+	);
+
+	public static readonly QuestDefinition BladeOfLegacy = new(
+		Title: "Blade of Legacy",
+		Description: "Craft the Golden Sword to prove you understand what this world has lost.",
+		Type: QuestType.Side,
+		StageRequirement: 0,
+		Objectives: [
+			new CollectObjective("Craft the Golden Sword", RequiredCount: 1, ItemId: ItemID.SwordGold),
+		],
+		NpcId: NPCID.Mara,
+		Prerequisites: [QuestID.GildedProof],
+		InitialDialogue: [
+			"Before the flare, gold was luxury.",
+			"After it, gold became memory.",
+			"A Golden Sword is a foolish weapon.",
+			"It bends. It dulls. It invites envy.",
+			"Which is why it tells me exactly who you are when you make one.",
+			"Forge it.",
+			"Not to fight.",
+			"To prove you understand what the world lost."
+		],
+		ActiveDialogue: [
+			"Do not rush the blade.",
+			"Gold does not forgive impatience.",
+			"If you treat it like iron, it will fail you."
+		],
+		CompletionDialogue: [
+			"You forged it.",
+			"You did not have to.",
+			"That matters.",
+			"The device you seek was never meant to save the world.",
+			"It was meant to preserve something specific.",
+			"And now I need to know if you are capable of preserving anything at all."
+		]
+	);
+
+	public static readonly QuestDefinition FoundationsThatLast = new(
+		Title: "Foundations That Last",
+		Description: "Build a medium house to prove you can create something made to endure.",
+		Type: QuestType.Side,
+		StageRequirement: 0,
+		Objectives: [
+			new CollectObjective("Build a Medium House", RequiredCount: 1, ItemId: ItemID.HouseMedium),
+		],
+		NpcId: NPCID.Mara,
+		Prerequisites: [QuestID.BladeOfLegacy],
+		InitialDialogue: [
+			"Power means nothing without permanence.",
+			"I will not follow a knight who sleeps under canvas and calls it a future.",
+			"Build a house.",
+			"Not a shack. Not a tent.",
+			"Stone. Timber. Something meant to last longer than a season.",
+			"Show me you plan to stay."
+		],
+		ActiveDialogue: [
+			"Medium house.",
+			"Walls thick enough to slow radiation.",
+			"A roof that does not leak fear."
+		],
+		CompletionDialogue: [
+			"You built something that expects tomorrow.",
+			"Very few people do that anymore.",
+			"This land erodes hope faster than stone.",
+			"Which means you might be worth following."
+		]
+	);
+
+	public static readonly QuestDefinition MaraJoinsTheCamp = new(
+		Title: "Mara Joins the Camp",
+		Description: "Talk to Mara and bring her to your settlement so she can begin her work.",
+		Type: QuestType.Side,
+		StageRequirement: 0,
+		Objectives: [
+			new TalkObjective("Talk to Mara", NPCID.Mara),
+		],
+		NpcId: NPCID.Mara,
+		Prerequisites: [QuestID.FoundationsThatLast],
+		InitialDialogue: [
+			"I will come with you.",
+			"Not because I trust you.",
+			"But because standing still will get us both killed.",
+			"My work does not leave me much choice.",
+			"Assign me somewhere with a view of the land.",
+			"I need to see threats before they reach us."
+		],
+		ActiveDialogue: [
+			"Assign me somewhere with a view of the land.",
+			"I need to see threats before they reach us."
+		],
+		CompletionDialogue: [
+			"I will come with you.",
+			"Assign me somewhere with a view of the land."
+		]
+	);
+
+	public static readonly QuestDefinition HearthAgainstTheAsh = new(
+		Title: "Hearth Against the Ash",
+		Description: "Craft a fireplace so the camp can hold against the ash-laden nights.",
+		Type: QuestType.Side,
+		StageRequirement: 0,
+		Objectives: [
+			new CollectObjective("Craft a Fireplace", RequiredCount: 1, ItemId: ItemID.FirePlace),
+		],
+		NpcId: NPCID.Mara,
+		Prerequisites: [QuestID.MaraJoinsTheCamp],
+		OfferMode: QuestOfferMode.OfferedByNpc,
+		InitialDialogue: [
+			"A house without fire is a tomb waiting to be claimed.",
+			"The nights here kill softly.",
+			"Build a fireplace.",
+			"Stone-lined.",
+			"Contained.",
+			"Radiation weakens when heat remains constant."
+		],
+		ActiveDialogue: [
+			"Fire drives more than cold away.",
+			"It reminds people they are still alive."
+		],
+		CompletionDialogue: [
+			"Good.",
+			"This place will hold.",
+			"With shelter, warmth, and preparation, we might last long enough for your device to matter.",
+			"And if it does not...",
+			"Then at least we will burn in defiance, not ignorance."
+		]
+	);
+
 	public static readonly Dictionary<QuestID, QuestDefinition> All = new() {
 		[QuestID.LeftForDead] = LeftForDead,
 		[QuestID.ArmYourself] = ArmYourself,
@@ -257,5 +415,10 @@ public static class Quests {
 		[QuestID.ColinRadiationCamp] = ColinRadiationCamp,
 		[QuestID.ColinFollowToCamp] = ColinFollowToCamp,
 		[QuestID.ColinCraftBed] = ColinCraftBed,
+		[QuestID.GildedProof] = GildedProof,
+		[QuestID.BladeOfLegacy] = BladeOfLegacy,
+		[QuestID.FoundationsThatLast] = FoundationsThatLast,
+		[QuestID.MaraJoinsTheCamp] = MaraJoinsTheCamp,
+		[QuestID.HearthAgainstTheAsh] = HearthAgainstTheAsh,
 	};
 }

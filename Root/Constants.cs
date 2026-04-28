@@ -27,7 +27,7 @@ public enum Group { Player, Enemy, QuestLocation }
 
 public enum EnemyType { None, MeldoranWarrior, RadiationCaster }
 
-public enum NPCID { None, Sera, Dag, Rowan, Colin }
+public enum NPCID { None, Sera, Dag, Rowan, Colin, Mara }
 
 public enum LocationID { None, OfficeBuilding, GasStation }
 
@@ -40,7 +40,12 @@ public enum QuestID {
 	RowanStockTheShelter,
 	ColinRadiationCamp,
 	ColinFollowToCamp,
-	ColinCraftBed
+	ColinCraftBed,
+	GildedProof,
+	BladeOfLegacy,
+	FoundationsThatLast,
+	MaraJoinsTheCamp,
+	HearthAgainstTheAsh
 }
 
 public static class ItemID {
