@@ -94,10 +94,15 @@ public sealed partial class SceneDirector : Node {
 		manager.HUDRef?.Hide();
 		await managerReady.Task;
 
-		// Show the splash, wait one frame for it to render, then start music
+		// Show the splash, wait one frame for it to render, then play intro sound
 		SplashPanel splashPanel = SplashPanelScene.Instantiate<SplashPanel>();
 		AddChild(splashPanel);
 		await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+
+		TaskCompletionSource introSoundDone = new();
+		splashPanel.IntroSoundFinished += introSoundDone.SetResult;
+		splashPanel.PlayIntroSound();
+		await introSoundDone.Task;
 		AudioBus.Music.SetMuted(false);
 		manager.PlayGameMusic();
 

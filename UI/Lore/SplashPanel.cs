@@ -12,6 +12,10 @@ public partial class SplashPanel : Control {
 	[Export] private Button SkipButton = null!;
 	[Export] private ColorRect LabelContainer = null!;
 
+	[ExportCategory("Audio")]
+	[Export] private AudioStreamPlayer IntroSoundPlayer = null!;
+	[Export] private AudioStream IntroSound = null!;
+
 	[ExportCategory("Config")]
 	[Export] public float InitialDelaySeconds = 0.0f;
 	[Export] public float DelayBetweenLabelsSeconds = 3.0f;
@@ -25,6 +29,7 @@ public partial class SplashPanel : Control {
 	private int NextLabelIndex;
 
 	public event Action? Finished;
+	public event Action? IntroSoundFinished;
 
 	public override void _Ready() {
 		SkipButton.Visible = false;
@@ -51,6 +56,12 @@ public partial class SplashPanel : Control {
 		}
 
 		StartTimer(InitialDelaySeconds, RevealNextLabel);
+	}
+
+	public void PlayIntroSound() {
+		IntroSoundPlayer.Stream = IntroSound;
+		IntroSoundPlayer.Finished += () => IntroSoundFinished?.Invoke();
+		IntroSoundPlayer.Play();
 	}
 
 	public override void _ExitTree() => SkipButton.Pressed -= OnSkipButtonPressed;
