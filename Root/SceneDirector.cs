@@ -28,12 +28,11 @@ public sealed partial class SceneDirector : Node {
 	private void SwitchScene(Node to) => SwitchScene(CurrentScene, to);
 	private void SwitchScene(Node? from, Node to) {
 		CurrentScene = to;
+		AddChild(to);
 
 		if(IsInstanceValid(from)) {
 			from.QueueFree();
 		}
-
-		AddChild(to);
 	}
 
 	private void SwitchMainMenu() {

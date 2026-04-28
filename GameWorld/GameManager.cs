@@ -6,7 +6,6 @@ using Camera;
 using Character;
 using Components;
 using Godot;
-using InventorySystem;
 using InventorySystem.Interface;
 using ItemSystem.WorldObjects.House;
 using QuestSystem;
@@ -40,6 +39,7 @@ public sealed partial class GameManager : Node {
 	public enum MenuState { Game, Paused, Settings, Inventory, Chest, Build, Host, Death }
 	private readonly StateMachine<MenuState> StateMachine = new(MenuState.Game);
 
+	private Action? OnExit;
 	private string? LoadFile;
 	private readonly bool Won = false;
 	private Dictionary<string, Vector3> MainWorldReturnPositions = [];
@@ -89,7 +89,10 @@ public sealed partial class GameManager : Node {
 		PlayerSpawnMarker = outsideWorld.PlayerSpawnMarker;
 	}
 
-	public override void _ExitTree() => DisplaySettings.SetWorldEnvironment(null);
+	public override void _ExitTree() {
+		OnExit?.Invoke();
+		DisplaySettings.SetWorldEnvironment(null);
+	}
 
 	public override void _PhysicsProcess(double delta) {
 		if(!IsInstanceValid(LocalPlayer)) { return; }
@@ -130,7 +133,7 @@ public sealed partial class GameManager : Node {
 		LocalPlayer = this.AddScene<Player>(PlayerScene);
 		LocalPlayer.GlobalPosition = PlayerSpawnMarker.GlobalPosition;
 
-		LocalPlayer.WhenDead(() => StateMachine.TransitionTo(MenuState.Death));
+		OnExit += LocalPlayer.WhenDead(() => StateMachine.TransitionTo(MenuState.Death));
 
 		if(WorldManager?.WorldObjectManager != null) {
 			LocalPlayer.ConfigureObjectPickup(WorldManager.WorldObjectManager);
@@ -185,17 +188,10 @@ public sealed partial class GameManager : Node {
 			return;
 		}
 
-		InventoryData inventoryData = LocalPlayer.Inventory.Export();
-		InventoryData hotbarData = LocalPlayer.Hotbar.Export();
-
-		WorldManager?.UnbindPlayer(LocalPlayer);
-		LocalPlayer.QueueFree();
-		LocalPlayer = null;
-
-		SpawnLocalPlayer();
-
-		LocalPlayer!.Inventory.Import(inventoryData);
-		LocalPlayer.Hotbar.Import(hotbarData);
+		LocalPlayer.Heal();
+		LocalPlayer.Radiation.Level = 0f;
+		LocalPlayer.GlobalPosition = PlayerSpawnMarker!.GlobalPosition;
+		LocalPlayer.Velocity = Vector3.Zero;
 
 		StateMachine.TransitionTo(MenuState.Game);
 
@@ -247,7 +243,7 @@ public sealed partial class GameManager : Node {
 
 	private void LoadData(string file) {
 		GameState data = SaveService.Load<GameState>(file);
-		MainWorldReturnPositions = data.MainWorldReturnPositions ?? new Dictionary<string, Vector3>();
+		MainWorldReturnPositions = data.MainWorldReturnPositions ?? [];
 		LastKnownMainWorldPlayerPosition = data.LastKnownMainWorldPlayerPosition;
 
 		if(LocalPlayer != null) {
@@ -296,7 +292,8 @@ public sealed partial class GameManager : Node {
 			&& !resolvedSpawnPosition.HasValue) {
 			resolvedSpawnPosition = GetMainWorldReturnPosition(currentWorldId) ?? GetLastKnownMainWorldPlayerPosition();
 			if(resolvedSpawnPosition.HasValue) {
-			} else {
+			}
+			else {
 				Log.Warn($"No return-to-main spawn found for world '{currentWorldId}'. Using current player position.");
 			}
 		}
@@ -407,7 +404,7 @@ public sealed partial class GameManager : Node {
 		WorldManager?.NPCManager?.UnbindPromptForwarder();
 
 		if(IsInstanceValid(LocalPlayer)) {
-			WorldManager?.UnbindPlayer(LocalPlayer!);
+			WorldManager?.UnbindPlayer(LocalPlayer);
 		}
 
 		Cleanup(LocalPlayer);

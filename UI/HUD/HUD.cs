@@ -2,6 +2,7 @@ namespace UI.HUD;
 
 using System;
 using Character;
+using Components;
 using Crafting.Interface;
 using Godot;
 using InventorySystem;
@@ -67,8 +68,7 @@ public sealed partial class HUD : Control {
 
 	public void Init(Player player, StateMachine<MenuState> stateMachine, QuestManager questManager) {
 		Player = player;
-		Player.Health.OnChanged += (_, _) => UpdateHealthBar();
-		Player.Radiation.OnChanged += (_, _) => UpdateHealthBar();
+		BindPlayerEvents(player);
 		CraftingUI.Inventories.Add(player.Inventory);
 		CraftingUI.Inventories.Add(player.Hotbar);
 		StateMachineRef = stateMachine;
@@ -79,6 +79,11 @@ public sealed partial class HUD : Control {
 		ConfigureStateMachine(stateMachine);
 		QuestLog?.Init(questManager);
 		UpdateHealthBar();
+	}
+
+	private void BindPlayerEvents(Player player) {
+		OnExit += player.Health.When((_, _) => UpdateHealthBar());
+		OnExit += player.Radiation.When((_, _) => UpdateHealthBar());
 	}
 
 	public override void _Ready() {
