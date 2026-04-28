@@ -15,6 +15,28 @@ public sealed record RecruitableNPCProfile(
 );
 
 public static class RecruitableNPCProfiles {
+	public static readonly RecruitableNPCProfile Chloe = new(
+		NpcId: NPCID.Chloe,
+		DisplayName: "Chloe",
+		PrereqQuests: [QuestID.ThingsThatGlowBack],
+		CollectionQuest: QuestID.SomeoneWorthKeepingClose,
+		PostCollectionQuests: [QuestID.ProvingGround],
+		ModelScenePath: string.Empty,
+		FollowingDialogue: [
+			"You listen.",
+			"You prepare.",
+			"And you come back when you say you will.",
+			"I can work with that.",
+			"I will come with you.",
+			"Put me somewhere warm.",
+			"I see threats better when I am not shivering."
+		],
+		AssignedDialogue: [
+			"Enemies always announce themselves.",
+			"Most people just ignore the signs."
+		]
+	);
+
 	public static readonly RecruitableNPCProfile David = new(
 		NpcId: NPCID.David,
 		DisplayName: "David",
@@ -111,6 +133,7 @@ public static class RecruitableNPCProfiles {
 
 	public static readonly IReadOnlyDictionary<NPCID, RecruitableNPCProfile> All =
 		new Dictionary<NPCID, RecruitableNPCProfile> {
+			[Chloe.NpcId] = Chloe,
 			[David.NpcId] = David,
 			[Mara.NpcId] = Mara,
 			[Colin.NpcId] = Colin,

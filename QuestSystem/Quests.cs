@@ -555,6 +555,147 @@ public static class Quests {
 		]
 	);
 
+	public static readonly QuestDefinition AWarmDrinkFirst = new(
+		Title: "A Warm Drink First",
+		Description: "Bring Chloe apple cider before she agrees to talk.",
+		Type: QuestType.Side,
+		StageRequirement: 0,
+		Objectives: [
+			new CollectObjective("Bring Apple Cider", RequiredCount: 1, ItemId: ItemID.AppleCider),
+		],
+		NpcId: NPCID.Chloe,
+		InitialDialogue: [
+			"Wait. Hold up. You smell like road dust and bad decisions.",
+			"If you want to talk, bring apple cider.",
+			"Not because I am picky.",
+			"Because hot, sweet things keep people honest out here."
+		],
+		ActiveDialogue: [
+			"Apple cider.",
+			"If it tastes burned, do not bother coming back."
+		],
+		CompletionDialogue: [
+			"That is better.",
+			"I almost forgot what this smelled like.",
+			"Alright. You have my attention now."
+		]
+	);
+
+	public static readonly QuestDefinition SomethingStronger = new(
+		Title: "Something Stronger",
+		Description: "Bring Chloe coffee so she can stay sharp while sharing what she knows.",
+		Type: QuestType.Side,
+		StageRequirement: 0,
+		Objectives: [
+			new CollectObjective("Bring Coffee", RequiredCount: 1, ItemId: ItemID.Coffee),
+		],
+		NpcId: NPCID.Chloe,
+		Prerequisites: [QuestID.AWarmDrinkFirst],
+		InitialDialogue: [
+			"Cider softens the edges.",
+			"Coffee sharpens them.",
+			"If we are going to talk about danger, I need to stay awake.",
+			"Bring me coffee."
+		],
+		ActiveDialogue: [
+			"Coffee. Real beans if you can manage it."
+		],
+		CompletionDialogue: [
+			"Good.",
+			"Now listen carefully."
+		]
+	);
+
+	public static readonly QuestDefinition ThingsThatGlowBack = new(
+		Title: "Things That Glow Back",
+		Description: "Kill a Radiation Caster and learn how to fight what radiation has changed.",
+		Type: QuestType.Side,
+		StageRequirement: 0,
+		Objectives: [
+			new KillObjective("Kill a Radiation Caster enemy", RequiredCount: 1, EnemyType: EnemyType.RadiationCaster),
+		],
+		NpcId: NPCID.Chloe,
+		Prerequisites: [QuestID.SomethingStronger],
+		InitialDialogue: [
+			"You have probably noticed enemies that linger near the spires.",
+			"The ones that do not flee.",
+			"They are changed.",
+			"We call them radiation casters.",
+			"They do not just survive radiation.",
+			"They throw it.",
+			"If you plan to live long enough to finish your mission, you need to know how they die.",
+			"Go kill one.",
+			"Then come back alive."
+		],
+		ActiveDialogue: [
+			"Do not get close.",
+			"They want you slow."
+		],
+		CompletionDialogue: [
+			"So they bleed just like everything else.",
+			"Good.",
+			"That means they are not inevitable."
+		]
+	);
+
+	public static readonly QuestDefinition SomeoneWorthKeepingClose = new(
+		Title: "Someone Worth Keeping Close",
+		Description: "Talk to Chloe and bring her into your camp's warning line.",
+		Type: QuestType.Side,
+		StageRequirement: 0,
+		Objectives: [
+			new TalkObjective("Talk to Chloe", NPCID.Chloe),
+		],
+		NpcId: NPCID.Chloe,
+		Prerequisites: [QuestID.ThingsThatGlowBack],
+		InitialDialogue: [
+			"You listen.",
+			"You prepare.",
+			"And you come back when you say you will.",
+			"I can work with that.",
+			"I will come with you.",
+			"Put me somewhere warm.",
+			"I see threats better when I am not shivering."
+		],
+		ActiveDialogue: [
+			"Put me somewhere warm.",
+			"I see threats better when I am not shivering."
+		],
+		CompletionDialogue: [
+			"I will come with you.",
+			"Put me somewhere warm."
+		]
+	);
+
+	public static readonly QuestDefinition ProvingGround = new(
+		Title: "Proving Ground",
+		Description: "Defeat a Meldoran Warrior to prove your camp is not prey.",
+		Type: QuestType.Side,
+		StageRequirement: 0,
+		Objectives: [
+			new KillObjective("Defeat a Meldoran Warrior", RequiredCount: 1, EnemyType: EnemyType.MeldoranWarrior),
+		],
+		NpcId: NPCID.Chloe,
+		Prerequisites: [QuestID.SomeoneWorthKeepingClose],
+		OfferMode: QuestOfferMode.OfferedByNpc,
+		InitialDialogue: [
+			"Meldoran scouts have been getting bolder.",
+			"They are watching camps now. Testing.",
+			"Go take one of them out.",
+			"Not because you have to.",
+			"But because they need to know you are not prey."
+		],
+		ActiveDialogue: [
+			"Do not let them posture.",
+			"They fold when pressed hard."
+		],
+		CompletionDialogue: [
+			"Good.",
+			"They will remember that.",
+			"And if they do not, the next one will."
+		]
+	);
+
 	public static readonly Dictionary<QuestID, QuestDefinition> All = new() {
 		[QuestID.LeftForDead] = LeftForDead,
 		[QuestID.ArmYourself] = ArmYourself,
@@ -575,5 +716,10 @@ public static class Quests {
 		[QuestID.WhatTheFlameForgot] = WhatTheFlameForgot,
 		[QuestID.AManWorthFollowing] = AManWorthFollowing,
 		[QuestID.RestWithoutFear] = RestWithoutFear,
+		[QuestID.AWarmDrinkFirst] = AWarmDrinkFirst,
+		[QuestID.SomethingStronger] = SomethingStronger,
+		[QuestID.ThingsThatGlowBack] = ThingsThatGlowBack,
+		[QuestID.SomeoneWorthKeepingClose] = SomeoneWorthKeepingClose,
+		[QuestID.ProvingGround] = ProvingGround,
 	};
 }

@@ -27,7 +27,7 @@ public enum Group { Player, Enemy, QuestLocation }
 
 public enum EnemyType { None, MeldoranWarrior, RadiationCaster }
 
-public enum NPCID { None, Sera, Dag, Rowan, Colin, Mara, David }
+public enum NPCID { None, Sera, Dag, Rowan, Colin, Mara, David, Chloe }
 
 public enum LocationID { None, OfficeBuilding, GasStation }
 
@@ -50,7 +50,12 @@ public enum QuestID {
 	MoreThanRumors,
 	WhatTheFlameForgot,
 	AManWorthFollowing,
-	RestWithoutFear
+	RestWithoutFear,
+	AWarmDrinkFirst,
+	SomethingStronger,
+	ThingsThatGlowBack,
+	SomeoneWorthKeepingClose,
+	ProvingGround
 }
 
 public static class ItemID {
