@@ -37,6 +37,7 @@ buses/default_bus_layout="uid://cpvwo1bhm4q26"
 InputSystem="*res://Systems/InputSystem.cs"
 Server="*res://Network/System/Server.cs"
 ItemDataBaseManager="*res://ItemSystem/Database/DatabaseManager.cs"
+ItemMeshCache="*res://ItemSystem/Icon3D/ItemMeshCache.cs"
 
 [display]
 

@@ -51,26 +51,24 @@ public partial class Item3DIcon : Entity, ISaveable<Item3DIconData> {
 		CurrentItem3DScene.Position = Vector3.Zero;
 		CurrentItem3DScene.Rotation = Vector3.Zero;
 
-		// ---- SpriteMeshInstance is a MeshInstance3D ----
-		var spriteMesh = CurrentItem3DScene.GetNodeOrNull<Node3D>("RigidBody3D/SpriteMeshInstance");
+		if(!ItemMeshCache.Instance.TryGetMesh(Item.Id, out var cached)) {
+			Log.Error($"Item3DIcon: no cached mesh for item '{Item.Id}'.");
+			return;
+		}
 
-		if(spriteMesh == null) {
+		MeshInstance3D meshInstance = CurrentItem3DScene.GetNodeOrNull<MeshInstance3D>("RigidBody3D/SpriteMeshInstance")!;
+		if(meshInstance == null) {
 			Log.Error("Spawned scene missing 'SpriteMeshInstance' node.");
 			return;
 		}
 
-		// Set texture
-		spriteMesh.Set("texture", Item.IconTexture);
-
-		// Generate mesh + material
-		spriteMesh.Call("update_sprite_mesh");
+		meshInstance.Mesh = cached.Mesh;
 
 		float targetSize = BaseTargetSize * ScaleFactor;
 		float targetThickness = BaseTargetThickness * ScaleFactor;
 
-		MeshInstance3D meshInstance = (spriteMesh as MeshInstance3D)!;
-		if(meshInstance != null && meshInstance.Mesh != null) {
-			Aabb bounds = meshInstance.Mesh.GetAabb();
+		if(meshInstance.Mesh != null) {
+			Aabb bounds = cached.RawBounds;
 			Vector3 size = bounds.Size;
 
 			float largestVisualAxis = Mathf.Max(size.X, size.Y);
@@ -91,7 +89,7 @@ public partial class Item3DIcon : Entity, ISaveable<Item3DIconData> {
 			meshInstance.Scale = new Vector3(xyScale, xyScale, zScale);
 		}
 
-		Log.Info("Item 3D mesh generated successfully.");
+		Log.Info($"Spawned '{Item.Id}'.");
 
 		// --- Collision ---
 		CollisionShape3D collisionShape = CurrentItem3DScene.GetNodeOrNull<CollisionShape3D>("RigidBody3D/CollisionShape3D");
@@ -102,7 +100,7 @@ public partial class Item3DIcon : Entity, ISaveable<Item3DIconData> {
 
 		BoxShape3D boxShape = new BoxShape3D();
 
-		Aabb rawBounds = meshInstance!.Mesh!.GetAabb();
+		Aabb rawBounds = cached.RawBounds;
 		Vector3 rawSize = rawBounds.Size;
 
 		Vector3 scaledSize = new(
