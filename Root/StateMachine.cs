@@ -13,19 +13,12 @@ public sealed class StateMachine<TState> where TState : struct, Enum {
 
 	public StateMachine(TState? initial = null) => State = initial;
 
-	private Action<TState, TState>? Get(TState? from, TState? to) {
-		return Transitions.TryGetValue((from, to), out var action) ? action : null;
-	}
+	private Action<TState, TState>? Get(TState? from, TState? to) => Transitions.TryGetValue((from, to), out Action<TState, TState>? action) ? action : null;
 
 	private void Register(Action<TState, TState> action, TState? from = null, TState? to = null) {
-		var key = (from, to);
+		(TState? from, TState? to) key = (from, to);
 
-		if(Transitions.TryGetValue(key, out var existing)) {
-			Transitions[key] = existing + action;
-		}
-		else {
-			Transitions[key] = action;
-		}
+		Transitions[key] = Transitions.TryGetValue(key, out Action<TState, TState>? existing) ? existing + action : action;
 	}
 
 	private Action<TState, TState>? GetSpecific(TState from, TState to) => Get(from, to);
