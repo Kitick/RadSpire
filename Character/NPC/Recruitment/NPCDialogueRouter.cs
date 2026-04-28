@@ -22,7 +22,7 @@ public sealed class NPCDialogueRouter {
 	}
 
 	public string[] OnDialogueFinished(RecruitableNPCState state) {
-		if(state == RecruitableNPCState.IdleAtStructure) {
+		if(state == RecruitableNPCState.IdleAtStructure || state == RecruitableNPCState.AssignedToStructure) {
 			return OfferPostCollectionQuests();
 		}
 

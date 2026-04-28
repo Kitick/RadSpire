@@ -20,7 +20,7 @@ public static class RecruitableNPCProfiles {
 		DisplayName: "Chloe",
 		PrereqQuests: [QuestID.ThingsThatGlowBack],
 		CollectionQuest: QuestID.SomeoneWorthKeepingClose,
-		PostCollectionQuests: [QuestID.ChloeWarmAndLivedIn, QuestID.ProvingGround],
+		PostCollectionQuests: [QuestID.ProvingGround],
 		ModelScenePath: string.Empty,
 		FollowingDialogue: [
 			"You listen.",
@@ -42,7 +42,7 @@ public static class RecruitableNPCProfiles {
 		DisplayName: "David",
 		PrereqQuests: [QuestID.WhatTheFlameForgot],
 		CollectionQuest: QuestID.AManWorthFollowing,
-		PostCollectionQuests: [QuestID.DavidQuietFoundations, QuestID.RestWithoutFear],
+		PostCollectionQuests: [QuestID.RestWithoutFear],
 		ModelScenePath: string.Empty,
 		FollowingDialogue: [
 			"I do not follow people lightly.",
@@ -62,7 +62,7 @@ public static class RecruitableNPCProfiles {
 		DisplayName: "Mara",
 		PrereqQuests: [QuestID.FoundationsThatLast],
 		CollectionQuest: QuestID.MaraJoinsTheCamp,
-		PostCollectionQuests: [QuestID.MaraBuildForTomorrow, QuestID.HearthAgainstTheAsh],
+		PostCollectionQuests: [QuestID.HearthAgainstTheAsh],
 		ModelScenePath: string.Empty,
 		FollowingDialogue: [
 			"I will come with you.",
@@ -84,7 +84,7 @@ public static class RecruitableNPCProfiles {
 		DisplayName: "Colin",
 		PrereqQuests: [QuestID.ColinRadiationCamp],
 		CollectionQuest: QuestID.ColinFollowToCamp,
-		PostCollectionQuests: [QuestID.ColinRecoveryStandards, QuestID.ColinCraftBed],
+		PostCollectionQuests: [QuestID.ColinCraftBed],
 		ModelScenePath: string.Empty,
 		FollowingDialogue: [
 			"Good. You understand priorities.",
@@ -103,7 +103,7 @@ public static class RecruitableNPCProfiles {
 		DisplayName: "Rowan",
 		PrereqQuests: [],
 		CollectionQuest: QuestID.RowanJoinsCamp,
-		PostCollectionQuests: [QuestID.RowanHouseLogistics, QuestID.RowanStockTheShelter],
+		PostCollectionQuests: [QuestID.RowanStockTheShelter],
 		ModelScenePath: string.Empty,
 		FollowingDialogue: [
 			"Alright. I am with you.",

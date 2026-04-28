@@ -6,6 +6,7 @@ using System.Linq;
 using Character;
 using Godot;
 using InventorySystem;
+using ItemSystem;
 using ItemSystem.WorldObjects;
 using Root;
 using Services;
@@ -24,8 +25,10 @@ public sealed partial class QuestManager : Node, ISaveable<QuestProgressionData>
 	private int CurrentStage = 0;
 	private readonly Dictionary<QuestID, QuestProgress> Progresses = [];
 	private readonly Random Rng = new();
+	private Player? PlayerRef;
 
 	public void Init(Player player) {
+		PlayerRef = player;
 		player.Inventory.OnInventoryChanged += () => CheckCollectObjectives(player.Inventory);
 		player.Hotbar.OnInventoryChanged += () => CheckCollectObjectives(player.Hotbar);
 		TryMakeQuestsPending();
@@ -68,6 +71,12 @@ public sealed partial class QuestManager : Node, ISaveable<QuestProgressionData>
 		foreach((QuestID id, QuestDefinition def) in Quests.All) {
 			if(def.NpcId != npc) { continue; }
 			if(!Progresses.TryGetValue(id, out QuestProgress progress)) { continue; }
+
+			if(progress.Status == QuestStatus.Active && progress.ReturnObjectivePending) {
+				Progresses[id] = progress with { ReturnObjectivePending = false };
+				EvaluateQuest(id);
+				continue;
+			}
 
 			if(progress.Status == QuestStatus.Pending) {
 				Progresses[id] = QuestProgress.Active(def);
@@ -204,14 +213,55 @@ public sealed partial class QuestManager : Node, ISaveable<QuestProgressionData>
 		if(progress.Status != QuestStatus.Active) { return; }
 		if(!QuestSystem.AreAllComplete(progress)) { return; }
 
+		if(!progress.ReturnObjectivePending) {
+			QuestDefinition? def = GetDefinition(id);
+			if(def != null && def.NpcId != NPCID.None) {
+				Progresses[id] = progress with { ReturnObjectivePending = true };
+				Log.Info($"Quest '{id}' objectives done — waiting for return to {def.NpcId}");
+				ObjectiveUpdated?.Invoke(id, -1);
+				return;
+			}
+		}
+
 		Progresses[id] = progress with { Status = QuestStatus.Completed };
 		Log.Info($"Quest completed: '{id}'");
 		QuestCompleted?.Invoke(id);
+		GiveRewards(id);
 		// A completed quest can unlock prerequisite-gated quests at the same stage.
 		TryMakeQuestsPending();
 
 		TryAdvanceStage();
 		CheckGameWon();
+	}
+
+	private void GiveRewards(QuestID id) {
+		if(PlayerRef == null) { return; }
+		if(!Quests.All.TryGetValue(id, out QuestDefinition? def)) { return; }
+
+		if(def.Rewards != null) {
+			foreach(QuestItemReward reward in def.Rewards) {
+				GiveItem(reward.ItemId, reward.Quantity);
+			}
+		}
+
+		if(def.RewardPools != null) {
+			foreach(QuestRewardPool pool in def.RewardPools) {
+				if(pool.Choices == null || pool.Choices.Length == 0) { continue; }
+				for(int i = 0; i < pool.Count; i++) {
+					QuestItemReward pick = pool.Choices[Rng.Next(pool.Choices.Length)];
+					GiveItem(pick.ItemId, pick.Quantity);
+				}
+			}
+		}
+	}
+
+	private void GiveItem(string itemId, int quantity) {
+		if(PlayerRef == null) { return; }
+		for(int i = 0; i < quantity; i++) {
+			Item item = DatabaseManager.Instance.CreateItemInstanceById(new StringName(itemId));
+			if(item == null) { continue; }
+			PlayerRef.Inventory.AddItem(item);
+		}
 	}
 
 	private void TryAdvanceStage() {

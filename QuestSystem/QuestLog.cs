@@ -31,14 +31,15 @@ public sealed partial class QuestLog : Control {
 			QuestList.AddItem(def.Title.ToUpper());
 			QuestList.SetItemTooltipEnabled(QuestList.ItemCount - 1, false);
 
-			for(int i = 0; i < def.Objectives.Length; i++) {
-				QuestObjective objDef = def.Objectives[i];
-				QuestObjectiveProgress objProg = (progress.Objectives != null && i < progress.Objectives.Length)
-					? progress.Objectives[i]
-					: default;
-
-				QuestList.AddItem($"  - {objDef.Description}");
+			if(progress.ReturnObjectivePending) {
+				QuestList.AddItem($"  - Return to {def.NpcId}");
 				QuestList.SetItemTooltipEnabled(QuestList.ItemCount - 1, false);
+			}
+			else {
+				for(int i = 0; i < def.Objectives.Length; i++) {
+					QuestList.AddItem($"  - {def.Objectives[i].Description}");
+					QuestList.SetItemTooltipEnabled(QuestList.ItemCount - 1, false);
+				}
 			}
 		}
 	}
