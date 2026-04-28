@@ -28,7 +28,11 @@ public sealed partial class SceneDirector : Node {
 	private void SwitchScene(Node to) => SwitchScene(CurrentScene, to);
 	private void SwitchScene(Node? from, Node to) {
 		CurrentScene = to;
-		from?.QueueFree();
+
+		if(IsInstanceValid(from)) {
+			from.QueueFree();
+		}
+
 		AddChild(to);
 	}
 

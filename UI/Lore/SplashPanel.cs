@@ -10,7 +10,9 @@ public partial class SplashPanel : Control {
 	[Export] public float MaxDelayBetweenLabelsSeconds = 20.0f;
 	[Export] public float FadeDurationSeconds = 0.7f;
 	[Export] public float SkipUnlockDelaySeconds = 8.0f;
-	[Export] private Button SkipButton = null!;
+	[Export] private NodePath SkipButtonPath = "ColorRect/SkipButton";
+
+	private Button? SkipButton;
 
 	private bool IsSkipRequested;
 	private readonly List<Label> Labels = [];
@@ -24,8 +26,10 @@ public partial class SplashPanel : Control {
 			return;
 		}
 
+		SkipButton = GetNodeOrNull<Button>(SkipButtonPath);
+
 		if(!IsInstanceValid(SkipButton)) {
-			GD.PushWarning("SplashPanel: exported 'SkipButton' is not assigned.");
+			GD.PushWarning($"SplashPanel: skip button was not found at path '{SkipButtonPath}'.");
 		}
 		else {
 			SkipButton.Visible = false;
