@@ -8,7 +8,6 @@
 [ext_resource type="PackedScene" uid="uid://bnjymb23oq215" path="res://Network/Panels/HostPanel.tscn" id="4_jhcbk"]
 [ext_resource type="PackedScene" uid="uid://bg5jxcp2jtwjp" path="res://Network/Panels/JoinPanel.tscn" id="5_32jca"]
 [ext_resource type="AudioStream" uid="uid://sqjqwdegx8bb" path="res://Assets/Audio/Radspire_Main_Theme.wav" id="6_1dhmk"]
-[ext_resource type="PackedScene" uid="uid://pkgl5obnc7eh" path="res://UI/Lore/SplashPanel.tscn" id="7_splash"]
 
 [node name="MainMenu" type="Control" unique_id=2104341140 node_paths=PackedStringArray("ButtonPanel", "SingleplayerButton", "MultiplayerButton", "SettingsButton", "ExtrasButton", "QuitButton", "SingleplayerPanel", "ContinueButton", "LoadSavedButton", "StartNewButton", "MultiplayerPanel", "HostNewButton", "HostSavedButton", "JoinGameButton")]
 layout_mode = 3
@@ -18,10 +17,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_7b88o")
-SettingsScene = ExtResource("2_a712v")
-SaveMenuScene = ExtResource("3_1dhmk")
-HostPanelScene = ExtResource("4_jhcbk")
-JoinPanelScene = ExtResource("5_32jca")
 ButtonPanel = NodePath("ButtonPanel")
 SingleplayerButton = NodePath("ButtonPanel/Singleplayer_Button")
 MultiplayerButton = NodePath("ButtonPanel/Multiplayer_Button")
@@ -36,6 +31,10 @@ MultiplayerPanel = NodePath("ButtonPanel/Multiplayer_Button/Multiplayer_Popup")
 HostNewButton = NodePath("ButtonPanel/Multiplayer_Button/Multiplayer_Popup/Host_New_Button")
 HostSavedButton = NodePath("ButtonPanel/Multiplayer_Button/Multiplayer_Popup/Host_Saved_Button")
 JoinGameButton = NodePath("ButtonPanel/Multiplayer_Button/Multiplayer_Popup/Join_Game_Button")
+SettingsScene = ExtResource("2_a712v")
+SaveMenuScene = ExtResource("3_1dhmk")
+HostPanelScene = ExtResource("4_jhcbk")
+JoinPanelScene = ExtResource("5_32jca")
 
 [node name="Music" type="AudioStreamPlayer" parent="." unique_id=2128160467]
 stream = ExtResource("6_1dhmk")
@@ -89,8 +88,8 @@ anchor_right = 1.0
 anchor_bottom = 0.5
 offset_left = 15.0
 offset_top = -20.0
-offset_right = 202.0
-offset_bottom = 105.0
+offset_right = 237.0
+offset_bottom = 187.0
 
 [node name="Continue_Button" type="Button" parent="ButtonPanel/Singleplayer_Button/Singleplayer_Popup" unique_id=964876287]
 layout_mode = 2
@@ -99,7 +98,6 @@ focus_neighbor_top = NodePath("../Start_New_Button")
 focus_neighbor_bottom = NodePath("../Load_Saved_Button")
 theme_override_font_sizes/font_size = 30
 text = "> Continue"
-alignment = 0
 
 [node name="Load_Saved_Button" type="Button" parent="ButtonPanel/Singleplayer_Button/Singleplayer_Popup" unique_id=933429725]
 layout_mode = 2
@@ -108,7 +106,6 @@ focus_neighbor_top = NodePath("../Continue_Button")
 focus_neighbor_bottom = NodePath("../Start_New_Button")
 theme_override_font_sizes/font_size = 30
 text = "> Load Saved"
-alignment = 0
 
 [node name="Start_New_Button" type="Button" parent="ButtonPanel/Singleplayer_Button/Singleplayer_Popup" unique_id=226862696]
 layout_mode = 2
@@ -117,7 +114,6 @@ focus_neighbor_top = NodePath("../Load_Saved_Button")
 focus_neighbor_bottom = NodePath("../Continue_Button")
 theme_override_font_sizes/font_size = 30
 text = "> Start New"
-alignment = 0
 
 [node name="Multiplayer_Button" type="Button" parent="ButtonPanel" unique_id=2106788877]
 layout_mode = 2
