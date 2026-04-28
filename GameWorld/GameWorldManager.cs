@@ -7,6 +7,7 @@ using Godot;
 using ItemSystem;
 using ItemSystem.Icons;
 using ItemSystem.WorldObjects;
+using QuestSystem;
 using Root;
 using Services;
 
@@ -247,6 +248,8 @@ public partial class GameWorldManager : Node, ISaveable<GameWorldManagerData> {
 	}
 
 	public void RequestStructureInfoRefresh() {
+		GameManager?.QuestManagerRef.NotifyStructureValuesChanged(WorldObjectManager);
+
 		if(!CurrentStructureObject.HasValue) {
 			StructureInfoRefreshRequested?.Invoke("-", "-", 0);
 			return;

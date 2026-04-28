@@ -59,6 +59,23 @@ public static class QuestSystem {
 		});
 	}
 
+	public static QuestProgress ApplyStructureValue(
+		QuestDefinition def,
+		QuestProgress progress,
+		Func<NPCID, int> getStructureTotalValue
+	) {
+		return ApplyToObjectives(def, progress, (objectives, i) => {
+			if(def.Objectives[i] is not StructureValueObjective structureValue) { return; }
+			if(def.NpcId == NPCID.None) { return; }
+
+			int totalValue = Math.Max(0, getStructureTotalValue(def.NpcId));
+			objectives[i] = new QuestObjectiveProgress {
+				CurrentCount = totalValue,
+				IsCompleted = totalValue >= structureValue.ValueRequired,
+			};
+		});
+	}
+
 	public static bool AreAllComplete(QuestProgress progress) {
 		if(progress.Objectives is null || progress.Objectives.Length == 0) { return true; }
 		foreach(QuestObjectiveProgress obj in progress.Objectives) {

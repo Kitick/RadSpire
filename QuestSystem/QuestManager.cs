@@ -6,6 +6,7 @@ using System.Linq;
 using Character;
 using Godot;
 using InventorySystem;
+using ItemSystem.WorldObjects;
 using Root;
 using Services;
 
@@ -234,7 +235,44 @@ public sealed partial class QuestManager : Node, ISaveable<QuestProgressionData>
 		}
 	}
 
+	public void NotifyStructureValuesChanged(WorldObjectManager? worldObjectManager) {
+		foreach((QuestID id, QuestDefinition def) in ActiveQuestDefs()) {
+			QuestProgress updated = QuestSystem.ApplyStructureValue(
+				def,
+				Progresses[id],
+				npcId => ResolveStructureTotalValueForNpc(worldObjectManager, npcId)
+			);
+			UpdateProgress(id, updated);
+		}
+	}
+
 	private void CheckCollectsForAllInventories() { }
+
+	private static int ResolveStructureTotalValueForNpc(WorldObjectManager? worldObjectManager, NPCID npcId) {
+		if(worldObjectManager == null || npcId == NPCID.None) {
+			return 0;
+		}
+
+		foreach(ItemSystem.WorldObjects.Object worldObject in worldObjectManager.GetWorldObjects()) {
+			if(!worldObject.ComponentDictionary.Has<StructureComponent>()) {
+				continue;
+			}
+
+			StructureComponent structure = worldObject.ComponentDictionary.Get<StructureComponent>();
+			structure.ResolveAttachedNPC();
+			if(structure.AttachedNPC == null || !GodotObject.IsInstanceValid(structure.AttachedNPC)) {
+				continue;
+			}
+			if(structure.AttachedNPC.NpcIdentity != npcId) {
+				continue;
+			}
+
+			structure.UpdateTotalValue();
+			return Math.Max(0, structure.TotalValue);
+		}
+
+		return 0;
+	}
 
 	private void CheckGameWon() {
 		bool allMainComplete = Quests.All

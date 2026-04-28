@@ -17,6 +17,9 @@ public sealed record LocationObjective(string Description, LocationID LocationId
 public sealed record TalkObjective(string Description, NPCID NpcId)
 	: QuestObjective(Description, RequiredCount: 1);
 
+public sealed record StructureValueObjective(string Description, int ValueRequired)
+	: QuestObjective(Description, RequiredCount: 1);
+
 public sealed record QuestDefinition(
 	string Title,
 	string Description,
@@ -32,6 +35,11 @@ public sealed record QuestDefinition(
 );
 
 public static class Quests {
+	private const int LowHouseValueRequirement = 180;
+	private const int MediumHouseValueRequirement = 240;
+	private const int HighHouseValueRequirement = 320;
+	private const int VeryHighHouseValueRequirement = 420;
+
 	// Stage 0 — auto-activates on spawn, completes when player talks to Sera
 	public static readonly QuestDefinition LeftForDead = new(
 		Title: "Left for Dead",
@@ -144,6 +152,37 @@ public static class Quests {
 		]
 	);
 
+	public static readonly QuestDefinition RowanHouseLogistics = new(
+		Title: "Logistics Under One Roof",
+		Description: "Raise Rowan's assigned house value to improve organization and workflow.",
+		Type: QuestType.Side,
+		StageRequirement: 0,
+		Objectives: [
+			new StructureValueObjective(
+				"Raise Rowan's house value",
+				ValueRequired: MediumHouseValueRequirement
+			),
+		],
+		NpcId: NPCID.Rowan,
+		Prerequisites: [QuestID.RowanJoinsCamp],
+		OfferMode: QuestOfferMode.OfferedByNpc,
+		InitialDialogue: [
+			"We are outgrowing this.",
+			"Storage is cramped. Work is slower.",
+			"If we reinforce the structure and add proper furnishings, we waste less.",
+			"Better tables. Better storage.",
+			"Better house means fewer mistakes."
+		],
+		ActiveDialogue: [
+			"Reinforce this place and furnish it properly.",
+			"We need cleaner logistics."
+		],
+		CompletionDialogue: [
+			"Much better.",
+			"Less clutter, fewer mistakes."
+		]
+	);
+
 	public static readonly QuestDefinition RowanStockTheShelter = new(
 		Title: "Stock the Shelter",
 		Description: "Bring Rowan enough wood to start making your shelter livable.",
@@ -153,7 +192,7 @@ public static class Quests {
 			new CollectObjective("Bring Rowan 10 wood", RequiredCount: 10, ItemId: ItemID.Wood),
 		],
 		NpcId: NPCID.Rowan,
-		Prerequisites: [QuestID.RowanJoinsCamp],
+		Prerequisites: [QuestID.RowanHouseLogistics],
 		OfferMode: QuestOfferMode.OfferedByNpc,
 		InitialDialogue: [
 			"Before I move anywhere, I need to know we can survive there.",
@@ -220,6 +259,37 @@ public static class Quests {
 		]
 	);
 
+	public static readonly QuestDefinition ColinRecoveryStandards = new(
+		Title: "Recovery Standards",
+		Description: "Raise Colin's assigned house value to improve functional recovery conditions.",
+		Type: QuestType.Side,
+		StageRequirement: 0,
+		Objectives: [
+			new StructureValueObjective(
+				"Raise Colin's house value",
+				ValueRequired: MediumHouseValueRequirement
+			),
+		],
+		NpcId: NPCID.Colin,
+		Prerequisites: [QuestID.ColinFollowToCamp],
+		OfferMode: QuestOfferMode.OfferedByNpc,
+		InitialDialogue: [
+			"This works. Barely.",
+			"Recovery depends on quality rest.",
+			"You add better furnishings, injuries heal faster.",
+			"A proper bed. Stable surfaces.",
+			"Comfort is not luxury. It is efficiency."
+		],
+		ActiveDialogue: [
+			"Stability and rest speed recovery.",
+			"Upgrade this place."
+		],
+		CompletionDialogue: [
+			"Good.",
+			"This is efficient enough to recover properly."
+		]
+	);
+
 	public static readonly QuestDefinition ColinCraftBed = new(
 		Title: "Build a Bed",
 		Description: "Craft a bed so you can heal radiation damage while resting at camp.",
@@ -229,7 +299,7 @@ public static class Quests {
 			new CollectObjective("Craft a bed", RequiredCount: 1, ItemId: ItemID.BedSmall),
 		],
 		NpcId: NPCID.Colin,
-		Prerequisites: [QuestID.ColinFollowToCamp],
+		Prerequisites: [QuestID.ColinRecoveryStandards],
 		OfferMode: QuestOfferMode.OfferedByNpc,
 		InitialDialogue: [
 			"Camp looks solid.",
@@ -373,6 +443,38 @@ public static class Quests {
 		]
 	);
 
+	public static readonly QuestDefinition MaraBuildForTomorrow = new(
+		Title: "Build for Tomorrow",
+		Description: "Raise Mara's assigned house value to establish permanence and long-term intent.",
+		Type: QuestType.Side,
+		StageRequirement: 0,
+		Objectives: [
+			new StructureValueObjective(
+				"Raise Mara's house value",
+				ValueRequired: VeryHighHouseValueRequirement
+			),
+		],
+		NpcId: NPCID.Mara,
+		Prerequisites: [QuestID.MaraJoinsTheCamp],
+		OfferMode: QuestOfferMode.OfferedByNpc,
+		InitialDialogue: [
+			"This is not enough.",
+			"Temporary shelters breed temporary thinking.",
+			"Better houses anchor people.",
+			"Fireplaces. Stone. Furnishings that do not move when the wind shifts.",
+			"If this place is to matter in the years ahead, it must look like it intends to stay.",
+			"Build for tomorrow, not just for the night."
+		],
+		ActiveDialogue: [
+			"Make this place look like it intends to stay.",
+			"Build beyond tonight."
+		],
+		CompletionDialogue: [
+			"Now this has weight.",
+			"It looks like tomorrow matters here."
+		]
+	);
+
 	public static readonly QuestDefinition HearthAgainstTheAsh = new(
 		Title: "Hearth Against the Ash",
 		Description: "Craft a fireplace so the camp can hold against the ash-laden nights.",
@@ -382,7 +484,7 @@ public static class Quests {
 			new CollectObjective("Craft a Fireplace", RequiredCount: 1, ItemId: ItemID.FirePlace),
 		],
 		NpcId: NPCID.Mara,
-		Prerequisites: [QuestID.MaraJoinsTheCamp],
+		Prerequisites: [QuestID.MaraBuildForTomorrow],
 		OfferMode: QuestOfferMode.OfferedByNpc,
 		InitialDialogue: [
 			"A house without fire is a tomb waiting to be claimed.",
@@ -527,6 +629,38 @@ public static class Quests {
 		]
 	);
 
+	public static readonly QuestDefinition DavidQuietFoundations = new(
+		Title: "Quiet Foundations",
+		Description: "Raise David's assigned house value to support focused planning and rest.",
+		Type: QuestType.Side,
+		StageRequirement: 0,
+		Objectives: [
+			new StructureValueObjective(
+				"Raise David's house value",
+				ValueRequired: HighHouseValueRequirement
+			),
+		],
+		NpcId: NPCID.David,
+		Prerequisites: [QuestID.AManWorthFollowing],
+		OfferMode: QuestOfferMode.OfferedByNpc,
+		InitialDialogue: [
+			"I can function like this.",
+			"I would rather not.",
+			"A better house changes how the mind rests.",
+			"A big bed helped.",
+			"But solid walls, real furnishings, quiet corners?",
+			"That is where planning becomes possible instead of defensive."
+		],
+		ActiveDialogue: [
+			"Give me quiet corners and solid walls.",
+			"Planning needs more than survival."
+		],
+		CompletionDialogue: [
+			"Now this is usable.",
+			"I can think ahead here."
+		]
+	);
+
 	public static readonly QuestDefinition RestWithoutFear = new(
 		Title: "Rest Without Fear",
 		Description: "Craft a big bed for David so camp feels like somewhere worth staying.",
@@ -536,7 +670,7 @@ public static class Quests {
 			new CollectObjective("Craft a Big Bed", RequiredCount: 1, ItemId: ItemID.BedBig),
 		],
 		NpcId: NPCID.David,
-		Prerequisites: [QuestID.AManWorthFollowing],
+		Prerequisites: [QuestID.DavidQuietFoundations],
 		OfferMode: QuestOfferMode.OfferedByNpc,
 		InitialDialogue: [
 			"I have not slept properly in years.",
@@ -667,6 +801,37 @@ public static class Quests {
 		]
 	);
 
+	public static readonly QuestDefinition ChloeWarmAndLivedIn = new(
+		Title: "Warm and Lived In",
+		Description: "Raise Chloe's assigned house value so camp feels warm and lived in.",
+		Type: QuestType.Side,
+		StageRequirement: 0,
+		Objectives: [
+			new StructureValueObjective(
+				"Raise Chloe's house value",
+				ValueRequired: LowHouseValueRequirement
+			),
+		],
+		NpcId: NPCID.Chloe,
+		Prerequisites: [QuestID.SomeoneWorthKeepingClose],
+		OfferMode: QuestOfferMode.OfferedByNpc,
+		InitialDialogue: [
+			"It gets cold in ways heat does not always fix.",
+			"A chair that does not wobble would be nice.",
+			"So would walls that keep the wind from sounding like footsteps.",
+			"I do not need much.",
+			"Just something that feels lived in, not abandoned."
+		],
+		ActiveDialogue: [
+			"Warmth matters.",
+			"Make this place feel lived in."
+		],
+		CompletionDialogue: [
+			"This feels better.",
+			"Still rough, but not abandoned."
+		]
+	);
+
 	public static readonly QuestDefinition ProvingGround = new(
 		Title: "Proving Ground",
 		Description: "Defeat a Meldoran Warrior to prove your camp is not prey.",
@@ -676,7 +841,7 @@ public static class Quests {
 			new KillObjective("Defeat a Meldoran Warrior", RequiredCount: 1, EnemyType: EnemyType.MeldoranWarrior),
 		],
 		NpcId: NPCID.Chloe,
-		Prerequisites: [QuestID.SomeoneWorthKeepingClose],
+		Prerequisites: [QuestID.ChloeWarmAndLivedIn],
 		OfferMode: QuestOfferMode.OfferedByNpc,
 		InitialDialogue: [
 			"Meldoran scouts have been getting bolder.",
@@ -702,24 +867,29 @@ public static class Quests {
 		[QuestID.ArmYourselfSide] = ArmYourselfSide,
 		[QuestID.ADealIsADeal] = ADealIsADeal,
 		[QuestID.RowanJoinsCamp] = RowanJoinsCamp,
+		[QuestID.RowanHouseLogistics] = RowanHouseLogistics,
 		[QuestID.RowanStockTheShelter] = RowanStockTheShelter,
 		[QuestID.ColinRadiationCamp] = ColinRadiationCamp,
 		[QuestID.ColinFollowToCamp] = ColinFollowToCamp,
+		[QuestID.ColinRecoveryStandards] = ColinRecoveryStandards,
 		[QuestID.ColinCraftBed] = ColinCraftBed,
 		[QuestID.GildedProof] = GildedProof,
 		[QuestID.BladeOfLegacy] = BladeOfLegacy,
 		[QuestID.FoundationsThatLast] = FoundationsThatLast,
 		[QuestID.MaraJoinsTheCamp] = MaraJoinsTheCamp,
+		[QuestID.MaraBuildForTomorrow] = MaraBuildForTomorrow,
 		[QuestID.HearthAgainstTheAsh] = HearthAgainstTheAsh,
 		[QuestID.ThePriceOfKnowing] = ThePriceOfKnowing,
 		[QuestID.MoreThanRumors] = MoreThanRumors,
 		[QuestID.WhatTheFlameForgot] = WhatTheFlameForgot,
 		[QuestID.AManWorthFollowing] = AManWorthFollowing,
+		[QuestID.DavidQuietFoundations] = DavidQuietFoundations,
 		[QuestID.RestWithoutFear] = RestWithoutFear,
 		[QuestID.AWarmDrinkFirst] = AWarmDrinkFirst,
 		[QuestID.SomethingStronger] = SomethingStronger,
 		[QuestID.ThingsThatGlowBack] = ThingsThatGlowBack,
 		[QuestID.SomeoneWorthKeepingClose] = SomeoneWorthKeepingClose,
+		[QuestID.ChloeWarmAndLivedIn] = ChloeWarmAndLivedIn,
 		[QuestID.ProvingGround] = ProvingGround,
 	};
 }

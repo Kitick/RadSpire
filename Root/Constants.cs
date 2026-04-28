@@ -37,25 +37,31 @@ public enum QuestID {
 	ArmYourselfSide,
 	ADealIsADeal,
 	RowanJoinsCamp,
+	RowanHouseLogistics,
 	RowanStockTheShelter,
 	ColinRadiationCamp,
 	ColinFollowToCamp,
+	ColinRecoveryStandards,
 	ColinCraftBed,
 	GildedProof,
 	BladeOfLegacy,
 	FoundationsThatLast,
 	MaraJoinsTheCamp,
+	MaraBuildForTomorrow,
 	HearthAgainstTheAsh,
 	ThePriceOfKnowing,
 	MoreThanRumors,
 	WhatTheFlameForgot,
 	AManWorthFollowing,
+	DavidQuietFoundations,
 	RestWithoutFear,
 	AWarmDrinkFirst,
 	SomethingStronger,
 	ThingsThatGlowBack,
 	SomeoneWorthKeepingClose,
-	ProvingGround
+	ChloeWarmAndLivedIn,
+	ProvingGround,
+	
 }
 
 public static class ItemID {
