@@ -1,0 +1,31 @@
+[gd_scene format=3 uid="uid://cenyrqx2nu0bs"]
+
+[ext_resource type="Script" uid="uid://klsonhpw4auo" path="res://ItemSystem/WorldObjects/ObjectNode.cs" id="1_5t26v"]
+[ext_resource type="PackedScene" uid="uid://b7gv62rlbjt5l" path="res://ItemSystem/WorldObjects/SpawnPoint/WorldObjectSpawnPoint.tscn" id="2_6lo1m"]
+[ext_resource type="PackedScene" uid="uid://bgfjxtxrfob72" path="res://ItemSystem/WorldObjects/House/Scenes/Assets/gltf/bed_double_B.gltf" id="3_uswl3"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_madsj"]
+size = Vector3(2.989502, 1.000061, 2.970337)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_c76fe"]
+size = Vector3(2.989502, 0.9697571, 2.970337)
+
+[node name="Node3D" type="Node3D" unique_id=1369960815]
+script = ExtResource("1_5t26v")
+
+[node name="bed_double_B2" parent="." unique_id=399762993 instance=ExtResource("3_uswl3")]
+
+[node name="StaticBody3D" type="StaticBody3D" parent="bed_double_B2" unique_id=1148529751]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="bed_double_B2/StaticBody3D" unique_id=747552689]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0037841797, 0.5020447, 0.0017700195)
+shape = SubResource("BoxShape3D_madsj")
+
+[node name="Area3D" type="Area3D" parent="bed_double_B2" unique_id=2103521859]
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="bed_double_B2/Area3D" unique_id=1559550431]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0037841797, 0.51719666, 0.0017700195)
+shape = SubResource("BoxShape3D_c76fe")
+
+[node name="WorldObjectSpawnPoint" parent="." unique_id=2064846928 instance=ExtResource("2_6lo1m")]
+ItemId = "BedBig"

@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://bq5bf8865ydso"]
+
+[ext_resource type="Script" uid="uid://cnm5iegiuj4xu" path="res://ItemSystem/Definitions/ItemComponentDefinition.cs" id="1_8ibie"]
+[ext_resource type="Resource" path="res://ItemSystem/Database/ComponentDefinitions/FurnitureValueDefinition/FurnitureValue_30.tres" id="2_wedcw"]
+[ext_resource type="PackedScene" uid="uid://bv70w43kttqsq" path="res://ItemSystem/Database/ItemDefinitions/Furniture/Bed/BedSmall/BedSmall.tscn" id="3_w8uee"]
+[ext_resource type="Texture2D" uid="uid://h64ud85ig1ca" path="res://ItemSystem/Database/ItemDefinitions/Furniture/Bed/BedSmall/BedSmall.png" id="3_wedcw"]
+[ext_resource type="Script" uid="uid://bxmh4fd7kjvv1" path="res://ItemSystem/Definitions/ItemDefinition.cs" id="4_i6gex"]
+
+[resource]
+script = ExtResource("4_i6gex")
+Id = "BedSmall"
+Name = "Small Bed"
+Description = "A small bed for sleeping in. Heal you radiation poising!"
+IsConsumable = false
+IsPlaceable = true
+Pickupable = true
+IconTexture = ExtResource("3_wedcw")
+ItemScene = ExtResource("3_w8uee")
+ComponentsResources = Array[ExtResource("1_8ibie")]([ExtResource("2_wedcw")])
+metadata/_custom_type_script = "uid://bxmh4fd7kjvv1"
