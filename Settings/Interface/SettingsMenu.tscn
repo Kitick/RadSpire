@@ -523,6 +523,6 @@ offset_right = 200.0
 offset_bottom = -50.0
 theme_override_fonts/font = SubResource("SystemFont_qufcm")
 theme_override_font_sizes/font_size = 32
-text = "Build: 0A4B439F"
+text = "Build: B608423C"
 horizontal_alignment = 1
 vertical_alignment = 1
