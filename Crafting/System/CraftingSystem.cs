@@ -16,12 +16,12 @@ public static class CraftingSystem {
 		return result.Status == CraftStatus.Success;
 	}
 
-	public static bool CanCraft(CraftingRecipe recipe, IEnumerable<Inventory> sources, out RecipeItem[] missing) {
+	public static bool CanCraft(CraftingRecipe recipe, IEnumerable<Inventory> sources, out RecipeItem[] missing, int quantity = 1) {
 		List<RecipeItem> missingList = [];
 
 		foreach(RecipeItem ingredient in recipe.Inputs) {
 			int available = CountAvailable(ingredient.ItemId, sources);
-			if(available < ingredient.Quantity) { missingList.Add(ingredient); }
+			if(available < ingredient.Quantity * quantity) { missingList.Add(ingredient); }
 		}
 
 		missing = [.. missingList];
