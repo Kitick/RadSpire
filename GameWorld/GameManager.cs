@@ -27,6 +27,8 @@ public sealed partial class GameManager : Node {
 	[Export] private PackedScene GameWorldManagerScene = null!;
 	[Export] private PackedScene NPCScene = null!;
 	[Export] private Node WorldContentRoot = null!;
+	[ExportCategory("Audio")]
+	[Export] private AudioStream? GameWorldMusic = GD.Load<AudioStream>("res://Assets/Audio/Candlelit Keep.wav");
 
 	private readonly KeyInput KeyInput = new();
 	private readonly QuestManager QuestManager = new();
@@ -34,6 +36,7 @@ public sealed partial class GameManager : Node {
 	private Player? LocalPlayer;
 	private HUD? HUD;
 	private GameWorldManager? WorldManager;
+	private AudioStreamPlayer? GameWorldMusicPlayer;
 	public Action? MainMenuRequested;
 
 	public enum MenuState { Game, Paused, Settings, Inventory, Chest, Build, Host, Death }
@@ -58,6 +61,7 @@ public sealed partial class GameManager : Node {
 		CameraRig = this.AddScene<CameraRig>(CameraScene);
 		WorldManager = this.AddScene<GameWorldManager>(GameWorldManagerScene);
 		WorldManager.Initialize(WorldContentRoot, this);
+		InitializeAudio();
 		RefreshWorldReferences();
 		DisplaySettings.SetWorldEnvironment(WorldEnvironment);
 		AddChild(QuestManager);
@@ -65,6 +69,19 @@ public sealed partial class GameManager : Node {
 
 		StartGame();
 		ConnectLocationTriggers();
+		UpdateGameWorldMusic();
+	}
+
+	private void InitializeAudio() {
+		GameWorldMusicPlayer = new AudioStreamPlayer {
+			Name = "GameWorldMusicPlayer",
+			Bus = "Music",
+			VolumeDb = 0.0f,
+			Stream = GameWorldMusic,
+			Autoplay = false,
+		};
+
+		AddChild(GameWorldMusicPlayer);
 	}
 
 	private Node? GetActiveWorldNode() {
@@ -265,6 +282,8 @@ public sealed partial class GameManager : Node {
 			WorldManager.BindPlayer(LocalPlayer);
 			SyncActiveWorldActorBindings();
 		}
+
+		UpdateGameWorldMusic();
 	}
 
 	public bool SwitchToGameWorld(string gameWorldId, Vector3? playerSpawnPosition = null) {
@@ -326,8 +345,32 @@ public sealed partial class GameManager : Node {
 		}
 		LocalPlayer.Velocity = Vector3.Zero;
 		SyncActiveWorldActorBindings();
+		UpdateGameWorldMusic();
 
 		return true;
+	}
+
+	private void UpdateGameWorldMusic() {
+		if(GameWorldMusicPlayer == null || !IsInstanceValid(GameWorldMusicPlayer)) {
+			return;
+		}
+
+		GameWorldMusicPlayer.Stream ??= GameWorldMusic;
+
+		bool inMainGameWorld = WorldManager != null
+			&& !string.IsNullOrEmpty(WorldManager.CurrentGameWorldId)
+			&& WorldManager.CurrentGameWorldId == WorldManager.MainGameWorldId;
+
+		if(inMainGameWorld) {
+			if(!GameWorldMusicPlayer.Playing) {
+				GameWorldMusicPlayer.Play();
+			}
+			return;
+		}
+
+		if(GameWorldMusicPlayer.Playing) {
+			GameWorldMusicPlayer.Stop();
+		}
 	}
 
 	public bool TryRecordMainWorldReturnPosition(string destinationWorldId, Vector3 playerPosition) {
@@ -399,6 +442,10 @@ public sealed partial class GameManager : Node {
 	}
 
 	private void CleanupGame() {
+		if(GameWorldMusicPlayer != null && IsInstanceValid(GameWorldMusicPlayer) && GameWorldMusicPlayer.Playing) {
+			GameWorldMusicPlayer.Stop();
+		}
+
 		HUD = null;
 		MainWorldReturnPositions.Clear();
 		LastKnownMainWorldPlayerPosition = null;
