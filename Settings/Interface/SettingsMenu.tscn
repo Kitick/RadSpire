@@ -81,6 +81,7 @@ theme_override_font_sizes/font_size = 35
 text = "Controller"
 
 [node name="Display" type="VBoxContainer" parent="." unique_id=730687821 node_paths=PackedStringArray("ResolutionOption", "FullscreenCheck", "VSyncCheck", "BrightnessSlider", "FramerateOption")]
+visible = false
 layout_mode = 1
 anchors_preset = -1
 offset_left = 69.0
@@ -114,6 +115,7 @@ offset_bottom = 16.0
 focus_neighbor_top = NodePath("../../../NavBar/Display_Button")
 focus_neighbor_bottom = NodePath("../../../Display/Fullscreen/CheckBox")
 theme_override_font_sizes/font_size = 20
+alignment = 1
 
 [node name="Fullscreen" type="Label" parent="Display" unique_id=872083276]
 layout_mode = 2
@@ -196,6 +198,7 @@ offset_bottom = 16.0
 focus_neighbor_top = NodePath("../../../Display/Brightness/HSlider")
 focus_neighbor_bottom = NodePath("../../../BackButton")
 theme_override_font_sizes/font_size = 20
+alignment = 1
 
 [node name="Sound" type="VBoxContainer" parent="." unique_id=626981101 node_paths=PackedStringArray("MasterSlider", "MusicSlider", "SFXSlider", "MuteAllCheckBox", "OutputDeviceOption")]
 visible = false
@@ -313,6 +316,7 @@ offset_bottom = 16.0
 focus_neighbor_top = NodePath("../../../Sound/Mute/CheckBox")
 focus_neighbor_bottom = NodePath("../../../BackButton")
 theme_override_font_sizes/font_size = 20
+alignment = 1
 
 [node name="Controller" type="VBoxContainer" parent="." unique_id=1706615415 node_paths=PackedStringArray("VibrationCheckBox", "DeadzoneSlider", "ControllerSensitivitySlider", "RemapButtonsButton")]
 visible = false

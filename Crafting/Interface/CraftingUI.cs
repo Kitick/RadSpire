@@ -12,6 +12,8 @@ using Services;
 
 public sealed partial class CraftingUI : Control {
 	private static readonly LogService Log = new(nameof(CraftingUI), enabled: true);
+	private const int MaxVisibleCraftableRows = 5;
+	private const int PopupRowHeightPixels = 32;
 
 	[Export] private OptionButton CraftableDropdown = null!;
 	[Export] private VBoxContainer RequirementsList = null!;
@@ -40,7 +42,16 @@ public sealed partial class CraftingUI : Control {
 	public override void _Ready() {
 		this.ValidateExports();
 		ConfigureMouseFilters();
+		ConfigureCraftableDropdownPopup();
 		SetCallbacks();
+	}
+
+	private void ConfigureCraftableDropdownPopup() {
+		PopupMenu popup = CraftableDropdown.GetPopup();
+		int maxPopupHeight = MaxVisibleCraftableRows * PopupRowHeightPixels;
+
+		// Keep popup width unconstrained while capping height to force scrolling after 5 rows.
+		popup.MaxSize = new Vector2I(10000, maxPopupHeight);
 	}
 
 	private void ConfigureMouseFilters() {
