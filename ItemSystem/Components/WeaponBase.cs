@@ -23,7 +23,7 @@ public sealed class WeaponBase : Component<WeaponBaseData>, IItemComponent, IIte
 
 	public bool Equip<TEntity>(TEntity user) {
 		if(user is Player player) {
-			player.Offense.Damage += BaseAttack;
+			player.EquippedWeapon = this;
 			switch(VisualType) {
 				case WeaponVisualType.Staff:
 					player.HoldingStaff = true;
@@ -38,13 +38,16 @@ public sealed class WeaponBase : Component<WeaponBaseData>, IItemComponent, IIte
 					}
 					break;
 			}
+			player.RefreshCombatStats();
 		}
 		return true;
 	}
 
 	public bool Unequip<TEntity>(TEntity user) {
 		if(user is Player player) {
-			player.Offense.Damage -= BaseAttack;
+			if(ReferenceEquals(player.EquippedWeapon, this)) {
+				player.EquippedWeapon = null;
+			}
 			switch(VisualType) {
 				case WeaponVisualType.Staff:
 					player.HoldingStaff = false;
@@ -59,6 +62,7 @@ public sealed class WeaponBase : Component<WeaponBaseData>, IItemComponent, IIte
 					}
 					break;
 			}
+			player.RefreshCombatStats();
 		}
 		return true;
 	}
@@ -76,3 +80,4 @@ public readonly record struct WeaponBaseData : Services.ISaveData {
 	public float AttackSpeed { get; init; }
 	public WeaponBase.WeaponVisualType VisualType { get; init; }
 }
+

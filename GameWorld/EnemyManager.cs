@@ -117,7 +117,8 @@ public sealed partial class EnemyManager : Node, ISaveable<EnemyManagerData> {
 		}
 
 		foreach((string id, EnemyData enemyData) in data.Enemies) {
-			Enemy? enemy = CreateAndAddEnemy(id);
+			PackedScene? savedScene = LoadEnemyScene(enemyData.ScenePath);
+			Enemy? enemy = CreateAndAddEnemy(id, savedScene);
 			if(enemy == null) {
 				continue;
 			}
@@ -158,8 +159,17 @@ public sealed partial class EnemyManager : Node, ISaveable<EnemyManagerData> {
 		Enemy enemy = sceneToSpawn.Instantiate<Enemy>();
 		return AddEnemy(id, enemy) ? enemy : null;
 	}
+
+	private static PackedScene? LoadEnemyScene(string scenePath) {
+		if(string.IsNullOrWhiteSpace(scenePath)) {
+			return null;
+		}
+
+		return GD.Load<PackedScene>(scenePath);
+	}
 }
 
 public readonly record struct EnemyManagerData : ISaveData {
 	public Dictionary<string, EnemyData> Enemies { get; init; }
 }
+

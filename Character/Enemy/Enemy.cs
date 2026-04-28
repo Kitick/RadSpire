@@ -14,7 +14,7 @@ public sealed partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 	[Export] public EnemyType EnemyType { get; set; } = EnemyType.None;
 
 	[Export] private int InitialHealthValue = 50;
-	[Export] private int InitialDamageValue = 5;
+	[Export] private int InitialDamageValue = 8;
 	[Export] private int InitialDefenseValue = 0;
 
 	[Export] private float KnockbackForce = 15f;
@@ -42,6 +42,7 @@ public sealed partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 	[Export] private StringName StaffAttackAnimation = default;
 	[Export] private float RangedAttackCooldown = 1.4f;
 	[Export] private float RangedProjectileSpeed = 10.0f;
+	[Export] private bool UseHitboxDrivenDamage = true;
 
 	protected override int InitialHealth => InitialHealthValue;
 	protected override int InitialDamage => InitialDamageValue;
@@ -315,7 +316,8 @@ public sealed partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 	}
 
 	public override void OnAttackFinished() {
-		if(EnemyType == EnemyType.RadiationCaster) {
+		if(EnemyType == EnemyType.RadiationCaster || UseHitboxDrivenDamage) {
+			AttackCooldownTimer = RangedAttackCooldown;
 			StateMachine.TransitionTo(State.Idle);
 			return;
 		}
@@ -353,6 +355,7 @@ public sealed partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 	}
 
 	public EnemyData Export() => new() {
+		ScenePath = SceneFilePath,
 		Health = Health.Export(),
 		Movement = Movement.Export(),
 		Offense = Offense.Export(),
@@ -372,6 +375,7 @@ public sealed partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 
 public readonly record struct EnemyData : ISaveData {
 	public string Id { get; init; }
+	public string ScenePath { get; init; }
 	public HealthData Health { get; init; }
 	public MovementData Movement { get; init; }
 	public OffenseData Offense { get; init; }
