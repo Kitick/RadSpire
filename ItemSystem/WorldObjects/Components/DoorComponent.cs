@@ -78,7 +78,7 @@ public sealed class DoorComponent : IObjectComponent, IInteract, ISaveable<DoorC
 			TryCaptureMainWorldReturnPosition(player, WorldID);
 			bool switchedToInteriorWorld = TrySwitchToWorld(WorldID, HasConfiguredSpawnPosition(SpawnPosition) ? SpawnPosition : null);
 			if(switchedToInteriorWorld) {
-				GameWorldManager.CurrentStructureObject = ComponentOwner.ItemId;
+				GameWorldManager.CurrentStructureObject = ComponentOwner.Export();
 			}
 			return switchedToInteriorWorld;
 		}
@@ -99,7 +99,7 @@ public sealed class DoorComponent : IObjectComponent, IInteract, ISaveable<DoorC
 		TryCaptureMainWorldReturnPosition(player, WorldID);
 		bool switchedToNewInteriorWorld = TrySwitchToWorld(WorldID, HasConfiguredSpawnPosition(SpawnPosition) ? SpawnPosition : null);
 		if(switchedToNewInteriorWorld) {
-			GameWorldManager.CurrentStructureObject = ComponentOwner.ItemId;
+			GameWorldManager.CurrentStructureObject = ComponentOwner.Export();
 		}
 		return switchedToNewInteriorWorld;
 	}

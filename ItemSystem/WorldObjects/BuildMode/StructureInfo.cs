@@ -1,7 +1,7 @@
 namespace UI.HUD;
 
 using Godot;
-using ItemSystem.WorldObjects;
+using ItemSystem.WorldObjects.House;
 using Root;
 
 public sealed partial class StructureInfo : Control {
@@ -9,7 +9,7 @@ public sealed partial class StructureInfo : Control {
 	[Export] private Label NpcLabel = null!;
 	[Export] private Label ValueLabel = null!;
 
-	private BuildModeController? BoundBuildMode;
+	private GameWorldManager? BoundGameWorldManager;
 	private bool IsBound = false;
 
 	public override void _Ready() {
@@ -17,17 +17,18 @@ public sealed partial class StructureInfo : Control {
 		this.ValidateExports();
 	}
 
-	public void Bind(BuildModeController buildModeController) {
+	public void Bind(GameWorldManager gameWorldManager) {
 		if(IsBound) { return; }
-		BoundBuildMode = buildModeController;
-		//buildModeController.StructureInfoRefreshRequested += OnStructureInfoRefreshRequested;
+		BoundGameWorldManager = gameWorldManager;
+		BoundGameWorldManager.StructureInfoRefreshRequested += OnStructureInfoRefreshRequested;
+		BoundGameWorldManager.RequestStructureInfoRefresh();
 		IsBound = true;
 	}
 
 	public override void _ExitTree() {
-		if(BoundBuildMode != null) {
-			//BoundBuildMode.StructureInfoRefreshRequested -= OnStructureInfoRefreshRequested;
-			BoundBuildMode = null;
+		if(BoundGameWorldManager != null) {
+			BoundGameWorldManager.StructureInfoRefreshRequested -= OnStructureInfoRefreshRequested;
+			BoundGameWorldManager = null;
 			IsBound = false;
 		}
 		base._ExitTree();

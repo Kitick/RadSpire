@@ -52,6 +52,7 @@ public sealed partial class GameManager : Node {
 	public PackedScene NPCSceneRef => NPCScene;
 	public QuestManager QuestManagerRef => QuestManager;
 	public HUD? HUDRef => HUD;
+	public GameWorldManager? GameWorldManagerRef => WorldManager;
 
 	public override void _Ready() {
 		CameraRig = this.AddScene<CameraRig>(CameraScene);
@@ -152,6 +153,7 @@ public sealed partial class GameManager : Node {
 		HUD = HUDScene.Instantiate<HUD>();
 		SubscribeToEvents(HUD);
 		HUD.Init(LocalPlayer!, StateMachine, QuestManager);
+		HUD.BindStructureInfo(WorldManager);
 		Hotbar hotbar = HUD.Hotbar;
 		LocalPlayer!.UseItemComponent.UserHotbar = hotbar;
 		LocalPlayer.EquipItemComponent.Initalize(LocalPlayer, hotbar);

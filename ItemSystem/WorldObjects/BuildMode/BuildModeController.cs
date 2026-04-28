@@ -124,6 +124,7 @@ public sealed partial class BuildModeController : Node {
 		InventoryManager.MovePlaceableItems(Player.Hotbar, BuildInventory);
 		InventoryManager.MovePlaceableItems(Player.Inventory, BuildInventory);
 		IsBuildModeActive = true;
+		GameManager.GameWorldManagerRef?.RequestStructureInfoRefresh();
 	}
 
 	private void ReturnBuildInventoryToPlayer() {
@@ -164,6 +165,7 @@ public sealed partial class BuildModeController : Node {
 			DraggedWorldObjectData = null;
 			return;
 		}
+		GameManager.GameWorldManagerRef?.RequestStructureInfoRefresh();
 
 		IsDragging = true;
 		if(!PlacementUI.BeginBuildDragPreview(DragItemId)) {
@@ -246,6 +248,9 @@ public sealed partial class BuildModeController : Node {
 			else {
 				placed = WorldObjectManager.CreateWorldObject(DragItemId, position, rotation);
 			}
+		}
+		if(placed) {
+			GameManager.GameWorldManagerRef?.RequestStructureInfoRefresh();
 		}
 		if(!placed && BuildInventory != null && !string.IsNullOrWhiteSpace(DragItemId)) {
 			Item item = DatabaseManager.Instance.CreateItemInstanceById(DragItemId);

@@ -28,7 +28,8 @@ public partial class GameWorldManager : Node, ISaveable<GameWorldManagerData> {
 	public EnemyManager? EnemyManager => CurrentGameWorld?.EnemyManager;
 	public NPCManager? NPCManager => CurrentGameWorld?.NPCManager;
 
-	public string? CurrentStructureObject { get; set; }
+	public ObjectData? CurrentStructureObject { get; set; }
+	public event System.Action<string, string, int>? StructureInfoRefreshRequested;
 
 	public void Initialize(Node worldRoot, GameManager? gameManager) {
 		WorldRoot = worldRoot;
@@ -244,11 +245,51 @@ public partial class GameWorldManager : Node, ISaveable<GameWorldManagerData> {
 	private void HandleSpawnItem3DIconRequested(Item item, Vector3 position) {
 		Item3DIconManager?.RequestSpawnItem(item, position);
 	}
+
+	public void RequestStructureInfoRefresh() {
+		if(!CurrentStructureObject.HasValue) {
+			StructureInfoRefreshRequested?.Invoke("-", "-", 0);
+			return;
+		}
+
+		if(WorldObjectManager == null) {
+			StructureInfoRefreshRequested?.Invoke("-", "-", 0);
+			return;
+		}
+
+		ObjectData structureObject = CurrentStructureObject.Value;
+		Vector3 structurePosition = structureObject.WorldLocation.Position;
+		Vector3 structureRotation = structureObject.WorldLocation.Rotation;
+		bool createdTemporaryStructure = WorldObjectManager.CreateWorldObject(structureObject, structurePosition, structureRotation);
+		if(!createdTemporaryStructure) {
+			StructureInfoRefreshRequested?.Invoke("-", "-", 0);
+			return;
+		}
+
+		Object? liveStructureObject = WorldObjectManager.GetWorldObject(structureObject.Id);
+		StructureComponent? structureComponent = liveStructureObject?.ComponentDictionary.Get<StructureComponent>();
+		string structureName = structureComponent?.StructureName ?? "-";
+		if(structureComponent != null) {
+			structureComponent.GameWorldManager = this;
+			string structureWorldId = structureObject.StructureComponentData?.WorldID ?? string.Empty;
+			if(string.IsNullOrWhiteSpace(structureWorldId) || !HasGameWorld(structureWorldId)) {
+				structureWorldId = CurrentGameWorldId;
+			}
+			if(!string.IsNullOrWhiteSpace(structureWorldId) && HasGameWorld(structureWorldId)) {
+				structureComponent.WorldID = structureWorldId;
+				structureComponent.UpdateTotalValue();
+			}
+		}
+		int totalValue = structureComponent?.TotalValue ?? 0;
+		string npcName = structureComponent?.AttachedNPC?.Name ?? "-";
+		WorldObjectManager.RemoveWorldObject(structureObject.Id);
+		StructureInfoRefreshRequested?.Invoke(structureName, npcName, totalValue);
+	}
 }
 
 public readonly record struct GameWorldManagerData : ISaveData {
 	public string CurrentGameWorldId { get; init; }
 	public string MainGameWorldId { get; init; }
-	public string? CurrentStructureObject { get; init; }
+	public ObjectData? CurrentStructureObject { get; init; }
 	public Dictionary<string, GameWorldStateData> GameWorlds { get; init; }
 }

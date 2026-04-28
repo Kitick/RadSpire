@@ -37,6 +37,7 @@ public sealed class StructureComponent : IObjectComponent, ISaveable<StructureCo
     public void AddWorld(string worldID, GameWorldManager gameWorldManager) {
         WorldID = worldID;
         GameWorldManager = gameWorldManager;
+        UpdateTotalValue();
     }
 
     public void UpdateTotalValue() {

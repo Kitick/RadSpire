@@ -45,6 +45,7 @@ public partial class Object : IWorldLocation, ISaveable<ObjectData> {
 	public ComponentDictionary<IObjectComponent> ComponentDictionary { get; } = new();
 	private InventoryComponentData? InventoryComponentData;
 	private DoorComponentData? SavedDoorComponentData;
+	private StructureComponentData? SavedStructureComponentData;
 
 	public Object(string itemId, Vector3 pos, Vector3 rot) {
 		ItemId = itemId;
@@ -60,6 +61,7 @@ public partial class Object : IWorldLocation, ISaveable<ObjectData> {
 		WorldLocation = WorldLocation.Export(),
 		InventoryComponentData = ExportInventoryComponent(),
 		DoorComponentData = ExportDoorComponent(),
+		StructureComponentData = ExportStructureComponent(),
 	};
 
 	public InventoryComponentData? ExportInventoryComponent() {
@@ -72,6 +74,13 @@ public partial class Object : IWorldLocation, ISaveable<ObjectData> {
 	public DoorComponentData? ExportDoorComponent() {
 		if(ComponentDictionary.Has<DoorComponent>()) {
 			return ComponentDictionary.Get<DoorComponent>().Export();
+		}
+		return null;
+	}
+
+	public StructureComponentData? ExportStructureComponent() {
+		if(ComponentDictionary.Has<StructureComponent>()) {
+			return ComponentDictionary.Get<StructureComponent>().Export();
 		}
 		return null;
 	}
@@ -90,6 +99,7 @@ public partial class Object : IWorldLocation, ISaveable<ObjectData> {
 
 		InventoryComponentData = data.InventoryComponentData;
 		SavedDoorComponentData = data.DoorComponentData;
+		SavedStructureComponentData = data.StructureComponentData;
 		ApplyComponentData();
 	}
 
@@ -102,6 +112,10 @@ public partial class Object : IWorldLocation, ISaveable<ObjectData> {
 			ComponentDictionary.Get<DoorComponent>().Import(SavedDoorComponentData.Value);
 			SavedDoorComponentData = null;
 		}
+		if(SavedStructureComponentData.HasValue && ComponentDictionary.Has<StructureComponent>()) {
+			ComponentDictionary.Get<StructureComponent>().Import(SavedStructureComponentData.Value);
+			SavedStructureComponentData = null;
+		}
 	}
 }
 
@@ -112,6 +126,7 @@ public readonly record struct ObjectData : ISaveData {
 	public WorldLocationData WorldLocation { get; init; }
 	public InventoryComponentData? InventoryComponentData { get; init; }
 	public DoorComponentData? DoorComponentData { get; init; }
+	public StructureComponentData? StructureComponentData { get; init; }
 
 }
 

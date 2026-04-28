@@ -7,6 +7,7 @@ using Crafting.Interface;
 using Godot;
 using InventorySystem;
 using InventorySystem.Interface;
+using ItemSystem.WorldObjects.House;
 using Network.Panels;
 using PauseMenu;
 using QuestSystem;
@@ -348,6 +349,13 @@ public sealed partial class HUD : Control {
 	}
 
 	public InventoryUI GetBuildUI() => BuildUI;
+
+	public void BindStructureInfo(GameWorldManager? gameWorldManager) {
+		if(gameWorldManager == null) {
+			return;
+		}
+		StructureInfo.Bind(gameWorldManager);
+	}
 
 	public void OpenBuildUI() {
 		if(!StateMachineRef.IsSettled) {
