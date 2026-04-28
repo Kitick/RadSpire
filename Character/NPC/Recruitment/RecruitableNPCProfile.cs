@@ -23,12 +23,14 @@ public static class RecruitableNPCProfiles {
 		PostCollectionQuests: [QuestID.ColinCraftBed],
 		ModelScenePath: string.Empty,
 		FollowingDialogue: [
-			"Keep moving. I'll follow you to the tent.",
-			"Once the tent is placed, assign me and I'll stay on camp duty."
+			"Good. You understand priorities.",
+			"Place the tent. Assign me there.",
+			"I will not wander until there is somewhere safe to wander back to."
 		],
 		AssignedDialogue: [
-			"Looks like an amazing base camp. I'll stay here and help you along the way.",
-			"Next quest is simple: craft a bed so you can heal radiation damage."
+			"Camp looks solid.",
+			"Next step is a bed.",
+			"Sleeping is the only reliable way to purge radiation buildup."
 		]
 	);
 
@@ -40,12 +42,11 @@ public static class RecruitableNPCProfiles {
 		PostCollectionQuests: [QuestID.RowanStockTheShelter],
 		ModelScenePath: string.Empty,
 		FollowingDialogue: [
-			"Keep moving. I'll stay close.",
-			"Once we reach a structure, assign me there and I'll settle in."
+			"Alright. I am with you.",
+			"Point me to the camp and I will make myself useful."
 		],
 		AssignedDialogue: [
-			"This place will do. Talk to me if you want work done around camp.",
-			"I can help keep the shelter running once we have enough supplies."
+			"Give me materials and time. I can turn chaos into something stable."
 		]
 	);
 

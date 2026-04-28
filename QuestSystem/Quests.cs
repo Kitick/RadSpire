@@ -127,16 +127,20 @@ public static class Quests {
 		],
 		NpcId: NPCID.Rowan,
 		InitialDialogue: [
-			"You're alive. Good. I was starting to think I'd be the next body on this road.",
-			"My name is Rowan. I was scavenging alone until the raiders started circling back through here.",
-			"I don't want to stay exposed out here. If you've got room for one more, I'll come with you.",
-			"Get me somewhere with walls and a roof, and I'll make myself useful."
+			"You're alive. That alone puts you ahead of most people on this road.",
+			"My name is Rowan.",
+			"I was scavenging alone until the raiders started looping back through here.",
+			"I have skills. Storage. Repairs. Inventory tracking. The unglamorous things that keep people breathing.",
+			"I do not want to die out here proving a point.",
+			"If you have room for one more, I will come with you.",
+			"Somewhere with walls. Somewhere radiation does not sink into your bones."
 		],
 		ActiveDialogue: [
-			"If you're taking me in, say the word. I am ready to move.",
+			"If you have room for one more, I will come with you.",
 		],
 		CompletionDialogue: [
-			"Right. I'm with you now. Lead on and I'll follow.",
+			"Alright. I am with you.",
+			"Point me to the camp and I will make myself useful.",
 		]
 	);
 
@@ -152,15 +156,17 @@ public static class Quests {
 		Prerequisites: [QuestID.RowanJoinsCamp],
 		OfferMode: QuestOfferMode.OfferedByNpc,
 		InitialDialogue: [
-			"If I'm staying here, this place needs supplies.",
-			"Bring me ten pieces of wood and I'll get started shoring things up."
+			"Before I move anywhere, I need to know we can survive there.",
+			"Bring me ten pieces of wood.",
+			"If you can manage that, I can manage the rest."
 		],
 		ActiveDialogue: [
-			"Ten pieces of wood. That's enough to get a proper stockpile started.",
+			"Bring me ten pieces of wood.",
 		],
 		CompletionDialogue: [
-			"This is exactly what I needed. Good haul.",
-			"Give me a little time and I'll turn this pile into something useful."
+			"Good haul.",
+			"This is enough to start reinforcing, organize supplies, and stop sleeping on damp ground.",
+			"I will move when you say the word."
 		]
 	);
 
@@ -174,14 +180,19 @@ public static class Quests {
 		],
 		NpcId: NPCID.Colin,
 		InitialDialogue: [
-			"There is radiation all around here. You need to set up a base camp before it chews through you.",
-			"Go craft a tent, then come back to me."
+			"Stop right there.",
+			"You have radiation in your blood already. I can see it.",
+			"If you do not put down roots soon, it will eat through you.",
+			"Craft a tent. That comes first.",
+			"Then come back to me."
 		],
 		ActiveDialogue: [
-			"Craft a tent first. You need a base camp to survive out here.",
+			"Craft a tent. That comes first.",
 		],
 		CompletionDialogue: [
-			"Good. Now place that tent down and I'll follow you there.",
+			"Good. You understand priorities.",
+			"Place the tent. Assign me there.",
+			"I will not wander until there is somewhere safe to wander back to.",
 		]
 	);
 
@@ -196,13 +207,16 @@ public static class Quests {
 		NpcId: NPCID.Colin,
 		Prerequisites: [QuestID.ColinRadiationCamp],
 		InitialDialogue: [
-			"Alright, let's move. Place the tent down and assign me there once we're at camp.",
+			"Good. You understand priorities.",
+			"Place the tent. Assign me there.",
+			"I will not wander until there is somewhere safe to wander back to.",
 		],
 		ActiveDialogue: [
-			"Place that tent and assign me when you are ready.",
+			"Place the tent. Assign me there.",
 		],
 		CompletionDialogue: [
-			"Right behind you. Let's get this base camp running.",
+			"Alright. I am with you.",
+			"Point me to the camp and I will make myself useful.",
 		]
 	);
 
@@ -218,14 +232,18 @@ public static class Quests {
 		Prerequisites: [QuestID.ColinFollowToCamp],
 		OfferMode: QuestOfferMode.OfferedByNpc,
 		InitialDialogue: [
-			"Looks like an amazing base camp. I'll stay here and help you along the way.",
-			"Next step: craft a bed. That's how you can heal your radiation damage.",
+			"Camp looks solid.",
+			"Next step is a bed.",
+			"Sleeping is the only reliable way to purge radiation buildup.",
+			"Craft one and place it. Then you might live long enough to regret things.",
 		],
 		ActiveDialogue: [
-			"Get a bed crafted. Sleeping is your best way to clear radiation buildup.",
+			"Craft a bed and place it. You need it to purge radiation buildup.",
 		],
 		CompletionDialogue: [
-			"Perfect. With a bed in camp you'll recover from radiation a lot faster.",
+			"Perfect.",
+			"With that, you can survive repeated exposure.",
+			"Do not get reckless just because you can heal.",
 		]
 	);
 
