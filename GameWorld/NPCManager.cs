@@ -12,6 +12,7 @@ public sealed partial class NPCManager : Node, ISaveable<NPCManagerData> {
 	private static readonly LogService Log = new(nameof(NPCManager), enabled: true);
 
 	public Dictionary<string, NPC> NPCs { get; } = [];
+	public event Action? NPCRegistryChanged;
 
 	private readonly Dictionary<string, Action<string?>> PromptHandlers = [];
 	private readonly Dictionary<string, Action<NPCID>> TalkedHandlers = [];
@@ -19,6 +20,8 @@ public sealed partial class NPCManager : Node, ISaveable<NPCManagerData> {
 	private PackedScene NPCScene = null!;
 	private QuestManager QuestManager = null!;
 	private bool IsInitialized;
+	private INPCSpawnWorld? PendingSpawnWorld;
+	private bool PendingSpawnRequested;
 
 	public void Initialize(Node worldNode, PackedScene npcScene, QuestManager questManager, bool spawnFromWorld = true) {
 		if(IsInitialized) {
@@ -29,12 +32,27 @@ public sealed partial class NPCManager : Node, ISaveable<NPCManagerData> {
 		NPCScene = npcScene;
 		QuestManager = questManager;
 
-		if(spawnFromWorld && worldNode is INPCSpawnWorld spawnWorld && IsInstanceValid(spawnWorld.NPCSpawnMarker)) {
-			SpawnDefaultWorldNPCs(spawnWorld.NPCSpawnMarker.GlobalPosition);
+		if(spawnFromWorld && worldNode is INPCSpawnWorld spawnWorld) {
+			// Defer spawn until the world scene is fully in-tree so spawn points have valid globals.
+			PendingSpawnWorld = spawnWorld;
+			if(!PendingSpawnRequested) {
+				PendingSpawnRequested = true;
+				CallDeferred(nameof(SpawnWorldNPCsDeferred));
+			}
 		}
 
 		IsInitialized = true;
 		Log.Info($"Initialize complete. npcs={NPCs.Count}");
+	}
+
+	private void SpawnWorldNPCsDeferred() {
+		PendingSpawnRequested = false;
+		if(PendingSpawnWorld == null) {
+			return;
+		}
+		SpawnWorldNPCs(PendingSpawnWorld.NPCSpawnPoints);
+		PendingSpawnWorld = null;
+		NPCRegistryChanged?.Invoke();
 	}
 
 	public bool AddNPC(string id, NPC npc) {
@@ -58,6 +76,7 @@ public sealed partial class NPCManager : Node, ISaveable<NPCManagerData> {
 		TalkedHandlers[id] = talkedHandler;
 		npc.Talked += talkedHandler;
 		Log.Info($"AddNPC: id='{id}', total={NPCs.Count}");
+		NPCRegistryChanged?.Invoke();
 		return true;
 	}
 
@@ -76,6 +95,7 @@ public sealed partial class NPCManager : Node, ISaveable<NPCManagerData> {
 			npc.QueueFree();
 		}
 		Log.Info($"RemoveNPC: id='{id}', total={NPCs.Count}");
+		NPCRegistryChanged?.Invoke();
 		return true;
 	}
 
@@ -117,6 +137,7 @@ public sealed partial class NPCManager : Node, ISaveable<NPCManagerData> {
 			npc.Import(npcData with { Id = id });
 		}
 		Log.Info($"Import complete. total={NPCs.Count}");
+		NPCRegistryChanged?.Invoke();
 	}
 
 	public void Cleanup() {
@@ -140,22 +161,50 @@ public sealed partial class NPCManager : Node, ISaveable<NPCManagerData> {
 		TalkedHandlers.Clear();
 		PromptForwarder = null;
 		Log.Info("Cleanup complete.");
+		NPCRegistryChanged?.Invoke();
 	}
 
-	private void SpawnDefaultWorldNPCs(Vector3 baseWorldPosition) {
-		SpawnNPCAt(baseWorldPosition, "npc-sera", NPCID.Sera, "Sera");
-		SpawnNPCAt(baseWorldPosition + new Vector3(4f, 0f, 2f), "npc-rowan", NPCID.Rowan, "Rowan");
+	private void SpawnWorldNPCs(Godot.Collections.Array<NPCSpawnPoint> spawnPoints) {
+		if(spawnPoints == null) {
+			return;
+		}
+
+		HashSet<NPCID> spawnedNpcIds = [];
+		foreach(NPCSpawnPoint? spawnPoint in spawnPoints) {
+			if(spawnPoint == null || !IsInstanceValid(spawnPoint) || !spawnPoint.IsInsideTree() || spawnPoint.NpcId == NPCID.None) {
+				continue;
+			}
+			if(!spawnedNpcIds.Add(spawnPoint.NpcId)) {
+				Log.Warn($"Skipping duplicate NPC spawn point for '{spawnPoint.NpcId}'.");
+				continue;
+			}
+
+			string displayName = string.IsNullOrWhiteSpace(spawnPoint.DisplayNameOverride)
+				? spawnPoint.NpcId.ToString()
+				: spawnPoint.DisplayNameOverride;
+			string id = $"npc-{spawnPoint.NpcId.ToString().ToLowerInvariant()}";
+			SpawnNPCAt(spawnPoint.GlobalPosition, spawnPoint.GlobalRotation, id, spawnPoint.NpcId, displayName, spawnPoint.SceneOverride);
+		}
 	}
 
-	private void SpawnNPCAt(Vector3 worldPosition, string id, NPCID identity, string displayName) {
-		NPC? npc = CreateAndAddNPC(id, identity, displayName);
+	private void SpawnNPCAt(
+		Vector3 worldPosition,
+		Vector3 worldRotation,
+		string id,
+		NPCID identity,
+		string displayName,
+		PackedScene? sceneOverride = null
+	) {
+		NPC? npc = CreateAndAddNPC(id, identity, displayName, sceneOverride);
 		if(npc == null) { return; }
 
-		npc.Position = worldPosition;
+		npc.GlobalPosition = worldPosition;
+		npc.GlobalRotation = worldRotation;
 	}
 
-	private NPC? CreateAndAddNPC(string id, NPCID? identity = null, string displayName = "") {
-		NPC npc = NPCScene.Instantiate<NPC>();
+	private NPC? CreateAndAddNPC(string id, NPCID? identity = null, string displayName = "", PackedScene? sceneOverride = null) {
+		PackedScene npcSource = sceneOverride ?? NPCScene;
+		NPC npc = npcSource.Instantiate<NPC>();
 		if(identity.HasValue) {
 			npc.ConfigureIdentity(identity.Value, displayName);
 		}

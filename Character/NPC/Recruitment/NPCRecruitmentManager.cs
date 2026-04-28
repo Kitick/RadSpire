@@ -13,6 +13,7 @@ public sealed partial class NPCRecruitmentManager : Node {
 	private QuestManager QuestManager = null!;
 	private GameWorldManager GameWorldManager = null!;
 	private RecruitableNPCController? CurrentFollowingController;
+	private NPCManager? BoundNpcManager;
 
 	public void Initialize(Player player, QuestManager questManager, GameWorldManager gameWorldManager) {
 		Player = player;
@@ -25,17 +26,20 @@ public sealed partial class NPCRecruitmentManager : Node {
 		if(QuestManager != null) {
 			QuestManager.QuestCompleted -= HandleQuestCompleted;
 		}
+		UnbindNpcManager();
 		base._ExitTree();
 	}
 
 	public void BindCurrentWorld(NPCManager? npcManager) {
+		BindNpcManager(npcManager);
+
 		ControllersByNpcId.Clear();
 		CurrentFollowingController = null;
-		if(npcManager == null) {
+		if(BoundNpcManager == null) {
 			return;
 		}
 
-		foreach(NPC npc in npcManager.NPCs.Values) {
+		foreach(NPC npc in BoundNpcManager.NPCs.Values) {
 			if(!RecruitableNPCProfiles.All.TryGetValue(npc.NpcIdentity, out RecruitableNPCProfile? profile)) {
 				continue;
 			}
@@ -54,6 +58,28 @@ public sealed partial class NPCRecruitmentManager : Node {
 				CurrentFollowingController = controller;
 			}
 		}
+	}
+
+	private void BindNpcManager(NPCManager? npcManager) {
+		if(ReferenceEquals(BoundNpcManager, npcManager)) {
+			return;
+		}
+		UnbindNpcManager();
+		BoundNpcManager = npcManager;
+		if(BoundNpcManager != null) {
+			BoundNpcManager.NPCRegistryChanged += HandleNpcRegistryChanged;
+		}
+	}
+
+	private void UnbindNpcManager() {
+		if(BoundNpcManager != null) {
+			BoundNpcManager.NPCRegistryChanged -= HandleNpcRegistryChanged;
+		}
+		BoundNpcManager = null;
+	}
+
+	private void HandleNpcRegistryChanged() {
+		BindCurrentWorld(BoundNpcManager);
 	}
 
 	public bool TryAssignFollowingNpc(Object structureObject) {

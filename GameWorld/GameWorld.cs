@@ -50,7 +50,6 @@ public sealed partial class GameWorldState : Node, ISaveable<GameWorldStateData>
 			ApplySavedData(SavedData.Value);
 		}
 		else {
-			SpawnRecruitmentTestStructure(worldNode);
 			Item3DIconManager?.SetUpItem3DIconManager(worldNode);
 		}
 
@@ -148,15 +147,6 @@ public sealed partial class GameWorldState : Node, ISaveable<GameWorldStateData>
 		if(NPCManager != null) {
 			NPCManager.Import(data.NPCManager);
 		}
-	}
-
-	private void SpawnRecruitmentTestStructure(Node worldNode) {
-		if(WorldObjectManager == null || worldNode is not INPCSpawnWorld spawnWorld || !IsInstanceValid(spawnWorld.NPCSpawnMarker)) {
-			return;
-		}
-
-		Vector3 structurePosition = spawnWorld.NPCSpawnMarker.GlobalPosition + new Vector3(20f, 0f, 2f);
-		WorldObjectManager.CreateWorldObject(ItemID.Tent, structurePosition, Vector3.Zero);
 	}
 
 	private void SetupActiveWorldNode() {
