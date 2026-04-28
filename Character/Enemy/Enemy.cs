@@ -3,6 +3,7 @@ namespace Character;
 using System;
 using Components;
 using Godot;
+using ItemSystem;
 using Root;
 using Services;
 
@@ -20,6 +21,10 @@ public sealed partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 	[Export] private float KnockbackDecay = 12f;
 	[Export] private float DamageFlashTime = 1.0f;
 	[Export] private float StunDuration = 0.4f;
+	[Export] private float AttackDistance = 1.5f;
+	[Export] private float ChaseStopDistance = 1.5f;
+	[Export] private float DetectionRadius = 15.0f;
+	[Export] private float SprintDistance = 5.0f;
 	[Export] private float HealthBarWidth = 1.4f;
 	[Export] private float HealthBarHeight = 0.12f;
 	[Export] private float HealthBarYOffset = 2.2f;
@@ -32,6 +37,11 @@ public sealed partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 	[Export] private Color DamageNumberColor = new(1f, 0.85f, 0.2f);
 	[Export] private int DamageNumberFontSize = 55;
 	[Export] private PackedScene? HitSparkScene;
+	[Export] private Node3D? StaffCastPoint;
+	[Export] private PackedScene? RadiationBoltScene;
+	[Export] private StringName StaffAttackAnimation = default;
+	[Export] private float RangedAttackCooldown = 1.4f;
+	[Export] private float RangedProjectileSpeed = 10.0f;
 
 	protected override int InitialHealth => InitialHealthValue;
 	protected override int InitialDamage => InitialDamageValue;
@@ -52,6 +62,8 @@ public sealed partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 	private Sprite3D? HealthBarBack;
 	private Sprite3D? HealthBarFill;
 	private Label3D? HealthLabel;
+	private Animator? Animator;
+	private float AttackCooldownTimer = 0f;
 
 	public void SetTarget(Node3D target) {
 		AI.SetTarget(target);
@@ -68,8 +80,12 @@ public sealed partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 		AddToGroup(Group.Enemy.ToString());
 
 		EnemyMesh = GetNodeOrNull<MeshInstance3D>("MeshInstance3D");
-		Animator animator = GetNodeOrNull<Animator>("Model/AnimationPlayer");
-		animator?.SetAttackSpeed(1.5f);
+		Animator = GetNodeOrNull<Animator>("Model/AnimationPlayer");
+		Animator?.SetAttackSpeed(1.5f);
+		AI.AttackDistance = AttackDistance;
+		AI.StopDistance = ChaseStopDistance;
+		AI.DetectionRadius = DetectionRadius;
+		AI.SprintDistance = SprintDistance;
 		SetupHealthUI();
 
 		if(EnemyMesh != null) {
@@ -128,6 +144,10 @@ public sealed partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 			}
 		}
 
+		if(AttackCooldownTimer > 0f) {
+			AttackCooldownTimer = Math.Max(0f, AttackCooldownTimer - dt);
+		}
+
 		if(StunTimer > 0f) {
 			StunTimer -= dt;
 		}
@@ -135,6 +155,9 @@ public sealed partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 			AI.Update();
 			Movement.Move(AI.HorizontalInput, 1);
 			Movement.Update(dt);
+			if(EnemyType == EnemyType.RadiationCaster && AI.AttackPressed && AttackTarget != null && IsInstanceValid(AttackTarget)) {
+				Movement.Face(AttackTarget.GlobalPosition - GlobalPosition, dt);
+			}
 		}
 
 		if(KnockbackVelocity.LengthSquared() > 0.001f) {
@@ -224,11 +247,6 @@ public sealed partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 	private void SpawnDamageNumber(int amount) {
 		if(amount <= 0) { return; }
 
-		if(HealthUIRoot == null) {
-			HealthUIRoot = new Node3D { Name = "HealthUI" };
-			AddChild(HealthUIRoot);
-		}
-
 		Label3D label = new() {
 			Text = $"-{amount}",
 			FontSize = DamageNumberFontSize,
@@ -237,12 +255,12 @@ public sealed partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 		};
 
 		float jitter = (float) GD.RandRange(-DamageNumberHorizontalJitter, DamageNumberHorizontalJitter);
-		label.Position = new Vector3(jitter, DamageNumberYOffset, 0f);
-		HealthUIRoot.AddChild(label);
+		GetParent()?.AddChild(label);
+		label.GlobalPosition = GlobalPosition + new Vector3(jitter, DamageNumberYOffset, 0f);
 
 		Tween tween = GetTree().CreateTween();
-		tween.TweenProperty(label, "position",
-			label.Position + new Vector3(0f, DamageNumberRise, 0f),
+		tween.TweenProperty(label, "global_position",
+			label.GlobalPosition + new Vector3(0f, DamageNumberRise, 0f),
 			DamageNumberLifetime).SetTrans(Tween.TransitionType.Cubic).SetEase(Tween.EaseType.Out);
 
 		Color endColor = DamageNumberColor;
@@ -271,7 +289,13 @@ public sealed partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 	private void UpdateMovementState() {
 		if(StateMachine.CurrentState == State.Attacking) { return; }
 
-		if(AI.AttackPressed) {
+		if(AI.AttackPressed && AttackCooldownTimer <= 0f) {
+			if(EnemyType == EnemyType.RadiationCaster && Animator != null && !StaffAttackAnimation.Equals(default(StringName))) {
+				Animator.SetAttackAnimation(StaffAttackAnimation);
+				AttackCooldownTimer = RangedAttackCooldown;
+				SpawnRadiationBolt();
+			}
+
 			StateMachine.TransitionTo(State.Attacking);
 			return;
 		}
@@ -291,6 +315,11 @@ public sealed partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 	}
 
 	public override void OnAttackFinished() {
+		if(EnemyType == EnemyType.RadiationCaster) {
+			StateMachine.TransitionTo(State.Idle);
+			return;
+		}
+
 		if(AttackTarget != null &&
 			IsInstanceValid(AttackTarget) &&
 			AttackTarget is IHealth healthTarget) {
@@ -299,7 +328,28 @@ public sealed partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 			this.Attack(healthTarget);
 		}
 
+		AttackCooldownTimer = RangedAttackCooldown;
+
 		StateMachine.TransitionTo(State.Idle);
+	}
+
+	private void SpawnRadiationBolt() {
+		if(RadiationBoltScene?.Instantiate() is not RadiationBolt bolt) {
+			return;
+		}
+
+		if(StaffCastPoint == null || AttackTarget == null || !IsInstanceValid(AttackTarget)) {
+			bolt.QueueFree();
+			return;
+		}
+
+		GetTree().CurrentScene?.AddChild(bolt);
+		bolt.GlobalTransform = StaffCastPoint.GlobalTransform;
+		bolt.SetSpeed(RangedProjectileSpeed);
+
+		Vector3 targetPosition = AttackTarget.GlobalPosition + new Vector3(0f, 1.0f, 0f);
+		Vector3 direction = (targetPosition - StaffCastPoint.GlobalPosition).Normalized();
+		bolt.Init(this, direction, Offense.Damage);
 	}
 
 	public EnemyData Export() => new() {

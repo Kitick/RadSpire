@@ -13,9 +13,10 @@ scale_max = 0.12
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ru2yb"]
 shading_mode = 0
-albedo_color = Color(0.76357186, 0.635868, 0.38238755, 1)
+albedo_color = Color(0.87423706, 0.76319045, 0.6973682, 1)
 billboard_mode = 1
 billboard_keep_scale = true
+grow_amount = 0.5
 
 [sub_resource type="QuadMesh" id="QuadMesh_7ynae"]
 material = SubResource("StandardMaterial3D_ru2yb")
@@ -25,7 +26,7 @@ size = Vector2(0.45, 0.45)
 
 [node name="GPUParticles3D" type="GPUParticles3D" parent="." unique_id=720586892]
 emitting = false
-amount = 34
+amount = 42
 lifetime = 0.3
 one_shot = true
 explosiveness = 1.0

@@ -1,10 +1,11 @@
 [gd_scene format=3 uid="uid://pkgl5obnc7eh"]
 
 [ext_resource type="Script" uid="uid://j3rjkhhu02uq" path="res://UI/Lore/SplashPanel.cs" id="1"]
+[ext_resource type="AudioStream" uid="uid://sw4sdn1hfdhl" path="res://Assets/Audio/HugeDrop.wav" id="2_ickkd"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gxyg8"]
 
-[node name="SplashPanel" type="Control" unique_id=865181656 node_paths=PackedStringArray("SkipButton")]
+[node name="SplashPanel" type="Control" unique_id=865181656 node_paths=PackedStringArray("SkipButton", "LabelContainer", "IntroSoundPlayer")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -13,6 +14,11 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1")
 SkipButton = NodePath("ColorRect/SkipButton")
+LabelContainer = NodePath("ColorRect")
+IntroSoundPlayer = NodePath("AudioStreamPlayer")
+IntroSound = ExtResource("2_ickkd")
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=621243838]
 
 [node name="ColorRect" type="ColorRect" parent="." unique_id=2099039547]
 layout_mode = 1
@@ -221,13 +227,13 @@ text = "Take back what was stolen."
 [node name="SkipButton" type="Button" parent="ColorRect" unique_id=1520401157]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.892
-anchor_top = 0.85200006
-anchor_right = 0.96700007
-anchor_bottom = 0.92600006
-offset_left = -0.64001465
-offset_top = -0.16003418
-offset_right = -0.6401367
-offset_bottom = -0.080078125
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -225.0
+offset_top = -162.0
+offset_right = -100.0
+offset_bottom = -100.0
 theme_override_font_sizes/font_size = 48
 text = "Skip"

@@ -80,6 +80,7 @@ public sealed partial class HUD : Control {
 		ConfigureStateMachine(stateMachine);
 		QuestLog?.Init(questManager);
 		UpdateHealthBar();
+		stateMachine.ForceTransitionTo(MenuState.Game);
 	}
 
 	private void BindPlayerEvents(Player player) {

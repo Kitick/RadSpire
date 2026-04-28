@@ -1,8 +1,22 @@
+namespace UI;
+
 using System;
 using System.Collections.Generic;
 using Godot;
+using Services;
 
 public partial class SplashPanel : Control {
+	private static readonly LogService Log = new(nameof(SplashPanel), enabled: true);
+
+	[ExportCategory("Nodes")]
+	[Export] private Button SkipButton = null!;
+	[Export] private ColorRect LabelContainer = null!;
+
+	[ExportCategory("Audio")]
+	[Export] private AudioStreamPlayer IntroSoundPlayer = null!;
+	[Export] private AudioStream IntroSound = null!;
+
+	[ExportCategory("Config")]
 	[Export] public float InitialDelaySeconds = 0.0f;
 	[Export] public float DelayBetweenLabelsSeconds = 3.0f;
 	[Export] public bool UseDynamicDelayByTextLength = true;
@@ -10,31 +24,24 @@ public partial class SplashPanel : Control {
 	[Export] public float MaxDelayBetweenLabelsSeconds = 20.0f;
 	[Export] public float FadeDurationSeconds = 0.7f;
 	[Export] public float SkipUnlockDelaySeconds = 8.0f;
-	[Export] private Button? SkipButton = null;
 
-	private bool IsSkipRequested;
 	private readonly List<Label> Labels = [];
 	private int NextLabelIndex;
 
+	public event Action? Finished;
+	public event Action? IntroSoundFinished;
+
 	public override void _Ready() {
-		ColorRect labelContainer = GetNodeOrNull<ColorRect>("ColorRect");
+		SkipButton.Visible = false;
+		SkipButton.Disabled = true;
+		SkipButton.Pressed += OnSkipButtonPressed;
 
-		if(labelContainer == null) {
-			GD.PushError("SplashPanel: 'ColorRect' node was not found.");
-			return;
-		}
+		StartTimer(SkipUnlockDelaySeconds, () => {
+			SkipButton.Visible = true;
+			SkipButton.Disabled = false;
+		});
 
-		if(!IsInstanceValid(SkipButton)) {
-			GD.PushWarning("SplashPanel: SkipButton is not assigned.");
-		}
-		else {
-			SkipButton.Visible = false;
-			SkipButton.Disabled = true;
-			SkipButton.Pressed += OnSkipButtonPressed;
-			StartTimer(SkipUnlockDelaySeconds, EnableSkipButton);
-		}
-
-		foreach(Node child in labelContainer.GetChildren()) {
+		foreach(Node child in LabelContainer.GetChildren()) {
 			if(child is Label label) {
 				Labels.Add(label);
 				label.Visible = false;
@@ -44,18 +51,20 @@ public partial class SplashPanel : Control {
 		}
 
 		if(Labels.Count == 0) {
-			GD.PushWarning("SplashPanel: No Label children were found under 'ColorRect'.");
+			Log.Warn("No Label children were found under 'ColorRect'.");
 			return;
 		}
 
 		StartTimer(InitialDelaySeconds, RevealNextLabel);
 	}
 
-	public override void _ExitTree() {
-		if(IsInstanceValid(SkipButton)) {
-			SkipButton.Pressed -= OnSkipButtonPressed;
-		}
+	public void PlayIntroSound() {
+		IntroSoundPlayer.Stream = IntroSound;
+		IntroSoundPlayer.Finished += () => IntroSoundFinished?.Invoke();
+		IntroSoundPlayer.Play();
 	}
+
+	public override void _ExitTree() => SkipButton.Pressed -= OnSkipButtonPressed;
 
 	private float GetDelayForLabel(Label label) {
 		if(!UseDynamicDelayByTextLength || ReadingCharactersPerSecond <= 0f) {
@@ -69,10 +78,6 @@ public partial class SplashPanel : Control {
 	}
 
 	private void ShowLabelWithReveal(Label label) {
-		if(!IsInstanceValid(label)) {
-			return;
-		}
-
 		label.Visible = true;
 
 		Tween tween = CreateTween();
@@ -80,12 +85,12 @@ public partial class SplashPanel : Control {
 	}
 
 	private void RevealNextLabel() {
-		if(IsSkipRequested || !IsInsideTree()) {
+		if(!IsInstanceValid(this)) {
 			return;
 		}
 
 		if(NextLabelIndex >= Labels.Count) {
-			QueueFree();
+			Finished?.Invoke();
 			return;
 		}
 
@@ -100,17 +105,8 @@ public partial class SplashPanel : Control {
 		StartTimer(waitSeconds, RevealNextLabel);
 	}
 
-	private void EnableSkipButton() {
-		if(IsSkipRequested || !IsInsideTree() || !IsInstanceValid(SkipButton)) {
-			return;
-		}
-
-		SkipButton.Visible = true;
-		SkipButton.Disabled = false;
-	}
-
 	private void StartTimer(float seconds, Action callback) {
-		if(IsSkipRequested || !IsInsideTree()) {
+		if(!IsInstanceValid(this)) {
 			return;
 		}
 
@@ -121,7 +117,7 @@ public partial class SplashPanel : Control {
 
 		SceneTreeTimer timer = GetTree().CreateTimer(seconds);
 		timer.Timeout += () => {
-			if(IsSkipRequested || !IsInsideTree()) {
+			if(!IsInstanceValid(this)) {
 				return;
 			}
 
@@ -129,12 +125,5 @@ public partial class SplashPanel : Control {
 		};
 	}
 
-	private void OnSkipButtonPressed() {
-		if(IsSkipRequested) {
-			return;
-		}
-
-		IsSkipRequested = true;
-		QueueFree();
-	}
+	private void OnSkipButtonPressed() => Finished?.Invoke();
 }

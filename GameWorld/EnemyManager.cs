@@ -29,7 +29,7 @@ public sealed partial class EnemyManager : Node, ISaveable<EnemyManagerData> {
 				if(!IsInstanceValid(spawnPoint)) {
 					continue;
 				}
-				SpawnEnemyAt(spawnPoint.GlobalPosition);
+				SpawnEnemyAt(spawnPoint);
 			}
 		}
 
@@ -141,15 +141,21 @@ public sealed partial class EnemyManager : Node, ISaveable<EnemyManagerData> {
 		Log.Info("Cleanup complete.");
 	}
 
-	private void SpawnEnemyAt(Vector3 worldPosition) {
-		Enemy? enemy = CreateAndAddEnemy(Guid.NewGuid().ToString());
+	private void SpawnEnemyAt(Marker3D spawnPoint) {
+		PackedScene sceneToSpawn = EnemyScene;
+		if(spawnPoint is EnemySpawnPoint typedSpawnPoint && typedSpawnPoint.EnemyScene != null) {
+			sceneToSpawn = typedSpawnPoint.EnemyScene;
+		}
+
+		Enemy? enemy = CreateAndAddEnemy(Guid.NewGuid().ToString(), sceneToSpawn);
 		if(enemy == null) { return; }
 
-		enemy.Position = worldPosition;
+		enemy.Position = spawnPoint.GlobalPosition;
 	}
 
-	private Enemy? CreateAndAddEnemy(string id) {
-		Enemy enemy = EnemyScene.Instantiate<Enemy>();
+	private Enemy? CreateAndAddEnemy(string id, PackedScene? enemySceneOverride = null) {
+		PackedScene sceneToSpawn = enemySceneOverride ?? EnemyScene;
+		Enemy enemy = sceneToSpawn.Instantiate<Enemy>();
 		return AddEnemy(id, enemy) ? enemy : null;
 	}
 }

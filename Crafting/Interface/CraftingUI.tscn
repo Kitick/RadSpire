@@ -12,11 +12,9 @@
 
 [node name="Crafting" type="Control" unique_id=2111148912 node_paths=PackedStringArray("CraftableDropdown", "RequirementsList", "CraftButton", "QuantityDisplay", "PosButton", "NegButton", "MainBackground", "LightBackground", "ItemName", "ItemIcon")]
 layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+anchors_preset = 0
+offset_right = 600.0
+offset_bottom = 750.0
 script = ExtResource("1_8hsgg")
 CraftableDropdown = NodePath("MainBackground/LightBackground/CraftableOptionButton")
 RequirementsList = NodePath("MainBackground/LightBackground/ListBackground/ItemsList")
@@ -33,13 +31,8 @@ metadata/_edit_horizontal_guides_ = [0.0]
 [node name="MainBackground" type="ColorRect" parent="." unique_id=29192493]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = -0.004
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 7.6800003
-offset_top = 24.0
-offset_right = -1464.0
-offset_bottom = -376.0
 mouse_filter = 1
 color = Color(0.45054996, 0.2622559, 0.190151, 1)
 
@@ -72,15 +65,11 @@ vertical_alignment = 1
 
 [node name="CraftableOptionButton" type="OptionButton" parent="MainBackground/LightBackground" unique_id=1335649761]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -12.0
-offset_top = -228.0
-offset_right = 4.0
-offset_bottom = -216.0
+anchors_preset = -1
+anchor_left = 0.2
+anchor_top = 0.175
+anchor_right = 0.8
+anchor_bottom = 0.225
 grow_horizontal = 2
 grow_vertical = 2
 alignment = 1

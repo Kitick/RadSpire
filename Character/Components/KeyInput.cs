@@ -22,7 +22,7 @@ public sealed class KeyInput {
 		JumpPressed = ActionEvent.Jump.IsJustPressed();
 		SprintHeld = ActionEvent.Sprint.IsPressed();
 		CrouchHeld = ActionEvent.Crouch.IsPressed();
-		AttackPressed = ActionEvent.Attack.IsJustPressed();
+		AttackPressed = ActionEvent.Attack.IsJustPressed() && !IsHoveringInteractiveControl(camera.GetViewport());
 
 		bool dodgeHeld = ActionEvent.Dodge.IsPressed();
 		bool dodgeJust = ActionEvent.Dodge.IsJustPressed();
@@ -37,6 +37,11 @@ public sealed class KeyInput {
 		// Allow Alt+Move regardless of press order.
 		DodgePressed = (dodgeJust && IsMoving) || (dodgeHeld && moveJust) || (altJust && IsMoving) || (altHeld && moveJust);
 		AltHeldPrev = altHeld;
+	}
+
+	private static bool IsHoveringInteractiveControl(Viewport viewport) {
+		Control? hovered = viewport.GuiGetHoveredControl();
+		return hovered is Button or BaseButton or Slider or SpinBox or LineEdit or TextEdit or OptionButton or MenuButton;
 	}
 
 	private static Vector3 GetHorizontalMovement(CameraRig camera) {
