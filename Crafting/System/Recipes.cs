@@ -163,6 +163,18 @@ public static class Recipes {
 		Outputs: [new(ItemID.Chair, 1)]
 	);
 
+	public static readonly CraftingRecipe CraftBedSmall = new(
+		RecipeName: "Craft Small Bed",
+		Inputs: [new(ItemID.Wood, 8), new(ItemID.Stick, 6), new(ItemID.Stone, 4)],
+		Outputs: [new(ItemID.BedSmall, 1)]
+	);
+
+	public static readonly CraftingRecipe CraftBedBig = new(
+		RecipeName: "Craft Big Bed",
+		Inputs: [new(ItemID.BedSmall, 2), new(ItemID.Wood, 6), new(ItemID.IronBar, 2)],
+		Outputs: [new(ItemID.BedBig, 1)]
+	);
+
 	public static readonly CraftingRecipe CraftTable = new(
 		RecipeName: "Craft Table",
 		Inputs: [new(ItemID.Wood, 4), new(ItemID.Stick, 2)],
@@ -295,6 +307,8 @@ public static class Recipes {
 		CraftChestRare,
 		CraftChestPrecious,
 		CraftChair,
+		CraftBedSmall,
+		CraftBedBig,
 		CraftTable,
 		CraftCounter,
 		CraftCrate,

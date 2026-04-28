@@ -48,6 +48,8 @@ public static class ItemID {
 	public static readonly StringName BlueberryBlue = "BlueberryBlue";
 	public static readonly StringName BlueberryGreen = "BlueberryGreen";
 	public static readonly StringName Bonfire = "Bonfire";
+	public static readonly StringName BedBig = "BedBig";
+	public static readonly StringName BedSmall = "BedSmall";
 	public static readonly StringName Chair = "Chair";
 	public static readonly StringName CherryGreen = "CherryGreen";
 	public static readonly StringName CherryRed = "CherryRed";
