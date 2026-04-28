@@ -7,6 +7,7 @@
 
 [sub_resource type="Resource" id="Resource_4ic2l"]
 script = ExtResource("2_ghdt7")
+VisualType = 1
 metadata/_custom_type_script = "uid://b3r1li6nl8bs3"
 
 [resource]
@@ -14,12 +15,7 @@ script = ExtResource("4_3jhsb")
 Id = "StaffRadiation"
 Name = "Radiation Staff"
 Description = "A staff humming with unstable radiation"
-MaxStackSize = null
 IsConsumable = false
-IsPlaceable = null
-Pickupable = null
-IsWallObject = null
-Can_Object_Stack = null
 IconTexture = ExtResource("3_b17dw")
 ComponentsResources = Array[ExtResource("1_wap71")]([SubResource("Resource_4ic2l")])
 metadata/_custom_type_script = "uid://bxmh4fd7kjvv1"
