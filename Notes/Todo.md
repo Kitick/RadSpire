@@ -1,6 +1,5 @@
 [BUG] crafting the sword does not equip it right away
 [BUG] shield does nothing
-[BUG] Menu music doesnt loop
 
 [BUG] Respawning crashes the game
 [BUG] Enemies attack your dead body
@@ -26,7 +25,6 @@
 [BUG] remove the 5 barrels
 
 [IMP] make the health bar higher for easier visibility
-[IMP] add skip to lorebrief
 [IMP] pickup item should be its own key
 [IMP] Killing enemies is too easy
 [IMP] Add in world game music
