@@ -17,7 +17,7 @@ public sealed partial class PlayerAudio : Node {
 	private double LastFootstepTime;
 	private double DamageDuckUntil;
 
-	private const float FootstepVolumeDb = -10.0f;
+	private const float FootstepVolumeDb = -30.0f;
 	private const float FootstepPitchVariance = 0.03f;
 	private const float LandVolumeDb = -4.0f;
 	private const float LandPitch = 0.82f;
@@ -26,7 +26,7 @@ public sealed partial class PlayerAudio : Node {
 	private const double DamagePitchMax = 1.03;
 
 	public float WalkStepIntervalSeconds = 0.40f;
-	public float SprintStepIntervalSeconds = 0.24f;
+	public float SprintStepIntervalSeconds = 0.60f;
 	public float DamageDuckSeconds = 0.25f;
 	public float DamageFootstepPenaltyDb = -3.0f;
 

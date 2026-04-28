@@ -81,6 +81,7 @@ public sealed partial class GameManager : Node {
 			VolumeDb = GameWorldMusicVolumeDb,
 			Stream = GameWorldMusic,
 			Autoplay = false,
+			ProcessMode = ProcessModeEnum.Always,
 		};
 
 		AddChild(GameWorldMusicPlayer);
