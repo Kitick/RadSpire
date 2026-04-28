@@ -107,6 +107,16 @@ public sealed partial class DatabaseManager : Node {
 					DoorComponent doorComp = new DoorComponent(doorDef.BaseScene, doorDef.SpawnPositionMarker, obj);
 					obj.ComponentDictionary.Add(doorComp);
 				}
+				else if(comp is StructureDefinition structureDef) {
+					StructureComponent structureComp = new StructureComponent(obj) {
+						Value = structureDef.Value
+					};
+					obj.ComponentDictionary.Add(structureComp);
+				}
+				else if(comp is FurnitureValueDefinition furnitureValueDef) {
+					FurnitureValueComponent furnitureValueComp = new FurnitureValueComponent(furnitureValueDef.Value, obj);
+					obj.ComponentDictionary.Add(furnitureValueComp);
+				}
 			}
 		}
 	}

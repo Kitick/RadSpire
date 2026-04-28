@@ -4,6 +4,7 @@
 [ext_resource type="Script" uid="uid://bxmh4fd7kjvv1" path="res://ItemSystem/Definitions/ItemDefinition.cs" id="2_e3eb6"]
 [ext_resource type="Resource" uid="uid://b5k0nki7q4ciq" path="res://ItemSystem/Database/ComponentDefinitions/DoorDefinition/HouseMediumDoor.tres" id="2_pmb3h"]
 [ext_resource type="PackedScene" uid="uid://d2fwb1ant73xq" path="res://ItemSystem/Database/ItemDefinitions/Furniture/Door/HouseMedium/HouseMedium.tscn" id="2_xr45d"]
+[ext_resource type="Resource" path="res://ItemSystem/Database/ComponentDefinitions/StructureDefinition/Structure_MediumHouse.tres" id="3_megtg"]
 [ext_resource type="Texture2D" uid="uid://chyi5jdlymg5d" path="res://ItemSystem/Database/ItemDefinitions/Furniture/Door/HouseMedium/HouseMedium.png" id="3_pmb3h"]
 
 [resource]
@@ -16,5 +17,5 @@ IsPlaceable = true
 Pickupable = true
 IconTexture = ExtResource("3_pmb3h")
 ItemScene = ExtResource("2_xr45d")
-ComponentsResources = Array[ExtResource("1_1fm3o")]([ExtResource("2_pmb3h")])
+ComponentsResources = Array[ExtResource("1_1fm3o")]([ExtResource("2_pmb3h"), ExtResource("3_megtg")])
 metadata/_custom_type_script = "uid://bxmh4fd7kjvv1"

@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://cnm5iegiuj4xu" path="res://ItemSystem/Definitions/ItemComponentDefinition.cs" id="1_su8a2"]
 [ext_resource type="Script" uid="uid://bxmh4fd7kjvv1" path="res://ItemSystem/Definitions/ItemDefinition.cs" id="2_fjl3r"]
 [ext_resource type="Texture2D" uid="uid://jcbih5g5vtrt" path="res://ItemSystem/Database/ItemDefinitions/Furniture/Counter/Counter.png" id="2_pfd7b"]
+[ext_resource type="Resource" path="res://ItemSystem/Database/ComponentDefinitions/FurnitureValueDefinition/FurnitureValue_25.tres" id="2_vo3fo"]
 [ext_resource type="PackedScene" uid="uid://2uup2xis6srx" path="res://ItemSystem/Database/ItemDefinitions/Furniture/Counter/Counter.tscn" id="3_vo3fo"]
 
 [resource]
@@ -16,4 +17,5 @@ Pickupable = true
 Can_Object_Stack = true
 IconTexture = ExtResource("2_pfd7b")
 ItemScene = ExtResource("3_vo3fo")
+ComponentsResources = Array[ExtResource("1_su8a2")]([ExtResource("2_vo3fo")])
 metadata/_custom_type_script = "uid://bxmh4fd7kjvv1"

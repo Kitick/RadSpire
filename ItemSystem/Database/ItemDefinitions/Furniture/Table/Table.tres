@@ -1,6 +1,7 @@
 [gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://d01hfdyuyyvrt"]
 
 [ext_resource type="Script" uid="uid://cnm5iegiuj4xu" path="res://ItemSystem/Definitions/ItemComponentDefinition.cs" id="1_007ci"]
+[ext_resource type="Resource" path="res://ItemSystem/Database/ComponentDefinitions/FurnitureValueDefinition/FurnitureValue_20.tres" id="2_043me"]
 [ext_resource type="Texture2D" uid="uid://cshbrka3niip8" path="res://ItemSystem/Database/ItemDefinitions/Furniture/Table/Table.png" id="2_1718m"]
 [ext_resource type="Script" uid="uid://bxmh4fd7kjvv1" path="res://ItemSystem/Definitions/ItemDefinition.cs" id="2_soo5e"]
 [ext_resource type="PackedScene" uid="uid://bpbehbps8brit" path="res://ItemSystem/Database/ItemDefinitions/Furniture/Table/Table.tscn" id="3_043me"]
@@ -16,4 +17,5 @@ Pickupable = true
 Can_Object_Stack = true
 IconTexture = ExtResource("2_1718m")
 ItemScene = ExtResource("3_043me")
+ComponentsResources = Array[ExtResource("1_007ci")]([ExtResource("2_043me")])
 metadata/_custom_type_script = "uid://bxmh4fd7kjvv1"

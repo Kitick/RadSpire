@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="FurnitureValueDefinition" format=3]
+
+[ext_resource type="Script" path="res://ItemSystem/Definitions/FurnitureValueDefinition.cs" id="1_furniture"]
+
+[resource]
+script = ExtResource("1_furniture")
+Value = 25

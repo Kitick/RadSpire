@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://cnm5iegiuj4xu" path="res://ItemSystem/Definitions/ItemComponentDefinition.cs" id="1_kj14r"]
 [ext_resource type="Script" uid="uid://bxmh4fd7kjvv1" path="res://ItemSystem/Definitions/ItemDefinition.cs" id="2_jsder"]
 [ext_resource type="Resource" uid="uid://bls1glagl8hol" path="res://ItemSystem/Database/ComponentDefinitions/DoorDefinition/Door1.tres" id="2_ye4oa"]
+[ext_resource type="Resource" path="res://ItemSystem/Database/ComponentDefinitions/StructureDefinition/Structure_MediumHouse.tres" id="3_e1pnc"]
 [ext_resource type="Texture2D" uid="uid://lk536vgaaoxv" path="res://ItemSystem/Database/ItemDefinitions/Furniture/Door/House_texture_atlas.png" id="3_yqwxs"]
 [ext_resource type="PackedScene" uid="uid://b3pmhq4qbl3np" path="res://ItemSystem/Database/ItemDefinitions/Furniture/Door/House.tscn" id="4_e1pnc"]
 
@@ -16,5 +17,5 @@ IsPlaceable = true
 Pickupable = true
 IconTexture = ExtResource("3_yqwxs")
 ItemScene = ExtResource("4_e1pnc")
-ComponentsResources = Array[ExtResource("1_kj14r")]([ExtResource("2_ye4oa")])
+ComponentsResources = Array[ExtResource("1_kj14r")]([ExtResource("2_ye4oa"), ExtResource("3_e1pnc")])
 metadata/_custom_type_script = "uid://bxmh4fd7kjvv1"

@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cnm5iegiuj4xu" path="res://ItemSystem/Definitions/ItemComponentDefinition.cs" id="1_lkjmf"]
 [ext_resource type="Resource" uid="uid://c1huxqjph6pmk" path="res://ItemSystem/Database/ComponentDefinitions/InventoryComponentDefinition/3x5InventoryDefinition.tres" id="2_80djj"]
+[ext_resource type="Resource" path="res://ItemSystem/Database/ComponentDefinitions/FurnitureValueDefinition/FurnitureValue_10.tres" id="3_80djj"]
 [ext_resource type="Texture2D" uid="uid://di3gbm6hl11o3" path="res://ItemSystem/Database/ItemDefinitions/Furniture/Crate/Crate.png" id="3_c6siw"]
 [ext_resource type="PackedScene" uid="uid://cvu13u444u4i8" path="res://ItemSystem/Database/ItemDefinitions/Furniture/Crate/CrateBig/CrateBig.tscn" id="4_g2owg"]
 [ext_resource type="Script" uid="uid://bxmh4fd7kjvv1" path="res://ItemSystem/Definitions/ItemDefinition.cs" id="5_q40ok"]
@@ -17,5 +18,5 @@ Pickupable = true
 Can_Object_Stack = true
 IconTexture = ExtResource("3_c6siw")
 ItemScene = ExtResource("4_g2owg")
-ComponentsResources = Array[ExtResource("1_lkjmf")]([ExtResource("2_80djj")])
+ComponentsResources = Array[ExtResource("1_lkjmf")]([ExtResource("2_80djj"), ExtResource("3_80djj")])
 metadata/_custom_type_script = "uid://bxmh4fd7kjvv1"
