@@ -4,6 +4,7 @@ using System;
 using Character;
 using Components;
 using Godot;
+using InventorySystem;
 using ItemSystem;
 using Root;
 using UI;
@@ -24,6 +25,8 @@ public sealed partial class CheatMenu : BaseUIControl {
 
 	[Export] public Button ClearInventoryButton = null!;
 
+	[Export] public Button SuperSpeedButton = null!;
+
 	[ExportCategory("Give Item")]
 	[Export] public LineEdit GiveItemInput = null!;
 	[Export] public SpinBox GiveItemQuantity = null!;
@@ -33,6 +36,10 @@ public sealed partial class CheatMenu : BaseUIControl {
 
 	private const int HealthStep = 10;
 	private const float RadStep = 0.1f;
+	private const float SuperSpeed = 20.0f;
+
+	private float OriginalSpeed;
+	private bool IsSuperSpeedActive;
 
 	private Player? Player;
 	private bool Bound;
@@ -70,6 +77,7 @@ public sealed partial class CheatMenu : BaseUIControl {
 		RemoveRadButton.Pressed += CheatRemoveRad;
 		MaxRadButton.Pressed += CheatMaxRad;
 		ClearInventoryButton.Pressed += CheatClearInventory;
+		SuperSpeedButton.Pressed += CheatToggleSuperSpeed;
 		GiveItemButton.Pressed += CheatGiveItemFromInput;
 		GiveItemSubmitHandler = _ => CheatGiveItemFromInput();
 		GiveItemInput.TextSubmitted += GiveItemSubmitHandler;
@@ -88,13 +96,13 @@ public sealed partial class CheatMenu : BaseUIControl {
 		RemoveRadButton.Pressed -= CheatRemoveRad;
 		MaxRadButton.Pressed -= CheatMaxRad;
 		ClearInventoryButton.Pressed -= CheatClearInventory;
+		SuperSpeedButton.Pressed -= CheatToggleSuperSpeed;
 		GiveItemButton.Pressed -= CheatGiveItemFromInput;
 		if(GiveItemSubmitHandler != null) { GiveItemInput.TextSubmitted -= GiveItemSubmitHandler; }
 	}
 
 	private void CheatHealFull() {
 		if(Player == null) { return; }
-		Player.Radiation.Level = 0f;
 		Player.Health.Current = Player.Health.Max;
 	}
 
@@ -124,8 +132,8 @@ public sealed partial class CheatMenu : BaseUIControl {
 
 	private void CheatClearInventory() {
 		if(Player == null) { return; }
-		foreach(var slot in Player.Inventory.ItemSlots) { slot.ClearSlot(); }
-		foreach(var slot in Player.Hotbar.ItemSlots) { slot.ClearSlot(); }
+		foreach(ItemSlot slot in Player.Inventory.ItemSlots) { slot.ClearSlot(); }
+		foreach(ItemSlot slot in Player.Hotbar.ItemSlots) { slot.ClearSlot(); }
 		Player.Inventory.NotifyChanged();
 		Player.Hotbar.NotifyChanged();
 	}
@@ -136,6 +144,19 @@ public sealed partial class CheatMenu : BaseUIControl {
 		int quantity = (int) GiveItemQuantity.Value;
 		GiveItem(new StringName(id), quantity);
 		GiveItemInput.Clear();
+	}
+
+	private void CheatToggleSuperSpeed() {
+		if(Player == null) { return; }
+		if(IsSuperSpeedActive) {
+			Player.Movement.BaseSpeed = OriginalSpeed;
+			IsSuperSpeedActive = false;
+		}
+		else {
+			OriginalSpeed = Player.Movement.BaseSpeed;
+			Player.Movement.BaseSpeed = SuperSpeed;
+			IsSuperSpeedActive = true;
+		}
 	}
 
 	private void GiveItem(StringName id, int quantity = 1) {

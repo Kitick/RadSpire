@@ -270,7 +270,7 @@ cache/0/17/0/scale = 1.0
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wqb5k"]
 
-[sub_resource type="FontFile" id="SystemFont_n2gdv"]
+[sub_resource type="FontFile" id="SystemFont_cpdsp"]
 subpixel_positioning = 0
 msdf_pixel_range = 14
 msdf_size = 128
@@ -294,15 +294,15 @@ cache/0/17/0/underline_position = 0.0
 cache/0/17/0/underline_thickness = 0.0
 cache/0/17/0/scale = 1.0
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_t46iu"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7d3h3"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dko41"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_t2i4u"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_q8n8h"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_u15qr"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7b8mi"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_drtct"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_c7qsv"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1tfgv"]
 
 [sub_resource type="FontFile" id="SystemFont_rtkd1"]
 subpixel_positioning = 0
@@ -338,40 +338,6 @@ cache/0/17/0/scale = 1.0
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_thy0h"]
 
-[sub_resource type="FontFile" id="SystemFont_wvu8e"]
-subpixel_positioning = 0
-msdf_pixel_range = 14
-msdf_size = 128
-cache/0/variation_coordinates = {}
-cache/0/face_index = 0
-cache/0/embolden = 0.0
-cache/0/transform = Transform2D(1, 0, 0, 1, 0, 0)
-cache/0/spacing_top = 0
-cache/0/spacing_bottom = 0
-cache/0/spacing_space = 0
-cache/0/spacing_glyph = 0
-cache/0/baseline_offset = 0.0
-cache/0/16/0/ascent = 0.0
-cache/0/16/0/descent = 0.0
-cache/0/16/0/underline_position = 0.0
-cache/0/16/0/underline_thickness = 0.0
-cache/0/16/0/scale = 1.0
-cache/0/17/0/ascent = 0.0
-cache/0/17/0/descent = 0.0
-cache/0/17/0/underline_position = 0.0
-cache/0/17/0/underline_thickness = 0.0
-cache/0/17/0/scale = 1.0
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3tvhq"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_e56na"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_etctp"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bwmm1"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2y06q"]
-
 [sub_resource type="FontFile" id="SystemFont_1ymbs"]
 subpixel_positioning = 0
 msdf_pixel_range = 14
@@ -405,6 +371,40 @@ cache/0/17/0/scale = 1.0
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_cqpgf"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1du1y"]
+
+[sub_resource type="FontFile" id="SystemFont_wvu8e"]
+subpixel_positioning = 0
+msdf_pixel_range = 14
+msdf_size = 128
+cache/0/variation_coordinates = {}
+cache/0/face_index = 0
+cache/0/embolden = 0.0
+cache/0/transform = Transform2D(1, 0, 0, 1, 0, 0)
+cache/0/spacing_top = 0
+cache/0/spacing_bottom = 0
+cache/0/spacing_space = 0
+cache/0/spacing_glyph = 0
+cache/0/baseline_offset = 0.0
+cache/0/16/0/ascent = 0.0
+cache/0/16/0/descent = 0.0
+cache/0/16/0/underline_position = 0.0
+cache/0/16/0/underline_thickness = 0.0
+cache/0/16/0/scale = 1.0
+cache/0/17/0/ascent = 0.0
+cache/0/17/0/descent = 0.0
+cache/0/17/0/underline_position = 0.0
+cache/0/17/0/underline_thickness = 0.0
+cache/0/17/0/scale = 1.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3tvhq"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_e56na"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_etctp"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bwmm1"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2y06q"]
 
 [sub_resource type="FontFile" id="SystemFont_ymx0l"]
 subpixel_positioning = 0
@@ -440,7 +440,7 @@ cache/0/17/0/scale = 1.0
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_mipmn"]
 
-[sub_resource type="FontFile" id="SystemFont_cpdsp"]
+[sub_resource type="FontFile" id="SystemFont_n2gdv"]
 subpixel_positioning = 0
 msdf_pixel_range = 14
 msdf_size = 128
@@ -464,15 +464,15 @@ cache/0/17/0/underline_position = 0.0
 cache/0/17/0/underline_thickness = 0.0
 cache/0/17/0/scale = 1.0
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7d3h3"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_t46iu"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_t2i4u"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dko41"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_u15qr"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_q8n8h"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_drtct"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7b8mi"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1tfgv"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_c7qsv"]
 
 [sub_resource type="FontFile" id="SystemFont_lbye4"]
 subpixel_positioning = 0
@@ -542,13 +542,13 @@ cache/0/18/0/scale = 1.0
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tgiiv"]
 
-[node name="CheatMenu" type="Control" unique_id=41462272 node_paths=PackedStringArray("CloseButton", "HealFullButton", "HealButton", "HurtButton", "KillButton", "ClearRadButton", "AddRadButton", "RemoveRadButton", "MaxRadButton", "ClearInventoryButton", "GiveItemInput", "GiveItemQuantity", "GiveItemButton")]
+[node name="CheatMenu" type="Control" unique_id=41462272 node_paths=PackedStringArray("CloseButton", "HealFullButton", "HealButton", "HurtButton", "KillButton", "ClearRadButton", "AddRadButton", "RemoveRadButton", "MaxRadButton", "ClearInventoryButton", "SuperSpeedButton", "GiveItemInput", "GiveItemQuantity", "GiveItemButton")]
 layout_mode = 3
 anchors_preset = 0
 theme = SubResource("Theme_default")
 script = ExtResource("1_cheat")
 CloseButton = NodePath("PanelArea/Header/Close")
-HealFullButton = NodePath("PanelArea/Grid/HealFull")
+HealFullButton = NodePath("PanelArea/Grid/FullHealth")
 HealButton = NodePath("PanelArea/Grid/Heal")
 HurtButton = NodePath("PanelArea/Grid/Hurt")
 KillButton = NodePath("PanelArea/Grid/Kill")
@@ -557,6 +557,7 @@ AddRadButton = NodePath("PanelArea/Grid/AddRad")
 RemoveRadButton = NodePath("PanelArea/Grid/RemoveRad")
 MaxRadButton = NodePath("PanelArea/Grid/MaxRad")
 ClearInventoryButton = NodePath("PanelArea/Grid/ClearInventory")
+SuperSpeedButton = NodePath("PanelArea/Grid/SuperSpeed")
 GiveItemInput = NodePath("PanelArea/GiveRow/GiveItemInput")
 GiveItemQuantity = NodePath("PanelArea/GiveRow/GiveItemQuantity")
 GiveItemButton = NodePath("PanelArea/GiveRow/GiveItemButton")
@@ -610,7 +611,7 @@ theme_override_constants/h_separation = 6
 theme_override_constants/v_separation = 6
 columns = 5
 
-[node name="HealFull" type="Button" parent="PanelArea/Grid" unique_id=1854590548]
+[node name="FullHealth" type="Button" parent="PanelArea/Grid" unique_id=1854590548]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -621,8 +622,7 @@ theme_override_styles/pressed = SubResource("StyleBoxEmpty_v3cqm")
 theme_override_styles/hover = SubResource("StyleBoxEmpty_ci0a7")
 theme_override_styles/disabled = SubResource("StyleBoxEmpty_ob74a")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_n2gdv")
-text = "HEAL FULL
-+ CLEAR RAD"
+text = "FULL HEAL"
 
 [node name="Heal" type="Button" parent="PanelArea/Grid" unique_id=1854590549]
 layout_mode = 2
@@ -652,18 +652,32 @@ theme_override_styles/focus = SubResource("StyleBoxEmpty_wqb5k")
 text = "HURT
 -10%"
 
-[node name="Kill" type="Button" parent="PanelArea/Grid" unique_id=1064081175]
+[node name="SuperSpeed" type="Button" parent="PanelArea/Grid" unique_id=914178640]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme_override_fonts/font = SubResource("SystemFont_n2gdv")
+theme_override_fonts/font = SubResource("SystemFont_cpdsp")
 theme_override_font_sizes/font_size = 17
-theme_override_styles/normal = SubResource("StyleBoxEmpty_t46iu")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_dko41")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_q8n8h")
-theme_override_styles/disabled = SubResource("StyleBoxEmpty_7b8mi")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_c7qsv")
-text = "KILL PLAYER"
+theme_override_styles/normal = SubResource("StyleBoxEmpty_7d3h3")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_t2i4u")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_u15qr")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_drtct")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_1tfgv")
+text = "SUPER SPEED"
+
+[node name="ClearInventory" type="Button" parent="PanelArea/Grid" unique_id=1852310945]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_fonts/font = SubResource("SystemFont_cpdsp")
+theme_override_font_sizes/font_size = 17
+theme_override_styles/normal = SubResource("StyleBoxEmpty_7d3h3")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_t2i4u")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_u15qr")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_drtct")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_1tfgv")
+text = "CLEAR
+INVENTORY"
 
 [node name="ClearRad" type="Button" parent="PanelArea/Grid" unique_id=1014355000]
 layout_mode = 2
@@ -679,20 +693,6 @@ theme_override_styles/focus = SubResource("StyleBoxEmpty_thy0h")
 text = "CLEAR
 RADIATION"
 
-[node name="AddRad" type="Button" parent="PanelArea/Grid" unique_id=1014355001]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_fonts/font = SubResource("SystemFont_wvu8e")
-theme_override_font_sizes/font_size = 17
-theme_override_styles/normal = SubResource("StyleBoxEmpty_3tvhq")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_e56na")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_etctp")
-theme_override_styles/disabled = SubResource("StyleBoxEmpty_bwmm1")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_2y06q")
-text = "ADD RAD
-+10%"
-
 [node name="RemoveRad" type="Button" parent="PanelArea/Grid" unique_id=1014355002]
 layout_mode = 2
 size_flags_horizontal = 3
@@ -704,8 +704,22 @@ theme_override_styles/pressed = SubResource("StyleBoxEmpty_2sfbr")
 theme_override_styles/hover = SubResource("StyleBoxEmpty_lyawq")
 theme_override_styles/disabled = SubResource("StyleBoxEmpty_cqpgf")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_1du1y")
-text = "REMOVE RAD
+text = "RADIATION
 -10%"
+
+[node name="AddRad" type="Button" parent="PanelArea/Grid" unique_id=1014355001]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_fonts/font = SubResource("SystemFont_wvu8e")
+theme_override_font_sizes/font_size = 17
+theme_override_styles/normal = SubResource("StyleBoxEmpty_3tvhq")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_e56na")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_etctp")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_bwmm1")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_2y06q")
+text = "RADIATION
++10%"
 
 [node name="MaxRad" type="Button" parent="PanelArea/Grid" unique_id=227245817]
 layout_mode = 2
@@ -721,19 +735,18 @@ theme_override_styles/focus = SubResource("StyleBoxEmpty_mipmn")
 text = "MAX
 RADIATION"
 
-[node name="ClearInventory" type="Button" parent="PanelArea/Grid" unique_id=914178640]
+[node name="Kill" type="Button" parent="PanelArea/Grid" unique_id=1064081175]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme_override_fonts/font = SubResource("SystemFont_cpdsp")
+theme_override_fonts/font = SubResource("SystemFont_n2gdv")
 theme_override_font_sizes/font_size = 17
-theme_override_styles/normal = SubResource("StyleBoxEmpty_7d3h3")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_t2i4u")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_u15qr")
-theme_override_styles/disabled = SubResource("StyleBoxEmpty_drtct")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_1tfgv")
-text = "CLEAR
-INVENTORY"
+theme_override_styles/normal = SubResource("StyleBoxEmpty_t46iu")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_dko41")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_q8n8h")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_7b8mi")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_c7qsv")
+text = "KILL PLAYER"
 
 [node name="GiveRow" type="HBoxContainer" parent="PanelArea" unique_id=300000001]
 layout_mode = 1
