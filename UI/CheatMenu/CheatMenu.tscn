@@ -1,9 +1,495 @@
 [gd_scene format=3 uid="uid://cheatmenu0001"]
 
 [ext_resource type="Script" uid="uid://dqclg6jv1iw33" path="res://UI/CheatMenu/CheatMenu.cs" id="1_cheat"]
-[ext_resource type="Texture2D" uid="uid://n3pg68s8kwf3" path="res://UI/Theme/Button_Sprites/wood_back_panel.png" id="2_cheat"]
 
 [sub_resource type="Theme" id="Theme_default"]
+
+[sub_resource type="FontFile" id="SystemFont_3bghr"]
+cache/0/variation_coordinates = {}
+cache/0/face_index = 0
+cache/0/embolden = 0.0
+cache/0/transform = Transform2D(1, 0, 0, 1, 0, 0)
+cache/0/spacing_top = 0
+cache/0/spacing_bottom = 0
+cache/0/spacing_space = 0
+cache/0/spacing_glyph = 0
+cache/0/baseline_offset = 0.0
+cache/0/16/0/ascent = 0.0
+cache/0/16/0/descent = 0.0
+cache/0/16/0/underline_position = 0.0
+cache/0/16/0/underline_thickness = 0.0
+cache/0/16/0/scale = 1.0
+cache/0/17/0/ascent = 0.0
+cache/0/17/0/descent = 0.0
+cache/0/17/0/underline_position = 0.0
+cache/0/17/0/underline_thickness = 0.0
+cache/0/17/0/scale = 1.0
+cache/0/22/0/ascent = 0.0
+cache/0/22/0/descent = 0.0
+cache/0/22/0/underline_position = 0.0
+cache/0/22/0/underline_thickness = 0.0
+cache/0/22/0/scale = 1.0
+
+[sub_resource type="FontFile" id="SystemFont_ci0a7"]
+cache/0/variation_coordinates = {}
+cache/0/face_index = 0
+cache/0/embolden = 0.0
+cache/0/transform = Transform2D(1, 0, 0, 1, 0, 0)
+cache/0/spacing_top = 0
+cache/0/spacing_bottom = 0
+cache/0/spacing_space = 0
+cache/0/spacing_glyph = 0
+cache/0/baseline_offset = 0.0
+cache/0/16/0/ascent = 0.0
+cache/0/16/0/descent = 0.0
+cache/0/16/0/underline_position = 0.0
+cache/0/16/0/underline_thickness = 0.0
+cache/0/16/0/scale = 1.0
+cache/0/17/0/ascent = 0.0
+cache/0/17/0/descent = 0.0
+cache/0/17/0/underline_position = 0.0
+cache/0/17/0/underline_thickness = 0.0
+cache/0/17/0/scale = 1.0
+
+[sub_resource type="FontFile" id="SystemFont_ob74a"]
+cache/0/variation_coordinates = {}
+cache/0/face_index = 0
+cache/0/embolden = 0.0
+cache/0/transform = Transform2D(1, 0, 0, 1, 0, 0)
+cache/0/spacing_top = 0
+cache/0/spacing_bottom = 0
+cache/0/spacing_space = 0
+cache/0/spacing_glyph = 0
+cache/0/baseline_offset = 0.0
+cache/0/16/0/ascent = 0.0
+cache/0/16/0/descent = 0.0
+cache/0/16/0/underline_position = 0.0
+cache/0/16/0/underline_thickness = 0.0
+cache/0/16/0/scale = 1.0
+cache/0/17/0/ascent = 0.0
+cache/0/17/0/descent = 0.0
+cache/0/17/0/underline_position = 0.0
+cache/0/17/0/underline_thickness = 0.0
+cache/0/17/0/scale = 1.0
+
+[sub_resource type="FontFile" id="SystemFont_slxuj"]
+cache/0/variation_coordinates = {}
+cache/0/face_index = 0
+cache/0/embolden = 0.0
+cache/0/transform = Transform2D(1, 0, 0, 1, 0, 0)
+cache/0/spacing_top = 0
+cache/0/spacing_bottom = 0
+cache/0/spacing_space = 0
+cache/0/spacing_glyph = 0
+cache/0/baseline_offset = 0.0
+cache/0/16/0/ascent = 0.0
+cache/0/16/0/descent = 0.0
+cache/0/16/0/underline_position = 0.0
+cache/0/16/0/underline_thickness = 0.0
+cache/0/16/0/scale = 1.0
+cache/0/17/0/ascent = 0.0
+cache/0/17/0/descent = 0.0
+cache/0/17/0/underline_position = 0.0
+cache/0/17/0/underline_thickness = 0.0
+cache/0/17/0/scale = 1.0
+
+[sub_resource type="FontFile" id="SystemFont_wqb5k"]
+cache/0/variation_coordinates = {}
+cache/0/face_index = 0
+cache/0/embolden = 0.0
+cache/0/transform = Transform2D(1, 0, 0, 1, 0, 0)
+cache/0/spacing_top = 0
+cache/0/spacing_bottom = 0
+cache/0/spacing_space = 0
+cache/0/spacing_glyph = 0
+cache/0/baseline_offset = 0.0
+cache/0/16/0/ascent = 0.0
+cache/0/16/0/descent = 0.0
+cache/0/16/0/underline_position = 0.0
+cache/0/16/0/underline_thickness = 0.0
+cache/0/16/0/scale = 1.0
+cache/0/17/0/ascent = 0.0
+cache/0/17/0/descent = 0.0
+cache/0/17/0/underline_position = 0.0
+cache/0/17/0/underline_thickness = 0.0
+cache/0/17/0/scale = 1.0
+
+[sub_resource type="FontFile" id="SystemFont_y7kl3"]
+cache/0/variation_coordinates = {}
+cache/0/face_index = 0
+cache/0/embolden = 0.0
+cache/0/transform = Transform2D(1, 0, 0, 1, 0, 0)
+cache/0/spacing_top = 0
+cache/0/spacing_bottom = 0
+cache/0/spacing_space = 0
+cache/0/spacing_glyph = 0
+cache/0/baseline_offset = 0.0
+cache/0/16/0/ascent = 0.0
+cache/0/16/0/descent = 0.0
+cache/0/16/0/underline_position = 0.0
+cache/0/16/0/underline_thickness = 0.0
+cache/0/16/0/scale = 1.0
+cache/0/17/0/ascent = 0.0
+cache/0/17/0/descent = 0.0
+cache/0/17/0/underline_position = 0.0
+cache/0/17/0/underline_thickness = 0.0
+cache/0/17/0/scale = 1.0
+cache/0/20/0/ascent = 0.0
+cache/0/20/0/descent = 0.0
+cache/0/20/0/underline_position = 0.0
+cache/0/20/0/underline_thickness = 0.0
+cache/0/20/0/scale = 1.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_h2gaj"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_lwn62"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_10q1q"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_yrpl0"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_d46bp"]
+
+[sub_resource type="FontFile" id="SystemFont_v3cqm"]
+cache/0/variation_coordinates = {}
+cache/0/face_index = 0
+cache/0/embolden = 0.0
+cache/0/transform = Transform2D(1, 0, 0, 1, 0, 0)
+cache/0/spacing_top = 0
+cache/0/spacing_bottom = 0
+cache/0/spacing_space = 0
+cache/0/spacing_glyph = 0
+cache/0/baseline_offset = 0.0
+cache/0/16/0/ascent = 0.0
+cache/0/16/0/descent = 0.0
+cache/0/16/0/underline_position = 0.0
+cache/0/16/0/underline_thickness = 0.0
+cache/0/16/0/scale = 1.0
+cache/0/17/0/ascent = 0.0
+cache/0/17/0/descent = 0.0
+cache/0/17/0/underline_position = 0.0
+cache/0/17/0/underline_thickness = 0.0
+cache/0/17/0/scale = 1.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_y7kl3"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_v3cqm"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ci0a7"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ob74a"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_n2gdv"]
+
+[sub_resource type="FontFile" id="FontFile_ci0a7"]
+cache/0/variation_coordinates = {}
+cache/0/face_index = 0
+cache/0/embolden = 0.0
+cache/0/transform = Transform2D(1, 0, 0, 1, 0, 0)
+cache/0/spacing_top = 0
+cache/0/spacing_bottom = 0
+cache/0/spacing_space = 0
+cache/0/spacing_glyph = 0
+cache/0/baseline_offset = 0.0
+cache/0/16/0/ascent = 0.0
+cache/0/16/0/descent = 0.0
+cache/0/16/0/underline_position = 0.0
+cache/0/16/0/underline_thickness = 0.0
+cache/0/16/0/scale = 1.0
+cache/0/17/0/ascent = 0.0
+cache/0/17/0/descent = 0.0
+cache/0/17/0/underline_position = 0.0
+cache/0/17/0/underline_thickness = 0.0
+cache/0/17/0/scale = 1.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3bghr"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rtkd1"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wvu8e"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1ymbs"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ymx0l"]
+
+[sub_resource type="FontFile" id="FontFile_ob74a"]
+cache/0/variation_coordinates = {}
+cache/0/face_index = 0
+cache/0/embolden = 0.0
+cache/0/transform = Transform2D(1, 0, 0, 1, 0, 0)
+cache/0/spacing_top = 0
+cache/0/spacing_bottom = 0
+cache/0/spacing_space = 0
+cache/0/spacing_glyph = 0
+cache/0/baseline_offset = 0.0
+cache/0/16/0/ascent = 0.0
+cache/0/16/0/descent = 0.0
+cache/0/16/0/underline_position = 0.0
+cache/0/16/0/underline_thickness = 0.0
+cache/0/16/0/scale = 1.0
+cache/0/17/0/ascent = 0.0
+cache/0/17/0/descent = 0.0
+cache/0/17/0/underline_position = 0.0
+cache/0/17/0/underline_thickness = 0.0
+cache/0/17/0/scale = 1.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_cpdsp"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_lbye4"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bvhu7"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_slxuj"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wqb5k"]
+
+[sub_resource type="FontFile" id="SystemFont_n2gdv"]
+cache/0/variation_coordinates = {}
+cache/0/face_index = 0
+cache/0/embolden = 0.0
+cache/0/transform = Transform2D(1, 0, 0, 1, 0, 0)
+cache/0/spacing_top = 0
+cache/0/spacing_bottom = 0
+cache/0/spacing_space = 0
+cache/0/spacing_glyph = 0
+cache/0/baseline_offset = 0.0
+cache/0/16/0/ascent = 0.0
+cache/0/16/0/descent = 0.0
+cache/0/16/0/underline_position = 0.0
+cache/0/16/0/underline_thickness = 0.0
+cache/0/16/0/scale = 1.0
+cache/0/17/0/ascent = 0.0
+cache/0/17/0/descent = 0.0
+cache/0/17/0/underline_position = 0.0
+cache/0/17/0/underline_thickness = 0.0
+cache/0/17/0/scale = 1.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_t46iu"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dko41"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_q8n8h"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7b8mi"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_c7qsv"]
+
+[sub_resource type="FontFile" id="SystemFont_rtkd1"]
+cache/0/variation_coordinates = {}
+cache/0/face_index = 0
+cache/0/embolden = 0.0
+cache/0/transform = Transform2D(1, 0, 0, 1, 0, 0)
+cache/0/spacing_top = 0
+cache/0/spacing_bottom = 0
+cache/0/spacing_space = 0
+cache/0/spacing_glyph = 0
+cache/0/baseline_offset = 0.0
+cache/0/16/0/ascent = 0.0
+cache/0/16/0/descent = 0.0
+cache/0/16/0/underline_position = 0.0
+cache/0/16/0/underline_thickness = 0.0
+cache/0/16/0/scale = 1.0
+cache/0/17/0/ascent = 0.0
+cache/0/17/0/descent = 0.0
+cache/0/17/0/underline_position = 0.0
+cache/0/17/0/underline_thickness = 0.0
+cache/0/17/0/scale = 1.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5vk4q"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gscio"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_otxbv"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_lemec"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_thy0h"]
+
+[sub_resource type="FontFile" id="SystemFont_wvu8e"]
+cache/0/variation_coordinates = {}
+cache/0/face_index = 0
+cache/0/embolden = 0.0
+cache/0/transform = Transform2D(1, 0, 0, 1, 0, 0)
+cache/0/spacing_top = 0
+cache/0/spacing_bottom = 0
+cache/0/spacing_space = 0
+cache/0/spacing_glyph = 0
+cache/0/baseline_offset = 0.0
+cache/0/16/0/ascent = 0.0
+cache/0/16/0/descent = 0.0
+cache/0/16/0/underline_position = 0.0
+cache/0/16/0/underline_thickness = 0.0
+cache/0/16/0/scale = 1.0
+cache/0/17/0/ascent = 0.0
+cache/0/17/0/descent = 0.0
+cache/0/17/0/underline_position = 0.0
+cache/0/17/0/underline_thickness = 0.0
+cache/0/17/0/scale = 1.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3tvhq"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_e56na"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_etctp"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bwmm1"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2y06q"]
+
+[sub_resource type="FontFile" id="SystemFont_1ymbs"]
+cache/0/variation_coordinates = {}
+cache/0/face_index = 0
+cache/0/embolden = 0.0
+cache/0/transform = Transform2D(1, 0, 0, 1, 0, 0)
+cache/0/spacing_top = 0
+cache/0/spacing_bottom = 0
+cache/0/spacing_space = 0
+cache/0/spacing_glyph = 0
+cache/0/baseline_offset = 0.0
+cache/0/16/0/ascent = 0.0
+cache/0/16/0/descent = 0.0
+cache/0/16/0/underline_position = 0.0
+cache/0/16/0/underline_thickness = 0.0
+cache/0/16/0/scale = 1.0
+cache/0/17/0/ascent = 0.0
+cache/0/17/0/descent = 0.0
+cache/0/17/0/underline_position = 0.0
+cache/0/17/0/underline_thickness = 0.0
+cache/0/17/0/scale = 1.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_l0qyt"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2sfbr"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_lyawq"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_cqpgf"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1du1y"]
+
+[sub_resource type="FontFile" id="SystemFont_ymx0l"]
+cache/0/variation_coordinates = {}
+cache/0/face_index = 0
+cache/0/embolden = 0.0
+cache/0/transform = Transform2D(1, 0, 0, 1, 0, 0)
+cache/0/spacing_top = 0
+cache/0/spacing_bottom = 0
+cache/0/spacing_space = 0
+cache/0/spacing_glyph = 0
+cache/0/baseline_offset = 0.0
+cache/0/16/0/ascent = 0.0
+cache/0/16/0/descent = 0.0
+cache/0/16/0/underline_position = 0.0
+cache/0/16/0/underline_thickness = 0.0
+cache/0/16/0/scale = 1.0
+cache/0/17/0/ascent = 0.0
+cache/0/17/0/descent = 0.0
+cache/0/17/0/underline_position = 0.0
+cache/0/17/0/underline_thickness = 0.0
+cache/0/17/0/scale = 1.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_s3x20"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ljvsf"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_acsfq"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_fh4tq"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_mipmn"]
+
+[sub_resource type="FontFile" id="SystemFont_cpdsp"]
+cache/0/variation_coordinates = {}
+cache/0/face_index = 0
+cache/0/embolden = 0.0
+cache/0/transform = Transform2D(1, 0, 0, 1, 0, 0)
+cache/0/spacing_top = 0
+cache/0/spacing_bottom = 0
+cache/0/spacing_space = 0
+cache/0/spacing_glyph = 0
+cache/0/baseline_offset = 0.0
+cache/0/16/0/ascent = 0.0
+cache/0/16/0/descent = 0.0
+cache/0/16/0/underline_position = 0.0
+cache/0/16/0/underline_thickness = 0.0
+cache/0/16/0/scale = 1.0
+cache/0/17/0/ascent = 0.0
+cache/0/17/0/descent = 0.0
+cache/0/17/0/underline_position = 0.0
+cache/0/17/0/underline_thickness = 0.0
+cache/0/17/0/scale = 1.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7d3h3"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_t2i4u"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_u15qr"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_drtct"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1tfgv"]
+
+[sub_resource type="FontFile" id="SystemFont_lbye4"]
+cache/0/variation_coordinates = {}
+cache/0/face_index = 0
+cache/0/embolden = 0.0
+cache/0/transform = Transform2D(1, 0, 0, 1, 0, 0)
+cache/0/spacing_top = 0
+cache/0/spacing_bottom = 0
+cache/0/spacing_space = 0
+cache/0/spacing_glyph = 0
+cache/0/baseline_offset = 0.0
+cache/0/16/0/ascent = 0.0
+cache/0/16/0/descent = 0.0
+cache/0/16/0/underline_position = 0.0
+cache/0/16/0/underline_thickness = 0.0
+cache/0/16/0/scale = 1.0
+cache/0/17/0/ascent = 0.0
+cache/0/17/0/descent = 0.0
+cache/0/17/0/underline_position = 0.0
+cache/0/17/0/underline_thickness = 0.0
+cache/0/17/0/scale = 1.0
+cache/0/18/0/ascent = 0.0
+cache/0/18/0/descent = 0.0
+cache/0/18/0/underline_position = 0.0
+cache/0/18/0/underline_thickness = 0.0
+cache/0/18/0/scale = 1.0
+
+[sub_resource type="FontFile" id="SystemFont_bvhu7"]
+cache/0/variation_coordinates = {}
+cache/0/face_index = 0
+cache/0/embolden = 0.0
+cache/0/transform = Transform2D(1, 0, 0, 1, 0, 0)
+cache/0/spacing_top = 0
+cache/0/spacing_bottom = 0
+cache/0/spacing_space = 0
+cache/0/spacing_glyph = 0
+cache/0/baseline_offset = 0.0
+cache/0/16/0/ascent = 0.0
+cache/0/16/0/descent = 0.0
+cache/0/16/0/underline_position = 0.0
+cache/0/16/0/underline_thickness = 0.0
+cache/0/16/0/scale = 1.0
+cache/0/17/0/ascent = 0.0
+cache/0/17/0/descent = 0.0
+cache/0/17/0/underline_position = 0.0
+cache/0/17/0/underline_thickness = 0.0
+cache/0/17/0/scale = 1.0
+cache/0/18/0/ascent = 0.0
+cache/0/18/0/descent = 0.0
+cache/0/18/0/underline_position = 0.0
+cache/0/18/0/underline_thickness = 0.0
+cache/0/18/0/scale = 1.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_4u2pc"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8xt0k"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bna1o"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_j2hcr"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tgiiv"]
 
 [node name="CheatMenu" type="Control" unique_id=41462272 node_paths=PackedStringArray("CloseButton", "HealFullButton", "HealButton", "HurtButton", "KillButton", "ClearRadButton", "AddRadButton", "RemoveRadButton", "MaxRadButton", "ClearInventoryButton", "GiveItemInput", "GiveItemQuantity", "GiveItemButton")]
 layout_mode = 3
@@ -24,12 +510,12 @@ GiveItemInput = NodePath("PanelArea/GiveRow/GiveItemInput")
 GiveItemQuantity = NodePath("PanelArea/GiveRow/GiveItemQuantity")
 GiveItemButton = NodePath("PanelArea/GiveRow/GiveItemButton")
 
-[node name="PanelArea" type="TextureRect" parent="." unique_id=386284298]
+[node name="PanelArea" type="ColorRect" parent="." unique_id=2094560823]
 layout_mode = 1
 anchors_preset = -1
 offset_right = 1000.0
 offset_bottom = 340.0
-texture = ExtResource("2_cheat")
+color = Color(0.23537064, 0.23537049, 0.23537052, 1)
 
 [node name="Header" type="HBoxContainer" parent="PanelArea" unique_id=100000001]
 layout_mode = 1
@@ -41,6 +527,11 @@ theme_override_constants/separation = 0
 [node name="Title" type="RichTextLabel" parent="PanelArea/Header" unique_id=100000002]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_fonts/normal_font = SubResource("SystemFont_3bghr")
+theme_override_fonts/bold_font = SubResource("SystemFont_ci0a7")
+theme_override_fonts/bold_italics_font = SubResource("SystemFont_ob74a")
+theme_override_fonts/italics_font = SubResource("SystemFont_slxuj")
+theme_override_fonts/mono_font = SubResource("SystemFont_wqb5k")
 theme_override_font_sizes/normal_font_size = 22
 text = "CHEAT MENU"
 horizontal_alignment = 1
@@ -49,7 +540,13 @@ vertical_alignment = 1
 [node name="Close" type="Button" parent="PanelArea/Header" unique_id=40147227]
 custom_minimum_size = Vector2(90, 0)
 layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_y7kl3")
 theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxEmpty_h2gaj")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_lwn62")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_10q1q")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_yrpl0")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_d46bp")
 text = "CLOSE"
 
 [node name="Grid" type="GridContainer" parent="PanelArea" unique_id=200000001]
@@ -66,7 +563,13 @@ columns = 5
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme_override_fonts/font = SubResource("SystemFont_v3cqm")
 theme_override_font_sizes/font_size = 17
+theme_override_styles/normal = SubResource("StyleBoxEmpty_y7kl3")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_v3cqm")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_ci0a7")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_ob74a")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_n2gdv")
 text = "HEAL FULL
 + CLEAR RAD"
 
@@ -74,7 +577,13 @@ text = "HEAL FULL
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme_override_fonts/font = SubResource("FontFile_ci0a7")
 theme_override_font_sizes/font_size = 17
+theme_override_styles/normal = SubResource("StyleBoxEmpty_3bghr")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_rtkd1")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_wvu8e")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_1ymbs")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_ymx0l")
 text = "HEAL
 +10%"
 
@@ -82,7 +591,13 @@ text = "HEAL
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme_override_fonts/font = SubResource("FontFile_ob74a")
 theme_override_font_sizes/font_size = 17
+theme_override_styles/normal = SubResource("StyleBoxEmpty_cpdsp")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_lbye4")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_bvhu7")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_slxuj")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_wqb5k")
 text = "HURT
 -10%"
 
@@ -90,14 +605,26 @@ text = "HURT
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme_override_fonts/font = SubResource("SystemFont_n2gdv")
 theme_override_font_sizes/font_size = 17
+theme_override_styles/normal = SubResource("StyleBoxEmpty_t46iu")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_dko41")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_q8n8h")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_7b8mi")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_c7qsv")
 text = "KILL PLAYER"
 
 [node name="ClearRad" type="Button" parent="PanelArea/Grid" unique_id=1014355000]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme_override_fonts/font = SubResource("SystemFont_rtkd1")
 theme_override_font_sizes/font_size = 17
+theme_override_styles/normal = SubResource("StyleBoxEmpty_5vk4q")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_gscio")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_otxbv")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_lemec")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_thy0h")
 text = "CLEAR
 RADIATION"
 
@@ -105,7 +632,13 @@ RADIATION"
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme_override_fonts/font = SubResource("SystemFont_wvu8e")
 theme_override_font_sizes/font_size = 17
+theme_override_styles/normal = SubResource("StyleBoxEmpty_3tvhq")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_e56na")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_etctp")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_bwmm1")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_2y06q")
 text = "ADD RAD
 +10%"
 
@@ -113,7 +646,13 @@ text = "ADD RAD
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme_override_fonts/font = SubResource("SystemFont_1ymbs")
 theme_override_font_sizes/font_size = 17
+theme_override_styles/normal = SubResource("StyleBoxEmpty_l0qyt")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_2sfbr")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_lyawq")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_cqpgf")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_1du1y")
 text = "REMOVE RAD
 -10%"
 
@@ -121,7 +660,13 @@ text = "REMOVE RAD
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme_override_fonts/font = SubResource("SystemFont_ymx0l")
 theme_override_font_sizes/font_size = 17
+theme_override_styles/normal = SubResource("StyleBoxEmpty_s3x20")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_ljvsf")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_acsfq")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_fh4tq")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_mipmn")
 text = "MAX
 RADIATION"
 
@@ -129,7 +674,13 @@ RADIATION"
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme_override_fonts/font = SubResource("SystemFont_cpdsp")
 theme_override_font_sizes/font_size = 17
+theme_override_styles/normal = SubResource("StyleBoxEmpty_7d3h3")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_t2i4u")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_u15qr")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_drtct")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_1tfgv")
 text = "CLEAR
 INVENTORY"
 
@@ -144,6 +695,7 @@ theme_override_constants/separation = 6
 [node name="GiveItemInput" type="LineEdit" parent="PanelArea/GiveRow" unique_id=300000002]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_fonts/font = SubResource("SystemFont_lbye4")
 theme_override_font_sizes/font_size = 18
 placeholder_text = "Item ID (e.g. SwordIron)"
 
@@ -157,5 +709,11 @@ value = 1.0
 [node name="GiveItemButton" type="Button" parent="PanelArea/GiveRow" unique_id=300000004]
 custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_bvhu7")
 theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxEmpty_4u2pc")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_8xt0k")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_bna1o")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_j2hcr")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_tgiiv")
 text = "GIVE ITEM"
