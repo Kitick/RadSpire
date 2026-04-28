@@ -61,6 +61,9 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData>, IAtta
 
 	public Radiation Radiation { get; private set; } = new Radiation(secondsToFatalDose: 30 * 60);
 	public int BaseMaxHealth { get; private set; }
+	public bool IsSleeping = false;
+	public int SleepRate = 0;
+	public Vector3 LocationBeforeSleep = Vector3.Zero;
 
 	public bool HoldingSword = false;
 	public bool HoldingStaff = false;
@@ -152,6 +155,17 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData>, IAtta
 	}
 
 	public void Update(float dt, KeyInput keyInput) {
+		if(IsSleeping) {
+			Radiation.Deccumulate(dt, SleepRate);
+			Health.Max = Math.Max(1, (int) Math.Round(BaseMaxHealth * (1f - Radiation.Level)));
+			this.Heal(SleepRate);
+			Velocity = Vector3.Zero;
+			if(this.IsDead()) {
+				StateMachine.TransitionTo(State.Dead);
+				return;
+			}
+			return;
+		}
 		Radiation.Accumulate(dt);
 		Health.Max = Math.Max(1, (int) Math.Round(BaseMaxHealth * (1f - Radiation.Level)));
 		if(StaffAttackCooldownTimer > 0f) {
@@ -355,6 +369,31 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData>, IAtta
 		bolt.GlobalTransform = StaffCastPoint.GlobalTransform;
 		Vector3 direction = -StaffCastPoint.GlobalTransform.Basis.Z;
 		bolt.Init(this, direction, Offense.Damage);
+	}
+
+	public void Sleep(int Amount, Vector3 Location) {
+		if(IsSleeping) {
+			return;
+		}
+
+		IsSleeping = true;
+		SleepRate = Amount;
+		LocationBeforeSleep = GlobalTransform.Origin;
+		GlobalPosition = Location;
+		Velocity = Vector3.Zero;
+		Animator?.Play(new StringName("Lie_Idle"));
+	}
+
+	public void EndSleep() {
+		if(!IsSleeping) {
+			return;
+		}
+
+		IsSleeping = false;
+		SleepRate = 0;
+		GlobalPosition = LocationBeforeSleep;
+		Velocity = Vector3.Zero;
+		Animator?.Play(new StringName("Idle"));
 	}
 
 	public override void OnDodgeFinished() => StateMachine.TransitionTo(State.Idle);
