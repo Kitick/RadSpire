@@ -12,14 +12,13 @@ public sealed class ChaseAI {
 
 	public bool IsMoving => HorizontalInput.Length() >= Numbers.EPSILON;
 
-	private readonly float AttackDistance = 1.5f;
-
 	private readonly Node3D Self;
 	private Node3D? Target;
 
-	[Export] private readonly float SprintDistance = 5.0f;
-	[Export] private readonly float StopDistance = 1.5f;
-	[Export] private readonly float DetectionRadius = 15.0f;
+	public float AttackDistance { get; set; } = 1.5f;
+	public float SprintDistance { get; set; } = 5.0f;
+	public float StopDistance { get; set; } = 1.5f;
+	public float DetectionRadius { get; set; } = 15.0f;
 
 	public ChaseAI(Node3D self) {
 		Self = self;

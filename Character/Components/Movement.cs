@@ -36,6 +36,14 @@ public sealed class Movement : ISaveable<MovementData> {
 
 	public void Jump() => Body.Velocity += JumpSpeed * Vector3.Up;
 
+	public void Face(Vector3 direction, float dt) {
+		Vector3 flatDirection = direction.Horizontal();
+		if(flatDirection.Length() < Numbers.EPSILON) { return; }
+
+		float angle = Mathf.Atan2(flatDirection.X, flatDirection.Z);
+		Body.ApplyRotation(Vector3.Up, angle, RotationSpeed, dt);
+	}
+
 	private void Fall(float dt) {
 		Body.Velocity += Numbers.GRAVITY * Vector3.Down * dt;
 		Body.Velocity = Body.Velocity.LimitLength(TerminalSpeed);

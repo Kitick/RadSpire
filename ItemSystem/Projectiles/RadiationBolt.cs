@@ -20,6 +20,10 @@ public partial class RadiationBolt : Area3D {
 		Damage = damage;
 	}
 
+	public void SetSpeed(float speed) {
+		Speed = speed;
+	}
+
 	public override void _Ready() {
 		BodyEntered += OnBodyEntered;
 		LifeTimer = Lifetime;
