@@ -10,7 +10,7 @@ public sealed partial class ItemMeshCache : Node {
 
 	public static ItemMeshCache Instance { get; private set; } = null!;
 
-	public readonly record struct CachedItemMesh(Mesh Mesh, Aabb RawBounds);
+	public readonly record struct CachedItemMesh(Mesh Mesh, Aabb RawBounds, Material Material);
 
 	private readonly Dictionary<string, CachedItemMesh> Cache = [];
 	private Node3D? TempScene;
@@ -70,7 +70,8 @@ public sealed partial class ItemMeshCache : Node {
 			return false;
 		}
 
-		result = new CachedItemMesh(SpriteMesh.Mesh, SpriteMesh.Mesh.GetAabb());
+		Material material = SpriteMesh.GetSurfaceOverrideMaterial(0);
+		result = new CachedItemMesh(SpriteMesh.Mesh, SpriteMesh.Mesh.GetAabb(), material);
 		Cache[id] = result;
 		Log.Info($"ItemMeshCache: generated and cached mesh for '{id}'.");
 		return true;

@@ -63,6 +63,7 @@ public partial class Item3DIcon : Entity, ISaveable<Item3DIconData> {
 		}
 
 		meshInstance.Mesh = cached.Mesh;
+		meshInstance.SetSurfaceOverrideMaterial(0, cached.Material);
 
 		float targetSize = BaseTargetSize * ScaleFactor;
 		float targetThickness = BaseTargetThickness * ScaleFactor;
