@@ -1,7 +1,6 @@
 namespace Character;
 
 using System;
-
 using Godot;
 using Root;
 using Services;
@@ -28,6 +27,9 @@ public sealed partial class Animator : AnimationPlayer {
 	[Export] private StringName ATTACK = null!;
 	[Export] private StringName DEATH = null!;
 	[Export] private StringName DODGE = null!;
+	[Export] private StringName BLOCK = default;
+	[Export] private StringName BLOCKING = default;
+	[Export] private StringName HIT = null!;
 
 	[ExportCategory("Animation Settings")]
 	[Export] private float SprintSpeed = 1.0f;
@@ -58,7 +60,25 @@ public sealed partial class Animator : AnimationPlayer {
 
 	public void SetDodgeIdleRecovery(bool enabled) => UseDodgeIdleRecovery = enabled;
 
-	public enum AnimState { Idle, Walking, Sprinting, Crouching, Jumping, Falling, Landing, Attacking, Dying, Dodging }
+	public void PlayHitNow() {
+		PlayingAnimation = AnimState.Hit;
+	}
+
+	public void PlayBlockNow() {
+		if(BLOCK.Equals(default(StringName))) {
+			return;
+		}
+		PlayingAnimation = AnimState.BlockStart;
+	}
+
+	public void PlayBlockingLoop() {
+		if(BLOCKING.Equals(default(StringName))) {
+			return;
+		}
+		PlayingAnimation = AnimState.BlockingLoop;
+	}
+
+	public enum AnimState { Idle, Walking, Sprinting, Crouching, Jumping, Falling, Landing, Attacking, Dying, Dodging, BlockStart, BlockingLoop, Hit }
 
 	private AnimState PlayingAnimation {
 		get;
@@ -73,6 +93,9 @@ public sealed partial class Animator : AnimationPlayer {
 				case AnimState.Falling: Play(FALLING); break;
 				case AnimState.Landing: Play(LANDING); break;
 				case AnimState.Dodging: Play(DODGE, DodgeBlend, DodgeSpeed); break;
+				case AnimState.BlockStart: Play(BLOCK); break;
+				case AnimState.BlockingLoop: Play(BLOCKING); break;
+				case AnimState.Hit: Play(HIT); break;
 				case AnimState.Attacking: Play(GetAttackAnimation(), AttackBlend, AttackSpeed); break;
 				case AnimState.Dying: Play(DEATH); break;
 			}
@@ -87,7 +110,6 @@ public sealed partial class Animator : AnimationPlayer {
 	public override void _Ready() {
 		this.ValidateExports();
 
-		// Manually resolve Character if not already assigned
 		if(Character == null) {
 			if(GetParent()?.GetParent() is not CharacterBase resolved) {
 				Log.Error("Failed to resolve Character reference for Animator!");
@@ -130,6 +152,9 @@ public sealed partial class Animator : AnimationPlayer {
 		SetLoopMode(SPRINTING);
 		SetLoopMode(CROUCHING);
 		SetLoopMode(FALLING);
+		if(!BLOCKING.Equals(default(StringName))) {
+			SetLoopMode(BLOCKING);
+		}
 
 		ApplyDodgeBlendTimes();
 
@@ -146,6 +171,21 @@ public sealed partial class Animator : AnimationPlayer {
 
 		if(name == DODGE) {
 			_ = StartDodgeIdleRecovery();
+			return;
+		}
+
+		if(!BLOCK.Equals(default(StringName)) && name == BLOCK && Character.CurrentState == CharState.Blocking) {
+			if(Character.ShouldLoopBlockingAnimation()) {
+				PlayBlockingLoop();
+			}
+			else {
+				SyncAnimation(Character.CurrentState);
+			}
+			return;
+		}
+
+		if(name == HIT && Character.CurrentState == CharState.Hit) {
+			Character.OnHitFinished();
 			return;
 		}
 
@@ -169,6 +209,8 @@ public sealed partial class Animator : AnimationPlayer {
 			CharState.Falling => AnimState.Falling,
 			CharState.Attacking => AnimState.Attacking,
 			CharState.Dodging => AnimState.Dodging,
+			CharState.Blocking => !BLOCK.Equals(default(StringName)) ? AnimState.BlockStart : PlayingAnimation,
+			CharState.Hit => AnimState.Hit,
 			CharState.Dead => AnimState.Dying,
 			_ => PlayingAnimation,
 		};
@@ -188,7 +230,9 @@ public sealed partial class Animator : AnimationPlayer {
 			Audio?.PlayLand();
 			PlayingAnimation = AnimState.Landing;
 		}
-		else { SyncAnimation(to); }
+		else {
+			SyncAnimation(to);
+		}
 	}
 
 	private bool IsAttackAnimation(StringName name) {
@@ -206,15 +250,12 @@ public sealed partial class Animator : AnimationPlayer {
 		return ATTACK;
 	}
 
-	private StringName CurrentDodgeAnimation() => DODGE;
-
 	private async System.Threading.Tasks.Task StartDodgeIdleRecovery() {
 		if(!UseDodgeIdleRecovery || DodgeIdleRecoveryTime <= 0f) {
 			Character.OnDodgeFinished();
 			return;
 		}
 
-		// Briefly play idle as a recovery pose to reduce snapping.
 		Play(IDLE);
 		if(DodgeIdleRecoveryTime > 0f) {
 			SceneTreeTimer timer = GetTree().CreateTimer(DodgeIdleRecoveryTime);

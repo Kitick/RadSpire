@@ -1,5 +1,6 @@
 namespace ItemSystem;
 
+using Character;
 using Components;
 using Godot;
 using Services;
@@ -18,6 +19,10 @@ public partial class Sword : Area3D {
 	private void OnBodyEntered(Node3D body) {
 		if(body == WeaponOwner) {
 			return;
+		}
+
+		if(WeaponOwner is Enemy enemy && body is Player player && enemy.SceneFilePath.Contains("BossEnemy.tscn")) {
+			player.TriggerBossHitReaction(WeaponOwner.GlobalPosition);
 		}
 
 		if(WeaponOwner is IOffense attacker && body is IHealth health) {

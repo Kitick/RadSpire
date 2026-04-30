@@ -3,6 +3,9 @@ namespace Components;
 using System;
 
 public interface IHealth { Health Health { get; } }
+public interface IDamageBlocker {
+	bool TryBlockDamage(int amount);
+}
 
 public sealed class Health : Component<HealthData> {
 	public int Current {
@@ -23,7 +26,15 @@ public sealed class Health : Component<HealthData> {
 
 public static class HealthExtensions {
 	public static void Heal(this IHealth entity, int amount) => entity.Health.Current += amount;
-	public static void Hurt(this IHealth entity, int amount) => entity.Health.Current -= amount;
+	public static void Hurt(this IHealth entity, int amount) {
+		if(amount <= 0) {
+			return;
+		}
+		if(entity is IDamageBlocker blocker && blocker.TryBlockDamage(amount)) {
+			return;
+		}
+		entity.Health.Current -= amount;
+	}
 	public static void Heal(this IHealth entity) => entity.Health.Current = entity.Health.Max;
 	public static void Hurt(this IHealth entity) => entity.Health.Current = 0;
 

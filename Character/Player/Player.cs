@@ -1,6 +1,7 @@
 namespace Character;
 
 using System;
+using System.Collections.Generic;
 using Character.Recruitment;
 using Components;
 using GameWorld;
@@ -13,12 +14,13 @@ using ItemSystem.WorldObjects;
 using Root;
 using Services;
 
-public sealed partial class Player : CharacterBase, ISaveable<PlayerData>, IAttackModifier {
+public sealed partial class Player : CharacterBase, ISaveable<PlayerData>, IAttackModifier, IDamageBlocker {
 	private static readonly LogService Log = new(nameof(Player), enabled: true);
 
 	[Export] public MeshInstance3D SwordMesh = null!;
 	[Export] public MeshInstance3D ShieldMesh = null!;
 	[Export] public MeshInstance3D StaffMesh = null!;
+	[Export] public MeshInstance3D HelmetMesh = null!;
 	[Export] public Node3D StaffCastPoint = null!;
 	[Export] public PackedScene RadiationBoltScene = null!;
 	[Export] public StringName StaffAttackAnimation = default;
@@ -26,6 +28,7 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData>, IAtta
 	[Export] private int InitialHealthValue = 100;
 	[Export] public int InitialDamageValue = 3;
 	[Export] private int InitialDefenseValue = 5;
+	[Export] private int IronHeadpieceDefenseBonus = 2;
 
 	protected override int InitialHealth => InitialHealthValue;
 	protected override int InitialDamage => InitialDamageValue;
@@ -40,6 +43,11 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData>, IAtta
 	[Export] private float StaffAttackCooldown = 0.45f;
 	[Export] private int StaffProjectileDamage = 10;
 	[Export] private float StaffRadiationPerShot = 0.01f;
+	[Export] private float DamageFlashTime = 0.12f;
+	[Export] private float BossHitKnockbackForce = 28.0f;
+	[Export] private float BossHitKnockbackDecay = 8.0f;
+	[Export] private int ShieldMaxBlockedHits = 3;
+	[Export] private float BlockMoveMultiplier = 0.45f;
 
 	// Inventories
 	public readonly Inventory Inventory = new(3, 5);
@@ -83,6 +91,11 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData>, IAtta
 	private float CurrentAttackMultiplier = 1.0f;
 	private float StaffAttackCooldownTimer = 0f;
 	private bool IsStaffAttackActive = false;
+	private float DamageFlashTimer = 0f;
+	private Vector3 HitKnockbackVelocity = Vector3.Zero;
+	private bool IsBlockHeld = false;
+	private int RemainingShieldBlocks = 0;
+	private readonly List<StandardMaterial3D> FlashMaterials = [];
 	private static readonly StringName ComboAttack1 = new("1H_Melee_Attack_Slice_Diagonal");
 	private static readonly StringName ComboAttack2 = new("1H_Melee_Attack_Stab");
 	private static readonly StringName ComboAttack3 = new("1H_Melee_Attack_Chop");
@@ -101,16 +114,17 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData>, IAtta
 		AddToGroup(Group.Player.ToString());
 		Animator = GetNodeOrNull<Animator>("Model/AnimationPlayer");
 		Animator?.SetAttackSpeed(3.0f);
+		InitializeDamageFlash();
 		RefreshCombatStats();
-		if(StaffMesh != null) {
-			StaffMesh.Visible = HoldingStaff;
-		}
 		AddToGroup(Group.Player.ToString());
 		AddChild(PickupComponent);
 		AddChild(InventoryManager);
 		AddChild(UseItemComponent);
 		AddChild(EquipItemComponent);
 		SetupChildren();
+		Inventory.OnInventoryChanged += RefreshOwnedEquipmentEffects;
+		Hotbar.OnInventoryChanged += RefreshOwnedEquipmentEffects;
+		RefreshOwnedEquipmentEffects();
 	}
 
 	private void SubscribeInputActions() {
@@ -175,6 +189,9 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData>, IAtta
 	}
 
 	public void Update(float dt, KeyInput keyInput) {
+		IsBlockHeld = keyInput.BlockHeld;
+		UpdateDamageFlash(dt);
+
 		if(IsSleeping) {
 			Radiation.Deccumulate(dt, SleepRadiationPerSecond);
 			Health.Max = Math.Max(1, (int) Math.Round(BaseMaxHealth * (1f - Radiation.Level)));
@@ -214,6 +231,24 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData>, IAtta
 			return;
 		}
 
+		if(HitKnockbackVelocity.LengthSquared() > 0.001f) {
+			GlobalPosition += HitKnockbackVelocity * dt;
+			HitKnockbackVelocity = HitKnockbackVelocity.Lerp(Vector3.Zero, BossHitKnockbackDecay * dt);
+		}
+
+		if(CurrentState == State.Hit) {
+			return;
+		}
+
+		if(CurrentState == State.Blocking) {
+			if(IsOnFloor()) {
+				Movement.Move(keyInput.HorizontalInput, BlockMoveMultiplier);
+			}
+			UpdateMovementState(keyInput);
+			Movement.Update(dt);
+			return;
+		}
+
 		float multiplier = GetMultiplier();
 
 		if(IsOnFloor()) {
@@ -228,6 +263,22 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData>, IAtta
 	}
 
 	private void UpdateMovementState(KeyInput keyInput) {
+		if(CurrentState == State.Blocking) {
+			if(!keyInput.BlockHeld || !HasUsableShield()) {
+				StopBlocking(keyInput);
+			}
+			else {
+				return;
+			}
+		}
+
+		if(keyInput.BlockPressed) {
+			StartBlocking();
+			if(CurrentState == State.Blocking) {
+				return;
+			}
+		}
+
 		if(keyInput.DodgePressed) {
 			StartDodge(keyInput);
 			return;
@@ -320,6 +371,43 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData>, IAtta
 		StateMachine.TransitionTo(State.Dodging);
 	}
 
+	private void StartBlocking() {
+		if(!HasUsableShield()) {
+			return;
+		}
+		if(CurrentState == State.Attacking || CurrentState == State.Dodging || CurrentState == State.Hit || CurrentState == State.Dead) {
+			return;
+		}
+
+		ResetCombo();
+		BufferedAttack = false;
+		IsStaffAttackActive = false;
+		Velocity = Vector3.Zero;
+		StateMachine.TransitionTo(State.Blocking);
+	}
+
+	private void StopBlocking(KeyInput keyInput) {
+		if(CurrentState != State.Blocking) {
+			return;
+		}
+
+		if(!IsOnFloor()) {
+			StateMachine.TransitionTo(State.Falling);
+		}
+		else if(!keyInput.IsMoving) {
+			StateMachine.TransitionTo(State.Idle);
+		}
+		else if(keyInput.SprintHeld) {
+			StateMachine.TransitionTo(State.Sprinting);
+		}
+		else if(keyInput.CrouchHeld) {
+			StateMachine.TransitionTo(State.Crouching);
+		}
+		else {
+			StateMachine.TransitionTo(State.Walking);
+		}
+	}
+
 	private void StartComboAttack() {
 		if(ComboTimer <= 0f) {
 			ResetCombo();
@@ -397,6 +485,42 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData>, IAtta
 		if(Offense != null) {
 			Offense.Damage = GetMeleeDamage();
 		}
+
+		if(Defense != null) {
+			Defense.Armor = GetCurrentDefenseArmor();
+		}
+	}
+
+	private int GetCurrentDefenseArmor() {
+		int armor = InitialDefenseValue;
+		if(HasOwnedItem(ItemID.HeadpieceIron)) {
+			armor += IronHeadpieceDefenseBonus;
+		}
+		return armor;
+	}
+
+	private void RefreshOwnedEquipmentEffects() {
+		RefreshShieldState();
+		RefreshCombatStats();
+		UpdateEquipmentVisuals();
+	}
+
+	private void RefreshShieldState() {
+		if(HasOwnedShield()) {
+			if(RemainingShieldBlocks <= 0) {
+				RemainingShieldBlocks = ShieldMaxBlockedHits;
+			}
+			else {
+				RemainingShieldBlocks = Math.Min(RemainingShieldBlocks, ShieldMaxBlockedHits);
+			}
+			return;
+		}
+
+		RemainingShieldBlocks = 0;
+		IsBlockHeld = false;
+		if(CurrentState == State.Blocking) {
+			StateMachine.TransitionTo(State.Idle);
+		}
 	}
 
 	private int GetStaffProjectileDamage() {
@@ -447,6 +571,37 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData>, IAtta
 
 	public override void OnDodgeFinished() => StateMachine.TransitionTo(State.Idle);
 
+	public override void OnHitFinished() => StateMachine.TransitionTo(State.Idle);
+
+	public override bool ShouldLoopBlockingAnimation() => CurrentState == State.Blocking && IsBlockHeld && HasUsableShield();
+
+	public void TriggerBossHitReaction(Vector3 sourcePosition) {
+		if(this.IsDead()) {
+			return;
+		}
+
+		Vector3 direction = GlobalPosition - sourcePosition;
+		direction.Y = 0f;
+		if(direction.LengthSquared() < Numbers.EPSILON) {
+			direction = -GlobalTransform.Basis.Z;
+			direction.Y = 0f;
+		}
+
+		Vector3 faceTarget = sourcePosition;
+		faceTarget.Y = GlobalPosition.Y;
+		if((faceTarget - GlobalPosition).LengthSquared() > Numbers.EPSILON) {
+			LookAt(faceTarget, Vector3.Up, true);
+		}
+
+		HitKnockbackVelocity = direction.Normalized() * BossHitKnockbackForce;
+		if(CurrentState == State.Blocking && HasUsableShield()) {
+			return;
+		}
+
+		Animator?.PlayHitNow();
+		StateMachine.TransitionTo(State.Hit);
+	}
+
 	private void SetDodgeAnimationFromInput() {
 		if(Animator == null) { return; }
 
@@ -464,6 +619,130 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData>, IAtta
 		else {
 			Animator.SetDodgeAnimation(new StringName("Dodge_Forward"));
 		}
+	}
+
+	private void InitializeDamageFlash() {
+		FlashMaterials.Clear();
+
+		Node modelRoot = GetNodeOrNull<Node>("Model/Rig/Skeleton3D") ?? GetNodeOrNull<Node>("Model");
+		if(modelRoot == null) {
+			return;
+		}
+
+		foreach(MeshInstance3D mesh in GetFlashableMeshes(modelRoot)) {
+
+			if(mesh == SwordMesh || mesh == ShieldMesh || mesh == StaffMesh) {
+				continue;
+			}
+
+			if(mesh.GetActiveMaterial(0) is not StandardMaterial3D baseMat) {
+				continue;
+			}
+
+			StandardMaterial3D flashMat = (StandardMaterial3D) baseMat.Duplicate();
+			mesh.SetSurfaceOverrideMaterial(0, flashMat);
+			FlashMaterials.Add(flashMat);
+		}
+
+		Health.OnChanged += (from, to) => {
+			if(to.Current < from.Current) {
+				DamageFlashTimer = DamageFlashTime;
+				SetDamageFlash(true);
+			}
+		};
+	}
+
+	private IEnumerable<MeshInstance3D> GetFlashableMeshes(Node node) {
+		foreach(Node child in node.GetChildren()) {
+			if(child is MeshInstance3D mesh) {
+				yield return mesh;
+			}
+
+			foreach(MeshInstance3D nestedMesh in GetFlashableMeshes(child)) {
+				yield return nestedMesh;
+			}
+		}
+	}
+
+	private void UpdateDamageFlash(float dt) {
+		if(DamageFlashTimer <= 0f) {
+			return;
+		}
+
+		DamageFlashTimer -= dt;
+		if(DamageFlashTimer <= 0f) {
+			SetDamageFlash(false);
+		}
+	}
+
+	private void SetDamageFlash(bool enabled) {
+		Color color = enabled ? new Color(1.25f, 0.55f, 0.55f) : Colors.White;
+		foreach(StandardMaterial3D material in FlashMaterials) {
+			material.AlbedoColor = color;
+		}
+	}
+
+	private void UpdateEquipmentVisuals() {
+		if(ShieldMesh != null) {
+			ShieldMesh.Visible = HasOwnedShield();
+		}
+
+		if(StaffMesh != null) {
+			StaffMesh.Visible = HoldingStaff;
+		}
+
+		if(HelmetMesh != null) {
+			HelmetMesh.Visible = HasOwnedItem(ItemID.HeadpieceIron);
+		}
+	}
+
+	private bool HasOwnedItem(StringName itemId) {
+		foreach(ItemSlot slot in Inventory.ItemSlots) {
+			if(!slot.IsEmpty() && slot.Item?.Id == itemId) {
+				return true;
+			}
+		}
+
+		foreach(ItemSlot slot in Hotbar.ItemSlots) {
+			if(!slot.IsEmpty() && slot.Item?.Id == itemId) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	private bool HasOwnedShield() => HasOwnedItem(ItemID.ShieldWood);
+
+	private bool HasUsableShield() => HasOwnedShield() && RemainingShieldBlocks > 0;
+
+	private bool RemoveOwnedItem(StringName itemId) {
+		if(RemoveOwnedItem(Hotbar, itemId)) {
+			return true;
+		}
+
+		return RemoveOwnedItem(Inventory, itemId);
+	}
+
+	private static bool RemoveOwnedItem(Inventory inventory, StringName itemId) {
+		for(int i = 0; i < inventory.ItemSlots.Length; i++) {
+			ItemSlot slot = inventory.ItemSlots[i];
+			if(slot.IsEmpty() || slot.Item?.Id != itemId) {
+				continue;
+			}
+
+			return inventory.RemoveItem(inventory.GetRow(i), inventory.GetColumn(i), 1);
+		}
+
+		return false;
+	}
+
+	private void BreakShield() {
+		IsBlockHeld = false;
+		RemainingShieldBlocks = 0;
+		_ = RemoveOwnedItem(ItemID.ShieldWood);
+		Animator?.PlayHitNow();
+		StateMachine.TransitionTo(State.Hit);
 	}
 
 	private void SetupChildren() {
@@ -529,6 +808,7 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData>, IAtta
 		Radiation = Radiation.Export(),
 		Inventory = Inventory.Export(),
 		Hotbar = Hotbar.Export(),
+		ShieldRemainingBlocks = RemainingShieldBlocks,
 	};
 
 	public void Import(PlayerData data) {
@@ -540,6 +820,20 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData>, IAtta
 		Radiation.Import(data.Radiation);
 		Inventory.Import(data.Inventory);
 		Hotbar.Import(data.Hotbar);
+		RemainingShieldBlocks = data.ShieldRemainingBlocks;
+		RefreshOwnedEquipmentEffects();
+	}
+
+	public bool TryBlockDamage(int amount) {
+		if(amount <= 0 || CurrentState != State.Blocking || !HasUsableShield()) {
+			return false;
+		}
+
+		RemainingShieldBlocks = Math.Max(0, RemainingShieldBlocks - 1);
+		if(RemainingShieldBlocks == 0) {
+			BreakShield();
+		}
+		return true;
 	}
 }
 
@@ -551,4 +845,5 @@ public readonly record struct PlayerData : ISaveData {
 	public RadiationData Radiation { get; init; }
 	public InventoryData Inventory { get; init; }
 	public InventoryData Hotbar { get; init; }
+	public int ShieldRemainingBlocks { get; init; }
 }

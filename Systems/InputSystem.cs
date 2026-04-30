@@ -114,6 +114,7 @@ public readonly struct ActionEvent {
 	public static readonly ActionEvent Sprint = new("Sprint");
 	public static readonly ActionEvent Crouch = new("Crouch");
 	public static readonly ActionEvent Dodge = new("Dodge");
+	public static readonly ActionEvent Block = new("Block");
 
 	// Combat
 	public static readonly ActionEvent Attack = new("Attack");
@@ -167,6 +168,7 @@ public readonly struct ActionEvent {
 		yield return Sprint;
 		yield return Crouch;
 		yield return Dodge;
+		yield return Block;
 
 		// Combat
 		yield return Attack;

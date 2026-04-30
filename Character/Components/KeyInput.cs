@@ -13,16 +13,24 @@ public sealed class KeyInput {
 	public bool JumpPressed { get; private set; }
 	public bool AttackPressed { get; private set; }
 	public bool DodgePressed { get; private set; }
+	public bool BlockPressed { get; private set; }
+	public bool BlockHeld { get; private set; }
 
 	public bool IsMoving => HorizontalInput.Length() >= Numbers.EPSILON;
 	private bool AltHeldPrev = false;
+	private bool BlockHeldPrev = false;
 
 	public void Update(CameraRig camera) {
 		HorizontalInput = GetHorizontalMovement(camera);
 		JumpPressed = ActionEvent.Jump.IsJustPressed();
 		SprintHeld = ActionEvent.Sprint.IsPressed();
 		CrouchHeld = ActionEvent.Crouch.IsPressed();
-		AttackPressed = ActionEvent.Attack.IsJustPressed() && !IsHoveringInteractiveControl(camera.GetViewport());
+		bool hoveringInteractive = IsHoveringInteractiveControl(camera.GetViewport());
+		AttackPressed = ActionEvent.Attack.IsJustPressed() && !hoveringInteractive;
+		bool blockHeldRaw = Input.IsKeyPressed(Key.Capslock);
+		BlockHeld = blockHeldRaw && !hoveringInteractive;
+		BlockPressed = BlockHeld && !BlockHeldPrev;
+		BlockHeldPrev = BlockHeld;
 
 		bool dodgeHeld = ActionEvent.Dodge.IsPressed();
 		bool dodgeJust = ActionEvent.Dodge.IsJustPressed();
