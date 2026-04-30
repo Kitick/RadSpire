@@ -490,7 +490,7 @@ tracks/27/path = NodePath("Rig_Large/Skeleton3D/Slam:monitoring")
 tracks/27/interp = 1
 tracks/27/loop_wrap = true
 tracks/27/keys = {
-"times": PackedFloat32Array(0.8666667, 1.4666667),
+"times": PackedFloat32Array(0.8666667, 1.1666666),
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
 "values": [true, true]
@@ -502,7 +502,7 @@ tracks/28/path = NodePath("Rig_Large/Skeleton3D/Slam/Hitbox:disabled")
 tracks/28/interp = 1
 tracks/28/loop_wrap = true
 tracks/28/keys = {
-"times": PackedFloat32Array(0.8, 1, 1.4666667),
+"times": PackedFloat32Array(0.8, 1, 1.2333333),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 1,
 "values": [true, false, true]
@@ -1881,3 +1881,6 @@ LANDING = &"Idle_A"
 ATTACK = &"Attack_Slam"
 DEATH = &"Death_A"
 DODGE = &"Dodge_Left"
+BLOCK = &"Idle_A"
+BLOCKING = &"Idle_A"
+HIT = &"Idle_A"
