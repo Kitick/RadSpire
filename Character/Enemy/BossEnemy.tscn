@@ -1608,7 +1608,7 @@ _data = {
 
 [node name="BossEnemy" type="CharacterBody3D" unique_id=896499092]
 script = ExtResource("1_0bxxp")
-EnemyType = 1
+EnemyType = 3
 InitialHealthValue = 150
 InitialDamageValue = 15
 HealthBarYOffset = 5.0

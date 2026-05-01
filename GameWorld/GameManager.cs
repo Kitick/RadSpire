@@ -123,10 +123,6 @@ public sealed partial class GameManager : Node {
 	public override void _PhysicsProcess(double delta) {
 		if(!IsInstanceValid(LocalPlayer)) { return; }
 
-		if(!Won && WorldManager?.EnemyManager != null && WorldManager.EnemyManager.Enemies.Count > 0) {
-			if(WorldManager.EnemyManager.DeadCount == WorldManager.EnemyManager.Enemies.Count) { HUD?.Win(); }
-		}
-
 		float dt = (float) delta;
 
 		KeyInput.Update(CameraRig);

@@ -101,7 +101,7 @@ public static class Quests {
 		Type: QuestType.Main,
 		StageRequirement: 2,
 		Objectives: [
-			new KillObjective("Defeat the Warriors of Meldoran at the gas station", RequiredCount: 5, EnemyType: EnemyType.MeldoranWarrior),
+			new KillObjective("Defeat the Warriors of Meldoran at the gas station", RequiredCount: 5, EnemyType: EnemyType.Melee),
 			new TalkObjective("Talk to Dag", NPCID.Dag),
 		],
 		NpcId: NPCID.Sera,
@@ -617,7 +617,7 @@ public static class Quests {
 		Type: QuestType.Side,
 		StageRequirement: 0,
 		Objectives: [
-			new KillObjective("Kill a Radiation Caster enemy", RequiredCount: 1, EnemyType: EnemyType.RadiationCaster),
+			new KillObjective("Kill a Radiation Caster enemy", RequiredCount: 1, EnemyType: EnemyType.Caster),
 		],
 		NpcId: NPCID.Chloe,
 		Prerequisites: [QuestID.SomethingStronger],
@@ -678,7 +678,7 @@ public static class Quests {
 		Type: QuestType.Side,
 		StageRequirement: 0,
 		Objectives: [
-			new KillObjective("Defeat a Meldoran Warrior", RequiredCount: 1, EnemyType: EnemyType.MeldoranWarrior),
+			new KillObjective("Defeat a Meldoran Warrior", RequiredCount: 1, EnemyType: EnemyType.Melee),
 		],
 		NpcId: NPCID.Chloe,
 		Prerequisites: [QuestID.SomeoneWorthKeepingClose],

@@ -160,7 +160,7 @@ public sealed partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 			AI.Update();
 			Movement.Move(AI.HorizontalInput, 1);
 			Movement.Update(dt);
-			if(EnemyType == EnemyType.RadiationCaster && AI.AttackPressed && AttackTarget != null && IsInstanceValid(AttackTarget)) {
+			if(EnemyType == EnemyType.Caster && AI.AttackPressed && AttackTarget != null && IsInstanceValid(AttackTarget)) {
 				Movement.Face(AttackTarget.GlobalPosition - GlobalPosition, dt);
 			}
 		}
@@ -296,7 +296,7 @@ public sealed partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 		if(StateMachine.CurrentState == State.Attacking) { return; }
 
 		if(AI.AttackPressed && AttackCooldownTimer <= 0f) {
-			if(EnemyType == EnemyType.RadiationCaster && Animator != null && !StaffAttackAnimation.Equals(default(StringName))) {
+			if(EnemyType == EnemyType.Caster && Animator != null && !StaffAttackAnimation.Equals(default(StringName))) {
 				Animator.SetAttackAnimation(StaffAttackAnimation);
 				AttackCooldownTimer = RangedAttackCooldown;
 				SpawnRadiationBolt();
@@ -321,7 +321,7 @@ public sealed partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 	}
 
 	public override void OnAttackFinished() {
-		if(EnemyType == EnemyType.RadiationCaster || UseHitboxDrivenDamage) {
+		if(EnemyType == EnemyType.Caster || UseHitboxDrivenDamage) {
 			AttackCooldownTimer = RangedAttackCooldown;
 			StateMachine.TransitionTo(State.Idle);
 			return;
@@ -450,7 +450,7 @@ public static class EnemyDrops {
 	);
 
 	public static readonly EnemyDropDefinition EnemyRanged = new(
-		EnemyType: EnemyType.MeldoranWarrior,
+		EnemyType: EnemyType.Caster,
 		UpperBound: 12,
 		LowerBound: 6,
 		PossibleContents: [
@@ -476,7 +476,7 @@ public static class EnemyDrops {
 	);
 
 	public static readonly EnemyDropDefinition BossEnemy = new(
-		EnemyType: EnemyType.RadiationCaster,
+		EnemyType: EnemyType.Brute,
 		UpperBound: 16,
 		LowerBound: 9,
 		PossibleContents: [
@@ -503,8 +503,9 @@ public static class EnemyDrops {
 
 	private static readonly Dictionary<EnemyType, EnemyDropDefinition> ByEnemyType = new() {
 		{ EnemyType.None, Enemy },
-		{ EnemyType.MeldoranWarrior, EnemyRanged },
-		{ EnemyType.RadiationCaster, BossEnemy },
+		{ EnemyType.Melee, Enemy },
+		{ EnemyType.Caster, EnemyRanged },
+		{ EnemyType.Brute, BossEnemy },
 	};
 
 	public static EnemyDropDefinition? Get(EnemyType enemyType) {

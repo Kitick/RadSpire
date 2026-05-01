@@ -25,7 +25,7 @@ public static class Items {
 
 public enum Group { Player, Enemy, QuestLocation }
 
-public enum EnemyType { None, MeldoranWarrior, RadiationCaster }
+public enum EnemyType { None, Melee, Brute, Caster }
 
 public enum NPCID { None, Sera, Dag, Rowan, Colin, Mara, David, Chloe }
 
