@@ -27,11 +27,6 @@ public partial class Sword : Area3D {
 
 		if(WeaponOwner is IOffense attacker && body is IHealth health) {
 			attacker.Attack(health);
-			return;
-		}
-
-		if(body is IHealth fallbackHealth) {
-			fallbackHealth.Hurt(10);
 		}
 	}
 }

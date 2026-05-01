@@ -14,7 +14,7 @@ using ItemSystem.WorldObjects;
 using Root;
 using Services;
 
-public sealed partial class Player : CharacterBase, ISaveable<PlayerData>, IAttackModifier, IDamageBlocker {
+public sealed partial class Player : CharacterBase, ISaveable<PlayerData>, IAttackModifier, IDamageBlocker, IRadiation {
 	private static readonly LogService Log = new(nameof(Player), enabled: true);
 
 	[Export] public MeshInstance3D SwordMesh = null!;
@@ -23,7 +23,7 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData>, IAtta
 	[Export] public MeshInstance3D HelmetMesh = null!;
 	[Export] public Node3D StaffCastPoint = null!;
 	[Export] public PackedScene RadiationBoltScene = null!;
-	[Export] public StringName StaffAttackAnimation = default;
+	[Export] public StringName StaffAttackAnimation = "";
 
 	[Export] private int InitialHealthValue = 100;
 	[Export] public int InitialDamageValue = 3;
@@ -531,10 +531,10 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData>, IAtta
 	}
 
 	private int GetStaffProjectileDamage() {
-		if(EquippedWeapon?.VisualType == WeaponBase.WeaponVisualType.Staff) {
-			return EquippedWeapon.BaseAttack;
-		}
-		return StaffProjectileDamage;
+		int baseDamage = EquippedWeapon?.VisualType == WeaponBase.WeaponVisualType.Staff
+			? EquippedWeapon.BaseAttack
+			: StaffProjectileDamage;
+		return Offense.RollDamage(baseDamage);
 	}
 
 	private void SpawnStaffProjectile() {
@@ -654,6 +654,7 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData>, IAtta
 		}
 
 		Health.OnChanged += (from, to) => {
+			if(to.Max < from.Max) { return; }
 			if(to.Current < from.Current) {
 				DamageFlashTimer = DamageFlashTime;
 				SetDamageFlash(true);
