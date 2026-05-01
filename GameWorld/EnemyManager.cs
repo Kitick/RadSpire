@@ -13,9 +13,11 @@ public sealed partial class EnemyManager : Node, ISaveable<EnemyManagerData> {
 	private static readonly LogService Log = new(nameof(EnemyManager), enabled: true);
 
 	public Dictionary<string, Enemy> Enemies { get; } = [];
+	public int DeadCount { get; private set; }
 
 	private readonly Dictionary<string, Action> QuestDeathUnsubscribers = [];
 	private readonly Dictionary<string, Action> ItemDropUnsubscribers = [];
+	private readonly Dictionary<string, Action> DeadCountUnsubscribers = [];
 	private Item3DIconManager? Item3DIconManager = null;
 	private PackedScene EnemyScene = null!;
 	private bool IsInitialized;
@@ -51,6 +53,7 @@ public sealed partial class EnemyManager : Node, ISaveable<EnemyManagerData> {
 
 		enemy.Id = id;
 		Enemies.Add(id, enemy);
+		DeadCountUnsubscribers[id] = enemy.WhenDead(() => DeadCount++);
 		Log.Info($"AddEnemy: id='{id}', total={Enemies.Count}");
 		return true;
 	}
@@ -58,6 +61,10 @@ public sealed partial class EnemyManager : Node, ISaveable<EnemyManagerData> {
 	public bool RemoveEnemy(string id) {
 		if(!Enemies.Remove(id, out Enemy? enemy)) {
 			return false;
+		}
+
+		if(DeadCountUnsubscribers.Remove(id, out Action? deadUnsubscribe)) {
+			deadUnsubscribe();
 		}
 
 		if(QuestDeathUnsubscribers.Remove(id, out Action? unsubscribe)) {
@@ -172,6 +179,9 @@ public sealed partial class EnemyManager : Node, ISaveable<EnemyManagerData> {
 		Log.Info($"Cleanup start. total={Enemies.Count}");
 		UnbindQuestEvents();
 		UnbindItemDropEvents();
+		foreach(Action unsubscribe in DeadCountUnsubscribers.Values) { unsubscribe(); }
+		DeadCountUnsubscribers.Clear();
+		DeadCount = 0;
 
 		foreach(Enemy enemy in Enemies.Values) {
 			if(IsInstanceValid(enemy)) {

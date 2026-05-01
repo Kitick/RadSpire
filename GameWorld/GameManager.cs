@@ -124,14 +124,7 @@ public sealed partial class GameManager : Node {
 		if(!IsInstanceValid(LocalPlayer)) { return; }
 
 		if(!Won && WorldManager?.EnemyManager != null && WorldManager.EnemyManager.Enemies.Count > 0) {
-			int killed = 0;
-			foreach(Enemy enemy in WorldManager.EnemyManager.Enemies.Values) {
-				if(IsInstanceValid(enemy) && enemy.Health.Current == 0) {
-					killed += 1;
-				}
-			}
-
-			if(killed == WorldManager.EnemyManager.Enemies.Count) { HUD?.Win(); }
+			if(WorldManager.EnemyManager.DeadCount == WorldManager.EnemyManager.Enemies.Count) { HUD?.Win(); }
 		}
 
 		float dt = (float) delta;
