@@ -2,7 +2,6 @@
 
 [ext_resource type="Script" uid="uid://qdmmip4fui1c" path="res://Character/Enemy/Enemy.cs" id="1_0bxxp"]
 [ext_resource type="PackedScene" uid="uid://d365dq65ppnm3" path="res://Effects/Combat/HitSpark.tscn" id="2_j1717"]
-[ext_resource type="PackedScene" uid="uid://copfp8cqnp7gd" path="res://ItemSystem/Projectiles/RadiationBolt.tscn" id="3_do7k2"]
 [ext_resource type="Texture2D" uid="uid://33aq2cix0jdx" path="res://Character/KayKitPack/Characters/Barbarian_Large_barbarian_texture.png" id="4_3sub3"]
 [ext_resource type="Script" uid="uid://bpr7sfdh3yiwl" path="res://Character/Base/Animator.cs" id="5_22hf7"]
 [ext_resource type="Script" uid="uid://eo1v7fosx5m3" path="res://ItemSystem/Misc/Sword.cs" id="5_j1717"]
@@ -1611,11 +1610,9 @@ script = ExtResource("1_0bxxp")
 EnemyType = 3
 InitialHealthValue = 150
 InitialDamageValue = 15
-HealthBarYOffset = 5.0
-DamageNumberFontSize = 60
 HitSparkScene = ExtResource("2_j1717")
-RadiationBoltScene = ExtResource("3_do7k2")
-StaffAttackAnimation = &"Spellcast_Shoot"
+DamageNumberFontSize = 60
+HealthBarYOffset = 5.0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1635853279]
 transform = Transform3D(1.5334731, 0, 0, 0, 1.7746403, 0, 0, 0, 1, 0, 2.0329683, 0)

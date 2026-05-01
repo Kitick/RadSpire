@@ -458,7 +458,6 @@ public sealed partial class GameManager : Node {
 		HUD = null;
 		MainWorldReturnPositions.Clear();
 		LastKnownMainWorldPlayerPosition = null;
-		WorldManager?.EnemyManager?.UnbindQuestEvents();
 		WorldManager?.NPCManager?.UnbindPromptForwarder();
 
 		if(IsInstanceValid(LocalPlayer)) {

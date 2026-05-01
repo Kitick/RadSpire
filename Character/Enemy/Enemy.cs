@@ -5,59 +5,69 @@ using System.Collections.Generic;
 using Components;
 using Godot;
 using ItemSystem;
+using ItemSystem.WorldObjects;
 using Root;
 using Services;
-using ItemSystem.WorldObjects;
 
-
-public sealed partial class Enemy : CharacterBase, ISaveable<EnemyData> {
+public partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 	private static readonly LogService Log = new(nameof(Enemy), enabled: true);
 	public string Id { get; set; } = Guid.NewGuid().ToString();
 
+	[ExportGroup("Identity")]
 	[Export] public EnemyType EnemyType { get; set; } = EnemyType.None;
 	[Export] public Rarity DropRarity { get; set; } = Rarity.Common;
 
+	[ExportGroup("Stats")]
 	[Export] private int InitialHealthValue = 50;
 	[Export] private int InitialDamageValue = 8;
 	[Export] private int InitialDefenseValue = 0;
 
-	[Export] private float KnockbackForce = 15f;
-	[Export] private float KnockbackDecay = 12f;
-	[Export] private float DamageFlashTime = 1.0f;
-	[Export] private float StunDuration = 0.4f;
-	[Export] private float AttackDistance = 1.5f;
+	[ExportGroup("Combat")]
+	[Export] protected float AttackDistance = 1.5f;
 	[Export] private float ChaseStopDistance = 1.5f;
 	[Export] private float DetectionRadius = 15.0f;
 	[Export] private float SprintDistance = 5.0f;
-	[Export] private float HealthBarWidth = 1.4f;
-	[Export] private float HealthBarHeight = 0.12f;
-	[Export] private float HealthBarYOffset = 2.2f;
+	[Export] private float KnockbackForce = 15f;
+	[Export] private float KnockbackDecay = 12f;
+	[Export] private float StunDuration = 0.4f;
+
+	[ExportGroup("Feedback")]
+	[ExportSubgroup("Hit")]
+	[Export] protected PackedScene? HitSparkScene;
+	[Export] private float HitSparkYOffset = 1f;
+	[Export] private float DamageFlashTime = 1.0f;
+	[ExportSubgroup("Damage Numbers")]
 	[Export] private float DamageNumberYOffset = 1.6f;
-	[Export] private Color HealthBarFillColor = new(0.2f, 0.9f, 0.2f);
-	[Export] private Color HealthBarBackColor = new(0f, 0f, 0f, 0.6f);
 	[Export] private float DamageNumberLifetime = 0.9f;
 	[Export] private float DamageNumberRise = 0.6f;
 	[Export] private float DamageNumberHorizontalJitter = 0.25f;
-	[Export] private Color DamageNumberColor = new(1f, 0.85f, 0.2f);
 	[Export] private int DamageNumberFontSize = 55;
-	[Export] private PackedScene? HitSparkScene;
-	[Export] private Node3D? StaffCastPoint;
-	[Export] private PackedScene? RadiationBoltScene;
-	[Export] private StringName StaffAttackAnimation = default;
-	[Export] private float RangedAttackCooldown = 1.4f;
-	[Export] private float RangedProjectileSpeed = 10.0f;
-	[Export] private bool UseHitboxDrivenDamage = true;
+	[Export] private Color DamageNumberColor = new(1f, 0.85f, 0.2f);
+
+	[ExportGroup("Health UI")]
+	[Export] private float HealthBarWidth = 1.4f;
+	[Export] private float HealthBarHeight = 0.12f;
+	[Export] private float HealthBarYOffset = 2.2f;
+	[Export] private float HealthLabelHeightMultiplier = 1.8f;
+	[Export] private Color HealthBarFillColor = new(0.2f, 0.9f, 0.2f);
+	[Export] private Color HealthBarBackColor = new(0f, 0f, 0f, 0.6f);
 
 	protected override int InitialHealth => InitialHealthValue;
 	protected override int InitialDamage => InitialDamageValue;
 	protected override int InitialDefense => InitialDefenseValue;
 
-	// Components
-	private readonly Movement Movement;
-	private readonly ChaseAI AI;
-	private Node3D? AttackTarget;
+	private static readonly Lazy<ImageTexture> WhiteTexture = new(() => {
+		Image img = Image.CreateEmpty(1, 1, false, Image.Format.Rgba8);
+		img.Fill(Colors.White);
+		return ImageTexture.CreateFromImage(img);
+	});
 
-	// Hit feedback
+	protected readonly Movement Movement;
+	protected readonly ChaseAI AI;
+	protected Node3D? AttackTarget;
+	protected float AttackCooldownTimer = 0f;
+	protected Animator? Animator;
+
 	private Vector3 KnockbackVelocity = Vector3.Zero;
 	private float DamageFlashTimer = 0f;
 	private float StunTimer = 0f;
@@ -67,8 +77,6 @@ public sealed partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 	private Sprite3D? HealthBarBack;
 	private Sprite3D? HealthBarFill;
 	private Label3D? HealthLabel;
-	private Animator? Animator;
-	private float AttackCooldownTimer = 0f;
 
 	public void SetTarget(Node3D target) {
 		AI.SetTarget(target);
@@ -108,10 +116,6 @@ public sealed partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 			}
 
 			UpdateHealthUI();
-			if(to.Current >= from.Current) {
-				return;
-			}
-
 			DamageFlashTimer = DamageFlashTime;
 			StunTimer = Math.Max(StunTimer, StunDuration);
 			SetDamageFlash(true);
@@ -143,7 +147,6 @@ public sealed partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 
 		if(DamageFlashTimer > 0f) {
 			DamageFlashTimer -= dt;
-
 			if(DamageFlashTimer <= 0f) {
 				SetDamageFlash(false);
 			}
@@ -160,9 +163,7 @@ public sealed partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 			AI.Update();
 			Movement.Move(AI.HorizontalInput, 1);
 			Movement.Update(dt);
-			if(EnemyType == EnemyType.Caster && AI.AttackPressed && AttackTarget != null && IsInstanceValid(AttackTarget)) {
-				Movement.Face(AttackTarget.GlobalPosition - GlobalPosition, dt);
-			}
+			OnAIUpdated(dt);
 		}
 
 		if(KnockbackVelocity.LengthSquared() > 0.001f) {
@@ -173,11 +174,88 @@ public sealed partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 		UpdateMovementState();
 	}
 
+	protected virtual void OnAIUpdated(float dt) { }
+
+	protected virtual void UpdateMovementState() {
+		if(StateMachine.CurrentState == State.Attacking) { return; }
+
+		if(AI.AttackPressed && AttackCooldownTimer <= 0f) {
+			OnAttackTriggered();
+			StateMachine.TransitionTo(State.Attacking);
+			return;
+		}
+
+		if(!IsOnFloor()) {
+			StateMachine.TransitionTo(State.Falling);
+		}
+		else if(!AI.IsMoving) {
+			StateMachine.TransitionTo(State.Idle);
+		}
+		else if(AI.SprintHeld) {
+			StateMachine.TransitionTo(State.Sprinting);
+		}
+		else {
+			StateMachine.TransitionTo(State.Walking);
+		}
+	}
+
+	protected virtual void OnAttackTriggered() { }
+
+	public EnemyData Export() => new() {
+		Id = Id,
+		DropRarity = DropRarity,
+		ScenePath = SceneFilePath,
+		Health = Health.Export(),
+		Movement = Movement.Export(),
+		Offense = Offense.Export(),
+		Defense = Defense.Export(),
+	};
+
+	public void Import(EnemyData data) {
+		if(!string.IsNullOrEmpty(data.Id)) {
+			Id = data.Id;
+		}
+		DropRarity = data.DropRarity;
+		Health.Import(data.Health);
+		Movement.Import(data.Movement);
+		Offense.Import(data.Offense);
+		Defense.Import(data.Defense);
+	}
+
+	public void DropItems(Action<string> onItemDrop) {
+		if(onItemDrop == null) {
+			return;
+		}
+
+		EnemyDropDefinition? definition = EnemyDrops.Get(EnemyType);
+		if(definition == null) {
+			Log.Warn($"No drop definition found for enemy type '{EnemyType}'");
+			return;
+		}
+
+		int lowerBound = Math.Min(definition.LowerBound, definition.UpperBound);
+		int upperBound = Math.Max(definition.LowerBound, definition.UpperBound);
+		int numberOfItemsToDrop = ((int) GD.Randi() % (upperBound - lowerBound + 1)) + lowerBound;
+
+		for(int i = 0; i < numberOfItemsToDrop; i++) {
+			ItemProbabilities? selected = EnemyDrops.PickWeightedItem(definition.PossibleContents);
+			if(selected == null) {
+				break;
+			}
+
+			if(DatabaseManager.Instance.GetItemDefinitionById(selected.Value.ItemId) == null) {
+				Log.Warn($"Drop definition for enemy type '{EnemyType}' references unknown item '{selected.Value.ItemId}'. Skipping.");
+				continue;
+			}
+
+			onItemDrop(selected.Value.ItemId);
+		}
+	}
+
 	private void SetDamageFlash(bool enabled) {
 		if(FlashMaterial == null) {
 			return;
 		}
-
 		FlashMaterial.AlbedoColor = enabled ? new Color(2f, 0f, 0f) : Colors.White;
 	}
 
@@ -208,23 +286,16 @@ public sealed partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 		}
 
 		HealthUIRoot.Position = new Vector3(0f, HealthBarYOffset, 0f);
-
 		SetupSprite(HealthBarBack, HealthBarBackColor, HealthBarWidth, HealthBarHeight);
 		SetupSprite(HealthBarFill, HealthBarFillColor, HealthBarWidth, HealthBarHeight);
 		HealthBarFill.Position = new Vector3(0f, 0f, 0.001f);
-
 		HealthLabel.FontSize = 18;
 		HealthLabel.Billboard = BaseMaterial3D.BillboardModeEnum.Enabled;
-		HealthLabel.Position = new Vector3(0f, HealthBarHeight * 1.8f, 0.002f);
+		HealthLabel.Position = new Vector3(0f, HealthBarHeight * HealthLabelHeightMultiplier, 0.002f);
 	}
 
 	private static void SetupSprite(Sprite3D sprite, Color color, float width, float height) {
-		if(sprite.Texture == null) {
-			Image image = Image.CreateEmpty(1, 1, false, Image.Format.Rgba8);
-			image.Fill(Colors.White);
-			sprite.Texture = ImageTexture.CreateFromImage(image);
-		}
-
+		sprite.Texture ??= WhiteTexture.Value;
 		sprite.Modulate = color;
 		sprite.Billboard = BaseMaterial3D.BillboardModeEnum.Enabled;
 		sprite.PixelSize = 1f;
@@ -238,14 +309,12 @@ public sealed partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 		}
 
 		float pct = Mathf.Clamp(this.Percent(), 0f, 1f);
-
 		Vector3 scale = HealthBarFill.Scale;
 		scale.X = HealthBarWidth * pct;
 		scale.Y = HealthBarHeight;
 		scale.Z = 1f;
 		HealthBarFill.Scale = scale;
 		HealthBarFill.Position = new Vector3(-(HealthBarWidth - scale.X) * 0.5f, 0f, 0.001f);
-
 		HealthLabel.Text = $"{Health.Current}/{Health.Max}";
 		HealthUIRoot.Visible = Health.Current > 0 && Health.Current < Health.Max;
 	}
@@ -279,135 +348,16 @@ public sealed partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 		};
 	}
 
-	private void SpawnHitSpark() {
+	protected void SpawnHitSpark() {
 		if(HitSparkScene?.Instantiate() is not Node3D spark) {
 			return;
 		}
-
 		GetParent()?.AddChild(spark);
-		spark.GlobalPosition = GlobalPosition + new Vector3(0f, 1f, 0f);
+		spark.GlobalPosition = GlobalPosition + new Vector3(0f, HitSparkYOffset, 0f);
 		if(spark.GetNodeOrNull<GpuParticles3D>("GPUParticles3D") is { } particles) {
 			particles.Restart();
 			particles.Emitting = true;
 		}
-	}
-
-	private void UpdateMovementState() {
-		if(StateMachine.CurrentState == State.Attacking) { return; }
-
-		if(AI.AttackPressed && AttackCooldownTimer <= 0f) {
-			if(EnemyType == EnemyType.Caster && Animator != null && !StaffAttackAnimation.Equals(default(StringName))) {
-				Animator.SetAttackAnimation(StaffAttackAnimation);
-				AttackCooldownTimer = RangedAttackCooldown;
-				SpawnRadiationBolt();
-			}
-
-			StateMachine.TransitionTo(State.Attacking);
-			return;
-		}
-
-		if(!IsOnFloor()) {
-			StateMachine.TransitionTo(State.Falling);
-		}
-		else if(!AI.IsMoving) {
-			StateMachine.TransitionTo(State.Idle);
-		}
-		else if(AI.SprintHeld) {
-			StateMachine.TransitionTo(State.Sprinting);
-		}
-		else {
-			StateMachine.TransitionTo(State.Walking);
-		}
-	}
-
-	public override void OnAttackFinished() {
-		if(EnemyType == EnemyType.Caster || UseHitboxDrivenDamage) {
-			AttackCooldownTimer = RangedAttackCooldown;
-			StateMachine.TransitionTo(State.Idle);
-			return;
-		}
-
-		if(AttackTarget != null &&
-			IsInstanceValid(AttackTarget) &&
-			AttackTarget is IHealth healthTarget) {
-
-			Log.Info($"Enemy attacking {AttackTarget.Name}");
-			this.Attack(healthTarget);
-		}
-
-		AttackCooldownTimer = RangedAttackCooldown;
-
-		StateMachine.TransitionTo(State.Idle);
-	}
-
-	private void SpawnRadiationBolt() {
-		if(RadiationBoltScene?.Instantiate() is not RadiationBolt bolt) {
-			return;
-		}
-
-		if(StaffCastPoint == null || AttackTarget == null || !IsInstanceValid(AttackTarget)) {
-			bolt.QueueFree();
-			return;
-		}
-
-		GetTree().CurrentScene?.AddChild(bolt);
-		bolt.GlobalTransform = StaffCastPoint.GlobalTransform;
-		bolt.Speed = RangedProjectileSpeed;
-
-		Vector3 targetPosition = AttackTarget.GlobalPosition + new Vector3(0f, 1.0f, 0f);
-		Vector3 direction = (targetPosition - StaffCastPoint.GlobalPosition).Normalized();
-		bolt.Init(this, direction, Offense.Damage);
-	}
-
-	public EnemyData Export() => new() {
-		Id = Id,
-		DropRarity = DropRarity,
-		ScenePath = SceneFilePath,
-		Health = Health.Export(),
-		Movement = Movement.Export(),
-		Offense = Offense.Export(),
-		Defense = Defense.Export(),
-	};
-
-	public void DropItems(Action<string> onItemDrop) {
-		if(onItemDrop == null) {
-			return;
-		}
-
-		EnemyDropDefinition? definition = EnemyDrops.Get(EnemyType);
-		if(definition == null) {
-			Log.Warn($"No drop definition found for enemy type '{EnemyType}'");
-			return;
-		}
-
-		int lowerBound = Math.Max(0, Math.Min(definition.LowerBound, definition.UpperBound));
-		int upperBound = Math.Max(lowerBound, Math.Max(definition.LowerBound, definition.UpperBound));
-		int numberOfItemsToDrop = ((int)GD.Randi() % (upperBound - lowerBound + 1)) + lowerBound;
-
-		for(int i = 0; i < numberOfItemsToDrop; i++) {
-			ItemProbabilities? selected = EnemyDrops.PickWeightedItem(definition.PossibleContents);
-			if(selected == null) {
-				break;
-			}
-
-			if(DatabaseManager.Instance.GetItemDefinitionById(selected.Value.ItemId) == null) {
-				Log.Warn($"Drop definition for enemy type '{EnemyType}' references unknown item '{selected.Value.ItemId}'. Skipping.");
-				continue;
-			}
-
-			onItemDrop(selected.Value.ItemId);
-		}
-	}
-
-	public void Import(EnemyData data) {
-		if(!string.IsNullOrEmpty(data.Id)) {
-			Id = data.Id;
-		}
-		DropRarity = data.DropRarity;
-		Health.Import(data.Health);
-		Movement.Import(data.Movement);
-		Offense.Import(data.Offense);
-		Defense.Import(data.Defense);
 	}
 }
 
@@ -512,7 +462,7 @@ public static class EnemyDrops {
 		if(ByEnemyType.TryGetValue(enemyType, out EnemyDropDefinition? definition)) {
 			return definition;
 		}
-		return Enemy; // Fallback to default
+		return Enemy;
 	}
 
 	public static ItemProbabilities? PickWeightedItem(ItemProbabilities[] possibleContents) {
@@ -521,7 +471,8 @@ public static class EnemyDrops {
 		}
 		int totalWeight = 0;
 		for(int i = 0; i < possibleContents.Length; i++) {
-			totalWeight += Math.Max(0, possibleContents[i].ChanceWeight);
+			int w = Math.Max(0, possibleContents[i].ChanceWeight);
+			totalWeight += w;
 		}
 		if(totalWeight <= 0) {
 			return null;
