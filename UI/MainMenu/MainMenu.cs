@@ -33,6 +33,7 @@ public sealed partial class MainMenu : BaseUIControl {
 
 	[ExportCategory("Scene Refrences")]
 	[Export] private PackedScene SettingsScene = null!;
+	[Export] private PackedScene ExtrasScene = null!;
 	[Export] private PackedScene SaveMenuScene = null!;
 	[Export] private PackedScene HostPanelScene = null!;
 	[Export] private PackedScene JoinPanelScene = null!;
@@ -65,6 +66,7 @@ public sealed partial class MainMenu : BaseUIControl {
 
 		// Local popup management
 		SettingsButton.Pressed += OpenSettings;
+		ExtrasButton.Pressed += OpenExtras;
 		LoadSavedButton.Pressed += OpenSaveMenu;
 		HostNewButton.Pressed += OpenHostPanel;
 		JoinGameButton.Pressed += OpenJoinPanel;
@@ -122,6 +124,21 @@ public sealed partial class MainMenu : BaseUIControl {
 
 		ButtonPanel.Visible = false;
 		settings.OpenMenu();
+	}
+
+	private void OpenExtras() {
+		Extras extras = this.AddScene<Extras>(ExtrasScene);
+
+		extras.TreeExited += () => {
+			if(!IsInsideTree()) { return; }
+			ButtonPanel.Visible = true;
+			if(InputSystem.Instance.CurrentInputMode == InputSystem.InputMode.Controller) {
+				ExtrasButton.GrabFocus();
+			}
+		};
+
+		ButtonPanel.Visible = false;
+		extras.OpenMenu();
 	}
 
 	private void OpenSaveMenu() {

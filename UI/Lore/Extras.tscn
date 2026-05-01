@@ -1,0 +1,52 @@
+[gd_scene format=3 uid="uid://jxuwlbh6yfwt"]
+
+[ext_resource type="Texture2D" uid="uid://bp4vtwgd2ijiv" path="res://Assets/Images/Beginning Video Part.png" id="1_ljmc6"]
+[ext_resource type="Script" uid="uid://ctmk4urvooha4" path="res://UI/Lore/Extras.cs" id="1_script"]
+
+[node name="Extras" type="Control" unique_id=1123786633]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=389803566]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
+[node name="TextureRect" type="TextureRect" parent="." unique_id=635157870]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -512.0
+offset_top = -269.0
+offset_right = -512.0
+offset_bottom = -269.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(1.5, 1.5)
+texture = ExtResource("1_ljmc6")
+stretch_mode = 3
+
+[node name="BackButton" type="Button" parent="." unique_id=1318209560]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.033
+anchor_top = 0.88900006
+anchor_right = 0.109000005
+anchor_bottom = 0.94600004
+offset_left = 0.6399994
+offset_top = -0.12005615
+offset_right = -0.28001404
+offset_bottom = 0.3199463
+grow_vertical = 0
+theme_override_font_sizes/font_size = 48
+text = "Back"
