@@ -410,9 +410,9 @@ visible = false
 layout_mode = 1
 anchors_preset = -1
 offset_left = 69.0
-offset_top = 235.0
-offset_right = 366.0
-offset_bottom = 535.0
+offset_top = 100.0
+offset_right = 700.0
+offset_bottom = 870.0
 script = ExtResource("6_uv3og")
 MouseSenseSlider = NodePath("Mouse_Sense/HSlider")
 InvertedYAxisCheckBox = NodePath("Invert_Y-Axis/CheckBox")
@@ -482,7 +482,6 @@ size_flags_horizontal = 0
 focus_neighbor_top = NodePath("../Enable_Raw_Input/CheckBox")
 focus_neighbor_bottom = NodePath("../../BackButton")
 theme_override_font_sizes/font_size = 32
-disabled = true
 text = "Remap Keys"
 
 [node name="BackButton" type="Button" parent="." unique_id=878620147]
