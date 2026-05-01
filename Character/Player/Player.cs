@@ -77,8 +77,8 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData>, IAtta
 	public Vector3 RotationBeforeSleep = Vector3.Zero;
 
 	private float SleepHealAccumulator = 0f;
-	private const float SleepHealthPerSecond = 2f;
-	private const float SleepRadiationPerSecond = 5f / (30f * 60f); // clears full radiation in ~6 minutes
+	private float SleepHealthPerSecond = 2f;
+	private float SleepRadiationPerSecond = 5f / (30f * 60f);
 
 	public bool HoldingSword = false;
 	public bool HoldingStaff = false;
@@ -137,6 +137,13 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData>, IAtta
 				return;
 			}
 			if(ObjectPickup!.CurrentTargetObjectNode == null) {
+				return;
+			}
+			ObjectPickup.CurrentTargetObjectNode.Interact(this);
+		});
+
+		OnExit += ActionEvent.Enter.WhenPressed(() => {
+			if(ObjectPickup?.CurrentTargetObjectNode == null) {
 				return;
 			}
 			ObjectPickup.CurrentTargetObjectNode.Interact(this);
@@ -542,11 +549,13 @@ public sealed partial class Player : CharacterBase, ISaveable<PlayerData>, IAtta
 		bolt.Init(this, direction, GetStaffProjectileDamage());
 	}
 
-	public void Sleep(Vector3 Location, Vector3 Rotation) {
+	public void Sleep(Vector3 Location, Vector3 Rotation, float healthPerSecond, float radiationPerSecond) {
 		if(IsSleeping) {
 			return;
 		}
 
+		SleepHealthPerSecond = healthPerSecond;
+		SleepRadiationPerSecond = radiationPerSecond;
 		IsSleeping = true;
 		LocationBeforeSleep = GlobalTransform.Origin;
 		RotationBeforeSleep = GlobalRotation;

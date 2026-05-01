@@ -46,7 +46,11 @@ public sealed class BedComponent : IObjectComponent, IInteract {
 			desiredRotation = new Vector3(0, yaw, 0);
 		}
 
-		player.Sleep(globalLocation, desiredRotation);
+		// RestoreAmount 1 = small bed (1 hp/s, 2 rad/s), 2 = large bed (2 hp/s, 5 rad/s)
+		bool isLarge = RestoreAmount >= 2;
+		float healthPerSecond = isLarge ? 2f : 1f;
+		float radiationPerSecond = isLarge ? 5f : 2f;
+		player.Sleep(globalLocation, desiredRotation, healthPerSecond, radiationPerSecond);
 		IsSleeping = true;
 		return true;
 	}

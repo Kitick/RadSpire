@@ -121,6 +121,7 @@ public readonly struct ActionEvent {
 
 	// Interaction
 	public static readonly ActionEvent Interact = new("Interact");
+	public static readonly ActionEvent Enter = new("Enter");
 	public static readonly ActionEvent AssignNPC = new("AssignNPC");
 	public static readonly ActionEvent Pickup = new("Pickup");
 	public static readonly ActionEvent UseItem = new("UseItem");
