@@ -1867,7 +1867,6 @@ disabled = true
 [node name="AnimationPlayer" type="AnimationPlayer" parent="Model" unique_id=1004609197 node_paths=PackedStringArray("Character")]
 libraries/ = SubResource("AnimationLibrary_0bxxp")
 script = ExtResource("5_22hf7")
-Character = NodePath("../..")
 IDLE = &"Idle_A"
 WALKING = &"Walking_A"
 SPRINTING = &"Running_A"
@@ -1881,3 +1880,4 @@ DODGE = &"Dodge_Left"
 BLOCK = &"Idle_A"
 BLOCKING = &"Idle_A"
 HIT = &"Idle_A"
+Character = NodePath("../..")

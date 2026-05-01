@@ -13,16 +13,16 @@ public partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 	private static readonly LogService Log = new(nameof(Enemy), enabled: true);
 	public string Id { get; set; } = Guid.NewGuid().ToString();
 
-	[ExportGroup("Identity")]
+	[ExportCategory("Identity")]
 	[Export] public EnemyType EnemyType { get; set; } = EnemyType.None;
 	[Export] public Rarity DropRarity { get; set; } = Rarity.Common;
 
-	[ExportGroup("Stats")]
+	[ExportCategory("Stats")]
 	[Export] private int InitialHealthValue = 50;
 	[Export] private int InitialDamageValue = 8;
 	[Export] private int InitialDefenseValue = 0;
 
-	[ExportGroup("Combat")]
+	[ExportCategory("Combat")]
 	[Export] protected float AttackDistance = 1.5f;
 	[Export] private float ChaseStopDistance = 1.5f;
 	[Export] private float DetectionRadius = 15.0f;
@@ -32,12 +32,10 @@ public partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 	[Export] private float KnockbackDecay = 12f;
 	[Export] private float StunDuration = 0.4f;
 
-	[ExportGroup("Feedback")]
-	[ExportSubgroup("Hit")]
+	[ExportCategory("Feedback")]
 	[Export] protected PackedScene? HitSparkScene;
 	[Export] private float HitSparkYOffset = 1f;
 	[Export] private float DamageFlashTime = 1.0f;
-	[ExportSubgroup("Damage Numbers")]
 	[Export] private float DamageNumberYOffset = 1.6f;
 	[Export] private float DamageNumberLifetime = 0.9f;
 	[Export] private float DamageNumberRise = 0.6f;
@@ -45,7 +43,7 @@ public partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 	[Export] private int DamageNumberFontSize = 55;
 	[Export] private Color DamageNumberColor = new(1f, 0.85f, 0.2f);
 
-	[ExportGroup("Health UI")]
+	[ExportCategory("Health UI")]
 	[Export] private float HealthBarWidth = 1.4f;
 	[Export] private float HealthBarHeight = 0.12f;
 	[Export] private float HealthBarYOffset = 2.2f;
@@ -91,7 +89,6 @@ public partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 
 	public override void _Ready() {
 		base._Ready();
-		AddToGroup(Group.Enemy.ToString());
 
 		EnemyMesh = GetNodeOrNull<MeshInstance3D>("MeshInstance3D");
 		Animator = GetNodeOrNull<Animator>("Model/AnimationPlayer");
