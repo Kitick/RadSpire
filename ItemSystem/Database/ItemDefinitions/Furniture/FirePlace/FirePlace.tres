@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://dpnrof8tn33ch" path="res://ItemSystem/Database/ItemDefinitions/Furniture/FirePlace/Fireplace.tscn" id="2_2qim8"]
 [ext_resource type="Script" uid="uid://bxmh4fd7kjvv1" path="res://ItemSystem/Definitions/ItemDefinition.cs" id="2_s48ps"]
 [ext_resource type="Texture2D" uid="uid://df6md1frfvdhr" path="res://ItemSystem/Database/ItemDefinitions/Furniture/FirePlace/Fireplace.png" id="2_sbstl"]
-[ext_resource type="Resource" path="res://ItemSystem/Database/ComponentDefinitions/FurnitureValueDefinition/FurnitureValue_30.tres" id="2_t5o5r"]
+[ext_resource type="Resource" uid="uid://b6hndf6uwdbp1" path="res://ItemSystem/Database/ComponentDefinitions/FurnitureValueDefinition/FurnitureValue_30.tres" id="2_t5o5r"]
 
 [resource]
 script = ExtResource("2_s48ps")

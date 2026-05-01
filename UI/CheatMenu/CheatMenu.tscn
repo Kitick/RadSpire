@@ -595,7 +595,6 @@ vertical_alignment = 1
 [node name="Close" type="Button" parent="PanelArea/Header" unique_id=40147227]
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_stretch_ratio = 1.0
 theme_override_fonts/font = SubResource("SystemFont_y7kl3")
 theme_override_font_sizes/font_size = 20
 theme_override_styles/normal = SubResource("StyleBoxEmpty_h2gaj")

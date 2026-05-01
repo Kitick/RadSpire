@@ -4,7 +4,7 @@
 [ext_resource type="Resource" uid="uid://c1huxqjph6pmk" path="res://ItemSystem/Database/ComponentDefinitions/InventoryComponentDefinition/3x5InventoryDefinition.tres" id="2_f3fuy"]
 [ext_resource type="Resource" uid="uid://cdxl0njbf5ldq" path="res://ItemSystem/Database/ComponentDefinitions/ChestRarityDefinition/CommonChestRarityDefinition.tres" id="3_9s18h"]
 [ext_resource type="Texture2D" uid="uid://cb8574sf714xs" path="res://ItemSystem/Database/ItemDefinitions/Furniture/Chest/CommonChest/CommonChest.png" id="3_bqbbc"]
-[ext_resource type="Resource" path="res://ItemSystem/Database/ComponentDefinitions/FurnitureValueDefinition/FurnitureValue_05.tres" id="4_bsard"]
+[ext_resource type="Resource" uid="uid://cwa4co00vhcs1" path="res://ItemSystem/Database/ComponentDefinitions/FurnitureValueDefinition/FurnitureValue_05.tres" id="4_bsard"]
 [ext_resource type="PackedScene" uid="uid://bs8mou6sasa7y" path="res://ItemSystem/Database/ItemDefinitions/Furniture/Chest/CommonChest/CommonChest.tscn" id="4_v1teg"]
 [ext_resource type="Script" uid="uid://bxmh4fd7kjvv1" path="res://ItemSystem/Definitions/ItemDefinition.cs" id="5_1nhsk"]
 

@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cnm5iegiuj4xu" path="res://ItemSystem/Definitions/ItemComponentDefinition.cs" id="1_tue2r"]
 [ext_resource type="Texture2D" uid="uid://ck2lfcrmwodj8" path="res://ItemSystem/Database/ItemDefinitions/Furniture/CoffeeTable/TableCoffeeGray/TableCoffeeGray.png" id="2_tue2r"]
-[ext_resource type="Resource" path="res://ItemSystem/Database/ComponentDefinitions/FurnitureValueDefinition/FurnitureValue_15.tres" id="2_uh611"]
+[ext_resource type="Resource" uid="uid://b0vuclh4q02e8" path="res://ItemSystem/Database/ComponentDefinitions/FurnitureValueDefinition/FurnitureValue_15.tres" id="2_uh611"]
 [ext_resource type="PackedScene" uid="uid://pxuggmi8r6v4" path="res://ItemSystem/Database/ItemDefinitions/Furniture/CoffeeTable/TableCoffeeGray/TableCoffeeGray.tscn" id="3_4c1lu"]
 [ext_resource type="Script" uid="uid://bxmh4fd7kjvv1" path="res://ItemSystem/Definitions/ItemDefinition.cs" id="4_necdx"]
 

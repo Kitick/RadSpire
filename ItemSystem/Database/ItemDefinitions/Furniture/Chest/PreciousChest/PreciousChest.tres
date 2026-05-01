@@ -5,7 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://dlhbkgx53b785" path="res://ItemSystem/Database/ItemDefinitions/Furniture/Chest/PreciousChest/PreciousChest.png" id="3_nqami"]
 [ext_resource type="Resource" uid="uid://hvqqiasgy3dx" path="res://ItemSystem/Database/ComponentDefinitions/ChestRarityDefinition/PreciousChestRarityDefinition.tres" id="3_qw9g5"]
 [ext_resource type="PackedScene" uid="uid://crflsj3utq4yg" path="res://ItemSystem/Database/ItemDefinitions/Furniture/Chest/PreciousChest/PreciousChest.tscn" id="4_os6ok"]
-[ext_resource type="Resource" path="res://ItemSystem/Database/ComponentDefinitions/FurnitureValueDefinition/FurnitureValue_10.tres" id="4_wq703"]
+[ext_resource type="Resource" uid="uid://diqeh6cqglmav" path="res://ItemSystem/Database/ComponentDefinitions/FurnitureValueDefinition/FurnitureValue_10.tres" id="4_wq703"]
 [ext_resource type="Script" uid="uid://bxmh4fd7kjvv1" path="res://ItemSystem/Definitions/ItemDefinition.cs" id="5_1qvc3"]
 
 [resource]

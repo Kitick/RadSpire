@@ -1,6 +1,6 @@
-[gd_resource type="Resource" script_class="FurnitureValueDefinition" format=3]
+[gd_resource type="Resource" script_class="FurnitureValueDefinition" format=3 uid="uid://et86k7u2f5ra"]
 
-[ext_resource type="Script" path="res://ItemSystem/Definitions/FurnitureValueDefinition.cs" id="1_furniture"]
+[ext_resource type="Script" uid="uid://drd2lhms1omgo" path="res://ItemSystem/Definitions/FurnitureValueDefinition.cs" id="1_furniture"]
 
 [resource]
 script = ExtResource("1_furniture")

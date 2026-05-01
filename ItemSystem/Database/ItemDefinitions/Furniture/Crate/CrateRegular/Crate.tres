@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cnm5iegiuj4xu" path="res://ItemSystem/Definitions/ItemComponentDefinition.cs" id="1_fe5nj"]
 [ext_resource type="Resource" uid="uid://c1huxqjph6pmk" path="res://ItemSystem/Database/ComponentDefinitions/InventoryComponentDefinition/3x5InventoryDefinition.tres" id="2_grx53"]
-[ext_resource type="Resource" path="res://ItemSystem/Database/ComponentDefinitions/FurnitureValueDefinition/FurnitureValue_05.tres" id="3_grx53"]
+[ext_resource type="Resource" uid="uid://cwa4co00vhcs1" path="res://ItemSystem/Database/ComponentDefinitions/FurnitureValueDefinition/FurnitureValue_05.tres" id="3_grx53"]
 [ext_resource type="Texture2D" uid="uid://di3gbm6hl11o3" path="res://ItemSystem/Database/ItemDefinitions/Furniture/Crate/Crate.png" id="3_jo4r4"]
 [ext_resource type="PackedScene" uid="uid://mbqixjb2j1y5" path="res://ItemSystem/Database/ItemDefinitions/Furniture/Crate/CrateRegular/Crate.tscn" id="4_fl6t6"]
 [ext_resource type="Script" uid="uid://bxmh4fd7kjvv1" path="res://ItemSystem/Definitions/ItemDefinition.cs" id="5_p7gxt"]

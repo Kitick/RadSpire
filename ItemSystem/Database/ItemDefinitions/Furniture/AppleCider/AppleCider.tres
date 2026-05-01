@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://cohrfd2mpaokj" path="res://ItemSystem/Database/ItemDefinitions/Furniture/AppleCider/AppleCider.tscn" id="2_nuixb"]
 [ext_resource type="Texture2D" uid="uid://41ol58jg5h72" path="res://ItemSystem/Database/ItemDefinitions/Furniture/AppleCider/AppleCider.png" id="2_ohdb2"]
 [ext_resource type="Script" uid="uid://bxmh4fd7kjvv1" path="res://ItemSystem/Definitions/ItemDefinition.cs" id="2_qal5a"]
-[ext_resource type="Resource" path="res://ItemSystem/Database/ComponentDefinitions/FurnitureValueDefinition/FurnitureValue_05.tres" id="3_aw6y5"]
+[ext_resource type="Resource" uid="uid://cwa4co00vhcs1" path="res://ItemSystem/Database/ComponentDefinitions/FurnitureValueDefinition/FurnitureValue_05.tres" id="3_aw6y5"]
 
 [resource]
 script = ExtResource("2_qal5a")

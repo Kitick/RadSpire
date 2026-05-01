@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cnm5iegiuj4xu" path="res://ItemSystem/Definitions/ItemComponentDefinition.cs" id="1_of8ac"]
 [ext_resource type="Resource" uid="uid://djv4h3r6bjqlx" path="res://ItemSystem/Database/ComponentDefinitions/DoorDefinition/HouseSmallDoor.tres" id="2_8k0se"]
-[ext_resource type="Resource" path="res://ItemSystem/Database/ComponentDefinitions/StructureDefinition/Structure_SmallHouse.tres" id="3_exynr"]
+[ext_resource type="Resource" uid="uid://cvp1ilyj5dqnm" path="res://ItemSystem/Database/ComponentDefinitions/StructureDefinition/Structure_SmallHouse.tres" id="3_exynr"]
 [ext_resource type="Script" uid="uid://bxmh4fd7kjvv1" path="res://ItemSystem/Definitions/ItemDefinition.cs" id="3_ud41q"]
 [ext_resource type="Texture2D" uid="uid://cft62y3s681fs" path="res://ItemSystem/Database/ItemDefinitions/Furniture/Door/HouseSmall/HouseSmall.png" id="3_y60v5"]
 [ext_resource type="PackedScene" uid="uid://b3wsubrjtmqi" path="res://ItemSystem/Database/ItemDefinitions/Furniture/Door/HouseSmall/HouseSmall.tscn" id="4_exynr"]

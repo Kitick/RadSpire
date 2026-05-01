@@ -46,7 +46,7 @@ size = Vector3(1.378418, 7.662964, 7.0722046)
 
 [node name="Bunker3" unique_id=1135045361 instance=ExtResource("1_s7noy")]
 
-[node name="Bunker3" parent="." index="0" unique_id=1297449717]
+[node name="Bunker3" parent="." index="0" unique_id=1190820443]
 transform = Transform3D(1, -2.1316282e-14, -1.5099579e-07, 1.5099579e-07, 1.7881393e-07, 0.99999994, 7.1054274e-15, -0.99999994, 1.7881393e-07, 0.0024371147, -0.0053573847, 0.00031745434)
 surface_material_override/0 = SubResource("StandardMaterial3D_tfqu1")
 

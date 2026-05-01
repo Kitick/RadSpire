@@ -1,6 +1,6 @@
-[gd_resource type="Resource" script_class="StructureDefinition" format=3]
+[gd_resource type="Resource" script_class="StructureDefinition" format=3 uid="uid://b5pmumar0hosm"]
 
-[ext_resource type="Script" path="res://ItemSystem/Definitions/StructureDefinition.cs" id="1_structure"]
+[ext_resource type="Script" uid="uid://be12wsqpf22di" path="res://ItemSystem/Definitions/StructureDefinition.cs" id="1_structure"]
 
 [resource]
 script = ExtResource("1_structure")

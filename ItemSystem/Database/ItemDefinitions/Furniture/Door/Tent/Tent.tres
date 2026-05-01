@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cnm5iegiuj4xu" path="res://ItemSystem/Definitions/ItemComponentDefinition.cs" id="1_rygrv"]
 [ext_resource type="Resource" uid="uid://c0adip18hlkyd" path="res://ItemSystem/Database/ComponentDefinitions/DoorDefinition/TentDoor.tres" id="2_xr73v"]
-[ext_resource type="Resource" path="res://ItemSystem/Database/ComponentDefinitions/StructureDefinition/Structure_Tent.tres" id="3_3k1x6"]
+[ext_resource type="Resource" uid="uid://b50ym0cvm7t7j" path="res://ItemSystem/Database/ComponentDefinitions/StructureDefinition/Structure_Tent.tres" id="3_3k1x6"]
 [ext_resource type="PackedScene" uid="uid://1kxo55hyjeex" path="res://ItemSystem/Database/ItemDefinitions/Furniture/Door/Tent/Tent.tscn" id="3_tln10"]
 [ext_resource type="Texture2D" uid="uid://d3c5rj62qw160" path="res://ItemSystem/Database/ItemDefinitions/Furniture/Door/Tent/Tent.png" id="3_xr73v"]
 [ext_resource type="Script" uid="uid://bxmh4fd7kjvv1" path="res://ItemSystem/Definitions/ItemDefinition.cs" id="4_3k1x6"]

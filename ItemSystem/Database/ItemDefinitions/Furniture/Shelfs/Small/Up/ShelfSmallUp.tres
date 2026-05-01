@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cnm5iegiuj4xu" path="res://ItemSystem/Definitions/ItemComponentDefinition.cs" id="1_ng5so"]
 [ext_resource type="Texture2D" uid="uid://xhursgsxu68y" path="res://ItemSystem/Database/ItemDefinitions/Furniture/Shelfs/ShelfUp.png" id="2_k8age"]
-[ext_resource type="Resource" path="res://ItemSystem/Database/ComponentDefinitions/FurnitureValueDefinition/FurnitureValue_05.tres" id="2_lclqn"]
+[ext_resource type="Resource" uid="uid://cwa4co00vhcs1" path="res://ItemSystem/Database/ComponentDefinitions/FurnitureValueDefinition/FurnitureValue_05.tres" id="2_lclqn"]
 [ext_resource type="PackedScene" uid="uid://ilixngpwi0gm" path="res://ItemSystem/Database/ItemDefinitions/Furniture/Shelfs/Small/Up/ShelfSmallUp.tscn" id="2_yp5h3"]
 [ext_resource type="Script" uid="uid://bxmh4fd7kjvv1" path="res://ItemSystem/Definitions/ItemDefinition.cs" id="3_k8age"]
 

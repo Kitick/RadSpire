@@ -13,7 +13,7 @@ size = Vector3(12.067726, 8.172769, 4.178713)
 
 [node name="Bunker2" unique_id=690382644 instance=ExtResource("1_n4ddb")]
 
-[node name="Bunker2" parent="." index="0" unique_id=1466114611]
+[node name="Bunker2" parent="." index="0" unique_id=798038745]
 surface_material_override/0 = SubResource("StandardMaterial3D_k73ll")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Bunker2" index="0" unique_id=1335725896]
