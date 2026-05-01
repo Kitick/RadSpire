@@ -56,6 +56,12 @@ public static class HealthExtensions {
 			if(from.Current > 0 && to.Current == 0) { callback(); }
 		});
 	}
+
+	public static Action WhenDeadOnce(this IHealth entity, Action callback) {
+		return entity.Health.Once((from, to) => {
+			if(from.Current > 0 && to.Current == 0) { callback(); }
+		});
+	}
 }
 
 public readonly record struct HealthData : Services.ISaveData {

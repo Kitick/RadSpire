@@ -28,4 +28,13 @@ public static class Extensions {
 		target.OnChanged += callback;
 		return () => target.OnChanged -= callback;
 	}
+
+	public static Action Once<TData>(this Component<TData> target, Action<TData, TData> callback) where TData : struct, ISaveData {
+		void Handler(TData from, TData to) {
+			target.OnChanged -= Handler;
+			callback(from, to);
+		}
+		target.OnChanged += Handler;
+		return () => target.OnChanged -= Handler;
+	}
 }
