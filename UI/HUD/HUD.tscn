@@ -37,6 +37,9 @@ anchors_preset = 0
 offset_right = 1920.0
 offset_bottom = 1080.0
 script = ExtResource("1_10ibt")
+SettingsScene = ExtResource("2_o30d6")
+SaveMenuScene = ExtResource("3_o30d6")
+HostPanelScene = ExtResource("2_3o8sq")
 PauseButton = NodePath("PauseButton")
 PauseMenu = NodePath("PauseMenu")
 Inventory = NodePath("Inventory")
@@ -52,9 +55,6 @@ HealthLabel = NodePath("HealthBar/HealthLabel")
 WinMenu = NodePath("WinMenu")
 CheatMenu = NodePath("CheatMenu")
 StructureInfo = NodePath("StructureInfo")
-SettingsScene = ExtResource("2_o30d6")
-SaveMenuScene = ExtResource("3_o30d6")
-HostPanelScene = ExtResource("2_3o8sq")
 
 [node name="InteractionPrompt" type="Label" parent="." unique_id=1956403469]
 visible = false
@@ -175,16 +175,15 @@ offset_right = 185.0
 offset_bottom = -50.0
 
 [node name="PauseMenu" parent="." unique_id=144172425 instance=ExtResource("5_jmlhc")]
-visible = false
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -170.0
+offset_left = -225.0
 offset_top = -288.0
-offset_right = 170.0
+offset_right = 225.0
 offset_bottom = 288.0
 grow_horizontal = 2
 grow_vertical = 2

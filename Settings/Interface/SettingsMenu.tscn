@@ -40,13 +40,14 @@ color = Color(0, 0, 0, 0.5)
 
 [node name="NavBar" type="HBoxContainer" parent="." unique_id=2126123833]
 layout_mode = 1
-anchors_preset = -1
+anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -707.0
-offset_top = 32.0
-offset_right = 711.0
-offset_bottom = 83.0
+offset_left = -355.0
+offset_top = 56.0
+offset_right = 355.0
+offset_bottom = 120.0
+grow_horizontal = 2
 alignment = 1
 
 [node name="Display_Button" type="Button" parent="NavBar" unique_id=465923652]
@@ -487,12 +488,14 @@ text = "Remap Keys"
 [node name="BackButton" type="Button" parent="." unique_id=878620147]
 layout_mode = 1
 anchors_preset = -1
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_left = 50.0
-offset_top = -113.0
-offset_right = 178.0
-offset_bottom = -50.0
+anchor_left = 0.034
+anchor_top = 0.89000005
+anchor_right = 0.108
+anchor_bottom = 0.94100004
+offset_left = -0.2800064
+offset_top = -0.20007324
+offset_right = -0.3600006
+offset_bottom = -0.2800293
 size_flags_horizontal = 0
 focus_neighbor_right = NodePath("../ResetSettingsButton")
 theme_override_font_sizes/font_size = 40
@@ -501,14 +504,14 @@ text = "Back"
 [node name="ResetSettingsButton" type="Button" parent="." unique_id=1422098046]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -341.0
-offset_top = -101.0
-offset_right = -50.0
-offset_bottom = -50.0
+anchor_left = 0.80100006
+anchor_top = 0.88900006
+anchor_right = 0.96700007
+anchor_bottom = 0.94600004
+offset_left = 0.079833984
+offset_top = -0.12005615
+offset_right = -0.6401367
+offset_bottom = 0.3199463
 size_flags_horizontal = 0
 focus_neighbor_left = NodePath("../BackButton")
 theme_override_font_sizes/font_size = 40
