@@ -27,6 +27,7 @@ public partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 	[Export] private float ChaseStopDistance = 1.5f;
 	[Export] private float DetectionRadius = 15.0f;
 	[Export] private float SprintDistance = 5.0f;
+	[Export] private float SprintMultiplier = 2.0f;
 	[Export] private float KnockbackForce = 15f;
 	[Export] private float KnockbackDecay = 12f;
 	[Export] private float StunDuration = 0.4f;
@@ -109,13 +110,15 @@ public partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 		}
 
 		Health.OnChanged += (from, to) => {
-			int damageTaken = from.Current - to.Current;
-			if(damageTaken > 0) {
-				SpawnDamageNumber(damageTaken);
-				SpawnHitSpark();
-			}
-
 			UpdateHealthUI();
+
+			if(to.Max < from.Max) { return; }
+
+			int damageTaken = from.Current - to.Current;
+			if(damageTaken <= 0) { return; }
+
+			SpawnDamageNumber(damageTaken);
+			SpawnHitSpark();
 			DamageFlashTimer = DamageFlashTime;
 			StunTimer = Math.Max(StunTimer, StunDuration);
 			SetDamageFlash(true);
@@ -161,7 +164,7 @@ public partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 		}
 		else {
 			AI.Update();
-			Movement.Move(AI.HorizontalInput, 1);
+			Movement.Move(AI.HorizontalInput, AI.SprintHeld ? SprintMultiplier : 1f);
 			Movement.Update(dt);
 			OnAIUpdated(dt);
 		}
