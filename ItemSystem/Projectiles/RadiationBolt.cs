@@ -1,11 +1,12 @@
 namespace ItemSystem;
 
+using System;
 using Character;
 using Components;
 using Godot;
 
 public partial class RadiationBolt : Area3D {
-	[Export] private float Speed = 18f;
+	[Export] public float Speed = 18f;
 	[Export] private float Lifetime = 1.5f;
 	[Export] private int Damage = 8;
 	[Export] private PackedScene? HitSparkScene;
@@ -20,17 +21,13 @@ public partial class RadiationBolt : Area3D {
 		Damage = damage;
 	}
 
-	public void SetSpeed(float speed) {
-		Speed = speed;
-	}
-
 	public override void _Ready() {
 		BodyEntered += OnBodyEntered;
 		LifeTimer = Lifetime;
 	}
 
 	public override void _PhysicsProcess(double delta) {
-		float dt = (float)delta;
+		float dt = (float) delta;
 		GlobalPosition += Direction * Speed * dt;
 
 		LifeTimer -= dt;
@@ -43,14 +40,16 @@ public partial class RadiationBolt : Area3D {
 	private void OnBodyEntered(Node3D body) {
 		if(body == OwnerCharacter) { return; }
 
-		if(body is IHealth healthTarget) {
-			if(OwnerCharacter != null) {
-				healthTarget.Hurt(Damage);
-			}
-
-			SpawnImpact();
-			QueueFree();
+		if(body is IRadiation radTarget) {
+			radTarget.Radiation.Level = Math.Min(1f, radTarget.Radiation.Level + (Damage / 100f));
 		}
+		else if(body is IHealth healthTarget && OwnerCharacter != null) {
+			healthTarget.Hurt(Damage);
+		}
+		else { return; }
+
+		SpawnImpact();
+		QueueFree();
 	}
 
 	private void SpawnImpact() {

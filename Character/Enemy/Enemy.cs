@@ -352,7 +352,7 @@ public sealed partial class Enemy : CharacterBase, ISaveable<EnemyData> {
 
 		GetTree().CurrentScene?.AddChild(bolt);
 		bolt.GlobalTransform = StaffCastPoint.GlobalTransform;
-		bolt.SetSpeed(RangedProjectileSpeed);
+		bolt.Speed = RangedProjectileSpeed;
 
 		Vector3 targetPosition = AttackTarget.GlobalPosition + new Vector3(0f, 1.0f, 0f);
 		Vector3 direction = (targetPosition - StaffCastPoint.GlobalPosition).Normalized();
