@@ -180,7 +180,7 @@ layout_mode = 2
 focus_neighbor_top = NodePath("../Settings_Button")
 focus_neighbor_bottom = NodePath("../Quit_Button")
 theme_override_font_sizes/font_size = 40
-text = "Extras"
+text = "About"
 
 [node name="Quit_Button" type="Button" parent="ButtonPanel" unique_id=968431614]
 layout_mode = 2
